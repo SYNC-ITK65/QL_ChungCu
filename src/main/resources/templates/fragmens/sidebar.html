@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="menu-trai" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; min-height: 100vh;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <span class="fs-4">🏢 Quản Lý Chung Cư</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="/admin/can-ho" class="nav-link text-white">🏠 Căn hộ & Cư dân</a>
+        </li>
+        <li>
+            <a href="/admin/hoa-don" class="nav-link active">💰 Tài chính & Hóa đơn</a>
+        </li>
+        <li>
+            <a href="/admin/phan-anh" class="nav-link text-white">🛠️ Vận hành & Tiện ích</a>
+        </li>
+    </ul>
+    <hr>
+    <div>
+        <strong>👤 Admin Thành viên A</strong>
+    </div>
+</div>
+</body>
+</html>
