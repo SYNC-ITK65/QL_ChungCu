@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm Căn Hộ Mới</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <div class="">
+        <div class="">
+            <h2>Thêm Căn Hộ Mới</h2>
+            <a th:href="@{/admin/can-ho}" class="btn btn-secondary">Quay Lại</a>
+        </div>
+
+        <div class="card shadow border-0">
+            <div class="card-body">
+                <form th:action="@{/admin/can-ho/luu}" th:object="${canHo}" method="POST">
+                    <input type="hidden" th:field="*{id}" />
+                    <div class="mb-3">
+                        <label class="form-label">Mã Căn Hộ</label>
+                        <input type="text" class="form-control" th:field="*{maCanHo}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Diện Tích (m²)</label>
+                        <input type="number" step="0.1" class="form-control" th:field="*{dienTich}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tầng</label>
+                        <input type="number" class="form-control" th:field="*{tang}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Loại</label>
+                        <input type="text" class="form-control" th:field="*{loai}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Trạng Thái</label>
+                        <select class="form-select" th:field="*{trangThai}">
+                            <option value="Trống">Trống</option>
+                            <option value="Đã có chủ">Đã có chủ</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Lưu Căn Hộ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
