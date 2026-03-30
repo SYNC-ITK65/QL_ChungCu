@@ -12,28 +12,31 @@ public class HoaDonService {
     @Autowired
     private HoaDonRepository hoaDonRepository;
 
+    // Lấy danh sách toàn bộ hóa đơn
     public List<HoaDon> layTatCaHoaDon() {
         return hoaDonRepository.findAll();
     }
 
-    // 1. Thêm logic tính toán tổng tiền
+    // Tính toán tổng tiền và lưu
     public void luuHoaDonCoTinhToan(HoaDon hoaDon, Double soDien, Double soNuoc) {
-        // Giả sử logic tính tiền của chung cư (có thể lấy từ DB bảng DichVu, nhưng làm cứng tạm cho dễ hiểu)
+        // Cấu hình đơn giá (Tạm thời fix cứng để demo)
         Double donGiaDien = 3500.0;  // 3500 VNĐ / 1 kWh
         Double donGiaNuoc = 15000.0; // 15000 VNĐ / 1 khối
-        Double phiQuanLy = 200000.0; // Phí cố định hàng tháng
+        Double phiQuanLy = 200000.0; // Phí quản lý cố định
 
         // Tính tổng tiền
         Double tongTien = (soDien * donGiaDien) + (soNuoc * donGiaNuoc) + phiQuanLy;
-
         hoaDon.setTongTien(tongTien);
 
+        // Mặc định tạo mới là Chưa đóng
         if(hoaDon.getTrangThaiThanhToan() == null) {
             hoaDon.setTrangThaiThanhToan("Chưa đóng");
         }
+
         hoaDonRepository.save(hoaDon);
     }
-    // 2. Thêm logic chuyển trạng thái thanh toán
+
+    // Đánh dấu đã thanh toán
     public void danhDauDaThanhToan(Long id) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElse(null);
         if (hoaDon != null) {

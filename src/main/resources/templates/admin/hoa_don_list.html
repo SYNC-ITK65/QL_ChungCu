@@ -19,7 +19,8 @@
             <thead class="table-dark">
             <tr>
                 <th>ID</th>
-                <th>Tháng/Năm</th>
+                <th>Ngày Phát Hành</th>
+                <th>Ngày Đến Hạn</th>
                 <th>Căn Hộ</th>
                 <th>Tổng Tiền</th>
                 <th>Trạng Thái</th>
@@ -29,12 +30,15 @@
             <tbody>
             <tr th:each="hd : ${danhSachHoaDon}">
                 <td th:text="${hd.id}">1</td>
-                <td th:text="${hd.thangNam}">10/2026</td>
-                <td th:text="${hd.canHo != null ? hd.canHo.maCanHo : 'Chưa gắn'}">A1-01</td>
 
-                <td th:text="${hd.tongTien != null ? #numbers.formatDecimal(hd.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">500000 VNĐ</td>
+                <td th:text="${hd.ngayPhatHanh != null ? #temporals.format(hd.ngayPhatHanh, 'dd/MM/yyyy') : ''}">01/10/2026</td>
+                <td th:text="${hd.ngayDenHan != null ? #temporals.format(hd.ngayDenHan, 'dd/MM/yyyy') : ''}">15/10/2026</td>
+
+                <td th:text="${hd.canHo?.maCanHo ?: 'Chưa gắn'}">A1-01</td>
+
+                <td th:text="${hd.tongTien != null ? #numbers.formatDecimal(hd.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">500,000 VNĐ</td>
+
                 <td th:text="${hd.trangThaiThanhToan}"></td>
-
                 <td>
                     <a th:if="${hd.trangThaiThanhToan == 'Chưa đóng'}"
                        th:href="@{/admin/hoa-don/thanh-toan/{id}(id=${hd.id})}"
@@ -46,7 +50,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachHoaDon)}">
-                <td colspan="6" class="text-center text-muted">Chưa có hóa đơn nào trong hệ thống!</td>
+                <td colspan="7" class="text-center text-muted">Chưa có hóa đơn nào trong hệ thống!</td>
             </tr>
             </tbody>
         </table>
