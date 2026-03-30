@@ -37,7 +37,8 @@
                 <td th:text="${hd.canHo?.maCanHo ?: 'Chưa gắn'}">A1-01</td>
 
                 <td th:text="${hd.tongTien != null ? #numbers.formatDecimal(hd.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">500,000 VNĐ</td>
-
+<!--                    <span th:if="${hd.trangThaiThanhToan == 'Đã đóng'}" class="badge bg-success">Đã đóng</span>-->
+<!--                    <span th:if="${hd.trangThaiThanhToan == 'Chưa đóng'}" class="badge bg-danger">Chưa đóng</span>-->
                 <td th:text="${hd.trangThaiThanhToan}"></td>
                 <td>
                     <a th:if="${hd.trangThaiThanhToan == 'Chưa đóng'}"

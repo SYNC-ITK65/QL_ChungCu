@@ -44,4 +44,17 @@ public class HoaDonService {
             hoaDonRepository.save(hoaDon);
         }
     }
+
+    public void xacNhanThanhToan(Long id) {
+        // Tìm hóa đơn trong Database theo ID
+        HoaDon hoaDon = hoaDonRepository.findById(id).orElse(null);
+
+        if (hoaDon != null) {
+            // Cập nhật trạng thái thành Đã đóng
+            hoaDon.setTrangThaiThanhToan("Đã đóng");
+
+            // Lưu lại vào Database
+            hoaDonRepository.save(hoaDon);
+        }
+    }
 }
