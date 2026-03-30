@@ -1,5 +1,6 @@
 package com.sync.itk65.entity;
 
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +26,9 @@ public class CanHo {
 
     @Column(name = "trang_thai")
     private String trangThai;
+
+    @OneToMany(mappedBy = "canHo", cascade = CascadeType.ALL)
+    private List<CuDan> danhSachCuDan;
 
     public CanHo() {
     }
@@ -87,4 +91,11 @@ public class CanHo {
         this.maCanHo = maCanHo;
     }
 
+    public List<CuDan> getDanhSachCuDan() {
+        return danhSachCuDan;
+    }
+
+    public void setDanhSachCuDan(List<CuDan> danhSachCuDan) {
+        this.danhSachCuDan = danhSachCuDan;
+    }
 }

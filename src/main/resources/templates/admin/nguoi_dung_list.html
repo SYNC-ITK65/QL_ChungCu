@@ -11,25 +11,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Danh sách Người dùng</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 </head>
 
 <body>
-    <div class="container mt-4">
-        <h2 class="mb-4">Danh sách Người dùng</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Danh sách Người dùng</h2>
+    </div>
 
         <!-- Nút Thêm mới -->
-        <a th:href="@{/admin/nguoi-dung/tao-moi}" class="">+ Thêm người dùng mới</a>
+        <a th:href="@{/admin/nguoi-dung/tao-moi}" class="btn btn-primary mb-3">+ Thêm người dùng mới</a>
 
-        <table class="">
-            <thead class="">
+        <table class="table table-striped table-hover border">
+            <thead class="table-dark">
                 <tr>
                     <th>ID</th>
                     <th>Họ tên</th>
-                    <th>Tên đăng nhập</th>
                     <th>Email</th>
                     <th>Số điện thoại</th>
                     <th>Vai trò</th>
+                    <th>Căn hộ</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -38,16 +39,22 @@
                 <tr th:each="nd : ${danhSachNguoiDung}">
                     <td th:text="${nd.id}"></td>
                     <td th:text="${nd.hoTen}"></td>
-                    <td th:text="${nd.tenDangNhap}"></td>
                     <td th:text="${nd.email}"></td>
                     <td th:text="${nd.soDienThoai}"></td>
-                    <td th:text="${nd.vaiTro == 1 ? 'Admin' : nd.vaiTro == 2 ? 'Chủ hộ' : 'Người thuê'}">
+                    <td>
+                        <span th:if="${nd.vaiTro == 1}" class="badge bg-danger">Admin</span>
+                        <span th:if="${nd.vaiTro == 2}" class="badge bg-success">Chủ hộ</span>
+                        <span th:if="${nd.vaiTro == 3}" class="badge bg-info text-dark">Người thuê</span>
                     </td>
                     <td>
-                        <!-- Nút Sửa -->
-                        <a th:href="@{/admin/nguoi-dung/sua/{id}(id=${nd.id})}" class="">Sửa</a>
-                        <!-- Nút Xóa (Tạm thời chưa code logic xóa) -->
-                        <a href="#" class="">Xóa</a>
+                        <!-- Hiển thị căn hộ nếu có dữ liệu cư dân -->
+                        <span th:if="${not #lists.isEmpty(nd.danhSachCuDan)}" 
+                              th:text="${nd.danhSachCuDan[0].canHo.maCanHo}"></span>
+                        <span th:if="${#lists.isEmpty(nd.danhSachCuDan)}" class="text-muted">-</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/admin/nguoi-dung/sua/{id}(id=${nd.id})}" class="btn btn-sm btn-warning">Sửa</a>
+                        <a href="#" class="btn btn-sm btn-danger">Xóa</a>
                     </td>
                 </tr>
             </tbody>

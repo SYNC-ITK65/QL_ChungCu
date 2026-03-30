@@ -34,7 +34,8 @@
                 <td th:text="${ch.loai}">1</td>
                 <td th:text="${ch.trangThai}">Trống</td>
                 <td>
-                    <a th:href="@{/admin/can-ho/sua/{id}(id=${ch.id})}" class="">Sửa</a>
+                    <a th:href="@{/admin/cu-dan(canHoId=${ch.id})}" class="btn btn-sm btn-info text-dark">Lọc Cư Dân</a>
+                    <a th:href="@{/admin/can-ho/sua/{id}(id=${ch.id})}" class="btn btn-sm btn-warning">Sửa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachCanHo)}">
