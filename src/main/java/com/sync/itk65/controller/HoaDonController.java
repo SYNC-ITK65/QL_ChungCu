@@ -35,8 +35,12 @@ public class HoaDonController {
     // 2. API Xử lý lưu hóa đơn
     @PostMapping("/luu")
     public String luuHoaDon(@ModelAttribute("hoaDon") HoaDon hoaDon,
+                            @RequestParam("canHoId") Long canHoId,
                             @RequestParam("soDien") Double soDien,
                             @RequestParam("soNuoc") Double soNuoc) {
+        CanHo canHo = new CanHo();
+        canHo.setId(canHoId);
+        hoaDon.setCanHo(canHo);
         // Gọi Service có logic tính toán
         hoaDonService.luuHoaDonCoTinhToan(hoaDon, soDien, soNuoc);
         return "redirect:/admin/hoa-don"; // Quay về trang danh sách sau khi lưu
