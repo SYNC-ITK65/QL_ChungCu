@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Danh sách căn hộ</h2>
+        <a th:href="@{/admin/can-ho/tao-moi}" class="btn btn-primary">+ Thêm căn hộ</a>
+    </div>
+
+    <table class="table table-striped table-hover border">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Mã Căn Hộ</th>
+                <th>Diện Tích</th>
+                <th>Tầng</th>
+                <th>Loại</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="ch : ${danhSachCanHo}">
+                <td th:text="${ch.id}">1</td>
+                <td th:text="${ch.maCanHo}">A1-01</td>
+                <td th:text="${ch.dienTich + ' m²'}">100 m²</td>
+                <td th:text="${ch.tang}">1</td>
+                <td th:text="${ch.loai}">1</td>
+                <td th:text="${ch.trangThai}">Trống</td>
+                <td>
+                    <a th:href="@{/admin/cu-dan(canHoId=${ch.id})}" class="btn btn-sm btn-info text-dark">Lọc Cư Dân</a>
+                    <a th:href="@{/admin/can-ho/sua/{id}(id=${ch.id})}" class="btn btn-sm btn-warning">Sửa</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(danhSachCanHo)}">
+                <td colspan="6" class="text-center text-muted">Chưa có căn hộ nào trong hệ thống!</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+</body>
+
+</html>

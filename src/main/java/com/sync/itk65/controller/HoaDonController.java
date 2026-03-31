@@ -58,12 +58,8 @@ public class HoaDonController {
 
     // API Xử lý khi người dùng bấm nút "Thanh toán"
     @GetMapping("/thanh-toan/{id}")
-    public String thanhToanHoaDon(@PathVariable("id") Long id) {
-
-        // Gọi Service để cập nhật trạng thái trong Database
-        hoaDonService.xacNhanThanhToan(id);
-
-        // Cập nhật xong thì bắt web tự động tải lại trang danh sách
-        return "redirect:/admin/hoa-don";
+    public String thanhToan(@PathVariable("id") Long id) {
+        hoaDonService.danhDauDaThanhToan(id);
+        return "redirect:/admin/hoa-don"; // Quay về trang danh sách
     }
 }

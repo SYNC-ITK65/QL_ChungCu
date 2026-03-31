@@ -1,5 +1,6 @@
 package com.sync.itk65.entity;
 
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,8 +17,31 @@ public class CanHo {
     @Column(name = "dien_tich")
     private Double dienTich;
 
+    @Column(name = "tang")
+    private int tang;
+
+    @Column(name = "loai")
+    private String loai;
+
+
     @Column(name = "trang_thai")
     private String trangThai;
+
+    @OneToMany(mappedBy = "canHo", cascade = CascadeType.ALL)
+    private List<CuDan> danhSachCuDan;
+
+    public CanHo() {
+    }
+
+    public CanHo(Long id, String trangThai, String loai, Double dienTich, String maCanHo, int tang) {
+        this.id = id;
+        this.trangThai = trangThai;
+        this.loai = loai;
+        this.dienTich = dienTich;
+        this.maCanHo = maCanHo;
+        this.tang = tang;
+    }
+
 
     public Long getId() {
         return id;
@@ -27,12 +51,8 @@ public class CanHo {
         this.id = id;
     }
 
-    public String getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
+    public String getMaCanHo() {
+        return maCanHo;
     }
 
     public Double getDienTich() {
@@ -43,12 +63,39 @@ public class CanHo {
         this.dienTich = dienTich;
     }
 
-    public String getMaCanHo() {
-        return maCanHo;
+    public int getTang() {
+        return tang;
+    }
+
+    public void setTang(int tang) {
+        this.tang = tang;
+    }
+
+    public String getLoai() {
+        return loai;
+    }
+
+    public void setLoai(String loai) {
+        this.loai = loai;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 
     public void setMaCanHo(String maCanHo) {
         this.maCanHo = maCanHo;
     }
-// Bôi đen các biến trên, ấn Alt + Insert (hoặc chuột phải chọn Generate) -> Chọn Getter and Setter để nó tự tạo hàm nhé
+
+    public List<CuDan> getDanhSachCuDan() {
+        return danhSachCuDan;
+    }
+
+    public void setDanhSachCuDan(List<CuDan> danhSachCuDan) {
+        this.danhSachCuDan = danhSachCuDan;
+    }
 }
