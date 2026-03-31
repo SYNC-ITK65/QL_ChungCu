@@ -1,7 +1,9 @@
 package com.sync.itk65.controller;
+
 import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.entity.HoaDon;
 import com.sync.itk65.service.HoaDonService;
+import com.sync.itk65.repository.CanHoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,9 @@ public class HoaDonController {
     @Autowired
     private HoaDonService hoaDonService;
 
+    @Autowired
+    private CanHoRepository canHoRepository;
+
     // Hiển thị danh sách
     @GetMapping
     public String hienThiDanhSach(Model model) {
@@ -21,28 +26,37 @@ public class HoaDonController {
         return "admin/hoa_don_list";
     }
 
-    // 1. API Hiển thị form tạo mới
+    // Mở trang Form tạo mới
+    // 1. API Hiển thị form tạo mới (ĐÃ SỬA LẠI CHỖ NÀY)
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
-        HoaDon hoaDon = new HoaDon();
+        model.addAttribute("hoaDon", new HoaDon());
 
-        hoaDon.setCanHo(new CanHo());
+        // Gửi danh sách căn hộ sang Form để làm menu xổ xuống
+        model.addAttribute("danhSachCanHo", canHoRepository.findAll());
 
-        model.addAttribute("hoaDon", hoaDon);
         return "admin/hoa_don_form";
     }
 
-    // 2. API Xử lý lưu hóa đơn
+    // Xử lý lưu hóa đơn khi bấm nút Lưu
     @PostMapping("/luu")
     public String luuHoaDon(@ModelAttribute("hoaDon") HoaDon hoaDon,
+                            @RequestParam("canHoId") Long canHoId,
                             @RequestParam("soDien") Double soDien,
                             @RequestParam("soNuoc") Double soNuoc) {
-        // Gọi Service có logic tính toán
+
+        // Tạo thủ công một Căn Hộ và gắn ID để không bị lỗi Thymeleaf
+        CanHo canHo = new CanHo();
+        canHo.setId(canHoId);
+        hoaDon.setCanHo(canHo);
+
+        // Gọi Service xử lý tính tiền và lưu DB
         hoaDonService.luuHoaDonCoTinhToan(hoaDon, soDien, soNuoc);
-        return "redirect:/admin/hoa-don"; // Quay về trang danh sách sau khi lưu
+
+        return "redirect:/admin/hoa-don";
     }
 
-    // 3. API Xử lý nút Đánh dấu thanh toán
+    // API Xử lý khi người dùng bấm nút "Thanh toán"
     @GetMapping("/thanh-toan/{id}")
     public String thanhToan(@PathVariable("id") Long id) {
         hoaDonService.danhDauDaThanhToan(id);
