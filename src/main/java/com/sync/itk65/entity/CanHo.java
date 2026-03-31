@@ -18,7 +18,7 @@ public class CanHo {
     private Double dienTich;
 
     @Column(name = "tang")
-    private int tang;
+    private Integer tang;
 
     @Column(name = "loai")
     private String loai;
