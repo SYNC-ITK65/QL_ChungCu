@@ -36,6 +36,8 @@
                 <td>
                     <a th:href="@{/admin/cu-dan(canHoId=${ch.id})}" class="btn btn-sm btn-info text-dark">Lọc Cư Dân</a>
                     <a th:href="@{/admin/can-ho/sua/{id}(id=${ch.id})}" class="btn btn-sm btn-warning">Sửa</a>
+                    <a th:href="@{/admin/can-ho/xoa/{id}(id=${ch.id})}" class="btn btn-sm btn-danger"
+                        onclick="return confirm('Xóa căn hộ này? Thao tác không thể hoàn tác!');">Xóa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachCanHo)}">

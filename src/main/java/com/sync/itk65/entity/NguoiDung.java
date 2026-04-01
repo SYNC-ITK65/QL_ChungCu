@@ -1,6 +1,5 @@
 package com.sync.itk65.entity;
 
-import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
@@ -28,7 +27,6 @@ public class NguoiDung {
 
     @Column(name = "vai_tro")
     private int vaiTro; // 1: Admin, 2: Chủ hộ, 3: Người thuê
-
 
     public NguoiDung() {
     }

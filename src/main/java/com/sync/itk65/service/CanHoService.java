@@ -27,4 +27,9 @@ public class CanHoService {
     public CanHo layCanHoTheoId(Long id) {
         return canHoRepository.findById(id).orElse(null);
     }
+
+    // Hàm xóa căn hộ
+    public void xoaCanHo(Long id) {
+        canHoRepository.deleteById(id);
+    }
 }
