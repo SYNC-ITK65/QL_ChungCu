@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ghi nhận Chỉ số mới</title>
+    <link href="https://cdn.jsdelivr.net/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex">
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <div class="container-fluid p-4">
+        <h2>Ghi Nhận Chỉ Số Điện Nước Hàng Tháng</h2>
+        <hr>
+
+        <form th:action="@{/admin/chi-so/luu}" th:object="${chiSo}" method="post" style="max-width: 600px;">
+            <div class="mb-3">
+                <label class="form-label">Ngày Ghi Nhận (Chốt số)</label>
+                <input type="date" class="form-control" th:field="*{ngayGhiNhan}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Căn Hộ</label>
+                <select class="form-select" name="canHoId" required>
+                    <option value="" disabled selected>-- Chọn căn hộ --</option>
+                    <option th:each="ch : ${danhSachCanHo}"
+                            th:value="${ch.id}"
+                            th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
+                    </option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số Điện (kWh)</label>
+                    <input type="number" step="0.1" class="form-control" th:field="*{dienTieuThu}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số Nước (m3)</label>
+                    <input type="number" step="0.1" class="form-control" th:field="*{nuocTieuThu}" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu Chỉ Số</button>
+            <a th:href="@{/admin/chi-so}" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

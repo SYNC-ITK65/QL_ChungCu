@@ -27,7 +27,7 @@ public class HoaDonController {
     }
 
     // Mở trang Form tạo mới
-    // 1. API Hiển thị form tạo mới (ĐÃ SỬA LẠI CHỖ NÀY)
+    // 1. API Hiển thị form tạo mới
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
         model.addAttribute("hoaDon", new HoaDon());
@@ -41,19 +41,24 @@ public class HoaDonController {
     // Xử lý lưu hóa đơn khi bấm nút Lưu
     @PostMapping("/luu")
     public String luuHoaDon(@ModelAttribute("hoaDon") HoaDon hoaDon,
-                            @RequestParam("canHoId") Long canHoId,
-                            @RequestParam("soDien") Double soDien,
-                            @RequestParam("soNuoc") Double soNuoc) {
+                            @RequestParam("canHoId") Long canHoId) { // Đã bỏ @RequestParam soDien, soNuoc
+        try {
+            // Tạo thủ công một Căn Hộ và gắn ID
+            CanHo canHo = new CanHo();
+            canHo.setId(canHoId);
+            hoaDon.setCanHo(canHo);
 
-        // Tạo thủ công một Căn Hộ và gắn ID để không bị lỗi Thymeleaf
-        CanHo canHo = new CanHo();
-        canHo.setId(canHoId);
-        hoaDon.setCanHo(canHo);
+            // Gọi Service để tự động fetch chỉ số và tính toán
+            hoaDonService.taoHoaDonTuDong(hoaDon);
 
-        // Gọi Service xử lý tính tiền và lưu DB
-        hoaDonService.luuHoaDonCoTinhToan(hoaDon, soDien, soNuoc);
+            return "redirect:/admin/hoa-don";
 
-        return "redirect:/admin/hoa-don";
+        } catch (RuntimeException e) {
+            // Nếu xảy ra lỗi (chưa có chỉ số), bạn có thể bắt lỗi ở đây và truyền thông báo ra View
+            // Tạm thời in ra console hoặc chuyển hướng kèm param lỗi
+            System.out.println("Lỗi tạo hóa đơn: " + e.getMessage());
+            return "redirect:/admin/hoa-don/tao-moi?error=true";
+        }
     }
 
     // API Xử lý khi người dùng bấm nút "Thanh toán"

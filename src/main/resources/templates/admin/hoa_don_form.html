@@ -30,7 +30,6 @@
                 <label class="form-label">Chọn Căn Hộ</label>
                 <select class="form-select" name="canHoId" required>
                     <option value="" disabled selected>-- Chọn căn hộ cần xuất hóa đơn --</option>
-
                     <option th:each="ch : ${danhSachCanHo}"
                             th:value="${ch.id}"
                             th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
@@ -38,17 +37,7 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Chỉ số Điện tiêu thụ (kWh)</label>
-                <input type="number" class="form-control" name="soDien" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Chỉ số Nước tiêu thụ (m3)</label>
-                <input type="number" class="form-control" name="soNuoc" required>
-            </div>
-
-            <button type="submit" class="btn btn-success">Tính tiền & Lưu</button>
+            <button type="submit" class="btn btn-success">Tính tiền & Lưu Hóa Đơn</button>
             <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">Hủy</a>
         </form>
     </div>
