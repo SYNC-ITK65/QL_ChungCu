@@ -8,14 +8,16 @@
 
 <body>
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
-    
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Thêm mới Cư Dân</h2>
+        <h2 th:text="${cuDan.id != null} ? 'Sửa thông tin Cư Dân' : 'Thêm mới Cư Dân'">Thêm mới Cư Dân</h2>
         <a th:href="@{/admin/cu-dan}" class="btn btn-secondary">Quay lại danh sách</a>
     </div>
 
     <form th:action="@{/admin/cu-dan/luu}" th:object="${cuDan}" method="post">
-        
+        <!-- Giữ lại ID khi sửa -->
+        <input type="hidden" th:field="*{id}" th:if="${cuDan.id != null}">
+
         <h4 class="mb-3 text-primary">Thông tin cá nhân</h4>
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -35,6 +37,16 @@
             <div class="col-md-6 mb-3">
                 <label class="form-label">Email</label>
                 <input type="email" th:field="*{email}" class="form-control" required placeholder="email@example.com">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Ngày Sinh</label>
+                <input type="date" th:field="*{ngaySinh}" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">CCCD / CMND</label>
+                <input type="text" th:field="*{cccd}" class="form-control" maxlength="12" placeholder="012345678901">
             </div>
         </div>
 

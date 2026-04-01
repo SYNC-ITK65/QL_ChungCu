@@ -14,6 +14,7 @@
     </div>
 
     <form th:action="@{/admin/nguoi-dung/luu}" th:object="${nguoiDung}" method="post">
+        <input type="hidden" th:field="*{id}">
         <div class="mb-3">
             <label class="form-label">Họ Tên</label>
             <input type="text" th:field="*{hoTen}" class="form-control" required>
@@ -37,14 +38,72 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Vai trò</label>
-            <select th:field="*{vaiTro}" class="form-select">
+            <select th:field="*{vaiTro}" class="form-select" id="vaiTroSelect">
                 <option value="1">Admin</option>
                 <option value="2">Chủ hộ</option>
                 <option value="3">Người thuê</option>
             </select>
         </div>
+
+        <!-- Thông tin cư trú (Ẩn hiện linh hoạt) -->
+        <div id="thongTinCuTru" style="display: none;">
+            <hr>
+            <h4 class="mb-3 text-primary">Thông tin cư trú</h4>
+            <div class="mb-3">
+                <label class="form-label">Căn Hộ</label>
+                <select th:field="*{canHo.id}" class="form-select">
+                    <option value="">-- Chọn căn hộ --</option>
+                    <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|Phòng ${ch.maCanHo}|"></option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Mối Quan Hệ</label>
+                    <select th:field="*{moiQuanHe}" class="form-select">
+                        <option value="Chủ Hộ">Chủ Hộ</option>
+                        <option value="Vợ/Chồng">Vợ/Chồng</option>
+                        <option value="Con cái">Con cái</option>
+                        <option value="Người thân">Người thân</option>
+                        <option value="Người thuê">Người thuê</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Trạng Thái</label>
+                    <select th:field="*{trangThai}" class="form-select">
+                        <option value="Đang Ở">Đang Ở</option>
+                        <option value="Chưa Đến">Chưa Đến</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">Lưu thông tin</button>
     </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const vaiTroSelect = document.getElementById("vaiTroSelect");
+            const thongTinCuTru = document.getElementById("thongTinCuTru");
+
+            function toggleResidenceFields() {
+                const value = vaiTroSelect.value;
+                // Nếu là Chủ hộ (2) hoặc Người thuê (3) thì hiện
+                if (value === "2" || value === "3") {
+                    thongTinCuTru.style.display = "block";
+                } else {
+                    thongTinCuTru.style.display = "none";
+                }
+            }
+
+            // Lắng nghe sự kiện thay đổi
+            vaiTroSelect.addEventListener("change", toggleResidenceFields);
+
+            // Chạy lần đầu khi load trang (cho trường hợp Sửa)
+            toggleResidenceFields();
+        });
+    </script>
 </body>
 
 </html>

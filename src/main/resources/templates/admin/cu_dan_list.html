@@ -54,6 +54,7 @@
                     <span th:class="${cd.trangThai == 'Đang Ở' ? 'text-success' : 'text-warning'}" th:text="${cd.trangThai}"></span>
                 </td>
                 <td>
+                    <a th:href="@{/admin/cu-dan/sua/{id}(id=${cd.id})}" class="btn btn-sm btn-outline-primary me-1">Sửa</a>
                     <a th:href="@{/admin/cu-dan/xoa/{id}(id=${cd.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa cư dân chuyển đi này không?');">Xóa</a>
                 </td>
             </tr>

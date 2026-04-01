@@ -46,4 +46,11 @@ public class CanHoController {
         return "redirect:/admin/can-ho"; // Quay về trang danh sách sau khi lưu
     }
 
+    // Xóa căn hộ
+    @GetMapping("/xoa/{id}")
+    public String xoaCanHo(@PathVariable("id") Long id) {
+        canHoService.xoaCanHo(id);
+        return "redirect:/admin/can-ho";
+    }
+
 }
