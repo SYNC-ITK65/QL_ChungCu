@@ -14,7 +14,7 @@ public class PhuongTien {
 //liên kết khóa ngoại là id của cư dân
     @ManyToOne
     @JoinColumn(name = "id_cu_dan")
-    private CuDan cuDan;
+//    private CuDan cuDan;
 
     public Long getId() {
         return id;
@@ -48,12 +48,12 @@ public class PhuongTien {
         this.mauXe = mauXe;
     }
 
-    public CuDan getCuDan() {
-        return cuDan;
-    }
-
-    public void setCuDan(CuDan cuDan) {
-        this.cuDan = cuDan;
-    }
+//    public CuDan getCuDan() {
+//        return cuDan;
+//    }
+//
+//    public void setCuDan(CuDan cuDan) {
+//        this.cuDan = cuDan;
+//    }
 
 }
