@@ -22,4 +22,14 @@ public class CanHoService {
     public void luuCanHo(CanHo canHo) {
         canHoRepository.save(canHo);
     }
+
+    // Lấy căn hộ theo ID
+    public CanHo layCanHoTheoId(Long id) {
+        return canHoRepository.findById(id).orElse(null);
+    }
+
+    // Hàm xóa căn hộ
+    public void xoaCanHo(Long id) {
+        canHoRepository.deleteById(id);
+    }
 }

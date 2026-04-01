@@ -12,8 +12,8 @@ public class PhuongTien {
     private String loaiXe; // Ô tô hoặc Xe máy
     private String mauXe;
 //liên kết khóa ngoại là id của cư dân
-    @ManyToOne
-    @JoinColumn(name = "id_cu_dan")
+//    @ManyToOne
+//    @JoinColumn(name = "id_cu_dan")
 //    private CuDan cuDan;
 
     public Long getId() {

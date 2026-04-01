@@ -47,10 +47,5 @@ public class HoaDonController {
     public String thanhToan(@PathVariable("id") Long id) {
         hoaDonService.danhDauDaThanhToan(id);
         return "redirect:/admin/hoa-don"; // Quay về trang danh sách
-        @GetMapping
-        public String hienThiDanhSach (Model model){
-            model.addAttribute("danhSachHoaDon", hoaDonService.layTatCaHoaDon());
-            return "admin/hoa_don_list"; // File HTML bạn sẽ code và xem lại thiết kế trên Figma để làm cho đẹp
-        }
     }
 }

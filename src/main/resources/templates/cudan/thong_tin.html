@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin của tôi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex">
+
+<div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
+
+<div class="container p-5">
+    <h2 class="mb-4">Thông tin cá nhân & Căn hộ</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Thông tin Cư Dân</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Họ Tên:</strong> <span th:text="${cuDan.hoTen}"></span></p>
+                    <p><strong>Số Điện Thoại:</strong> <span th:text="${cuDan.soDienThoai}"></span></p>
+                    <p><strong>CCCD:</strong> <span th:text="${cuDan.cccd}"></span></p>
+                    <p><strong>Vai trò:</strong> <span th:text="${cuDan.moiQuanHe}"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin Căn Hộ</h5>
+                </div>
+                <div class="card-body" th:if="${cuDan.canHo != null}">
+                    <h4 class="text-primary">Phòng <span th:text="${cuDan.canHo.maCanHo}"></span></h4>
+                    <p><strong>Tầng:</strong> <span th:text="${cuDan.canHo.tang}"></span></p>
+                    <p><strong>Diện tích:</strong> <span th:text="${cuDan.canHo.dienTich + ' m²'}"></span></p>
+                    <p><strong>Loại căn hộ:</strong> <span th:text="${cuDan.canHo.loai}"></span></p>
+                </div>
+                <div class="card-body text-danger" th:if="${cuDan.canHo == null}">
+                    Bạn chưa được phân bổ vào căn hộ nào. Vui lòng liên hệ Ban Quản Lý.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

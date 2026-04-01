@@ -1,6 +1,7 @@
 package com.sync.itk65.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDate; // Nhớ import cái này
 
 @Entity
 @Table(name = "hoa_don")
@@ -8,61 +9,42 @@ public class HoaDon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //
+    private Long id;
 
-    @Column(name = "thang_nam")
-    private String thangNam; // Ví dụ: "10/2026"
+    // THAY THẾ THÁNG NĂM BẰNG 2 BIẾN NÀY
+    @Column(name = "ngay_phat_hanh")
+    private LocalDate ngayPhatHanh;
+
+    @Column(name = "ngay_den_han")
+    private LocalDate ngayDenHan;
 
     @Column(name = "tong_tien")
-    private Double tongTien; //
+    private Double tongTien;
 
     @Column(name = "trang_thai_thanh_toan")
     private String trangThaiThanhToan; // "Chưa đóng", "Đã đóng"
 
-    // ĐÂY LÀ KHÓA NGOẠI LIÊN KẾT ĐẾN BẢNG CĂN HỘ CỦA LEADER
     @ManyToOne
     @JoinColumn(name = "can_ho_id")
     private CanHo canHo;
 
-    public Long getId() {
-        return id;
-    }
+    // --- GETTERS & SETTERS ---
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public CanHo getCanHo() {
-        return canHo;
-    }
+    public LocalDate getNgayPhatHanh() { return ngayPhatHanh; }
+    public void setNgayPhatHanh(LocalDate ngayPhatHanh) { this.ngayPhatHanh = ngayPhatHanh; }
 
-    public void setCanHo(CanHo canHo) {
-        this.canHo = canHo;
-    }
+    public LocalDate getNgayDenHan() { return ngayDenHan; }
+    public void setNgayDenHan(LocalDate ngayDenHan) { this.ngayDenHan = ngayDenHan; }
 
-    public String getTrangThaiThanhToan() {
-        return trangThaiThanhToan;
-    }
+    public Double getTongTien() { return tongTien; }
+    public void setTongTien(Double tongTien) { this.tongTien = tongTien; }
 
-    public void setTrangThaiThanhToan(String trangThaiThanhToan) {
-        this.trangThaiThanhToan = trangThaiThanhToan;
-    }
+    public String getTrangThaiThanhToan() { return trangThaiThanhToan; }
+    public void setTrangThaiThanhToan(String trangThaiThanhToan) { this.trangThaiThanhToan = trangThaiThanhToan; }
 
-    public Double getTongTien() {
-        return tongTien;
-    }
-
-    public void setTongTien(Double tongTien) {
-        this.tongTien = tongTien;
-    }
-
-    public String getThangNam() {
-        return thangNam;
-    }
-
-    public void setThangNam(String thangNam) {
-        this.thangNam = thangNam;
-    }
-
-    // Bấm Alt + Insert -> Generate Getter and Setter cho tất cả các biến
+    public CanHo getCanHo() { return canHo; }
+    public void setCanHo(CanHo canHo) { this.canHo = canHo; }
 }
