@@ -3,21 +3,23 @@ package com.sync.itk65.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "dich_vu")
+@Table(name = "dich_vu") // Bạn có thể viết hoa "DICH_VU" tùy theo convention của Database
 public class DichVu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //
+    private Long id;
 
-    @Column(name = "ten_dich_vu")
-    private String tenDichVu; // Ví dụ: Tiền điện, Tiền nước, Phí quản lý
+    @Column(name = "ten")
+    private String ten;
 
-    @Column(name = "don_gia")
-    private Double donGia; //
+    @Column(name = "loai")
+    private String loai;
 
-    @Column(name = "don_vi_tinh")
-    private String donViTinh; // Ví dụ: kWh, m3, tháng
+    @Column(name = "mo_ta")
+    private String moTa;
+
+    // --- GETTERS AND SETTERS ---
 
     public Long getId() {
         return id;
@@ -27,28 +29,27 @@ public class DichVu {
         this.id = id;
     }
 
-    public String getDonViTinh() {
-        return donViTinh;
+    public String getTen() {
+        return ten;
     }
 
-    public void setDonViTinh(String donViTinh) {
-        this.donViTinh = donViTinh;
+    public void setTen(String ten) {
+        this.ten = ten;
     }
 
-    public Double getDonGia() {
-        return donGia;
+    public String getLoai() {
+        return loai;
     }
 
-    public void setDonGia(Double donGia) {
-        this.donGia = donGia;
+    public void setLoai(String loai) {
+        this.loai = loai;
     }
 
-    public String getTenDichVu() {
-        return tenDichVu;
+    public String getMoTa() {
+        return moTa;
     }
 
-    public void setTenDichVu(String tenDichVu) {
-        this.tenDichVu = tenDichVu;
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
     }
-// Bấm Alt + Insert -> Generate Getter and Setter cho tất cả các biến
 }

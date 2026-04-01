@@ -19,7 +19,6 @@ public class CanHoController {
     public String hienThiDanhSach(Model model) {
         // Nhờ Service lấy dữ liệu từ Database
         model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
-
         // Trả về tên file HTML giao diện (sẽ tạo sau trong thư mục resources/templates)
         return "admin/can_ho_list";
     }
