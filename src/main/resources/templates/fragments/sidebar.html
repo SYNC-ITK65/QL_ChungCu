@@ -27,8 +27,13 @@
         </ul>
         <hr>
         <div>
-            <strong>👤 Admin Thành viên A</strong>
+            <span th:text="'Xin chào, ' + ${session.nguoiDungDangNhap.hoTen}">👤 Admin Thành viên A</span>
+            <br>
+            <a href="/logout" class="text-white mt-2 d-block text-decoration-none">🚪 Đăng xuất</a>
         </div>
+
+
+
     </div>
 </body>
 
