@@ -8,13 +8,20 @@ public class PhuongTien {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "bien_so") // Khớp với lược đồ
     private String bienSoXe;
-    private String loaiXe; // Ô tô hoặc Xe máy
+
+    @Column(name = "loai") // Khớp với lược đồ
+    private String loaiXe;
+
+    @Column(name = "mau_sac") // Khớp với lược đồ
     private String mauXe;
-//liên kết khóa ngoại là id của cư dân
-//    @ManyToOne
-//    @JoinColumn(name = "id_cu_dan")
-//    private CuDan cuDan;
+
+    // Thay đổi ở đây: Liên kết với Căn Hộ theo lược đồ
+    @ManyToOne
+    @JoinColumn(name = "can_ho_id")
+    private CanHo canHo;
 
     public Long getId() {
         return id;
@@ -48,12 +55,11 @@ public class PhuongTien {
         this.mauXe = mauXe;
     }
 
-//    public CuDan getCuDan() {
-//        return cuDan;
-//    }
-//
-//    public void setCuDan(CuDan cuDan) {
-//        this.cuDan = cuDan;
-//    }
+    public CanHo getCanHo() {
+        return canHo;
+    }
+    public void setCanHo(CanHo canHo) {
+        this.canHo = canHo;
+    }
 
 }
