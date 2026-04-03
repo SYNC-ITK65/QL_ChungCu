@@ -39,8 +39,16 @@ public class PhanAnhController {
         PhanAnh phanAnhGoc = phanAnhService.findById(phanAnhForm.getId());
 
         if (phanAnhGoc != null) {
-            // ADMIN CHỈ ĐƯỢC PHÉP CẬP NHẬT TRẠNG THÁI
+            // ADMIN CẬP NHẬT TRẠNG THÁI VÀ PHẢN HỒI
             phanAnhGoc.setTrangThai(phanAnhForm.getTrangThai());
+            phanAnhGoc.setPhanHoi(phanAnhForm.getPhanHoi());
+            
+            // Nếu có phản hồi mới thì set ngày phản hồi
+            if (phanAnhForm.getPhanHoi() != null && !phanAnhForm.getPhanHoi().trim().isEmpty()) {
+                if (phanAnhGoc.getNgayPhanHoi() == null) {
+                    phanAnhGoc.setNgayPhanHoi(java.time.LocalDateTime.now());
+                }
+            }
             phanAnhService.save(phanAnhGoc);
         }
         return "redirect:/admin/phan-anh";

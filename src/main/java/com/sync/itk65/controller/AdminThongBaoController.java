@@ -1,0 +1,59 @@
+package com.sync.itk65.controller;
+
+import com.sync.itk65.entity.ThongBao;
+import com.sync.itk65.service.ThongBaoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/admin/thong-bao")
+public class AdminThongBaoController {
+
+    @Autowired
+    private ThongBaoService thongBaoService;
+
+    @GetMapping
+    public String hienThiDanhSach(Model model) {
+        model.addAttribute("danhSachThongBao", thongBaoService.getAllThongBao());
+        return "admin/thong_bao_list";
+    }
+
+    @GetMapping("/tao-moi")
+    public String hienThiFormTaoMoi(Model model) {
+        model.addAttribute("thongBao", new ThongBao());
+        return "admin/thong_bao_form";
+    }
+
+    @GetMapping("/sua/{id}")
+    public String hienThiFormSua(@PathVariable("id") Long id, Model model) {
+        ThongBao thongBao = thongBaoService.getThongBaoById(id);
+        if (thongBao != null) {
+            model.addAttribute("thongBao", thongBao);
+        } else {
+            return "redirect:/admin/thong-bao";
+        }
+        return "admin/thong_bao_form";
+    }
+
+    @PostMapping("/luu")
+    public String luuThongBao(@ModelAttribute("thongBao") ThongBao thongBao) {
+        if (thongBao.getId() != null) {
+            ThongBao existing = thongBaoService.getThongBaoById(thongBao.getId());
+            if (existing != null) {
+                thongBao.setNgayDang(existing.getNgayDang());
+            }
+        } else {
+            thongBao.setNgayDang(java.time.LocalDateTime.now());
+        }
+        thongBaoService.saveThongBao(thongBao);
+        return "redirect:/admin/thong-bao";
+    }
+
+    @GetMapping("/xoa/{id}")
+    public String xoaThongBao(@PathVariable("id") Long id) {
+        thongBaoService.deleteThongBao(id);
+        return "redirect:/admin/thong-bao";
+    }
+}

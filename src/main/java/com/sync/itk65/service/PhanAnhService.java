@@ -21,6 +21,10 @@ public class PhanAnhService {
         return phanAnhRepository.findById(id).orElse(null);
     }
 
+    public List<PhanAnh> findByCanHoId(Long canHoId) {
+        return phanAnhRepository.findByCanHoIdOrderByNgayGuiDesc(canHoId);
+    }
+
     public PhanAnh save(PhanAnh phanAnh) {
         return phanAnhRepository.save(phanAnh);
     }

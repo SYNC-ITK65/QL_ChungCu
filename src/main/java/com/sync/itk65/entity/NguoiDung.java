@@ -26,7 +26,7 @@ public class NguoiDung {
     private String soDienThoai;
 
     @Column(name = "vai_tro")
-    private int vaiTro; // 1: Admin, 2: Chủ hộ, 3: Người thuê
+    private int vaiTro; // 1: Admin, 2: Nhân viên, 3: Cư dân
 
     public NguoiDung() {
     }

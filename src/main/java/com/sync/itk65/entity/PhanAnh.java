@@ -27,6 +27,11 @@ public class PhanAnh {
     @JoinColumn(name = "can_ho_id", nullable = false)
     private CanHo canHo;
 
+    @Column(columnDefinition = "TEXT")
+    private String phanHoi;
+
+    private LocalDateTime ngayPhanHoi;
+
     // Tự động set ngày giờ hiện tại và trạng thái mặc định khi thêm mới
     @PrePersist
     protected void onCreate() {
@@ -51,6 +56,12 @@ public class PhanAnh {
 
     public String getTrangThai() { return trangThai; }
     public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
+
+    public String getPhanHoi() { return phanHoi; }
+    public void setPhanHoi(String phanHoi) { this.phanHoi = phanHoi; }
+
+    public LocalDateTime getNgayPhanHoi() { return ngayPhanHoi; }
+    public void setNgayPhanHoi(LocalDateTime ngayPhanHoi) { this.ngayPhanHoi = ngayPhanHoi; }
 
     public CanHo getCanHo() { return canHo; }
     public void setCanHo(CanHo canHo) { this.canHo = canHo; }
