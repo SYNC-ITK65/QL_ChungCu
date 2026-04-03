@@ -41,23 +41,20 @@ public class HoaDonController {
     // Xử lý lưu hóa đơn khi bấm nút Lưu
     @PostMapping("/luu")
     public String luuHoaDon(@ModelAttribute("hoaDon") HoaDon hoaDon,
-                            @RequestParam("canHoId") Long canHoId) { // Đã bỏ @RequestParam soDien, soNuoc
+                            @RequestParam("canHoId") Long canHoId) {
         try {
-            // Tạo thủ công một Căn Hộ và gắn ID
             CanHo canHo = new CanHo();
             canHo.setId(canHoId);
             hoaDon.setCanHo(canHo);
 
-            // Gọi Service để tự động fetch chỉ số và tính toán
+            // Trigger tính tiền tự động toàn bộ
             hoaDonService.taoHoaDonTuDong(hoaDon);
 
             return "redirect:/admin/hoa-don";
 
         } catch (RuntimeException e) {
-            // Nếu xảy ra lỗi (chưa có chỉ số), bạn có thể bắt lỗi ở đây và truyền thông báo ra View
-            // Tạm thời in ra console hoặc chuyển hướng kèm param lỗi
-            System.out.println("Lỗi tạo hóa đơn: " + e.getMessage());
-            return "redirect:/admin/hoa-don/tao-moi?error=true";
+            // e.getMessage() sẽ trả về "Chưa ghi nhận chỉ số điện nước..."
+            return "redirect:/admin/hoa-don/tao-moi?error=" + e.getMessage();
         }
     }
 

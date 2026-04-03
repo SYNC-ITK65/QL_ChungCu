@@ -3,7 +3,7 @@ package com.sync.itk65.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "dich_vu") // Bạn có thể viết hoa "DICH_VU" tùy theo convention của Database
+@Table(name = "dich_vu")
 public class DichVu {
 
     @Id
@@ -18,6 +18,12 @@ public class DichVu {
 
     @Column(name = "mo_ta")
     private String moTa;
+    
+    @Column(name = "don_gia")
+    private Double donGia;
+
+    @Column(name = "don_vi_tinh")
+    private String donViTinh; // Ví dụ: "kWh", "m3", "Tháng"
 
     // --- GETTERS AND SETTERS ---
 
@@ -51,5 +57,21 @@ public class DichVu {
 
     public void setMoTa(String moTa) {
         this.moTa = moTa;
+    }
+
+    public Double getDonGia() {
+        return donGia;
+    }
+
+    public void setDonGia(Double donGia) {
+        this.donGia = donGia;
+    }
+
+    public String getDonViTinh() {
+        return donViTinh;
+    }
+
+    public void setDonViTinh(String donViTinh) {
+        this.donViTinh = donViTinh;
     }
 }
