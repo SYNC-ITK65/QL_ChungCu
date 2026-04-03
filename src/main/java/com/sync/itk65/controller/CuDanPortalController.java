@@ -19,11 +19,9 @@ public class CuDanPortalController {
 
     @GetMapping("/thong-tin")
     public String xemThongTin(HttpSession session, Model model) {
-        // 1. Kiểm tra xem đã đăng nhập chưa
+        // 1. Lấy thông tin user từ session (AuthInterceptor đã đảm bảo user != null và dung role)
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
-        if (user == null || user.getVaiTro() == 1) { // Chưa đăng nhập hoặc là Admin thì đuổi ra login
-            return "redirect:/";
-        }
+
 
         // 2. Ép kiểu hoặc gọi DB lấy thông tin chi tiết Cư Dân
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
