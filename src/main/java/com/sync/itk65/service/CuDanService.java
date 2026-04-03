@@ -33,9 +33,9 @@ public class CuDanService {
         cuDanRepository.deleteById(id);
     }
 
-    // 5. Lấy danh sách cư dân đang ở trong một căn hộ cụ thể
     public List<CuDan> timTheoCanHo(Long canHoId) {
-        return cuDanRepository.findByCanHo_Id(canHoId);
+        // Đổi thành gọi hàm mới mà chúng ta vừa tạo bằng @Query
+        return cuDanRepository.layDanhSachCuDanTheoCanHo(canHoId);
     }
 
 }

@@ -2,30 +2,59 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="menu-cudan" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary" style="width: 280px; min-height: 100vh;">
-    <a href="/cudan/thong-tin" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+    <a href="/cudan/dashboard" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <span class="fs-4">🏠 Portal Cư Dân</span>
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
+
+        <li class="nav-item mb-1">
+            <span class="nav-link text-white-50 fw-bold" style="font-size: 0.85rem; text-transform: uppercase;">Thông tin căn hộ</span>
+        </li>
         <li class="nav-item">
-            <a href="/cudan/thong-tin" class="nav-link text-white">👤 Thông tin cá nhân & Căn hộ</a>
+            <a href="/cudan/thong-tin" class="nav-link text-white">👤 Thông tin cá nhân</a>
         </li>
         <li>
-            <a href="/cudan/thong-bao/bang-tin" class="nav-link text-white">📰 Bảng tin chung</a>
+            <a href="/cudan/can-ho" class="nav-link text-white">🏢 Căn hộ của tôi</a>
         </li>
         <li>
-            <a href="/cudan/thong-bao/cam-nang" class="nav-link text-white">📖 Cẩm nang cư dân</a>
+            <a href="/cudan/phuong-tien" class="nav-link text-white">🏍️ Đăng ký phương tiện</a>
+        </li>
+
+        <li class="nav-item mt-3 mb-1">
+            <span class="nav-link text-white-50 fw-bold" style="font-size: 0.85rem; text-transform: uppercase;">Tiện ích & Dịch vụ</span>
         </li>
         <li>
-            <a href="/cudan/hoa-don" class="nav-link text-white">💰 Hóa đơn của tôi</a>
+            <a href="/cudan/dich-vu" class="nav-link text-white">🛒 Đăng ký dịch vụ</a>
+        </li>
+
+        <li class="nav-item mt-3 mb-1">
+            <span class="nav-link text-white-50 fw-bold" style="font-size: 0.85rem; text-transform: uppercase;">Tài chính</span>
+        </li>
+        <li>
+            <a href="/cudan/chi-so" class="nav-link text-white">📊 Chỉ số điện nước</a>
+        </li>
+        <li>
+            <a href="/cudan/hoa-don" class="nav-link text-white">💰 Hóa đơn cần đóng</a>
+        </li>
+        <li>
+            <a href="/cudan/thanh-toan/lich-su" class="nav-link text-white">🧾 Lịch sử thanh toán</a>
+        </li>
+
+        <li class="nav-item mt-3 mb-1">
+            <span class="nav-link text-white-50 fw-bold" style="font-size: 0.85rem; text-transform: uppercase;">Hỗ trợ</span>
         </li>
         <li>
             <a href="/cudan/phan-anh" class="nav-link text-white">🛠️ Gửi phản ánh</a>
         </li>
     </ul>
+
     <hr>
     <div>
         <strong th:text="'Xin chào, ' + ${session.nguoiDungDangNhap.hoTen}">👤 Cư dân</strong>
+        <br>
+        <small th:if="${session.nguoiDungDangNhap.vaiTro == 2}" class="text-warning">👑 Chủ hộ</small>
+        <small th:if="${session.nguoiDungDangNhap.vaiTro == 3}" class="text-info">🧑 Khách thuê</small>
         <br>
         <a href="/logout" class="text-white mt-2 d-block text-decoration-none">🚪 Đăng xuất</a>
     </div>

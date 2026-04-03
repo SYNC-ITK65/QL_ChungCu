@@ -4,8 +4,12 @@ import com.sync.itk65.entity.PhuongTien;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PhuongTienRepository extends JpaRepository<PhuongTien, Long> {
     // Hàm tự động kiểm tra xem biển số xe đã tồn tại chưa
     boolean existsByBienSoXe(String bienSoXe);
+    //  lấy danh sách xe của 1 căn hộ
+    List<PhuongTien> findByCanHoId(Long canHoId);
 }
