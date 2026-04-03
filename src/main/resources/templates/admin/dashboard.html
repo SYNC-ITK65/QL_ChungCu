@@ -58,9 +58,15 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 text-white bg-secondary">
                         <div class="card-body">
-                            <h6 class="text-uppercase">Ticket Chờ Xử Lý</h6>
-                            <h3 th:text="${phanAnhChoXuLy}">0</h3>
-                            <p>Tính năng đang phát triển</p>
+                            <h6 class="text-uppercase">Phản ánh cư dân</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>Chờ xử lý:</span>
+                                <h4 class="mb-0" th:text="${countChoXuLy}">0</h4>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Đang xử lý:</span>
+                                <h4 class="mb-0" th:text="${countDangXuLy}">0</h4>
+                            </div>
                         </div>
                     </div>
                 </div>

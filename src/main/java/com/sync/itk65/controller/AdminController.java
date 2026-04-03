@@ -4,6 +4,7 @@ import com.sync.itk65.entity.NguoiDung;
 import com.sync.itk65.repository.CanHoRepository;
 import com.sync.itk65.repository.CuDanRepository;
 import com.sync.itk65.repository.HoaDonRepository;
+import com.sync.itk65.repository.PhanAnhRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,9 @@ public class AdminController {
 
     @Autowired
     private HoaDonRepository hoaDonRepository;
+
+    @Autowired
+    private PhanAnhRepository phanAnhRepository;
 
     @GetMapping
     public String index() {
@@ -48,15 +52,17 @@ public class AdminController {
             sumRevenue = 0.0;
         }
 
-        // Phản ánh (Stub vì chưa làm)
-        long phanAnhChoXuLy = 0;
+        // Phản ánh: Đếm riêng "Chờ xử lý" và "Đang xử lý" (SỬ DỤNG LIKE ĐỂ TRÁNH LỖI ĐÁNH VẦN)
+        long countChoXuLy = phanAnhRepository.countChoXuLy();
+        long countDangXuLy = phanAnhRepository.countDangXuLy();
 
         // Đẩy vào Model
         model.addAttribute("totalCanHo", totalCanHo);
         model.addAttribute("vacantCanHo", vacantCanHo);
         model.addAttribute("residentResiding", residentResiding);
         model.addAttribute("sumRevenue", sumRevenue);
-        model.addAttribute("phanAnhChoXuLy", phanAnhChoXuLy);
+        model.addAttribute("countChoXuLy", countChoXuLy);
+        model.addAttribute("countDangXuLy", countDangXuLy);
 
         return "admin/dashboard";
     }

@@ -19,7 +19,7 @@ public class ThongBaoServiceImpl implements ThongBaoService {
     }
 
     @Override
-    public List<ThongBao> getThongBaoByLoai(String loai) {
+    public List<ThongBao> getThongBaoByLoai(Integer loai) {
         return thongBaoRepository.findByLoaiOrderByNgayDangDesc(loai);
     }
 

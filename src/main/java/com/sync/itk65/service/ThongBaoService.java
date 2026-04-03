@@ -5,8 +5,12 @@ import java.util.List;
 
 public interface ThongBaoService {
     List<ThongBao> getAllThongBao();
-    List<ThongBao> getThongBaoByLoai(String loai);
+
+    List<ThongBao> getThongBaoByLoai(Integer loai);
+
     ThongBao getThongBaoById(Long id);
+
     ThongBao saveThongBao(ThongBao thongBao);
+
     void deleteThongBao(Long id);
 }

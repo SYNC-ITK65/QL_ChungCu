@@ -21,7 +21,7 @@ public class ThongBao {
     private LocalDateTime ngayDang;
 
     @Column(name = "loai", nullable = false)
-    private String loai; // "Bảng tin chung", "Cẩm nang"
+    private Integer loai; // 1: Bảng tin chung, 2: Cẩm nang
 
     @PrePersist
     protected void onCreate() {
@@ -63,11 +63,12 @@ public class ThongBao {
         this.ngayDang = ngayDang;
     }
 
-    public String getLoai() {
+    public Integer getLoai() {
         return loai;
     }
 
-    public void setLoai(String loai) {
+    public void setLoai(Integer loai) {
         this.loai = loai;
     }
+
 }

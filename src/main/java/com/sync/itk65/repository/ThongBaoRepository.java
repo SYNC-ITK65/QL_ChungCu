@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ThongBaoRepository extends JpaRepository<ThongBao, Long> {
-    List<ThongBao> findByLoaiOrderByNgayDangDesc(String loai);
+    List<ThongBao> findByLoaiOrderByNgayDangDesc(Integer loai);
     List<ThongBao> findAllByOrderByNgayDangDesc();
 }

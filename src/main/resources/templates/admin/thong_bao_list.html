@@ -29,8 +29,8 @@
                 <td th:text="${tb.id}"></td>
                 <td th:text="${tb.tieuDe}"></td>
                 <td>
-                    <span th:if="${tb.loai == 'Bảng tin chung'}" class="badge bg-info text-dark">Bảng tin chung</span>
-                    <span th:if="${tb.loai == 'Cẩm nang'}" class="badge bg-success">Cẩm nang</span>
+                    <span th:if="${tb.loai == 1}" class="badge bg-info text-dark">Bảng tin chung</span>
+                    <span th:if="${tb.loai == 2}" class="badge bg-success">Cẩm nang</span>
                 </td>
                 <td th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy HH:mm')}"></td>
                 <td>

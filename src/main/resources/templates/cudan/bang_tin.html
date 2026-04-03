@@ -44,7 +44,8 @@
         <div class="col" th:each="tb : ${danhSach}">
             <a th:href="@{/cudan/thong-bao/chi-tiet/{id}(id=${tb.id})}" class="card h-100 shadow-sm border-0 news-card rounded-4">
                 <div class="card-body p-4">
-                    <span class="badge bg-info text-dark mb-2 rounded-pill px-3" th:text="${tb.loai}"></span>
+                    <span th:if="${tb.loai == 1}" class="badge bg-info text-dark mb-2 rounded-pill px-3">Bảng tin chung</span>
+                    <span th:if="${tb.loai == 2}" class="badge bg-success text-white mb-2 rounded-pill px-3">Cẩm nang</span>
                     <h5 class="card-title fw-bold text-dark mb-2" th:text="${tb.tieuDe}"></h5>
                     <div class="news-date mb-3">
                         <i class="bi bi-calendar-event me-1"></i>

@@ -17,14 +17,14 @@ public class CuDanThongBaoController {
 
     @GetMapping("/bang-tin")
     public String hienThiBangTin(Model model) {
-        model.addAttribute("danhSach", thongBaoService.getThongBaoByLoai("Bảng tin chung"));
+        model.addAttribute("danhSach", thongBaoService.getThongBaoByLoai(1));
         model.addAttribute("tieuDeTrang", "Bảng tin chung");
         return "cudan/bang_tin";
     }
 
     @GetMapping("/cam-nang")
     public String hienThiCamNang(Model model) {
-        model.addAttribute("danhSach", thongBaoService.getThongBaoByLoai("Cẩm nang"));
+        model.addAttribute("danhSach", thongBaoService.getThongBaoByLoai(2));
         model.addAttribute("tieuDeTrang", "Cẩm nang cư dân");
         return "cudan/cam_nang";
     }

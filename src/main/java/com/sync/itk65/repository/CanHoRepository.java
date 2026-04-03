@@ -11,6 +11,6 @@ public interface CanHoRepository extends JpaRepository<CanHo, Long> {
     @Query("SELECT COUNT(c) FROM CanHo c")
     long countTotalCanHo();
 
-    @Query("SELECT COUNT(c) FROM CanHo c WHERE c.trangThai = 'Trống'")
+    @Query("SELECT COUNT(c) FROM CanHo c WHERE c.trangThai IS NULL OR c.trangThai LIKE 'Trống%'")
     long countVacantCanHo();
 }
