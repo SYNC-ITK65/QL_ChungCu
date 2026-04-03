@@ -48,9 +48,9 @@ public class NguoiDungController {
     @GetMapping("/sua/{id}")
     public String hienThiFormSua(@PathVariable("id") Long id, Model model) {
         NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(id);
-        
-        // Nếu là cư dân (vai trò 2 hoặc 3), lấy thêm thông tin cư dân
-        if (nguoiDung.getVaiTro() == 2 || nguoiDung.getVaiTro() == 3) {
+
+        // Nếu là cư dân (vai trò 3), lấy thêm thông tin cư dân
+        if (nguoiDung.getVaiTro() == 3) {
             CuDan cuDan = cuDanService.layCuDanTheoId(id);
             if (cuDan != null) {
                 model.addAttribute("nguoiDung", cuDan);
@@ -68,7 +68,8 @@ public class NguoiDungController {
                 model.addAttribute("nguoiDung", cuDanMoi);
             }
         } else {
-            // Admin: Tạo CuDan wrapper để Thymeleaf có thể bind các field canHo, moiQuanHe, trangThai
+            // Admin: Tạo CuDan wrapper để Thymeleaf có thể bind các field canHo, moiQuanHe,
+            // trangThai
             CuDan cuDanWrapper = new CuDan();
             cuDanWrapper.setId(nguoiDung.getId());
             cuDanWrapper.setTenDangNhap(nguoiDung.getTenDangNhap());
@@ -80,7 +81,7 @@ public class NguoiDungController {
             cuDanWrapper.setCanHo(new com.sync.itk65.entity.CanHo()); // Tránh NPE
             model.addAttribute("nguoiDung", cuDanWrapper);
         }
-        
+
         model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
         return "admin/nguoi_dung_form";
     }
@@ -93,26 +94,26 @@ public class NguoiDungController {
             cuDan.setCanHo(null);
         }
 
-        if (cuDan.getVaiTro() == 1) {
-            // Lưu admin: Chỉ lưu thông tin NguoiDung, tránh lưu vào cả bảng cu_dan
-            NguoiDung admin = new NguoiDung();
-            admin.setId(cuDan.getId()); // Nếu là update
-            admin.setTenDangNhap(cuDan.getTenDangNhap());
-            admin.setMatKhauMaHoa(cuDan.getMatKhauMaHoa());
-            admin.setHoTen(cuDan.getHoTen());
-            admin.setEmail(cuDan.getEmail());
-            admin.setSoDienThoai(cuDan.getSoDienThoai());
-            admin.setVaiTro(1);
-            
+        if (cuDan.getVaiTro() == 1 || cuDan.getVaiTro() == 2) {
+            // Lưu admin/staff: Chỉ lưu thông tin NguoiDung, tránh lưu vào cả bảng cu_dan
+            NguoiDung adminStaff = new NguoiDung();
+            adminStaff.setId(cuDan.getId()); // Nếu là update
+            adminStaff.setTenDangNhap(cuDan.getTenDangNhap());
+            adminStaff.setMatKhauMaHoa(cuDan.getMatKhauMaHoa());
+            adminStaff.setHoTen(cuDan.getHoTen());
+            adminStaff.setEmail(cuDan.getEmail());
+            adminStaff.setSoDienThoai(cuDan.getSoDienThoai());
+            adminStaff.setVaiTro(cuDan.getVaiTro());
+
             // Đặt mật khẩu mặc định nếu rỗng
-            if (admin.getMatKhauMaHoa() == null || admin.getMatKhauMaHoa().isEmpty()) {
-                admin.setMatKhauMaHoa("123456");
+            if (adminStaff.getMatKhauMaHoa() == null || adminStaff.getMatKhauMaHoa().isEmpty()) {
+                adminStaff.setMatKhauMaHoa("1234");
             }
-            nguoiDungService.luuNguoiDung(admin);
+            nguoiDungService.luuNguoiDung(adminStaff);
         } else {
             // Lưu cư dân (Chủ hộ/Người thuê)
             if (cuDan.getMatKhauMaHoa() == null || cuDan.getMatKhauMaHoa().isEmpty()) {
-                cuDan.setMatKhauMaHoa("123456");
+                cuDan.setMatKhauMaHoa("1234");
             }
             cuDanService.luuCuDan(cuDan);
         }

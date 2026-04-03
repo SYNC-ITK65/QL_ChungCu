@@ -23,16 +23,21 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // Nếu cố tình truy cập vào trang admin nhưng không phải là admin (vai trò != 1)
+        // Nếu cố tình truy cập vào trang admin nhưng không phải là admin hoặc staff (vai trò != 1 && vai trò != 2)
         if (uri.startsWith("/admin")) {
-            if (user.getVaiTro() != 1) {
+            if (user.getVaiTro() != 1 && user.getVaiTro() != 2) {
                 response.sendRedirect("/");
                 return false;
             }
+            // Nhân viên (vai trò = 2) không được truy cập Quản lý người dùng
+            if (uri.startsWith("/admin/nguoi-dung") && user.getVaiTro() == 2) {
+                response.sendRedirect("/admin/dashboard");
+                return false;
+            }
         }
-        // Nếu cố tình truy cập vào trang cư dân nhưng là admin
+        // Nếu cố tình truy cập vào trang cư dân nhưng là admin/staff
         else if (uri.startsWith("/cudan")) {
-            if (user.getVaiTro() == 1) {
+            if (user.getVaiTro() == 1 || user.getVaiTro() == 2) {
                 response.sendRedirect("/");
                 return false;
             }

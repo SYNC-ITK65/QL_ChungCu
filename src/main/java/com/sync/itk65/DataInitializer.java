@@ -37,6 +37,23 @@ public class DataInitializer implements CommandLineRunner {
 
         }
 
+        // Kiểm tra tài khoản nhân viên mặc định đã tồn tại chưa
+        if (nguoiDungRepository.findByTenDangNhap("staff") == null) {
+
+            NguoiDung staff = new NguoiDung();
+            staff.setTenDangNhap("staff");
+            staff.setMatKhauMaHoa("1234");
+            staff.setHoTen("Nhân Viên Quản Lý");
+            staff.setEmail("staff@sync.com");
+            staff.setVaiTro(2);
+
+            nguoiDungRepository.save(staff);
+
+            System.err.println("USER: staff");
+            System.err.println("PASS: 1234");
+
+        }
+
         // Kiểm tra tài khoản cư dân mặc định đã tồn tại chưa
         if (nguoiDungRepository.findByTenDangNhap("cudan") == null) {
 
@@ -45,7 +62,7 @@ public class DataInitializer implements CommandLineRunner {
             cudan.setMatKhauMaHoa("1234");
             cudan.setHoTen("Cư Dân Mặc Định");
             cudan.setEmail("cudan@sync.com");
-            cudan.setVaiTro(2);
+            cudan.setVaiTro(3);
             cudan.setSoDienThoai("0123456789");
             cudan.setMoiQuanHe("Chủ hộ");
             cudan.setTrangThai("Đang cư trú");
