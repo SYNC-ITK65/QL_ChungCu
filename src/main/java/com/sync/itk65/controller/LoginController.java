@@ -1,0 +1,56 @@
+package com.sync.itk65.controller;
+
+import com.sync.itk65.entity.NguoiDung;
+import com.sync.itk65.service.NguoiDungService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class LoginController {
+
+    @Autowired
+    private NguoiDungService nguoiDungService;
+
+    // Hiển thị trang đăng nhập ở trang chủ "/"
+    @GetMapping("/")
+    public String hienThiTrangDangNhap() {
+        return "login";
+    }
+
+    // Xử lý đăng nhập
+    @PostMapping("/login")
+    public String xuLyDangNhap(@RequestParam("tenDangNhap") String tenDangNhap,
+                               @RequestParam("matKhau") String matKhau,
+                               HttpSession session, Model model) {
+
+        NguoiDung user = nguoiDungService.timTheoTenDangNhap(tenDangNhap);
+
+        if (user != null && user.getMatKhauMaHoa().equals(matKhau)) {
+            // Lưu thông tin vào session
+            session.setAttribute("nguoiDungDangNhap", user);
+            session.setAttribute("vaiTro", user.getVaiTro());
+
+            // Phân luồng: Admin vào trang quản lý, Cư dân vào trang cá nhân
+            if (user.getVaiTro() == 1) {
+                return "redirect:/admin/can-ho"; // Admin
+            } else {
+                return "redirect:/cudan/thong-tin"; // Chủ hộ hoặc Người thuê
+            }
+        } else {
+            model.addAttribute("error", "Sai tên đăng nhập hoặc mật khẩu!");
+            return "login";
+        }
+    }
+
+    // Đăng xuất
+    @GetMapping("/logout")
+    public String dangXuat(HttpSession session) {
+        session.invalidate(); // Xóa session
+        return "redirect:/";
+    }
+}

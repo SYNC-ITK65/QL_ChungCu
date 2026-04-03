@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác Nhận Thanh Toán</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex">
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <div class="container-fluid p-4">
+        <h2>Xác Nhận Thu Tiền Hóa Đơn</h2>
+        <hr>
+
+        <div class="alert alert-info" style="max-width: 600px;">
+            <strong>Thông tin Hóa Đơn:</strong><br>
+            - Căn hộ: <span th:text="${hoaDon.canHo?.maCanHo}"></span><br>
+            - Ngày phát hành: <span th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}"></span><br>
+            - Tổng tiền phải thu: <strong class="text-danger" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
+        </div>
+
+        <form th:action="@{/admin/thanh-toan/luu}" th:object="${thanhToan}" method="post" style="max-width: 600px;">
+
+            <input type="hidden" th:field="*{hoaDon.id}" />
+
+            <div class="mb-3">
+                <label class="form-label">Ngày Thanh Toán</label>
+                <input type="date" class="form-control" th:field="*{ngayThanhToan}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Số Tiền Thực Thu (VNĐ)</label>
+                <input type="number" class="form-control" th:field="*{soTien}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phương Thức Thanh Toán</label>
+                <select class="form-select" th:field="*{phuongThuc}" required>
+                    <option value="Tiền mặt">Tiền mặt</option>
+                    <option value="Chuyển khoản">Chuyển khoản Ngân hàng</option>
+                    <option value="Quẹt thẻ">Quẹt thẻ (POS)</option>
+                    <option value="Ví điện tử (Momo/ZaloPay)">Ví điện tử (Momo/ZaloPay)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Xác nhận Đã Thu Tiền</button>
+            <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">Hủy bỏ</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

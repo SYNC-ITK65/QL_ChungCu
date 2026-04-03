@@ -23,7 +23,6 @@ public class CanHo {
     @Column(name = "loai")
     private String loai;
 
-
     @Column(name = "trang_thai")
     private String trangThai;
 
@@ -41,7 +40,6 @@ public class CanHo {
         this.maCanHo = maCanHo;
         this.tang = tang;
     }
-
 
     public Long getId() {
         return id;
@@ -63,11 +61,11 @@ public class CanHo {
         this.dienTich = dienTich;
     }
 
-    public int getTang() {
+    public Integer getTang() {
         return tang;
     }
 
-    public void setTang(int tang) {
+    public void setTang(Integer tang) {
         this.tang = tang;
     }
 
