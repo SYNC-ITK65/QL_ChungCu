@@ -65,12 +65,8 @@ public class CuDanController {
             cuDan.setCanHo(null);
         }
 
-        // Tự động gán vai trò dựa vào mối quan hệ (Ví dụ)
-        if ("Chủ Hộ".equals(cuDan.getMoiQuanHe())) {
-            cuDan.setVaiTro(2);
-        } else {
-            cuDan.setVaiTro(3);
-        }
+        // Gán cứng vai trò 3 cho tất cả cư dân (User)
+        cuDan.setVaiTro(3);
 
         // Giữ lại mật khẩu cũ khi sửa, đặt mặc định khi tạo mới
         if (cuDan.getId() != null) {

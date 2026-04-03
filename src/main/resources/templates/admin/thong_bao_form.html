@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Form Thông báo</title>
+</head>
+
+<body>
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <div class="card shadow-sm mt-3 mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0" th:text="${thongBao.id == null ? 'Thêm Thông báo / Cẩm nang mới' : 'Cập nhật Thông báo / Cẩm nang'}"></h4>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/thong-bao/luu}" th:object="${thongBao}" method="post">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tiêu đề</label>
+                    <input type="text" class="form-control" th:field="*{tieuDe}" required placeholder="Nhập tiêu đề...">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Loại bài viết</label>
+                    <select class="form-select" th:field="*{loai}">
+                        <option value="1">Bảng tin chung</option>
+                        <option value="2">Cẩm nang</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nội dung</label>
+                    <textarea class="form-control" th:field="*{noiDung}" rows="15" required 
+                              placeholder="Nhập nội dung tại đây... (Hỗ trợ Markdown cơ bản khi hiển thị cho Cư dân)"
+                              style="font-family: monospace;"></textarea>
+                    <small class="text-muted">Có thể sử dụng cú pháp Markdown hoặc cách dòng để trình bày đoạn văn.</small>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">Lưu lại</button>
+                    <a th:href="@{/admin/thong-bao}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
