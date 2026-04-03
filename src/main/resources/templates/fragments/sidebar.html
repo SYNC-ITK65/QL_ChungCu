@@ -2,45 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <div th:fragment="menu-trai" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
-        style="width: 280px; min-height: 100vh;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <span class="fs-4">🏢 Quản Lý Chung Cư</span>
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="/admin/can-ho" class="nav-link text-white">🏠 Quản lý Căn hộ</a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/cu-dan" class="nav-link text-white">👥 Quản lý Cư dân</a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/nguoi-dung" class="nav-link text-white">👤 Quản lý Người dùng</a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/chi-so" class="nav-link text-white">📊 Quản lý Chỉ số</a>
-            </li>
-            <li>
-                <a href="/admin/hoa-don" class="nav-link active">💰 Tài chính & Hóa đơn</a>
-            </li>
-            <li>
-                <a href="/admin/phan-anh" class="nav-link text-white">🛠️ Vận hành & Tiện ích</a>
-            </li>
-            <li>
-                <a href="/admin/phuong-tien" class="nav-link text-white">PhuongTien</a>
-            </li>
-        </ul>
-        <hr>
-        <div>
-            <span th:text="'Xin chào, ' + ${session.nguoiDungDangNhap.hoTen}">👤 Admin Thành viên A</span>
-            <br>
-            <a href="/logout" class="text-white mt-2 d-block text-decoration-none">🚪 Đăng xuất</a>
-        </div>
+<div th:fragment="menu-trai" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
+     style="width: 280px; min-height: 100vh;">
 
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <span class="fs-4">🏢 Quản Lý Chung Cư</span>
+    </a>
+    <hr>
 
+    <ul class="nav nav-pills flex-column mb-auto" id="main-menu">
+        <li class="nav-item">
+            <a href="/admin/can-ho" class="nav-link text-white">🏠 Quản lý Căn hộ</a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/cu-dan" class="nav-link text-white">👥 Quản lý Cư dân</a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/nguoi-dung" class="nav-link text-white">👤 Quản lý Người dùng</a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/chi-so" class="nav-link text-white">📊 Quản lý Chỉ số</a>
+        </li>
+        <li>
+            <a href="/admin/hoa-don" class="nav-link text-white">💰 Tài chính & Hóa đơn</a>
+        </li>
+        <li>
+            <a href="/admin/phan-anh" class="nav-link text-white">🛠️ Vận hành & Tiện ích</a>
+        </li>
+        <li>
+            <a href="/admin/phuong-tien" class="nav-link text-white">🚗 Phương Tiện</a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/thanh-toan/lich-su" class="nav-link text-white">💳 Lịch sử Thanh toán</a>
+        </li>
+    </ul>
+    <hr>
 
+    <div>
+        <span th:text="'Xin chào, ' + (${session.nguoiDungDangNhap != null} ? ${session.nguoiDungDangNhap.hoTen} : 'Admin')">👤 Admin Thành viên A</span>
+        <br>
+        <a href="/logout" class="text-white mt-2 d-block text-decoration-none">🚪 Đăng xuất</a>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy đường dẫn hiện tại trên trình duyệt (VD: /admin/hoa-don)
+            let currentUrl = window.location.pathname;
+
+            // Lấy danh sách tất cả các menu
+            let menuLinks = document.querySelectorAll("#main-menu .nav-link");
+
+            menuLinks.forEach(function(link) {
+                let href = link.getAttribute("href");
+
+                // Nếu đường dẫn trình duyệt bắt đầu bằng href của menu (VD đang ở trang chi tiết)
+                if (currentUrl.startsWith(href)) {
+                    link.classList.remove("text-white");
+                    link.classList.add("active"); // Đổi màu xanh
+                } else {
+                    link.classList.remove("active");
+                    link.classList.add("text-white");
+                }
+            });
+        });
+    </script>
+
+</div>
 </body>
 
 </html>

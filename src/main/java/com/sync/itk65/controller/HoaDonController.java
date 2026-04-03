@@ -62,9 +62,9 @@ public class HoaDonController {
     }
 
     // API Xử lý khi người dùng bấm nút "Thanh toán"
-    @GetMapping("/thanh-toan/{id}")
-    public String thanhToan(@PathVariable("id") Long id) {
-        hoaDonService.danhDauDaThanhToan(id);
-        return "redirect:/admin/hoa-don"; // Quay về trang danh sách
-    }
+//    @GetMapping("/thanh-toan/{id}")
+//    public String thanhToan(@PathVariable("id") Long id) {
+//        hoaDonService.danhDauDaThanhToan(id);
+//        return "redirect:/admin/hoa-don"; // Quay về trang danh sách
+//    }
 }
