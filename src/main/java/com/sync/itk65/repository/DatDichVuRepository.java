@@ -11,14 +11,10 @@ import java.util.List;
 @Repository
 public interface DatDichVuRepository extends JpaRepository<DatDichVu, Long> {
 
-    // Câu query lấy tất cả dịch vụ "Đã sử dụng" của một căn hộ trong 1 tháng cụ thể
-    @Query("SELECT d FROM DatDichVu d " +
-            "JOIN d.cuDan c " +
-            "WHERE c.canHo.id = :canHoId " +
-            "AND MONTH(d.ngayDat) = :thang AND YEAR(d.ngayDat) = :nam " +
-            "AND d.trangThai = 'Đã sử dụng'")
-    List<DatDichVu> findDichVuCuaCanHoTrongThang(
-            @Param("canHoId") Long canHoId,
-            @Param("thang") int thang,
-            @Param("nam") int nam);
+    @Query("SELECT d FROM DatDichVu d WHERE d.cuDan.canHo.id = :canHoId AND MONTH(d.ngayDat) = :thang AND YEAR(d.ngayDat) = :nam AND d.trangThai = 'Đã sử dụng'")
+    List<DatDichVu> findDichVuCuaCanHoTrongThang(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
+
+    // Dùng @Query để lấy lịch sử đặt dịch vụ, sắp xếp ngày mới nhất lên đầu
+    @Query("SELECT d FROM DatDichVu d WHERE d.cuDan.id = :cuDanId ORDER BY d.ngayDat DESC")
+    List<DatDichVu> layLichSuDatDichVu(@Param("cuDanId") Long cuDanId);
 }
