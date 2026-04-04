@@ -11,8 +11,12 @@ import java.util.List;
 @Repository
 public interface CuDanRepository extends JpaRepository<CuDan, Long> {
 
-    // Dùng @Query để Spring Boot không phải "đoán" tên biến nữa, đảm bảo hết lỗi 100%
+    // Dùng @Query để Spring Boot không phải "đoán" tên biến nữa, đảm bảo hết lỗi
+    // 100%
     @Query("SELECT c FROM CuDan c WHERE c.canHo.id = :canHoId")
     List<CuDan> layDanhSachCuDanTheoCanHo(@Param("canHoId") Long canHoId);
+
+    @Query("SELECT COUNT(c) FROM CuDan c WHERE UPPER(c.trangThai) LIKE 'ĐANG%'")
+    long countResidentResiding();
 
 }
