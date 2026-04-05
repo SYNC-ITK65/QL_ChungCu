@@ -77,8 +77,11 @@ public class HoaDonService {
         // BƯỚC 5: Tính phí Dịch vụ phát sinh (Hồ bơi, BBQ...)
         List<DatDichVu> dichVuDaDung = datDichVuRepository.findDichVuCuaCanHoTrongThang(canHoId, thang, nam);
         for (DatDichVu dv : dichVuDaDung) {
-            if(dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
-                tongTien += dv.getDichVu().getDonGia();
+            // Chỉ tính tiền nếu admin đã xác nhận cư dân sử dụng dịch vụ này
+            if ("Đã duyệt".equalsIgnoreCase(dv.getTrangThai()) || "Đã hoàn thành".equalsIgnoreCase(dv.getTrangThai())) {
+                if(dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
+                    tongTien += dv.getDichVu().getDonGia();
+                }
             }
         }
 
