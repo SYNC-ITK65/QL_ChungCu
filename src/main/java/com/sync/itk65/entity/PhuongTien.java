@@ -18,6 +18,9 @@ public class PhuongTien {
     @Column(name = "mau_sac") // Khớp với lược đồ
     private String mauXe;
 
+    @Column(name = "trang_thai")
+    private String trangThai;
+
     // Thay đổi ở đây: Liên kết với Căn Hộ theo lược đồ
     @ManyToOne
     @JoinColumn(name = "can_ho_id")
@@ -61,5 +64,8 @@ public class PhuongTien {
     public void setCanHo(CanHo canHo) {
         this.canHo = canHo;
     }
+    public String getTrangThai() {return trangThai;}
+
+    public void setTrangThai(String trangThai) {this.trangThai = trangThai;}
 
 }

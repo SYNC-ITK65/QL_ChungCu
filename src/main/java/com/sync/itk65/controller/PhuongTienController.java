@@ -46,4 +46,15 @@ public class PhuongTienController {
         phuongTienService.huyGuiXe(id);
         return "redirect:/admin/phuong-tien"; // Tự động load lại trang sau khi xóa
     }
+    @GetMapping("/duyet/{id}")
+    public String duyetXe(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            // Giả định bạn đã thêm hàm duyetXe vào PhuongTienService
+            phuongTienService.duyetXe(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã duyệt phương tiện thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi duyệt xe: " + e.getMessage());
+        }
+        return "redirect:/admin/phuong-tien";
+    }
 }

@@ -70,18 +70,23 @@ public class HoaDonService {
         // 4. Tính phí gửi xe
         List<PhuongTien> danhSachXe = phuongTienRepository.findByCanHoId(canHoId);
         for (PhuongTien xe : danhSachXe) {
-            if ("Oto".equalsIgnoreCase(xe.getLoaiXe())) {
-                tongTien += 1200000.0;
-            } else if ("XeMay".equalsIgnoreCase(xe.getLoaiXe())) {
-                tongTien += 150000.0;
+            // Chỉ tính tiền nếu admin đã duyệt cho phép gửi xe
+            if ("Đã duyệt".equalsIgnoreCase(xe.getTrangThai())) {
+                if ("Oto".equalsIgnoreCase(xe.getLoaiXe())) {
+                    tongTien += 1200000.0;
+                } else if ("XeMay".equalsIgnoreCase(xe.getLoaiXe())) {
+                    tongTien += 150000.0;
+                }
             }
         }
-
         // 5. Tính phí Dịch vụ phát sinh (Hồ bơi, BBQ...)
         List<DatDichVu> dichVuDaDung = datDichVuRepository.findDichVuCuaCanHoTrongThang(canHoId, thang, nam);
         for (DatDichVu dv : dichVuDaDung) {
-            if(dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
-                tongTien += dv.getDichVu().getDonGia();
+            // Chỉ tính tiền nếu admin đã xác nhận cư dân sử dụng dịch vụ này
+            if ("Đã duyệt".equalsIgnoreCase(dv.getTrangThai()) || "Đã hoàn thành".equalsIgnoreCase(dv.getTrangThai())) {
+                if(dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
+                    tongTien += dv.getDichVu().getDonGia();
+                }
             }
         }
 
@@ -103,4 +108,5 @@ public class HoaDonService {
             hoaDonRepository.save(hoaDon);
         }
     }
+
 }
