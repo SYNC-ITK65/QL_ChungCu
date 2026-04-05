@@ -154,4 +154,24 @@ public class CuDanPortalController {
         }
         return "redirect:/cudan/phuong-tien";
     }
+    @GetMapping("/can-ho")
+    public String thongTinCanHo(HttpSession session, Model model) {
+        // 1. Lấy thông tin người dùng đang đăng nhập từ Session
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+
+        if (user == null) {
+            return "redirect:/login"; // Nếu chưa đăng nhập thì quay về trang login
+        }
+
+        // 2. Tìm thông tin Cư dân dựa trên ID người dùng
+        // (Vì ID cư dân trùng với ID người dùng trong thiết kế của bạn)
+        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
+
+        if (cuDan != null && cuDan.getCanHo() != null) {
+            // 3. Lấy đối tượng Căn hộ từ cư dân và gửi sang giao diện
+            model.addAttribute("canHo", cuDan.getCanHo());
+        }
+
+        return "cudan/can_ho_detail"; // Trả về file HTML hiển thị thông tin
+    }
 }
