@@ -272,23 +272,6 @@ public class HoaDonService {
             hoaDonRepository.save(hoaDon);
         }
     }
-    private Double tinhTienDienTheoBacThang(Double soDien) {
-        if (soDien == null || soDien <= 0) return 0.0;
-        double tienDien = 0;
-
-        if (soDien <= 50) {
-            tienDien = soDien * 1806;
-        } else if (soDien <= 100) {
-            tienDien = 50 * 1806 + (soDien - 50) * 1866;
-        } else if (soDien <= 200) {
-            tienDien = 50 * 1806 + 50 * 1866 + (soDien - 100) * 2167;
-        } else if (soDien <= 300) {
-            tienDien = 50 * 1806 + 50 * 1866 + 100 * 2167 + (soDien - 200) * 2729;
-        } else if (soDien <= 400) {
-            tienDien = 50 * 1806 + 50 * 1866 + 100 * 2167 + 100 * 2729 + (soDien - 300) * 3050;
-        } else {
-            tienDien = 50 * 1806 + 50 * 1866 + 100 * 2167 + 100 * 2729 + 100 * 3050 + (soDien - 400) * 3151;
-        }
 
     /**
      * Tính tiền điện theo bậc thang EVN (bao gồm VAT 8%)
