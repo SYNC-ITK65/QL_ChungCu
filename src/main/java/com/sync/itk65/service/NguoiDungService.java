@@ -43,4 +43,13 @@ public class NguoiDungService {
         return nguoiDungRepository.findBySoDienThoai(soDienThoai);
     }
 
+    // 7. Đổi mật khẩu
+    public void doiMatKhau(Long id, String matKhauMoi) {
+        NguoiDung user = nguoiDungRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setMatKhauMaHoa(matKhauMoi);
+            nguoiDungRepository.save(user);
+        }
+    }
+
 }
