@@ -20,6 +20,8 @@
                         Cảnh Báo</a>
                     <a th:if="${isAlert != null}" th:href="@{/admin/tai-san}" class="btn btn-secondary">📋 Xem Tất
                         Cả</a>
+                    <a th:href="${isAlert != null} ? @{/admin/tai-san/xuat-excel(canhBao=true)} : @{/admin/tai-san/xuat-excel}"
+                        class="btn btn-success">Xuất Excel</a>
                     <a th:href="@{/admin/tai-san/add}" class="btn btn-primary">+ Thêm tài sản</a>
                 </div>
             </div>

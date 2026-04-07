@@ -11,7 +11,10 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Danh sách Người dùng</h2>
-        <a th:href="@{/admin/nguoi-dung/tao-moi}" class="btn btn-primary">+ Thêm người dùng mới</a>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/nguoi-dung/xuat-excel}" class="btn btn-success">Xuất Excel</a>
+            <a th:href="@{/admin/nguoi-dung/tao-moi}" class="btn btn-primary">+ Thêm người dùng mới</a>
+        </div>
     </div>
 
     <table class="table table-striped table-hover border">
@@ -50,4 +53,4 @@
 
 </body>
 
-</html>
+</html>

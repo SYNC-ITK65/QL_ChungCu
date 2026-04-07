@@ -6,9 +6,15 @@ import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.CuDanService;
 import com.sync.itk65.service.NguoiDungService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/admin/nguoi-dung") // Đường dẫn trên web: localhost:8080/admin/nguoi-dung
@@ -125,6 +131,19 @@ public class NguoiDungController {
     public String xoaNguoiDung(@PathVariable("id") Long id) {
         nguoiDungService.xoaNguoiDung(id);
         return "redirect:/admin/nguoi-dung";
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel() {
+        byte[] bytes = nguoiDungService.xuatExcelDanhSachNguoiDung();
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_nguoi_dung_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
     }
 
 }
