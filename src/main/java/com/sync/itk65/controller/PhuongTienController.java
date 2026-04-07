@@ -57,4 +57,37 @@ public class PhuongTienController {
         }
         return "redirect:/admin/phuong-tien";
     }
+
+    @GetMapping("/tu-choi/{id}")
+    public String tuChoiXe(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            phuongTienService.tuChoiXe(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã từ chối đăng ký phương tiện.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi từ chối xe: " + e.getMessage());
+        }
+        return "redirect:/admin/phuong-tien";
+    }
+
+    @GetMapping("/huy-duyet/{id}")
+    public String huyDuyetXe(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            phuongTienService.huyDuyetXe(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã hủy duyệt phương tiện.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi hủy duyệt xe: " + e.getMessage());
+        }
+        return "redirect:/admin/phuong-tien";
+    }
+
+    @GetMapping("/sua/{id}")
+    public String suaLaiTrangThaiChoDuyet(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            phuongTienService.suaLaiTrangThaiChoDuyet(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã chuyển lại trạng thái Chờ duyệt.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi sửa trạng thái xe: " + e.getMessage());
+        }
+        return "redirect:/admin/phuong-tien";
+    }
 }

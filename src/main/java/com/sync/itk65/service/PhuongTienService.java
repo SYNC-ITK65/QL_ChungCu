@@ -5,6 +5,7 @@ import com.sync.itk65.repository.PhuongTienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
 import java.util.List;
 
 @Service
@@ -33,9 +34,38 @@ public class PhuongTienService {
         phuongTienRepository.save(xe);
     }
 
+    public void tuChoiXe(Long id) {
+        PhuongTien xe = phuongTienRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe ID: " + id));
+        xe.setTrangThai("Từ chối");
+        phuongTienRepository.save(xe);
+    }
+
+    public void huyDuyetXe(Long id) {
+        PhuongTien xe = phuongTienRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe ID: " + id));
+        xe.setTrangThai("Hủy duyệt");
+        phuongTienRepository.save(xe);
+    }
+
+    public void suaLaiTrangThaiChoDuyet(Long id) {
+        PhuongTien xe = phuongTienRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe ID: " + id));
+        xe.setTrangThai("Chờ duyệt");
+        phuongTienRepository.save(xe);
+    }
+
     //Xem danh sách bãi xe ---
     public List<PhuongTien> danhSachXe() {
-        return phuongTienRepository.findAll();
+        List<PhuongTien> ds = phuongTienRepository.findAll();
+        ds.forEach(x -> x.setTrangThai(chuanHoaTrangThai(x.getTrangThai())));
+        return ds;
+    }
+
+    public List<PhuongTien> layXeTheoCanHoId(Long canHoId) {
+        List<PhuongTien> ds = phuongTienRepository.findByCanHoId(canHoId);
+        ds.forEach(x -> x.setTrangThai(chuanHoaTrangThai(x.getTrangThai())));
+        return ds;
     }
 
     //Hủy gửi xe ---
@@ -44,5 +74,22 @@ public class PhuongTienService {
             throw new RuntimeException("Lỗi: Không tìm thấy ID xe này để xóa!");
         }
         phuongTienRepository.deleteById(id);
+    }
+
+    private String chuanHoaTrangThai(String trangThai) {
+        if (trangThai == null || trangThai.isBlank()) return "Chờ duyệt";
+        String raw = trangThai.trim();
+        String normalized = boDau(raw).toLowerCase();
+        if (normalized.contains("huy") && normalized.contains("duyet")) return "Hủy duyệt";
+        if (normalized.contains("tu choi")) return "Từ chối";
+        if ((normalized.contains("cho") && normalized.contains("duyet")) || normalized.contains("dang ky moi")) return "Chờ duyệt";
+        if (normalized.contains("da") && normalized.contains("duyet")) return "Đã duyệt";
+        return raw;
+    }
+
+    private String boDau(String value) {
+        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD);
+        normalized = normalized.replaceAll("\\p{M}", "");
+        return normalized.replace('đ', 'd').replace('Đ', 'D');
     }
 }
