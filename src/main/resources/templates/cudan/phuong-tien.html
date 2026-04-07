@@ -68,8 +68,13 @@
                             <td th:text="${xe.loaiXe}"></td>
                             <td th:text="${xe.mauXe}"></td>
                             <td>
-                                <span th:if="${xe.trangThai == 'Chờ duyệt'}" class="badge bg-warning text-dark">⏳ Đang chờ BQL duyệt</span>
+                                <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark">⏳ Đang chờ BQL duyệt</span>
                                 <span th:if="${xe.trangThai == 'Đã duyệt'}" class="badge bg-success">✅ Đã duyệt</span>
+                                <span th:if="${xe.trangThai == 'Từ chối'}" class="badge bg-danger">❌ Từ chối</span>
+                                <span th:if="${xe.trangThai == 'Hủy duyệt'}" class="badge bg-secondary">🚫 Hủy duyệt</span>
+                                <span th:if="${xe.trangThai != null && xe.trangThai != 'Chờ duyệt' && xe.trangThai != 'Đăng ký mới' && xe.trangThai != 'Đã duyệt' && xe.trangThai != 'Từ chối' && xe.trangThai != 'Hủy duyệt'}"
+                                      class="badge bg-dark"
+                                      th:text="${xe.trangThai}">Trạng thái khác</span>
                             </td>
                             <td>
                                 <a th:href="@{/cudan/phuong-tien/xoa/{id}(id=${xe.id})}"

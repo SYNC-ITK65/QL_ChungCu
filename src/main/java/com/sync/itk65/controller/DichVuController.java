@@ -1,11 +1,13 @@
 package com.sync.itk65.controller;
 
 import com.sync.itk65.entity.DichVu;
+import com.sync.itk65.service.DatDichVuService;
 import com.sync.itk65.service.DichVuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/dich-vu")
@@ -13,13 +15,60 @@ public class DichVuController {
 
     @Autowired
     private DichVuService dichVuService;
+    @Autowired
+    private DatDichVuService datDichVuService;
 
     // 1. Hiển thị danh sách dịch vụ
     // Phục vụ cho menu: <a href="/admin/dich-vu" class="nav-link text-white">🛠️ Quản lý Dịch vụ</a>
     @GetMapping
     public String danhSachDichVu(Model model) {
         model.addAttribute("danhSachDichVu", dichVuService.layTatCaDichVu());
+        model.addAttribute("danhSachDonDat", datDichVuService.layTatCaDonDatDichVu());
         return "admin/dich_vu_list"; // File view: templates/admin/dich_vu_list.html
+    }
+
+    @GetMapping("/don-dat/duyet/{id}")
+    public String duyetDonDatDichVu(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            datDichVuService.duyetDonDatDichVu(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã duyệt đăng ký dịch vụ thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi duyệt đăng ký dịch vụ: " + e.getMessage());
+        }
+        return "redirect:/admin/dich-vu";
+    }
+
+    @GetMapping("/don-dat/tu-choi/{id}")
+    public String tuChoiDonDatDichVu(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            datDichVuService.tuChoiDonDatDichVu(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã từ chối đăng ký dịch vụ.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi từ chối đăng ký dịch vụ: " + e.getMessage());
+        }
+        return "redirect:/admin/dich-vu";
+    }
+
+    @GetMapping("/don-dat/huy-duyet/{id}")
+    public String huyDuyetDonDatDichVu(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            datDichVuService.huyDuyetDonDatDichVu(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã hủy duyệt đăng ký dịch vụ.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi hủy duyệt đăng ký dịch vụ: " + e.getMessage());
+        }
+        return "redirect:/admin/dich-vu";
+    }
+
+    @GetMapping("/don-dat/sua/{id}")
+    public String suaLaiTrangThaiChoDuyet(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            datDichVuService.suaLaiTrangThaiChoDuyet(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã chuyển đơn về trạng thái Chờ duyệt.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi sửa trạng thái đăng ký dịch vụ: " + e.getMessage());
+        }
+        return "redirect:/admin/dich-vu";
     }
 
     // 2. Hiển thị form tạo mới dịch vụ

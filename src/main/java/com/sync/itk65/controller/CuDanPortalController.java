@@ -5,7 +5,6 @@ import com.sync.itk65.entity.DatDichVu;
 import com.sync.itk65.entity.DichVu;
 import com.sync.itk65.entity.NguoiDung;
 import com.sync.itk65.entity.PhuongTien;
-import com.sync.itk65.repository.PhuongTienRepository;
 import com.sync.itk65.service.CuDanService;
 import com.sync.itk65.service.DatDichVuService;
 import com.sync.itk65.service.DichVuService;
@@ -35,9 +34,6 @@ public class CuDanPortalController {
 
     @Autowired
     private PhuongTienService phuongTienService;
-
-    @Autowired
-    private PhuongTienRepository phuongTienRepository;
 
     // =======================================================
     // CHỨC NĂNG 1: THÔNG TIN CÁ NHÂN & CĂN HỘ
@@ -110,7 +106,7 @@ public class CuDanPortalController {
 
         // Nếu cư dân có căn hộ, load danh sách xe của căn hộ đó ra
         if (cuDan.getCanHo() != null) {
-            model.addAttribute("danhSachXe", phuongTienRepository.findByCanHoId(cuDan.getCanHo().getId()));
+            model.addAttribute("danhSachXe", phuongTienService.layXeTheoCanHoId(cuDan.getCanHo().getId()));
         }
 
         model.addAttribute("xeMoi", new PhuongTien());
