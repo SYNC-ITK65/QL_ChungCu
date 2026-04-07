@@ -25,35 +25,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 border-end">
-                    <h4>Đăng ký xe mới</h4>
-
-                    <form th:action="@{/admin/phuong-tien/luu}" th:object="${xeMoi}" method="post">
-                        <div class="mb-3">
-                            <label class="form-label text-danger fw-bold">Mã ID Căn Hộ (Chủ xe):</label>
-                            <input type="number" th:field="*{canHo.id}" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Biển số xe:</label>
-                            <input type="text" th:field="*{bienSoXe}" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Loại xe:</label>
-                            <select th:field="*{loaiXe}" class="form-select">
-                                <option value="Xe máy">Xe máy</option>
-                                <option value="Ô tô">Ô tô</option>
-                                <option value="Xe đạp">Xe đạp</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Màu xe:</label>
-                            <input type="text" th:field="*{mauXe}" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Thêm xe ngay</button>
-                    </form>
-                </div>
-
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <h4>Danh sách xe trong hầm</h4>
                     <table class="table table-hover mt-3">
                         <thead class="table-dark">
@@ -75,15 +47,30 @@
                             <td th:text="${xe.mauXe}"></td>
 
                             <td>
-                                <span th:if="${xe.trangThai == 'Chờ duyệt'}" class="badge bg-warning text-dark">⏳ Chờ duyệt</span>
+                                <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark">⏳ Chờ duyệt</span>
                                 <span th:if="${xe.trangThai == 'Đã duyệt'}" class="badge bg-success">✅ Đã duyệt</span>
-                                <span th:if="${xe.trangThai == null}" class="badge bg-secondary">Không rõ</span>
+                                <span th:if="${xe.trangThai == 'Từ chối'}" class="badge bg-danger">❌ Từ chối</span>
+                                <span th:if="${xe.trangThai == 'Hủy duyệt'}" class="badge bg-secondary">🚫 Hủy duyệt</span>
+                                <span th:if="${xe.trangThai != null && xe.trangThai != 'Chờ duyệt' && xe.trangThai != 'Đăng ký mới' && xe.trangThai != 'Đã duyệt' && xe.trangThai != 'Từ chối' && xe.trangThai != 'Hủy duyệt'}"
+                                      class="badge bg-dark"
+                                      th:text="${xe.trangThai}">Trạng thái khác</span>
                             </td>
 
                             <td>
-                                <a th:if="${xe.trangThai == 'Chờ duyệt'}"
+                                <a th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai != 'Đã duyệt'}"
                                    th:href="@{/admin/phuong-tien/duyet/{id}(id=${xe.id})}"
                                    class="btn btn-sm btn-success mb-1">Duyệt</a>
+                                <a th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai != 'Đã duyệt'}"
+                                   th:href="@{/admin/phuong-tien/tu-choi/{id}(id=${xe.id})}"
+                                   class="btn btn-sm btn-warning mb-1"
+                                   onclick="return confirm('Bạn có chắc muốn từ chối đăng ký xe này?');">Từ chối</a>
+                                <a th:if="${xe.trangThai == 'Đã duyệt'}"
+                                   th:href="@{/admin/phuong-tien/huy-duyet/{id}(id=${xe.id})}"
+                                   class="btn btn-sm btn-secondary mb-1"
+                                   onclick="return confirm('Bạn có chắc muốn hủy duyệt xe này?');">Hủy duyệt</a>
+                                <a th:if="${xe.trangThai == 'Đã duyệt' || xe.trangThai == 'Từ chối' || xe.trangThai == 'Hủy duyệt'}"
+                                   th:href="@{/admin/phuong-tien/sua/{id}(id=${xe.id})}"
+                                   class="btn btn-sm btn-primary mb-1">Sửa</a>
 
                                 <a th:href="@{/admin/phuong-tien/xoa/{id}(id=${xe.id})}"
                                    class="btn btn-sm btn-outline-danger mb-1"

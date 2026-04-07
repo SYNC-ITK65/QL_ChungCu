@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-// import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -72,11 +71,8 @@ public class HoaDonService {
         // BƯỚC 4: Tính phí gửi xe
         List<PhuongTien> danhSachXe = phuongTienRepository.findByCanHoId(canHoId);
         for (PhuongTien xe : danhSachXe) {
-            if ("Oto".equalsIgnoreCase(xe.getLoaiXe())) {
-                tongTien += 1200000.0;
-            } else if ("XeMay".equalsIgnoreCase(xe.getLoaiXe())) {
-                tongTien += 150000.0;
-            }
+            if (!"Đã duyệt".equalsIgnoreCase(xe.getTrangThai())) continue;
+            tongTien += tinhPhiGuiXe(xe.getLoaiXe());
         }
 
         // BƯỚC 5: Tính phí Dịch vụ phát sinh
@@ -158,25 +154,22 @@ public class HoaDonService {
         Double tongPhiXe = 0.0;
 
         for (PhuongTien xe : danhSachXe) {
+            if (!"Đã duyệt".equalsIgnoreCase(xe.getTrangThai())) continue;
             Map<String, Object> xe_info = new LinkedHashMap<>();
             xe_info.put("bienSo", xe.getBienSoXe());
             xe_info.put("loaiXe", xe.getLoaiXe());
 
-            Double phiXe = 0.0;
+            Double phiXe = tinhPhiGuiXe(xe.getLoaiXe());
             String tenXe = "";
-
-            if ("Oto".equalsIgnoreCase(xe.getLoaiXe())) {
-                phiXe = 1200000.0;
+            if (laOto(xe.getLoaiXe())) {
                 tenXe = "Ô tô";
                 xe_info.put("donGia", 1200000.0);
                 xe_info.put("moTa", "Phí gửi ô tô");
-            } else if ("XeMay".equalsIgnoreCase(xe.getLoaiXe())) {
-                phiXe = 150000.0;
+            } else if (laXeMay(xe.getLoaiXe())) {
                 tenXe = "Xe máy";
                 xe_info.put("donGia", 150000.0);
                 xe_info.put("moTa", "Phí gửi xe máy");
-            } else if ("XeDap".equalsIgnoreCase(xe.getLoaiXe())) {
-                phiXe = 0.0; // Miễn phí
+            } else {
                 tenXe = "Xe đạp";
                 xe_info.put("donGia", 0.0);
                 xe_info.put("moTa", "Miễn phí gửi xe đạp");
@@ -191,7 +184,7 @@ public class HoaDonService {
         Map<String, Object> xe = new LinkedHashMap<>();
         xe.put("danhSachXe", danhSachPhiXe);
         xe.put("tongPhiXe", Math.round(tongPhiXe * 100.0) / 100.0);
-        xe.put("soLuongXe", danhSachXe.size());
+        xe.put("soLuongXe", danhSachPhiXe.size());
         chiTiet.put("xe", xe);
 
         // ========== 5. TÍNH PHÍ DỊCH VỤ PHÁT SINH ==========
@@ -297,5 +290,19 @@ public class HoaDonService {
         }
 
         return tienDien * 1.08;
+    }
+
+    private Double tinhPhiGuiXe(String loaiXe) {
+        if (laOto(loaiXe)) return 1200000.0;
+        if (laXeMay(loaiXe)) return 150000.0;
+        return 0.0;
+    }
+
+    private boolean laOto(String loaiXe) {
+        return "Oto".equalsIgnoreCase(loaiXe) || "Ô tô".equalsIgnoreCase(loaiXe);
+    }
+
+    private boolean laXeMay(String loaiXe) {
+        return "XeMay".equalsIgnoreCase(loaiXe) || "Xe máy".equalsIgnoreCase(loaiXe);
     }
 }

@@ -6,7 +6,9 @@ package com.sync.itk65;
 
 import com.sync.itk65.entity.CuDan;
 import com.sync.itk65.entity.NguoiDung;
+import com.sync.itk65.repository.DatDichVuRepository;
 import com.sync.itk65.repository.NguoiDungRepository;
+import com.sync.itk65.repository.PhuongTienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -16,9 +18,19 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
+    @Autowired
+    private DatDichVuRepository datDichVuRepository;
+    @Autowired
+    private PhuongTienRepository phuongTienRepository;
 
     @Override
     public void run(String... args) throws Exception {
+        int soDonDichVuDuocChuanHoa = datDichVuRepository.chuanHoaTrangThaiChoDuyet();
+        int soXeDuocChuanHoa = phuongTienRepository.chuanHoaTrangThaiChoDuyet();
+        if (soDonDichVuDuocChuanHoa > 0 || soXeDuocChuanHoa > 0) {
+            System.out.println("[DataInitializer] Đã chuẩn hóa trạng thái chờ duyệt: " +
+                    soDonDichVuDuocChuanHoa + " đơn dịch vụ, " + soXeDuocChuanHoa + " phương tiện.");
+        }
 
         // Kiểm tra tài khoản admin đã tồn tại chưa
         if (nguoiDungRepository.findByTenDangNhap("admin") == null) {
