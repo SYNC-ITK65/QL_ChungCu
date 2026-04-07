@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo hợp đồng mới</title>
+    <link href="https://cdn.jsdelivr.net/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex">
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <div class="container-fluid p-4">
+        <h2>Tạo Hợp đồng mới</h2>
+        <hr>
+
+        <div th:if="${thongBaoLoi}" class="alert alert-danger" th:text="${thongBaoLoi}"></div>
+
+        <form th:action="@{/admin/hop-dong/luu}" th:object="${hopDong}" method="post" style="max-width: 700px;">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Loại hợp đồng</label>
+                    <select class="form-select" th:field="*{loaiHopDong}" required>
+                        <option value="" selected disabled>-- Chọn loại hợp đồng --</option>
+                        <option value="Thue">Thuê</option>
+                        <option value="Mua">Mua</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Giá trị hợp đồng (VNĐ)</label>
+                    <input type="number" min="0" class="form-control" th:field="*{giaTriHopDong}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ngày bắt đầu</label>
+                    <input type="date" class="form-control" th:field="*{ngayBatDau}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ngày kết thúc</label>
+                    <input type="date" class="form-control" th:field="*{ngayKetThuc}">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Căn hộ</label>
+                <select class="form-select" name="canHoId" required>
+                    <option value="" selected disabled>-- Chọn căn hộ --</option>
+                    <option th:each="canHo : ${danhSachCanHo}"
+                            th:value="${canHo.id}"
+                            th:text="${canHo.maCanHo} + ' (' + ${canHo.trangThai} + ')'"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Cư dân</label>
+                <select class="form-select" name="cuDanId" required>
+                    <option value="" selected disabled>-- Chọn cư dân --</option>
+                    <option th:each="cuDan : ${danhSachCuDan}"
+                            th:value="${cuDan.id}"
+                            th:text="${cuDan.hoTen} + ' - ' + ${cuDan.soDienThoai}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Lưu hợp đồng</button>
+            <a th:href="@{/admin/hop-dong}" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>
