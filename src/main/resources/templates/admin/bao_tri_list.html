@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử Bảo Trì</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="d-flex">
+        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+        <div class="flex-grow-1 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>🛠️ Lịch sử Bảo Trì: <span th:text="${taiSan.tenTaiSan}">Tên tài sản</span></h2>
+                <div>
+                    <a th:href="@{/admin/tai-san}" class="btn btn-secondary">Quay lại</a>
+                    <a th:href="@{/admin/tai-san/{id}/bao-tri/add(id=${taiSan.id})}" class="btn btn-primary">+ Ghi nhận
+                        bảo trì</a>
+                </div>
+            </div>
+
+            <div class="card mb-4 border-info">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3"><strong>Mã:</strong> <span th:text="${taiSan.maTaiSan}">TS01</span></div>
+                        <div class="col-md-3"><strong>Vị Trí:</strong> <span th:text="${taiSan.viTri}">Hầm B1</span>
+                        </div>
+                        <div class="col-md-3"><strong>Trạng Thái:</strong> <span
+                                th:text="${taiSan.tinhTrang}">Tốt</span></div>
+                        <div class="col-md-3"><strong>Ngày tiếp theo:</strong> <span
+                                th:text="${taiSan.ngayBaoTriTiepTheo}">2024-01-01</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover border">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Ngày Bảo Trì</th>
+                        <th>Chi Phí</th>
+                        <th>Người Thực Hiện</th>
+                        <th>Nội Dung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="bt : ${listBaoTri}">
+                        <td th:text="${bt.ngayBaoTri}">2023-01-01</td>
+                        <td th:text="${#numbers.formatDecimal(bt.chiPhi, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                        <td th:text="${bt.nguoiThucHien}">Kỹ thuật viên A</td>
+                        <td th:text="${bt.noiDung}">Nội dung bảo trì</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(listBaoTri)}">
+                        <td colspan="4" class="text-center text-muted">Chưa có lịch sử bảo trì nào!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

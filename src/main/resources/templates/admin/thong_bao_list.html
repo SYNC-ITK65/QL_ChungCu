@@ -36,7 +36,7 @@
                 <td>
                     <a th:href="@{/admin/thong-bao/sua/{id}(id=${tb.id})}" class="btn btn-sm btn-warning">Sửa</a>
                     <a th:href="@{/admin/thong-bao/xoa/{id}(id=${tb.id})}" class="btn btn-sm btn-danger"
-                       onclick="return confirm('Xóa bài này? Thao tác không thể hoàn tác!');">Xóa</a>
+                        onclick="return confirm('Xóa bài này? Thao tác không thể hoàn tác!');">Xóa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachThongBao)}">
