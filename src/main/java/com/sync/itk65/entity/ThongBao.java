@@ -14,7 +14,8 @@ public class ThongBao {
     @Column(name = "tieu_de", nullable = false)
     private String tieuDe;
 
-    @Column(name = "noi_dung", columnDefinition = "TEXT", nullable = false)
+    // Sửa TEXT thành NVARCHAR(MAX)
+    @Column(name = "noi_dung", columnDefinition = "NVARCHAR(MAX)", nullable = false)
     private String noiDung;
 
     @Column(name = "ngay_dang")

@@ -22,7 +22,8 @@ public class LichSuBaoTri {
 
     private String nguoiThucHien;
 
-    @Column(columnDefinition = "TEXT")
+    // Sửa TEXT thành NVARCHAR(MAX)
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String noiDung;
 
     public Long getId() {
@@ -72,4 +73,5 @@ public class LichSuBaoTri {
     public void setNoiDung(String noiDung) {
         this.noiDung = noiDung;
     }
+
 }
