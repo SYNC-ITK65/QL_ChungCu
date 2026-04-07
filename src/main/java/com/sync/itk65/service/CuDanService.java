@@ -5,6 +5,12 @@ import com.sync.itk65.repository.CuDanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -36,6 +42,46 @@ public class CuDanService {
     public List<CuDan> timTheoCanHo(Long canHoId) {
         // Đổi thành gọi hàm mới mà chúng ta vừa tạo bằng @Query
         return cuDanRepository.layDanhSachCuDanTheoCanHo(canHoId);
+    }
+
+    public byte[] xuatExcelDanhSachCuDan(Long canHoId) {
+        List<CuDan> danhSach = (canHoId == null) ? layTatCaCuDan() : timTheoCanHo(canHoId);
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("CuDan");
+
+            int rowIdx = 0;
+            var header = sheet.createRow(rowIdx++);
+            String[] headers = new String[] { "ID", "Họ tên", "Số điện thoại", "Căn hộ", "Mối quan hệ", "Trạng thái" };
+            for (int i = 0; i < headers.length; i++) {
+                header.createCell(i).setCellValue(headers[i]);
+            }
+
+            for (CuDan cd : danhSach) {
+                var row = sheet.createRow(rowIdx++);
+                if (cd.getId() == null) {
+                    row.createCell(0).setCellValue("");
+                } else {
+                    row.createCell(0).setCellValue(cd.getId().doubleValue());
+                }
+                row.createCell(1).setCellValue(cd.getHoTen() == null ? "" : cd.getHoTen());
+                row.createCell(2).setCellValue(cd.getSoDienThoai() == null ? "" : cd.getSoDienThoai());
+                row.createCell(3).setCellValue(
+                        (cd.getCanHo() != null && cd.getCanHo().getMaCanHo() != null) ? cd.getCanHo().getMaCanHo()
+                                : "");
+                row.createCell(4).setCellValue(cd.getMoiQuanHe() == null ? "" : cd.getMoiQuanHe());
+                row.createCell(5).setCellValue(cd.getTrangThai() == null ? "" : cd.getTrangThai());
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Không thể xuất Excel danh sách cư dân", e);
+        }
     }
 
 }

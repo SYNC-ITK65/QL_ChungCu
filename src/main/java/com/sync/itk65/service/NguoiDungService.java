@@ -5,6 +5,12 @@ import com.sync.itk65.repository.NguoiDungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -49,6 +55,44 @@ public class NguoiDungService {
         if (user != null) {
             user.setMatKhauMaHoa(matKhauMoi);
             nguoiDungRepository.save(user);
+        }
+    }
+
+    public byte[] xuatExcelDanhSachNguoiDung() {
+        List<NguoiDung> danhSach = layTatCaNguoiDung();
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("NguoiDung");
+
+            int rowIdx = 0;
+            var header = sheet.createRow(rowIdx++);
+            String[] headers = new String[] { "ID", "Tên đăng nhập", "Họ tên", "Email", "Số điện thoại", "Vai trò" };
+            for (int i = 0; i < headers.length; i++) {
+                header.createCell(i).setCellValue(headers[i]);
+            }
+
+            for (NguoiDung nd : danhSach) {
+                var row = sheet.createRow(rowIdx++);
+                if (nd.getId() == null) {
+                    row.createCell(0).setCellValue("");
+                } else {
+                    row.createCell(0).setCellValue(nd.getId().doubleValue());
+                }
+                row.createCell(1).setCellValue(nd.getTenDangNhap() == null ? "" : nd.getTenDangNhap());
+                row.createCell(2).setCellValue(nd.getHoTen() == null ? "" : nd.getHoTen());
+                row.createCell(3).setCellValue(nd.getEmail() == null ? "" : nd.getEmail());
+                row.createCell(4).setCellValue(nd.getSoDienThoai() == null ? "" : nd.getSoDienThoai());
+                row.createCell(5).setCellValue(nd.getVaiTro());
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Không thể xuất Excel danh sách người dùng", e);
         }
     }
 

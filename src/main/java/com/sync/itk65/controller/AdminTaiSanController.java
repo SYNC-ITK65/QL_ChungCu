@@ -5,9 +5,15 @@ import com.sync.itk65.entity.TaiSan;
 import com.sync.itk65.service.LichSuBaoTriService;
 import com.sync.itk65.service.TaiSanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/admin/tai-san")
@@ -83,5 +89,18 @@ public class AdminTaiSanController {
             lichSuBaoTriService.saveHistory(history);
         });
         return "redirect:/admin/tai-san/" + id + "/bao-tri";
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel(@RequestParam(required = false, defaultValue = "false") boolean canhBao) {
+        byte[] bytes = taiSanService.xuatExcelDanhSachTaiSan(canhBao);
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = canhBao ? ("tai_san_canh_bao_" + ts + ".xlsx") : ("danh_sach_tai_san_" + ts + ".xlsx");
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
     }
 }
