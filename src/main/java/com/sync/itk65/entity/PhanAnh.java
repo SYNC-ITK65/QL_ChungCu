@@ -1,4 +1,5 @@
 package com.sync.itk65.entity;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,7 +14,8 @@ public class PhanAnh {
     @Column(nullable = false)
     private String tieuDe;
 
-    @Column(columnDefinition = "TEXT")
+    // Sửa TEXT thành NVARCHAR(MAX)
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String noiDung;
 
     @Column(nullable = false)
@@ -27,7 +29,8 @@ public class PhanAnh {
     @JoinColumn(name = "can_ho_id", nullable = false)
     private CanHo canHo;
 
-    @Column(columnDefinition = "TEXT")
+    // Sửa TEXT thành NVARCHAR(MAX)
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String phanHoi;
 
     private LocalDateTime ngayPhanHoi;
@@ -42,27 +45,68 @@ public class PhanAnh {
             trangThai = "Chờ xử lý";
         }
     }
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public String getTieuDe() { return tieuDe; }
-    public void setTieuDe(String tieuDe) { this.tieuDe = tieuDe; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getNoiDung() { return noiDung; }
-    public void setNoiDung(String noiDung) { this.noiDung = noiDung; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getNgayGui() { return ngayGui; }
-    public void setNgayGui(LocalDateTime ngayGui) { this.ngayGui = ngayGui; }
+    public String getTieuDe() {
+        return tieuDe;
+    }
 
-    public String getTrangThai() { return trangThai; }
-    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
+    public void setTieuDe(String tieuDe) {
+        this.tieuDe = tieuDe;
+    }
 
-    public String getPhanHoi() { return phanHoi; }
-    public void setPhanHoi(String phanHoi) { this.phanHoi = phanHoi; }
+    public String getNoiDung() {
+        return noiDung;
+    }
 
-    public LocalDateTime getNgayPhanHoi() { return ngayPhanHoi; }
-    public void setNgayPhanHoi(LocalDateTime ngayPhanHoi) { this.ngayPhanHoi = ngayPhanHoi; }
+    public void setNoiDung(String noiDung) {
+        this.noiDung = noiDung;
+    }
 
-    public CanHo getCanHo() { return canHo; }
-    public void setCanHo(CanHo canHo) { this.canHo = canHo; }
+    public LocalDateTime getNgayGui() {
+        return ngayGui;
+    }
+
+    public void setNgayGui(LocalDateTime ngayGui) {
+        this.ngayGui = ngayGui;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+
+    public String getPhanHoi() {
+        return phanHoi;
+    }
+
+    public void setPhanHoi(String phanHoi) {
+        this.phanHoi = phanHoi;
+    }
+
+    public LocalDateTime getNgayPhanHoi() {
+        return ngayPhanHoi;
+    }
+
+    public void setNgayPhanHoi(LocalDateTime ngayPhanHoi) {
+        this.ngayPhanHoi = ngayPhanHoi;
+    }
+
+    public CanHo getCanHo() {
+        return canHo;
+    }
+
+    public void setCanHo(CanHo canHo) {
+        this.canHo = canHo;
+    }
 }

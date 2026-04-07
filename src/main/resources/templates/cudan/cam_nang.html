@@ -55,7 +55,7 @@
                     <div class="news-date mb-3">
                         <span th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy')}"></span>
                     </div>
-                    <div class="card-text news-excerpt" th:text="${tb.noiDung}"></div>
+                    <div class="card-text news-excerpt" th:text="${tb.noiDung.replaceAll('<[^>]*>', '')}"></div>
                 </div>
             </a>
         </div>

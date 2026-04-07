@@ -51,7 +51,8 @@ public class HoaDonService {
 
         // BƯỚC 1: Lấy chỉ số điện nước của tháng đó
         ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)
-                .orElseThrow(() -> new RuntimeException("Chưa ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam));
+                .orElseThrow(
+                        () -> new RuntimeException("Chưa ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam));
 
         // BƯỚC 2: Tính tiền Điện và Nước
         Double tienDien = tinhTienDienTheoBacThang(chiSo.getDienTieuThu());
@@ -78,7 +79,7 @@ public class HoaDonService {
         List<DatDichVu> dichVuDaDung = datDichVuRepository.findDichVuCuaCanHoTrongThang(canHoId, thang, nam);
         for (DatDichVu dv : dichVuDaDung) {
             if ("Đã duyệt".equalsIgnoreCase(dv.getTrangThai()) || "Đã hoàn thành".equalsIgnoreCase(dv.getTrangThai())) {
-                if(dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
+                if (dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
                     tongTien += dv.getDichVu().getDonGia();
                 }
             }
@@ -193,7 +194,7 @@ public class HoaDonService {
 
         for (DatDichVu dv : dichVuDaDung) {
             if ("Đã duyệt".equalsIgnoreCase(dv.getTrangThai()) || "Đã hoàn thành".equalsIgnoreCase(dv.getTrangThai())) {
-                if(dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
+                if (dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
                     Map<String, Object> dv_info = new LinkedHashMap<>();
                     dv_info.put("tenDichVu", dv.getDichVu().getTen());
                     dv_info.put("loai", dv.getDichVu().getLoai());
@@ -270,7 +271,8 @@ public class HoaDonService {
      * Tính tiền điện theo bậc thang EVN (bao gồm VAT 8%)
      */
     private Double tinhTienDienTheoBacThang(Double soDien) {
-        if (soDien == null || soDien <= 0) return 0.0;
+        if (soDien == null || soDien <= 0)
+            return 0.0;
         double tienDien = 0;
 
         if (soDien <= 50) {

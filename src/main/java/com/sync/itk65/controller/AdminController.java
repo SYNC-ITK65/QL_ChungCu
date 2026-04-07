@@ -5,6 +5,7 @@ import com.sync.itk65.repository.CanHoRepository;
 import com.sync.itk65.repository.CuDanRepository;
 import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.PhanAnhRepository;
+import com.sync.itk65.repository.TaiSanRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,9 @@ public class AdminController {
 
     @Autowired
     private PhanAnhRepository phanAnhRepository;
+
+    @Autowired
+    private TaiSanRepository taiSanRepository;
 
     @GetMapping
     public String index() {
@@ -56,6 +60,9 @@ public class AdminController {
         long countChoXuLy = phanAnhRepository.countChoXuLy();
         long countDangXuLy = phanAnhRepository.countDangXuLy();
 
+        // Tài sản cần bảo trì
+        long countAlertTaiSan = taiSanRepository.findAlertAssets(java.time.LocalDate.now().plusDays(7)).size();
+
         // Đẩy vào Model
         model.addAttribute("totalCanHo", totalCanHo);
         model.addAttribute("vacantCanHo", vacantCanHo);
@@ -63,6 +70,7 @@ public class AdminController {
         model.addAttribute("sumRevenue", sumRevenue);
         model.addAttribute("countChoXuLy", countChoXuLy);
         model.addAttribute("countDangXuLy", countDangXuLy);
+        model.addAttribute("countAlertTaiSan", countAlertTaiSan);
 
         return "admin/dashboard";
     }
