@@ -71,6 +71,23 @@
                     </div>
                 </div>
 
+                <!-- Tài sản -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 text-white bg-danger">
+                        <div class="card-body">
+                            <h6 class="text-uppercase">Quản lý Tài Sản</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>Cần bảo trì:</span>
+                                <h4 class="mb-0" th:text="${countAlertTaiSan}">0</h4>
+                            </div>
+                            <div class="text-end">
+                                <a href="/admin/tai-san/canh-bao" class="text-white small text-decoration-none">Xem chi
+                                    tiết →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="mt-5 text-center text-muted">

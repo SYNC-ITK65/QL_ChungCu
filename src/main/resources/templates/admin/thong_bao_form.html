@@ -18,34 +18,68 @@
             <form th:action="@{/admin/thong-bao/luu}" th:object="${thongBao}" method="post">
                 <input type="hidden" th:field="*{id}">
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Tiêu đề</label>
-                    <input type="text" class="form-control" th:field="*{tieuDe}" required placeholder="Nhập tiêu đề...">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tiêu đề</label>
+                            <input type="text" class="form-control form-control-lg" th:field="*{tieuDe}" required placeholder="Nhập tiêu đề thông báo...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Loại bài viết</label>
+                            <select class="form-select" th:field="*{loai}">
+                                <option value="1">📢 Bảng tin chung</option>
+                                <option value="2">📚 Cẩm nang cư dân</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Loại bài viết</label>
-                    <select class="form-select" th:field="*{loai}">
-                        <option value="1">Bảng tin chung</option>
-                        <option value="2">Cẩm nang</option>
-                    </select>
+                    <label class="form-label fw-bold">Nội dung chi tiết</label>
+                    <textarea id="editor" class="form-control" th:field="*{noiDung}" rows="20"></textarea>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Nội dung</label>
-                    <textarea class="form-control" th:field="*{noiDung}" rows="15" required 
-                              placeholder="Nhập nội dung tại đây... (Hỗ trợ Markdown cơ bản khi hiển thị cho Cư dân)"
-                              style="font-family: monospace;"></textarea>
-                    <small class="text-muted">Có thể sử dụng cú pháp Markdown hoặc cách dòng để trình bày đoạn văn.</small>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success">Lưu lại</button>
-                    <a th:href="@{/admin/thong-bao}" class="btn btn-secondary">Hủy</a>
+                <div class="card bg-light mb-3">
+                    <div class="card-body py-2">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save me-1"></i> Lưu bài viết
+                            </button>
+                            <a th:href="@{/admin/thong-bao}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-1"></i> Hủy bỏ
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Bootstrap & TinyMCE -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    
+    <script>
+        tinymce.init({
+            selector: '#editor',
+            language: 'vi',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tableofcontents footnotes mergetags autocorrect typography inlinecss',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            height: 600,
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            setup: function (editor) {
+                editor.on('change', function () {
+                    tinymce.triggerSave();
+                });
+            }
+        });
+    </script>
 
 </body>
 

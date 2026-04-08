@@ -24,6 +24,8 @@
                 </select>
             </form>
             
+            <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/xuat-excel(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/xuat-excel}"
+                class="btn btn-success me-2">Xuất Excel</a>
             <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/tao-moi(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/tao-moi}" class="btn btn-primary">+ Thêm Cư Dân Mới</a>
         </div>
     </div>

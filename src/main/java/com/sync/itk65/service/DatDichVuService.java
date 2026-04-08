@@ -5,6 +5,7 @@ import com.sync.itk65.repository.DatDichVuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,9 +29,39 @@ public class DatDichVuService {
         datDichVuRepository.save(datDichVu);
     }
 
+    public void duyetDonDatDichVu(Long id) {
+        DatDichVu donDat = datDichVuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn đặt dịch vụ ID: " + id));
+        donDat.setTrangThai("Đã duyệt");
+        datDichVuRepository.save(donDat);
+    }
+
+    public void tuChoiDonDatDichVu(Long id) {
+        DatDichVu donDat = datDichVuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn đặt dịch vụ ID: " + id));
+        donDat.setTrangThai("Từ chối");
+        datDichVuRepository.save(donDat);
+    }
+
+    public void huyDuyetDonDatDichVu(Long id) {
+        DatDichVu donDat = datDichVuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn đặt dịch vụ ID: " + id));
+        donDat.setTrangThai("Hủy duyệt");
+        datDichVuRepository.save(donDat);
+    }
+
+    public void suaLaiTrangThaiChoDuyet(Long id) {
+        DatDichVu donDat = datDichVuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn đặt dịch vụ ID: " + id));
+        donDat.setTrangThai("Chờ duyệt");
+        datDichVuRepository.save(donDat);
+    }
+
     // 2. Lấy danh sách tất cả các dịch vụ đã được đặt (Dành cho Admin quản lý)
     public List<DatDichVu> layTatCaDonDatDichVu() {
-        return datDichVuRepository.findAll();
+        List<DatDichVu> ds = datDichVuRepository.findAll();
+        ds.forEach(d -> d.setTrangThai(chuanHoaTrangThai(d.getTrangThai())));
+        return ds;
     }
 
     // 3. Xóa/Hủy đặt dịch vụ
@@ -38,8 +69,29 @@ public class DatDichVuService {
         datDichVuRepository.deleteById(id);
     }
     public List<DatDichVu> layLichSuDatCuaCuDan(Long cuDanId) {
-        // Đổi thành gọi hàm mới
-        return datDichVuRepository.layLichSuDatDichVu(cuDanId);
+        List<DatDichVu> ds = datDichVuRepository.layLichSuDatDichVu(cuDanId);
+        ds.forEach(d -> d.setTrangThai(chuanHoaTrangThai(d.getTrangThai())));
+        return ds;
+    }
+
+    private String chuanHoaTrangThai(String trangThai) {
+        if (trangThai == null || trangThai.isBlank()) return "Chờ duyệt";
+        String raw = trangThai.trim();
+        String normalized = boDau(raw).toLowerCase();
+        if (normalized.contains("huy") && normalized.contains("duyet")) return "Hủy duyệt";
+        if (normalized.contains("tu choi")) return "Từ chối";
+        if ((normalized.contains("cho") && normalized.contains("duyet")) || normalized.contains("dang ky moi")) return "Chờ duyệt";
+        if (normalized.contains("da") && normalized.contains("duyet")) return "Đã duyệt";
+        if (normalized.contains("da su dung")) return "Đã sử dụng";
+        if (normalized.contains("hoan thanh")) return "Đã hoàn thành";
+        if (normalized.contains("da huy")) return "Đã hủy";
+        return raw;
+    }
+
+    private String boDau(String value) {
+        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD);
+        normalized = normalized.replaceAll("\\p{M}", "");
+        return normalized.replace('đ', 'd').replace('Đ', 'D');
     }
     public DatDichVu findById(Long id) {
         return datDichVuRepository.findById(id).orElse(null);
