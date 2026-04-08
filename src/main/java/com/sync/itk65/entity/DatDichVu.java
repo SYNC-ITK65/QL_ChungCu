@@ -2,6 +2,7 @@ package com.sync.itk65.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "dat_dich_vu")
@@ -33,6 +34,8 @@ public class DatDichVu {
     @Column(name = "ghi_chu")
     private String ghiChu;
 
+    @Column(name = "thoi_gian_duyet")
+    private LocalDateTime thoiGianDuyet;
     // --- GETTERS & SETTERS ---
 
     public Long getId() {
@@ -54,6 +57,8 @@ public class DatDichVu {
     public DichVu getDichVu() {
         return dichVu;
     }
+
+    public LocalDateTime getThoiGianDuyet() { return thoiGianDuyet; }
 
     public void setDichVu(DichVu dichVu) {
         this.dichVu = dichVu;
@@ -82,4 +87,6 @@ public class DatDichVu {
     public void setGhiChu(String ghiChu) {
         this.ghiChu = ghiChu;
     }
+
+    public void setThoiGianDuyet(LocalDateTime thoiGianDuyet) { this.thoiGianDuyet = thoiGianDuyet; }
 }

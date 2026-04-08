@@ -16,10 +16,14 @@ public class DatDichVuService {
 
     // 1. Dành cho Cư dân: Đăng ký một dịch vụ mới (Hồ bơi, BBQ...)
     public void dangKyDichVu(DatDichVu datDichVu) {
-        // Mặc định ngày đặt là hôm nay
-        datDichVu.setNgayDat(LocalDate.now());
-        // Mặc định trạng thái là đã đăng ký thành công (hoặc "Đã sử dụng" để tính tiền)
-        datDichVu.setTrangThai("Đã sử dụng");
+        // Nếu ở Controller chưa đặt ngày thì mới đặt là hôm nay
+        if (datDichVu.getNgayDat() == null) {
+            datDichVu.setNgayDat(LocalDate.now());
+        }
+        // Chỉ đặt mặc định nếu ở Controller chưa truyền trạng thái vào
+        if (datDichVu.getTrangThai() == null) {
+            datDichVu.setTrangThai("Chờ duyệt");
+        }
 
         datDichVuRepository.save(datDichVu);
     }
@@ -36,5 +40,12 @@ public class DatDichVuService {
     public List<DatDichVu> layLichSuDatCuaCuDan(Long cuDanId) {
         // Đổi thành gọi hàm mới
         return datDichVuRepository.layLichSuDatDichVu(cuDanId);
+    }
+    public DatDichVu findById(Long id) {
+        return datDichVuRepository.findById(id).orElse(null);
+    }
+
+    public void luu(DatDichVu datDichVu) {
+        datDichVuRepository.save(datDichVu);
     }
 }
