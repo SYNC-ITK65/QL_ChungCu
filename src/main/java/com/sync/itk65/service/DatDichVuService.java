@@ -17,10 +17,14 @@ public class DatDichVuService {
 
     // 1. Dành cho Cư dân: Đăng ký một dịch vụ mới (Hồ bơi, BBQ...)
     public void dangKyDichVu(DatDichVu datDichVu) {
+        // Nếu ở Controller chưa đặt ngày thì mới đặt là hôm nay
         if (datDichVu.getNgayDat() == null) {
             datDichVu.setNgayDat(LocalDate.now());
         }
-        datDichVu.setTrangThai("Chờ duyệt");
+        // Chỉ đặt mặc định nếu ở Controller chưa truyền trạng thái vào
+        if (datDichVu.getTrangThai() == null) {
+            datDichVu.setTrangThai("Chờ duyệt");
+        }
 
         datDichVuRepository.save(datDichVu);
     }
@@ -88,5 +92,12 @@ public class DatDichVuService {
         String normalized = Normalizer.normalize(value, Normalizer.Form.NFD);
         normalized = normalized.replaceAll("\\p{M}", "");
         return normalized.replace('đ', 'd').replace('Đ', 'D');
+    }
+    public DatDichVu findById(Long id) {
+        return datDichVuRepository.findById(id).orElse(null);
+    }
+
+    public void luu(DatDichVu datDichVu) {
+        datDichVuRepository.save(datDichVu);
     }
 }
