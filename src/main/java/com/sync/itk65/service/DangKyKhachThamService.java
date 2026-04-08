@@ -12,4 +12,7 @@ public class DangKyKhachThamService {
     public List<DangKyKhachTham> layTatCa() { return repository.findAll(); }
     public List<DangKyKhachTham> layLichSuCuaCuDan(Long cuDanId) { return repository.findByCuDanIdOrderByThoiGianDuKienDesc(cuDanId); }
     public DangKyKhachTham timTheoId(Long id) { return repository.findById(id).orElse(null); }
+    public void xoa(Long id) {
+        repository.deleteById(id);
+    }
 }
