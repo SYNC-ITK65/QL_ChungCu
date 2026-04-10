@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Tạm trú / Tạm vắng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .main-content {
+            min-height: 100vh;
+        }
+        .badge-tamtru { background-color: #0d6efd; }
+        .badge-tamvang { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+<div class="d-flex">
+    <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
+
+    <div class="main-content p-4 w-100 bg-light">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">🏠 Danh Sách Tạm Trú / Tạm Vắng</h2>
+            <a th:href="@{/cudan/tamtru-tamvang/form}" class="btn btn-primary fw-bold shadow-sm">
+                ➕ Đăng ký mới
+            </a>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 text-secondary">Lịch sử đăng ký của tôi</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-center">
+                        <thead class="table-light">
+                        <tr>
+                            <th class="py-3">Loại</th>
+                            <th>Thời gian áp dụng</th>
+                            <th>Lý do & Thông tin khách</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="don : ${listTamTruTamVang}">
+                            <td>
+                                    <span class="badge rounded-pill px-3 py-2"
+                                          th:classappend="${don.loai == 'Tạm trú' ? 'badge-tamtru' : 'badge-tamvang'}"
+                                          th:text="${don.loai}"></span>
+                            </td>
+                            <td>
+                                <div class="fw-bold" th:text="${don.ngayBatDau}"></div>
+                                <div class="text-muted small">đến</div>
+                                <div class="fw-bold" th:text="${don.ngayKetThuc}"></div>
+                            </td>
+                            <td class="text-start px-4">
+                                <div th:text="${don.lyDo}"></div>
+                                <small th:if="${don.hoTenKhach != null && don.hoTenKhach != ''}" class="text-primary">
+                                    👤 Khách: <span th:text="${don.hoTenKhach}"></span>
+                                </small>
+                            </td>
+                            <td>
+                                    <span class="badge py-2 px-3"
+                                          th:classappend="${don.trangThaiDuyet == 'Đã duyệt' ? 'bg-success' :
+                                                        (don.trangThaiDuyet == 'Từ chối' ? 'bg-danger' :
+                                                        (don.trangThaiDuyet == 'Chờ duyệt' ? 'bg-warning text-dark' : 'bg-dark'))}"
+                                          th:text="${don.trangThaiDuyet}"></span>
+
+                                <div th:if="${don.lyDoTuChoi != null}" class="mt-2 small text-danger italic">
+                                    <i class="bi bi-info-circle"></i> <span th:text="${don.lyDoTuChoi}"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <a th:if="${don.trangThaiDuyet == 'Chờ duyệt'}"
+                                   th:href="@{/cudan/tamtru-tamvang/edit/{id}(id=${don.id})}"
+                                   class="btn btn-sm btn-outline-primary mb-1">Sửa</a>
+
+                                <form th:if="${don.trangThaiDuyet == 'Chờ duyệt'}"
+                                      th:action="@{/cudan/tamtru-tamvang/delete/{id}(id=${don.id})}"
+                                      method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-danger mb-1"
+                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn này?')">Hủy</button>
+                                </form>
+
+                                <form th:if="${don.trangThaiDuyet == 'Đã duyệt'}"
+                                      th:action="@{/cudan/tamtru-tamvang/ket-thuc/{id}(id=${don.id})}"
+                                      method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-success mb-1"
+                                            onclick="return confirm('Xác nhận kết thúc sớm sự việc?')">Kết thúc</button>
+                                </form>
+
+                                <span th:if="${don.trangThaiDuyet == 'Đã hoàn thành'}" class="text-muted small">
+                                        ✔️ Xong
+                                    </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listTamTruTamVang)}">
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <div class="mb-2">📭</div>
+                                Bạn chưa có dữ liệu đăng ký nào.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
