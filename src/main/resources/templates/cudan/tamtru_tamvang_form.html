@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Đăng ký</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="d-flex">
+    <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
+
+    <div class="main-content p-4 w-100 bg-light">
+        <div class="d-flex align-items-center mb-4">
+            <a th:href="@{/cudan/tamtru-tamvang}" class="btn btn-outline-secondary me-3">⬅ Quay lại</a>
+            <h2 class="mb-0" th:text="${title}">Đăng ký</h2>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Thông tin chi tiết</h5>
+            </div>
+            <div class="card-body p-4">
+                <form th:action="@{/cudan/tamtru-tamvang/save}" th:object="${don}" method="post">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Loại đăng ký <span class="text-danger">*</span></label>
+                            <select th:field="*{loai}" class="form-select" required>
+                                <option value="Tạm trú">🏠 Tạm trú (Có người đến ở)</option>
+                                <option value="Tạm vắng">🚗 Tạm vắng (Cư dân đi vắng)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Từ ngày <span class="text-danger">*</span></label>
+                            <input type="date" th:field="*{ngayBatDau}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Đến ngày <span class="text-danger">*</span></label>
+                            <input type="date" th:field="*{ngayKetThuc}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Lý do <span class="text-danger">*</span></label>
+                        <textarea th:field="*{lyDo}" class="form-control" rows="3" placeholder="Nhập lý do cụ thể..." required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Họ tên người tạm trú <small class="text-muted">(Nếu có)</small></label>
+                        <input type="text" th:field="*{hoTenKhach}" class="form-control" placeholder="Để trống nếu là tạm vắng">
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold">🚀 Gửi yêu cầu đăng ký</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
