@@ -18,17 +18,19 @@
         <form th:action="@{/admin/hop-dong/luu}" th:object="${hopDong}" method="post" style="max-width: 700px;">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Loại hợp đồng</label>
-                    <select class="form-select" th:field="*{loaiHopDong}" required>
-                        <option value="" selected disabled>-- Chọn loại hợp đồng --</option>
-                        <option value="Thue">Thuê</option>
-                        <option value="Mua">Mua</option>
-                    </select>
+                    <label class="form-label">Bên cho thuê</label>
+                    <input type="text" class="form-control" th:field="*{benChoThue}" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Giá trị hợp đồng (VNĐ)</label>
-                    <input type="number" min="0" class="form-control" th:field="*{giaTriHopDong}" required>
+                    <label class="form-label">Tiền thuê (VNĐ)</label>
+                    <input type="number" min="0" class="form-control" th:field="*{tienThue}" required>
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tiền cọc (VNĐ)</label>
+                <input type="number" min="0" class="form-control" th:field="*{tienCoc}" required>
+                <div class="form-text">Tiền cọc hợp lệ trong khoảng 20% - 30% tiền thuê.</div>
             </div>
 
             <div class="row">

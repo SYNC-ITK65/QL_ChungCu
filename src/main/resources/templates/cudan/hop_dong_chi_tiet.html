@@ -18,14 +18,19 @@
         <div class="card-body">
             <p><strong>Loại hợp đồng:</strong> <span th:text="${hopDong.loaiHopDong}"></span></p>
             <p><strong>Căn hộ:</strong> <span th:text="${hopDong.canHo != null ? hopDong.canHo.maCanHo : ''}"></span></p>
+            <p><strong>Bên cho thuê:</strong> <span th:text="${hopDong.benChoThue != null ? hopDong.benChoThue : ''}"></span></p>
+            <p><strong>Bên thuê:</strong> <span th:text="${hopDong.benThue != null ? hopDong.benThue : ''}"></span></p>
             <p><strong>Ngày bắt đầu:</strong>
                 <span th:text="${hopDong.ngayBatDau != null ? #temporals.format(hopDong.ngayBatDau, 'dd/MM/yyyy') : ''}"></span>
             </p>
             <p><strong>Ngày kết thúc:</strong>
                 <span th:text="${hopDong.ngayKetThuc != null ? #temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy') : 'Không thời hạn'}"></span>
             </p>
-            <p><strong>Giá trị hợp đồng:</strong>
-                <span th:text="${hopDong.giaTriHopDong != null ? #numbers.formatDecimal(hopDong.giaTriHopDong, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></span>
+            <p><strong>Tiền thuê:</strong>
+                <span th:text="${hopDong.tienThue != null ? #numbers.formatDecimal(hopDong.tienThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></span>
+            </p>
+            <p><strong>Tiền cọc:</strong>
+                <span th:text="${hopDong.tienCoc != null ? #numbers.formatDecimal(hopDong.tienCoc, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></span>
             </p>
             <p><strong>Trạng thái:</strong> <span th:text="${hopDong.trangThai}"></span></p>
         </div>

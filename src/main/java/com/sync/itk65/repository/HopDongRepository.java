@@ -24,25 +24,21 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
     @Query("""
             SELECT COUNT(h) > 0 FROM HopDong h
             WHERE h.canHo.id = :canHoId
-              AND h.loaiHopDong = :loaiHopDong
               AND h.trangThai = 'ACTIVE'
               AND h.ngayBatDau <= :ngayKetThuc
               AND (h.ngayKetThuc IS NULL OR h.ngayKetThuc >= :ngayBatDau)
             """)
     boolean existsActiveOverlapWithEndDate(@Param("canHoId") Long canHoId,
-                                           @Param("loaiHopDong") String loaiHopDong,
                                            @Param("ngayBatDau") java.time.LocalDate ngayBatDau,
                                            @Param("ngayKetThuc") java.time.LocalDate ngayKetThuc);
 
     @Query("""
             SELECT COUNT(h) > 0 FROM HopDong h
             WHERE h.canHo.id = :canHoId
-              AND h.loaiHopDong = :loaiHopDong
               AND h.trangThai = 'ACTIVE'
               AND (h.ngayKetThuc IS NULL OR h.ngayKetThuc >= :ngayBatDau)
             """)
     boolean existsActiveOverlapOpenEnded(@Param("canHoId") Long canHoId,
-                                         @Param("loaiHopDong") String loaiHopDong,
                                          @Param("ngayBatDau") java.time.LocalDate ngayBatDau);
 
     @Query("SELECT h FROM HopDong h WHERE h.trangThai = 'ACTIVE' AND h.ngayKetThuc IS NOT NULL AND h.ngayKetThuc < :today")

@@ -29,24 +29,43 @@ public class ThanhToanService {
         return thanhToanRepository.findByHoaDonId(hoaDonId);
     }
 
+    public List<ThanhToan> layLichSuTheoCanHo(Long canHoId) {
+        return thanhToanRepository.findByHoaDonCanHoIdOrderByNgayThanhToanDescIdDesc(canHoId);
+    }
+
     // Xử lý thanh toán mới
     public ThanhToan thucHienThanhToan(ThanhToan thanhToan) {
+        if (thanhToan.getHoaDon() == null || thanhToan.getHoaDon().getId() == null) {
+            throw new RuntimeException("Thiếu thông tin hóa đơn cần thanh toán.");
+        }
+        HoaDon hoaDon = hoaDonRepository.findById(thanhToan.getHoaDon().getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn."));
+        if ("Đã đóng".equalsIgnoreCase(hoaDon.getTrangThaiThanhToan())) {
+            throw new RuntimeException("Hóa đơn đã được thanh toán trước đó.");
+        }
+        if (thanhToan.getSoTien() == null || thanhToan.getSoTien() <= 0) {
+            throw new RuntimeException("Số tiền thanh toán không hợp lệ.");
+        }
+        if (hoaDon.getTongTien() != null && Math.abs(thanhToan.getSoTien() - hoaDon.getTongTien()) > 0.01) {
+            throw new RuntimeException("Số tiền thanh toán phải đúng bằng tổng tiền hóa đơn.");
+        }
+        if (thanhToan.getPhuongThuc() == null || thanhToan.getPhuongThuc().trim().isEmpty()) {
+            throw new RuntimeException("Phương thức thanh toán không được để trống.");
+        }
+
         // 1. Tự động gán ngày thanh toán nếu chưa có
         if (thanhToan.getNgayThanhToan() == null) {
             thanhToan.setNgayThanhToan(LocalDate.now());
         }
+        thanhToan.setHoaDon(hoaDon);
+        thanhToan.setPhuongThuc(thanhToan.getPhuongThuc().trim());
 
         // 2. Lưu giao dịch thanh toán vào DB
         ThanhToan savedThanhToan = thanhToanRepository.save(thanhToan);
 
         // 3. Cập nhật trạng thái Hóa Đơn thành "Đã đóng"
-        if (thanhToan.getHoaDon() != null && thanhToan.getHoaDon().getId() != null) {
-            HoaDon hoaDon = hoaDonRepository.findById(thanhToan.getHoaDon().getId()).orElse(null);
-            if (hoaDon != null) {
-                hoaDon.setTrangThaiThanhToan("Đã đóng");
-                hoaDonRepository.save(hoaDon);
-            }
-        }
+        hoaDon.setTrangThaiThanhToan("Đã đóng");
+        hoaDonRepository.save(hoaDon);
 
         return savedThanhToan;
     }
