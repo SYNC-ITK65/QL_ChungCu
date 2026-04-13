@@ -10,4 +10,7 @@ import java.util.List;
 public interface ThanhToanRepository extends JpaRepository<ThanhToan, Long> {
     // Custom query để tìm các lịch sử thanh toán của một hóa đơn
     List<ThanhToan> findByHoaDonId(Long hoaDonId);
+
+    // Lấy lịch sử thanh toán theo căn hộ (thông qua hóa đơn), mới nhất trước.
+    List<ThanhToan> findByHoaDonCanHoIdOrderByNgayThanhToanDescIdDesc(Long canHoId);
 }

@@ -25,9 +25,12 @@
                 <th>Loại</th>
                 <th>Căn hộ</th>
                 <th>Cư dân</th>
+                <th>Bên cho thuê</th>
+                <th>Bên thuê</th>
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
-                <th>Giá trị</th>
+                <th>Tiền thuê</th>
+                <th>Tiền cọc</th>
                 <th>Trạng thái</th>
                 <th>Thao tác</th>
             </tr>
@@ -38,9 +41,12 @@
                 <td th:text="${hd.loaiHopDong}"></td>
                 <td th:text="${hd.canHo != null ? hd.canHo.maCanHo : ''}"></td>
                 <td th:text="${hd.cuDan != null ? hd.cuDan.hoTen : ''}"></td>
+                <td th:text="${hd.benChoThue != null ? hd.benChoThue : ''}"></td>
+                <td th:text="${hd.benThue != null ? hd.benThue : ''}"></td>
                 <td th:text="${hd.ngayBatDau != null ? #temporals.format(hd.ngayBatDau, 'dd/MM/yyyy') : ''}"></td>
                 <td th:text="${hd.ngayKetThuc != null ? #temporals.format(hd.ngayKetThuc, 'dd/MM/yyyy') : ''}"></td>
-                <td th:text="${hd.giaTriHopDong != null ? #numbers.formatDecimal(hd.giaTriHopDong, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></td>
+                <td th:text="${hd.tienThue != null ? #numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></td>
+                <td th:text="${hd.tienCoc != null ? #numbers.formatDecimal(hd.tienCoc, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></td>
                 <td>
                     <span th:if="${hd.trangThai == 'ACTIVE'}" class="badge bg-success">ACTIVE</span>
                     <span th:if="${hd.trangThai == 'EXPIRED'}" class="badge bg-secondary">EXPIRED</span>
@@ -53,10 +59,12 @@
                     <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}"
                        th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}"
                        class="btn btn-sm btn-outline-success">Kích hoạt lại</a>
+                    <a th:href="@{/admin/hop-dong/xuat-pdf/{id}(id=${hd.id})}"
+                       class="btn btn-sm btn-outline-primary">Xuất PDF</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachHopDong)}">
-                <td colspan="9" class="text-center text-muted">Chưa có hợp đồng nào trong hệ thống.</td>
+                <td colspan="12" class="text-center text-muted">Chưa có hợp đồng nào trong hệ thống.</td>
             </tr>
             </tbody>
         </table>

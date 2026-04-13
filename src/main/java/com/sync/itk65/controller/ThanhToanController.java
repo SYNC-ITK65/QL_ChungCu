@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 
@@ -48,9 +49,13 @@ public class ThanhToanController {
 
     // 3. Xử lý lưu thanh toán
     @PostMapping("/thanh-toan/luu")
-    public String luuThanhToan(@ModelAttribute("thanhToan") ThanhToan thanhToan) {
-        thanhToanService.thucHienThanhToan(thanhToan);
-        // Sau khi lưu xong quay về danh sách hóa đơn
+    public String luuThanhToan(@ModelAttribute("thanhToan") ThanhToan thanhToan, RedirectAttributes ra) {
+        try {
+            thanhToanService.thucHienThanhToan(thanhToan);
+            ra.addFlashAttribute("thongBaoThanhCong", "Xác nhận thanh toán thành công.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+        }
         return "redirect:/admin/hoa-don";
     }
 }

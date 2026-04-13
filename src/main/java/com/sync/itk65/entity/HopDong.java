@@ -29,6 +29,18 @@ public class HopDong {
     @Column(name = "gia_tri_hop_dong")
     private Double giaTriHopDong;
 
+    @Column(name = "ben_cho_thue", length = 255)
+    private String benChoThue;
+
+    @Column(name = "ben_thue", length = 255)
+    private String benThue;
+
+    @Column(name = "tien_thue")
+    private Double tienThue;
+
+    @Column(name = "tien_coc")
+    private Double tienCoc;
+
     @Column(name = "loai_hop_dong", length = 20)
     private String loaiHopDong; // Thue / Mua
 
@@ -89,6 +101,38 @@ public class HopDong {
 
     public void setLoaiHopDong(String loaiHopDong) {
         this.loaiHopDong = loaiHopDong;
+    }
+
+    public String getBenChoThue() {
+        return benChoThue;
+    }
+
+    public void setBenChoThue(String benChoThue) {
+        this.benChoThue = benChoThue;
+    }
+
+    public String getBenThue() {
+        return benThue;
+    }
+
+    public void setBenThue(String benThue) {
+        this.benThue = benThue;
+    }
+
+    public Double getTienThue() {
+        return tienThue;
+    }
+
+    public void setTienThue(Double tienThue) {
+        this.tienThue = tienThue;
+    }
+
+    public Double getTienCoc() {
+        return tienCoc;
+    }
+
+    public void setTienCoc(Double tienCoc) {
+        this.tienCoc = tienCoc;
     }
 
     public String getTrangThai() {
