@@ -3,6 +3,9 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.repository.CanHoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -24,6 +27,12 @@ public class CanHoService {
     // Hàm lấy danh sách tất cả căn hộ
     public List<CanHo> layTatCaCanHo() {
         return canHoRepository.findAll();
+    }
+
+    // Hàm tìm kiếm và phân trang
+    public Page<CanHo> timKiemCanHo(String trangThai, Double dienTich, Integer tang, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return canHoRepository.timKiemCanHo(trangThai, dienTich, tang, pageable);
     }
 
     // Hàm lưu căn hộ mới

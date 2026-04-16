@@ -20,12 +20,26 @@ public class CanHoController {
     @Autowired
     private CanHoService canHoService;
 
-    // Hàm hiển thị danh sách căn hộ
+    // Hàm hiển thị danh sách căn hộ (Có phân trang, tìm kiếm)
     @GetMapping
-    public String hienThiDanhSach(Model model) {
-        // Nhờ Service lấy dữ liệu từ Database
-        model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
-        // Trả về tên file HTML giao diện (sẽ tạo sau trong thư mục resources/templates)
+    public String hienThiDanhSach(
+            @RequestParam(required = false) String trangThai,
+            @RequestParam(required = false) Double dienTich,
+            @RequestParam(required = false) Integer tang,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+        
+        org.springframework.data.domain.Page<CanHo> pageCanHo = canHoService.timKiemCanHo(trangThai, dienTich, tang, page, size);
+        
+        model.addAttribute("danhSachCanHo", pageCanHo.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pageCanHo.getTotalPages());
+        // Giữ lại tham số tìm kiếm để bind lại form
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("dienTich", dienTich);
+        model.addAttribute("tang", tang);
+
         return "admin/can_ho_list";
     }
 

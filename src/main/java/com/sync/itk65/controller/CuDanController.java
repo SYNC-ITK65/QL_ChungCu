@@ -22,18 +22,34 @@ public class CuDanController {
     @Autowired
     private CanHoService canHoService;
 
-    // Xem danh sách cư dân (Có thể lọc theo căn hộ)
+    // Xem danh sách cư dân (Có thể lọc theo căn hộ, từ khóa, trạng thái, và có phân trang)
     @GetMapping
-    public String hienThiDanhSach(@RequestParam(required = false) Long canHoId, Model model) {
-        List<CuDan> danhSach;
+    public String hienThiDanhSach(
+            @RequestParam(required = false) Long canHoId,
+            @RequestParam(required = false) String tuKhoa,
+            @RequestParam(required = false) String trangThai,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+
+        org.springframework.data.domain.Page<CuDan> pageCuDan;
+
         if (canHoId != null) {
-            danhSach = cuDanService.timTheoCanHo(canHoId);
+            pageCuDan = cuDanService.timKiemTheoCanHo(canHoId, tuKhoa, trangThai, page, size);
             model.addAttribute("canHoHienTai", canHoService.layCanHoTheoId(canHoId));
         } else {
-            danhSach = cuDanService.layTatCaCuDan();
+            pageCuDan = cuDanService.timKiemCuDan(tuKhoa, trangThai, page, size);
         }
-        model.addAttribute("danhSachCuDan", danhSach);
+
+        model.addAttribute("danhSachCuDan", pageCuDan.getContent());
         model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+        
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pageCuDan.getTotalPages());
+        model.addAttribute("canHoId", canHoId);
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("trangThai", trangThai);
+        
         return "admin/cu_dan_list";
     }
 

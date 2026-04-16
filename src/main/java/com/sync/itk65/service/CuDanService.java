@@ -3,6 +3,9 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.CuDan;
 import com.sync.itk65.repository.CuDanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -39,13 +42,24 @@ public class CuDanService {
         cuDanRepository.deleteById(id);
     }
 
-    public List<CuDan> timTheoCanHo(Long canHoId) {
-        // Đổi thành gọi hàm mới mà chúng ta vừa tạo bằng @Query
-        return cuDanRepository.layDanhSachCuDanTheoCanHo(canHoId);
+    // Sửa các hàm hỗ trợ tìm kiếm phân trang
+    public Page<CuDan> timKiemCuDan(String tuKhoa, String trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return cuDanRepository.timKiemCuDan(tuKhoa, trangThai, pageable);
+    }
+
+    public Page<CuDan> timKiemTheoCanHo(Long canHoId, String tuKhoa, String trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return cuDanRepository.layDanhSachCuDanTheoCanHo(canHoId, tuKhoa, trangThai, pageable);
+    }
+
+    // Hàm cũ dùng xuất excel
+    public List<CuDan> timTheoCanHoThongThuong(Long canHoId) {
+        return cuDanRepository.layTatCaCuDanTheoCanHo(canHoId);
     }
 
     public byte[] xuatExcelDanhSachCuDan(Long canHoId) {
-        List<CuDan> danhSach = (canHoId == null) ? layTatCaCuDan() : timTheoCanHo(canHoId);
+        List<CuDan> danhSach = (canHoId == null) ? layTatCaCuDan() : timTheoCanHoThongThuong(canHoId);
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("CuDan");

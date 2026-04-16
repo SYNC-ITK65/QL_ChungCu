@@ -12,7 +12,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/duyet-yeu-cau")
-public class Admin_LeTanController {
+public class AdminLeTanController {
 
     @Autowired
     private DangKyKhachThamService khachThamService;
