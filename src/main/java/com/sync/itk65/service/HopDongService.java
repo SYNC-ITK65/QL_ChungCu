@@ -36,6 +36,9 @@ public class HopDongService {
     @Autowired
     private CuDanRepository cuDanRepository;
 
+    @Autowired
+    private ThongBaoService thongBaoService;
+
     public List<HopDong> layTatCaHopDong() {
         List<HopDong> danhSach = hopDongRepository.findAllOrderByIdDesc();
         danhSach.forEach(this::apDungDuLieuMacDinh);
@@ -81,14 +84,6 @@ public class HopDongService {
         if (hopDong.getTienThue() == null || hopDong.getTienThue() <= 0) {
             throw new RuntimeException("Tiền thuê không hợp lệ.");
         }
-        if (hopDong.getTienCoc() == null || hopDong.getTienCoc() <= 0) {
-            throw new RuntimeException("Tiền cọc không hợp lệ.");
-        }
-        double cocToiThieu = hopDong.getTienThue() * 0.2;
-        double cocToiDa = hopDong.getTienThue() * 0.3;
-        if (hopDong.getTienCoc() < cocToiThieu || hopDong.getTienCoc() > cocToiDa) {
-            throw new RuntimeException("Tiền cọc phải trong khoảng 20% - 30% tiền thuê.");
-        }
         if (cuDan.getCanHo() == null || !cuDan.getCanHo().getId().equals(canHo.getId())) {
             throw new RuntimeException("Cư dân không thuộc căn hộ đã chọn.");
         }
@@ -100,6 +95,8 @@ public class HopDongService {
         hopDong.setLoaiHopDong("Thuê");
         // Giữ tương thích dữ liệu cũ: map giá trị hợp đồng = tiền thuê.
         hopDong.setGiaTriHopDong(hopDong.getTienThue());
+        // Tự động set tiền cọc = tiền thuê
+        hopDong.setTienCoc(hopDong.getTienThue());
 
         boolean biTrung;
         if (hopDong.getNgayKetThuc() == null) {
@@ -119,7 +116,12 @@ public class HopDongService {
         }
         hopDong.setTrangThai("ACTIVE");
 
-        return hopDongRepository.save(hopDong);
+        HopDong savedHopDong = hopDongRepository.save(hopDong);
+
+        // Tạo thông báo cho cư dân khi hợp đồng được tạo
+        taoThongBaoHopDongMoi(savedHopDong, cuDan);
+
+        return savedHopDong;
     }
 
     public void capNhatTrangThai(Long hopDongId, String trangThaiMoi) {
@@ -206,9 +208,29 @@ public class HopDongService {
         if (hopDong.getTienThue() == null && hopDong.getGiaTriHopDong() != null) {
             hopDong.setTienThue(hopDong.getGiaTriHopDong());
         }
-        if (hopDong.getTienCoc() == null && hopDong.getTienThue() != null) {
-            // Dữ liệu cũ chưa có tiền cọc: tạm hiển thị mặc định 20% tiền thuê.
-            hopDong.setTienCoc(hopDong.getTienThue() * 0.2);
+    }
+
+    private void taoThongBaoHopDongMoi(HopDong hopDong, CuDan cuDan) {
+        try {
+            com.sync.itk65.entity.ThongBao thongBao = new com.sync.itk65.entity.ThongBao();
+            thongBao.setTieuDe("Hợp đồng mới đã được tạo");
+            String noiDung = String.format(
+                "Chào %s, một hợp đồng mới đã được tạo cho căn hộ %s. " +
+                "Ngày bắt đầu: %s, Ngày kết thúc: %s, Tiền thuê: %,,.0f VND.",
+                cuDan.getHoTen(),
+                hopDong.getCanHo() != null ? hopDong.getCanHo().getMaCanHo() : "N/A",
+                hopDong.getNgayBatDau() != null ? hopDong.getNgayBatDau().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A",
+                hopDong.getNgayKetThuc() != null ? hopDong.getNgayKetThuc().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A",
+                hopDong.getTienThue()
+            );
+            thongBao.setNoiDung(noiDung);
+            thongBao.setLoai(1); // Loại thông báo chung
+            thongBao.setDoiTuongGui("HO_GIA_DINH");
+            thongBao.setGiaTriDoiTuong(hopDong.getCanHo() != null ? hopDong.getCanHo().getId().toString() : "");
+            thongBaoService.saveThongBao(thongBao);
+        } catch (Exception e) {
+            // Không throw exception để không ảnh hưởng đến việc tạo hợp đồng
+            System.err.println("Lỗi khi tạo thông báo hợp đồng: " + e.getMessage());
         }
     }
 

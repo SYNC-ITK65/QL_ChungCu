@@ -1,7 +1,9 @@
 package com.sync.itk65.controller;
 
 import com.sync.itk65.entity.CuDan;
+import com.sync.itk65.entity.NguoiDung;
 import com.sync.itk65.service.ThanhToanService;
+import com.sync.itk65.service.CuDanService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,9 +18,16 @@ public class CuDanThanhToanController {
     @Autowired
     private ThanhToanService thanhToanService;
 
+    @Autowired
+    private CuDanService cuDanService;
+
     @GetMapping("/lich-su")
     public String xemLichSuThanhToan(HttpSession session, Model model) {
-        CuDan cuDan = (CuDan) session.getAttribute("nguoiDungDangNhap");
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user == null) {
+            return "redirect:/";
+        }
+        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
         if (cuDan == null || cuDan.getCanHo() == null) {
             return "redirect:/";
         }
