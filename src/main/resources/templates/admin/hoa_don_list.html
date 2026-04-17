@@ -92,10 +92,13 @@
                        th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${hd.id})}"
                        class="btn btn-sm btn-success">Thanh toán</a>
 
-                    <a th:href="@{/admin/hoa-don/xem/{id}(id=${hd.id})}" 
+                    <a th:href="@{/admin/hoa-don/xem/{id}(id=${hd.id})}"
                        class="btn btn-sm btn-info text-white">Xem</a>
-                    <a th:href="@{/admin/hoa-don/sua/{id}(id=${hd.id})}" 
+                    <a th:href="@{/admin/hoa-don/sua/{id}(id=${hd.id})}"
                        class="btn btn-sm btn-warning">Sửa</a>
+                    <a th:href="@{/admin/hoa-don/xoa/{id}(id=${hd.id})}"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa hóa đơn này? Hành động này không thể hoàn tác.')"
+                       class="btn btn-sm btn-danger">Xóa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachHoaDon)}">

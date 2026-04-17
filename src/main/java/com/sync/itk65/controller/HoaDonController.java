@@ -119,4 +119,15 @@ public class HoaDonController {
 //        hoaDonService.danhDauDaThanhToan(id);
 //        return "redirect:/admin/hoa-don"; // Quay về trang danh sách
 //    }
+
+    // API Xử lý khi người dùng bấm nút "Xóa"
+    @GetMapping("/xoa/{id}")
+    public String xoaHoaDon(@PathVariable("id") Long id) {
+        try {
+            hoaDonService.xoaHoaDon(id);
+            return "redirect:/admin/hoa-don";
+        } catch (RuntimeException e) {
+            return "redirect:/admin/hoa-don?error=" + e.getMessage();
+        }
+    }
 }

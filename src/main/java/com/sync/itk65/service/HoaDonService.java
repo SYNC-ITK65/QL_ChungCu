@@ -10,6 +10,7 @@ import com.sync.itk65.repository.ChiSoHangThangRepository;
 import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.PhuongTienRepository;
 import com.sync.itk65.repository.DatDichVuRepository;
+import com.sync.itk65.repository.ThanhToanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -37,10 +38,8 @@ public class HoaDonService {
     @Autowired
     private DatDichVuRepository datDichVuRepository;
 
-    // Lấy danh sách toàn bộ hóa đơn
-    public List<HoaDon> layTatCaHoaDon() {
-        return hoaDonRepository.findAll();
-    }
+    @Autowired
+    private ThanhToanRepository thanhToanRepository;
 
     // Tìm kiếm hóa đơn theo nhiều điều kiện
     public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
@@ -52,7 +51,10 @@ public class HoaDonService {
         return hoaDonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
     }
-
+    // Lấy danh sách toàn bộ hóa đơn
+    public List<HoaDon> layTatCaHoaDon() {
+        return hoaDonRepository.findAll();
+    }
     // Cập nhật hóa đơn
     public void capNhatHoaDon(HoaDon hoaDon) {
         // Nếu tổng tiền là null hoặc 0, tính lại tổng
@@ -301,6 +303,19 @@ public class HoaDonService {
             hoaDon.setTrangThaiThanhToan("Đã đóng");
             hoaDonRepository.save(hoaDon);
         }
+    }
+
+    // Xóa hóa đơn và các bản ghi thanh toán liên quan
+    public void xoaHoaDon(Long id) {
+        HoaDon hoaDon = hoaDonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
+
+        // Xóa các bản ghi thanh toán liên quan đến hóa đơn này
+        List<com.sync.itk65.entity.ThanhToan> danhSachThanhToan = thanhToanRepository.findByHoaDonId(id);
+        thanhToanRepository.deleteAll(danhSachThanhToan);
+
+        // Xóa hóa đơn
+        hoaDonRepository.delete(hoaDon);
     }
 
     /**
