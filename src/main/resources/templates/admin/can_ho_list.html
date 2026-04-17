@@ -17,6 +17,35 @@
         </div>
     </div>
 
+    <!-- Form tìm kiếm -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" th:action="@{/admin/can-ho}" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Trạng thái</label>
+                    <select name="trangThai" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        <option value="Trống" th:selected="${trangThai == 'Trống'}">Trống</option>
+                        <option value="Đã bàn giao" th:selected="${trangThai == 'Đã bàn giao'}">Đã bàn giao</option>
+                        <option value="Đang sửa chữa" th:selected="${trangThai == 'Đang sửa chữa'}">Đang sửa chữa</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Diện tích (m²)</label>
+                    <input type="number" step="0.01" name="dienTich" th:value="${dienTich}" class="form-control" placeholder="Tìm theo diện tích">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tầng</label>
+                    <input type="number" name="tang" th:value="${tang}" class="form-control" placeholder="Tìm theo tầng">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Tìm kiếm</button>
+                    <a th:href="@{/admin/can-ho}" class="btn btn-secondary">Đặt lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <table class="table table-striped table-hover border">
         <thead class="table-dark">
             <tr>
@@ -50,7 +79,23 @@
         </tbody>
     </table>
 
-
+    <!-- Pagination -->
+    <nav th:if="${totalPages > 0}" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/admin/can-ho(page=${currentPage - 1}, trangThai=${trangThai}, dienTich=${dienTich}, tang=${tang})}">Trước</a>
+            </li>
+            
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${currentPage == i ? 'active' : ''}">
+                <a class="page-link" th:href="@{/admin/can-ho(page=${i}, trangThai=${trangThai}, dienTich=${dienTich}, tang=${tang})}" th:text="${i + 1}">1</a>
+            </li>
+            
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/admin/can-ho(page=${currentPage + 1}, trangThai=${trangThai}, dienTich=${dienTich}, tang=${tang})}">Sau</a>
+            </li>
+        </ul>
+    </nav>
 
 </body>
 

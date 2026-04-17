@@ -56,6 +56,37 @@ public class AdminController {
             sumRevenue = 0.0;
         }
 
+        // CHART: Doanh thu 6 tháng gần nhất
+        java.time.LocalDate sixMonthsAgo = java.time.LocalDate.now().minusMonths(5).withDayOfMonth(1);
+        java.util.List<Object[]> revenueDataRaw = hoaDonRepository.getRevenueLast6Months(sixMonthsAgo);
+        
+        java.util.List<String> labelsRevenue = new java.util.ArrayList<>();
+        java.util.List<Double> dataRevenue = new java.util.ArrayList<>();
+        
+        java.time.LocalDate current = sixMonthsAgo;
+        for (int i = 0; i < 6; i++) {
+            int m = current.getMonthValue();
+            int y = current.getYear();
+            labelsRevenue.add("T" + m + "/" + y);
+            
+            double total = 0.0;
+            for (Object[] row : revenueDataRaw) {
+                int dbMonth = ((Number) row[0]).intValue();
+                int dbYear = ((Number) row[1]).intValue();
+                if (dbMonth == m && dbYear == y) {
+                    total = ((Number) row[2]).doubleValue();
+                    break;
+                }
+            }
+            dataRevenue.add(total);
+            current = current.plusMonths(1);
+        }
+        
+        long occupiedCanHo = totalCanHo - vacantCanHo;
+        model.addAttribute("labelsRevenue", labelsRevenue);
+        model.addAttribute("dataRevenue", dataRevenue);
+        model.addAttribute("occupiedCanHo", occupiedCanHo);
+
         // Phản ánh: Đếm riêng "Chờ xử lý" và "Đang xử lý" (SỬ DỤNG LIKE ĐỂ TRÁNH LỖI ĐÁNH VẦN)
         long countChoXuLy = phanAnhRepository.countChoXuLy();
         long countDangXuLy = phanAnhRepository.countDangXuLy();
