@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Chi Tiét Hóa Ð n</title>
+    <title>Chi Tiết Hóa Đơn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -45,30 +45,30 @@
         <div class="invoice-header">
             <div class="row">
                 <div class="col-md-8">
-                    <h2 class="mb-0">Chi Tiét Hóa Ð n</h2>
-                    <p class="mb-0 text-muted">Qu n lý Chung C</p>
+                    <h2 class="mb-0">Chi Tiết Hóa Đơn</h2>
+                    <p class="mb-0 text-muted">Quản lý Chung Cư</p>
                 </div>
                 <div class="col-md-4 text-end">
                     <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Quay v danh sách
+                        <i class="fas fa-arrow-left"></i> Quay về danh sách
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Thông tin hóa ð n -->
+        <!-- Thông tin hóa đơn -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Thông tin Hóa ð n</h5>
+                <h5 class="mb-0">Thông tin Hóa Đơn</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <strong>Mã hóa ð n:</strong>
+                        <strong>Mã hóa đơn:</strong>
                         <p class="mb-0" th:text="'HD-' + ${thongTinHoaDon.id}">HD-001</p>
                     </div>
                     <div class="col-md-3">
-                        <strong>C n H:</strong>
+                        <strong>Căn Hộ:</strong>
                         <p class="mb-0" th:text="${thongTinHoaDon.maCanHo}">A1-01</p>
                     </div>
                     <div class="col-md-3">
@@ -76,70 +76,70 @@
                         <p class="mb-0" th:text="${thongTinHoaDon.ngayPhatHanh != null ? #temporals.format(thongTinHoaDon.ngayPhatHanh, 'dd/MM/yyyy') : ''}">01/10/2026</p>
                     </div>
                     <div class="col-md-3">
-                        <strong>Ngày ð n h n:</strong>
+                        <strong>Ngày đến hạn:</strong>
                         <p class="mb-0" th:text="${thongTinHoaDon.ngayDenHan != null ? #temporals.format(thongTinHoaDon.ngayDenHan, 'dd/MM/yyyy') : ''}">15/10/2026</p>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <strong>Trang thái:</strong>
-                        <span th:if="${thongTinHoaDon.trangThai == 'Ðã ð ng'}" class="badge bg-success fs-6">Ðã ð ng</span>
-                        <span th:if="${thongTinHoaDon.trangThai == 'Ch a ð ng' or thongTinHoaDon.trangThai == null}" class="badge bg-danger fs-6">Ch a ð ng</span>
+                        <span th:if="${thongTinHoaDon.trangThai == 'Đã thanh toán'}" class="badge bg-success fs-6">Đã thanh toán</span>
+                        <span th:if="${thongTinHoaDon.trangThai == 'Chưa thanh toán' or thongTinHoaDon.trangThai == null}" class="badge bg-danger fs-6">Chưa thanh toán</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Chi tiét các kho n -->
+        <!-- Chi tiết các khoản -->
         <div class="row">
-            <!-- Ti n Ði n -->
+            <!-- Tiền Điện -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-info text-white">
-                        <h6 class="mb-0">Ti n Ði n</h6>
+                        <h6 class="mb-0">Tiền Điện</h6>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm">
                             <tr>
-                                <td>S kWh tiêu th :</td>
+                                <td>Số kWh tiêu thụ:</td>
                                 <td class="text-end" th:text="${chiTietDien.soKwh}">120</td>
                             </tr>
                             <tr>
-                                <td>Ti n tr c thu (ch a VAT):</td>
-                                <td class="text-end" th:text="${#numbers.formatDecimal(chiTietDien.tienTruocThue, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">200,000 VNÐ</td>
+                                <td>Tiền trước thuế (chưa VAT):</td>
+                                <td class="text-end" th:text="${#numbers.formatDecimal(chiTietDien.tienTruocThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">200,000 VNĐ</td>
                             </tr>
                             <tr>
-                                <td>Thu VAT (8%):</td>
-                                <td class="text-end" th:text="${#numbers.formatDecimal(chiTietDien.thueVat, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">16,000 VNÐ</td>
+                                <td>Thuế VAT (8%):</td>
+                                <td class="text-end" th:text="${#numbers.formatDecimal(chiTietDien.thueVat, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">16,000 VNĐ</td>
                             </tr>
                             <tr class="total-row">
-                                <td><strong>T ng c ng:</strong></td>
-                                <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietDien.tongTienDien, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">216,000 VNÐ</strong></td>
+                                <td><strong>Tổng cộng:</strong></td>
+                                <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietDien.tongTienDien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">216,000 VNĐ</strong></td>
                             </tr>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Ti n N c -->
+            <!-- Tiền Nước -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-info text-white">
-                        <h6 class="mb-0">Ti n N c</h6>
+                        <h6 class="mb-0">Tiền Nước</h6>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm">
                             <tr>
-                                <td>S kh i n c tiêu th :</td>
+                                <td>Số khối nước tiêu thụ:</td>
                                 <td class="text-end" th:text="${chiTietNuoc.soKhoiNuoc}">25</td>
                             </tr>
                             <tr>
-                                <td>Ð n giá:</td>
-                                <td class="text-end" th:text="${#numbers.formatDecimal(chiTietNuoc.donGia, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">18,000 VNÐ</td>
+                                <td>Đơn giá:</td>
+                                <td class="text-end" th:text="${#numbers.formatDecimal(chiTietNuoc.donGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">18,000 VNĐ</td>
                             </tr>
                             <tr class="total-row">
-                                <td><strong>T ng c ng:</strong></td>
-                                <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietNuoc.tongTienNuoc, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">450,000 VNÐ</strong></td>
+                                <td><strong>Tổng cộng:</strong></td>
+                                <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietNuoc.tongTienNuoc, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">450,000 VNĐ</strong></td>
                             </tr>
                         </table>
                     </div>
@@ -147,125 +147,125 @@
             </div>
         </div>
 
-        <!-- Phí qu n lý -->
+        <!-- Phí quản lý -->
         <div class="card mt-4">
             <div class="card-header bg-warning text-dark">
-                <h6 class="mb-0">Phí Qu n lý</h6>
+                <h6 class="mb-0">Phí Quản lý</h6>
             </div>
             <div class="card-body">
                 <table class="table table-sm">
                     <tr>
-                        <td>Di n tích c n h:</td>
+                        <td>Diện tích căn hộ:</td>
                         <td class="text-end" th:text="${chiTietQuanLy.dienTich + ' m²'}">75 m²</td>
                     </tr>
                     <tr>
-                        <td>Ð n giá phí qu n lý:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(chiTietQuanLy.donGia, 0, 'COMMA', 0, 'POINT') + ' VNÐ/m²'}">12,000 VNÐ/m²</td>
+                        <td>Đơn giá phí quản lý:</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(chiTietQuanLy.donGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ/m²'}">12,000 VNĐ/m²</td>
                     </tr>
                     <tr class="total-row">
-                        <td><strong>T ng phí qu n lý:</strong></td>
-                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietQuanLy.tongPhiQuanLy, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">900,000 VNÐ</strong></td>
+                        <td><strong>Tổng phí quản lý:</strong></td>
+                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietQuanLy.tongPhiQuanLy, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">900,000 VNĐ</strong></td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        <!-- Phí g i xe -->
+        <!-- Phí gửi xe -->
         <div class="card mt-4" th:if="${chiTietXe.soLuongXe > 0}">
             <div class="card-header bg-success text-white">
-                <h6 class="mb-0">Phí G i Xe</h6>
+                <h6 class="mb-0">Phí Gửi Xe</h6>
             </div>
             <div class="card-body">
                 <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th>Bi n s </th>
-                            <th>Lo i xe</th>
-                            <th>Mô t </th>
-                            <th>Ð n giá</th>
-                            <th class="text-end">Thành ti n</th>
+                            <th>Biển số</th>
+                            <th>Loại xe</th>
+                            <th>Mô tả</th>
+                            <th>Đơn giá</th>
+                            <th class="text-end">Thành tiền</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="xe : ${chiTietXe.danhSachXe}">
                             <td th:text="${xe.bienSo}">29A-12345</td>
                             <td th:text="${xe.tenXe}">Ô tô</td>
-                            <td th:text="${xe.moTa}">Phí g i ô tô</td>
-                            <td th:text="${#numbers.formatDecimal(xe.donGia, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">1,200,000 VNÐ</td>
-                            <td class="text-end" th:text="${#numbers.formatDecimal(xe.tienXe, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">1,200,000 VNÐ</td>
+                            <td th:text="${xe.moTa}">Phí gửi ô tô</td>
+                            <td th:text="${#numbers.formatDecimal(xe.donGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">1,200,000 VNĐ</td>
+                            <td class="text-end" th:text="${#numbers.formatDecimal(xe.tienXe, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">1,200,000 VNĐ</td>
                         </tr>
                     </tbody>
                     <tr class="total-row">
-                        <td colspan="4"><strong>T ng phí g i xe:</strong></td>
-                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietXe.tongPhiXe, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">1,350,000 VNÐ</strong></td>
+                        <td colspan="4"><strong>Tổng phí gửi xe:</strong></td>
+                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietXe.tongPhiXe, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">1,350,000 VNĐ</strong></td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        <!-- Phí d ch v phát sinh -->
+        <!-- Phí dịch vụ phát sinh -->
         <div class="card mt-4" th:if="${chiTietDichVu.danhSachDichVu != null and not #lists.isEmpty(chiTietDichVu.danhSachDichVu)}">
             <div class="card-header bg-secondary text-white">
-                <h6 class="mb-0">Phí D ch V Phát Sinh</h6>
+                <h6 class="mb-0">Phí Dịch Vụ Phát Sinh</h6>
             </div>
             <div class="card-body">
                 <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th>T n d ch v </th>
-                            <th>Lo i</th>
-                            <th>Ð n v tính</th>
-                            <th>Ð n giá</th>
-                            <th>Trang thái</th>
+                            <th>Tên dịch vụ</th>
+                            <th>Loại</th>
+                            <th>Đơn vị tính</th>
+                            <th>Đơn giá</th>
+                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="dv : ${chiTietDichVu.danhSachDichVu}">
-                            <td th:text="${dv.tenDichVu}">S a ch a</td>
-                            <td th:text="${dv.loai}">S a ch a</td>
-                            <td th:text="${dv.donViTinh}">L n</td>
-                            <td th:text="${#numbers.formatDecimal(dv.donGia, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">150,000 VNÐ</td>
-                            <td><span class="badge bg-success" th:text="${dv.trangThai}">Ðã duy t</span></td>
+                            <td th:text="${dv.tenDichVu}">Sửa chữa</td>
+                            <td th:text="${dv.loai}">Sửa chữa</td>
+                            <td th:text="${dv.donViTinh}">Lần</td>
+                            <td th:text="${#numbers.formatDecimal(dv.donGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">150,000 VNĐ</td>
+                            <td><span class="badge bg-success" th:text="${dv.trangThai}">Đã duyệt</span></td>
                         </tr>
                     </tbody>
                     <tr class="total-row">
-                        <td colspan="4"><strong>T ng phí d ch v :</strong></td>
-                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietDichVu.tongPhiDichVu, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">150,000 VNÐ</strong></td>
+                        <td colspan="4"><strong>Tổng phí dịch vụ:</strong></td>
+                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietDichVu.tongPhiDichVu, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">150,000 VNĐ</strong></td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        <!-- T ng h p -->
+        <!-- Tổng hợp -->
         <div class="card mt-4">
             <div class="card-header grand-total">
-                <h5 class="mb-0">T NG H P HÓA Ð N</h5>
+                <h5 class="mb-0">TỔNG HỢP HÓA ĐƠN</h5>
             </div>
             <div class="card-body">
                 <table class="table table-sm">
                     <tr>
-                        <td>Ti n Ði n:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienDien, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">216,000 VNÐ</td>
+                        <td>Tiền Điện:</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienDien, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">216,000 VNĐ</td>
                     </tr>
                     <tr>
-                        <td>Ti n N c:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienNuoc, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">450,000 VNÐ</td>
+                        <td>Tiền Nước:</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienNuoc, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">450,000 VNĐ</td>
                     </tr>
                     <tr>
-                        <td>Phí Qu n lý:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiQuanLy, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">900,000 VNÐ</td>
+                        <td>Phí Quản lý:</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiQuanLy, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">900,000 VNĐ</td>
                     </tr>
                     <tr th:if="${tongHop.phiXe > 0}">
-                        <td>Phí G i Xe:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiXe, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">1,350,000 VNÐ</td>
+                        <td>Phí Gửi Xe:</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiXe, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">1,350,000 VNĐ</td>
                     </tr>
                     <tr th:if="${tongHop.phiDichVu > 0}">
-                        <td>Phí D ch V :</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">150,000 VNÐ</td>
+                        <td>Phí Dịch Vụ:</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">150,000 VNĐ</td>
                     </tr>
                     <tr class="grand-total">
-                        <td><h5 class="mb-0">T NG C NG:</h5></td>
-                        <td class="text-end"><h5 class="mb-0 text-success" th:text="${#numbers.formatDecimal(tongHop.tongCong, 0, 'COMMA', 0, 'POINT') + ' VNÐ'}">3,066,000 VNÐ</h5></td>
+                        <td><h5 class="mb-0">TỔNG CỘNG:</h5></td>
+                        <td class="text-end"><h5 class="mb-0 text-success" th:text="${#numbers.formatDecimal(tongHop.tongCong, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">3,066,000 VNĐ</h5></td>
                     </tr>
                 </table>
             </div>
@@ -274,12 +274,12 @@
         <!-- Actions -->
         <div class="mt-4 text-center">
             <a th:href="@{/admin/hoa-don}" class="btn btn-secondary me-2">
-                <i class="fas fa-arrow-left"></i> Quay v danh sách
+                <i class="fas fa-arrow-left"></i> Quay về danh sách
             </a>
             <a th:href="@{/admin/hoa-don/sua/{id}(id=${thongTinHoaDon.id})}" class="btn btn-warning me-2">
-                <i class="fas fa-edit"></i> S a hóa ð n
+                <i class="fas fa-edit"></i> Sửa hóa đơn
             </a>
-            <a th:if="${thongTinHoaDon.trangThai == 'Ch a ð ng' or thongTinHoaDon.trangThai == null}" 
+            <a th:if="${thongTinHoaDon.trangThai == 'Chưa thanh toán' or thongTinHoaDon.trangThai == null}" 
                th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${thongTinHoaDon.id})}" 
                class="btn btn-success">
                 <i class="fas fa-credit-card"></i> Thanh toán
