@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Hợp đồng</title>
-    <link href="https://cdn.jsdelivr.net/bootstrap@5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <title>Danh sách Hợp đồng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-<div class="d-flex">
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
     <div class="container-fluid p-4">
@@ -24,60 +25,63 @@
             <a th:href="@{/admin/hop-dong/tao-moi}" class="btn btn-primary">+ Tạo Hợp đồng mới</a>
         </div>
 
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-striped table-hover border mb-0">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Loại</th>
-                        <th>Căn hộ</th>
-                        <th>Cư dân</th>
-                        <th>Bên cho thuê</th>
-                        <th>Bên thuê</th>
-                        <th>Ngày bắt đầu</th>
-                        <th>Ngày kết thúc</th>
-                        <th>Tiền thuê</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="hd : ${danhSachHopDong}">
-                        <td th:text="${hd.id}"></td>
-                        <td th:text="${hd.loaiHopDong}"></td>
-                        <td th:text="${hd.canHo != null ? hd.canHo.maCanHo : ''}"></td>
-                        <td th:text="${hd.cuDan != null ? hd.cuDan.hoTen : ''}"></td>
-                        <td th:text="${hd.benChoThue != null ? hd.benChoThue : ''}"></td>
-                        <td th:text="${hd.benThue != null ? hd.benThue : ''}"></td>
-                        <td th:text="${hd.ngayBatDau != null ? #temporals.format(hd.ngayBatDau, 'dd/MM/yyyy') : ''}"></td>
-                        <td th:text="${hd.ngayKetThuc != null ? #temporals.format(hd.ngayKetThuc, 'dd/MM/yyyy') : ''}"></td>
-                        <td th:text="${hd.tienThue != null ? #numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></td>
-                        <td>
-                            <span th:if="${hd.trangThai == 'ACTIVE'}" class="badge bg-success">ACTIVE</span>
-                            <span th:if="${hd.trangThai == 'EXPIRED'}" class="badge bg-secondary">EXPIRED</span>
-                            <span th:if="${hd.trangThai == 'TERMINATED'}" class="badge bg-danger">TERMINATED</span>
-                        </td>
-                        <td>
-                            <a th:if="${hd.trangThai == 'ACTIVE'}"
-                               th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='TERMINATED')}"
-                               class="btn btn-sm btn-outline-danger">Thanh lý</a>
-                            <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}"
-                               th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}"
-                               class="btn btn-sm btn-outline-success">Kích hoạt lại</a>
-                            <a th:href="@{/admin/hop-dong/xuat-pdf/{id}(id=${hd.id})}"
-                               class="btn btn-sm btn-outline-primary">Xuất PDF</a>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(danhSachHopDong)}">
-                        <td colspan="11" class="text-center text-muted">Chưa có hợp đồng nào trong hệ thống.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <table class="table table-striped table-hover border">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Loại</th>
+                <th>Căn hộ</th>
+                <th>Cư dân</th>
+                <th>Bên cho thuê</th>
+                <th>Bên thuê</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Tiền thuê</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="hd : ${danhSachHopDong}">
+                <td th:text="${hd.id}"></td>
+                <td th:text="${hd.loaiHopDong}"></td>
+                <td th:text="${hd.canHo != null ? hd.canHo.maCanHo : ''}"></td>
+                <td th:text="${hd.cuDan != null ? hd.cuDan.hoTen : ''}"></td>
+                <td th:text="${hd.benChoThue != null ? hd.benChoThue : ''}"></td>
+                <td th:text="${hd.benThue != null ? hd.benThue : ''}"></td>
+                <td th:text="${hd.ngayBatDau != null ? #temporals.format(hd.ngayBatDau, 'dd/MM/yyyy') : ''}"></td>
+                <td th:text="${hd.ngayKetThuc != null ? #temporals.format(hd.ngayKetThuc, 'dd/MM/yyyy') : ''}"></td>
+                <td th:text="${hd.tienThue != null ? #numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></td>
+                <td>
+                    <span th:if="${hd.trangThai == 'ACTIVE'}" class="badge bg-success">ACTIVE</span>
+                    <span th:if="${hd.trangThai == 'EXPIRED'}" class="badge bg-secondary">EXPIRED</span>
+                    <span th:if="${hd.trangThai == 'TERMINATED'}" class="badge bg-danger">TERMINATED</span>
+                    <span th:if="${hd.trangThai == 'DRAFT'}" class="badge bg-warning">DRAFT</span>
+                </td>
+                <td>
+                    <a th:href="@{/admin/hop-dong/chi-tiet/{id}(id=${hd.id})}"
+                       class="btn btn-sm btn-info text-white">Xem</a>
+                    <a th:href="@{/admin/hop-dong/sua/{id}(id=${hd.id})}"
+                       class="btn btn-sm btn-warning">Sửa</a>
+                    <a th:if="${hd.trangThai == 'ACTIVE'}"
+                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='TERMINATED')}"
+                       class="btn btn-sm btn-danger">Thanh lý</a>
+                    <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}"
+                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}"
+                       class="btn btn-sm btn-success">Kích hoạt</a>
+                    <a th:href="@{/admin/hop-dong/xuat-pdf/{id}(id=${hd.id})}"
+                       class="btn btn-sm btn-outline-primary">PDF</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(danhSachHopDong)}">
+                <td colspan="11" class="text-center text-muted">Chưa có hợp đồng nào trong hệ thống!</td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>
