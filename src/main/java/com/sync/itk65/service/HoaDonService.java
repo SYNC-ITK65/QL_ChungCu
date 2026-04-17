@@ -10,6 +10,8 @@ import com.sync.itk65.repository.ChiSoHangThangRepository;
 import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.PhuongTienRepository;
 import com.sync.itk65.repository.DatDichVuRepository;
+import com.sync.itk65.repository.ThanhToanRepository;
+import com.sync.itk65.repository.HopDongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,9 +42,15 @@ public class HoaDonService {
     @Autowired
     private DatDichVuRepository datDichVuRepository;
 
-    // Lấy danh sách toàn bộ hóa đơn
-    public List<HoaDon> layTatCaHoaDon() {
-        return hoaDonRepository.findAll();
+    @Autowired
+    private ThanhToanRepository thanhToanRepository;
+
+    @Autowired
+    private HopDongRepository hopDongRepository;
+
+    // Tìm kiếm hóa đơn theo nhiều điều kiện
+    public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
+        return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
     }
 
     public Page<HoaDon> layTatCaHoaDon(int page, int size) {
@@ -55,7 +63,10 @@ public class HoaDonService {
         return hoaDonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
     }
-
+    // Lấy danh sách toàn bộ hóa đơn
+    public List<HoaDon> layTatCaHoaDon() {
+        return hoaDonRepository.findAll();
+    }
     // Cập nhật hóa đơn
     public void capNhatHoaDon(HoaDon hoaDon) {
         // Nếu tổng tiền là null hoặc 0, tính lại tổng
@@ -71,6 +82,12 @@ public class HoaDonService {
         Long canHoId = hoaDon.getCanHo().getId();
         int thang = hoaDon.getNgayPhatHanh().getMonthValue();
         int nam = hoaDon.getNgayPhatHanh().getYear();
+
+        // VALIDATION: Kiểm tra xem đã có hóa đơn cho căn hộ trong tháng đó chưa (tránh tạo trùng)
+        Long soLuongHoaDonTrung = hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam);
+        if (soLuongHoaDonTrung > 0) {
+            throw new RuntimeException("Không thể tạo hóa đơn: Căn hộ này đã có hóa đơn cho tháng " + thang + "/" + nam + ". Vui lòng kiểm tra lại.");
+        }
 
         // VALIDATION: Kiểm tra xem đã có chỉ số điện nước cho tháng đó chưa
         ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)
@@ -118,7 +135,17 @@ public class HoaDonService {
             }
         }
 
-        // BƯỚC 6: Lưu hóa đơn vào Database
+        // BƯỚC 6: Tính tiền thuê chung cư
+        com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
+        Double tienThueChungCu = 0.0;
+        if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
+            int ngayTrongThang = hoaDon.getNgayPhatHanh().lengthOfMonth();
+            int ngayDonVao = hopDong.getNgayBatDau().getDayOfMonth();
+            tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * (ngayTrongThang - ngayDonVao + 1);
+        }
+        tongTien += tienThueChungCu;
+
+        // BƯỚC 7: Lưu hóa đơn vào Database
         hoaDon.setTongTien(tongTien);
         hoaDon.setTrangThaiThanhToan("Chưa đóng");
 
@@ -246,8 +273,25 @@ public class HoaDonService {
         dichVu.put("tongPhiDichVu", Math.round(tongPhiDichVu * 100.0) / 100.0);
         chiTiet.put("dichVu", dichVu);
 
-        // ========== 6. TỔNG CỘNG TẤT CẢ ==========
-        Double tongCong = tienDien + tienNuoc + phiQuanLy + tongPhiXe + tongPhiDichVu;
+        // ========== 6. TÍNH TIỀN THUÊ CHUNG CƯ ==========
+        com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
+        Double tienThueChungCu = 0.0;
+        int ngayDonVao = 0;
+        if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
+            int ngayTrongThang = hoaDon.getNgayPhatHanh().lengthOfMonth();
+            ngayDonVao = hopDong.getNgayBatDau().getDayOfMonth();
+            tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * (ngayTrongThang - ngayDonVao + 1);
+        }
+
+        Map<String, Object> thueChungCu = new LinkedHashMap<>();
+        thueChungCu.put("tienThue", hopDong != null ? hopDong.getTienThue() : 0.0);
+        thueChungCu.put("ngayTrongThang", hoaDon.getNgayPhatHanh().lengthOfMonth());
+        thueChungCu.put("ngayDonVao", ngayDonVao);
+        thueChungCu.put("tienThueChungCu", Math.round(tienThueChungCu * 100.0) / 100.0);
+        chiTiet.put("thueChungCu", thueChungCu);
+
+        // ========== 7. TỔNG CỘNG TẤT CẢ ==========
+        Double tongCong = tienDien + tienNuoc + phiQuanLy + tongPhiXe + tongPhiDichVu + tienThueChungCu;
 
         Map<String, Object> tongHop = new LinkedHashMap<>();
         tongHop.put("tienDien", Math.round(tienDien * 100.0) / 100.0);
@@ -255,10 +299,11 @@ public class HoaDonService {
         tongHop.put("phiQuanLy", Math.round(phiQuanLy * 100.0) / 100.0);
         tongHop.put("phiXe", Math.round(tongPhiXe * 100.0) / 100.0);
         tongHop.put("phiDichVu", Math.round(tongPhiDichVu * 100.0) / 100.0);
+        tongHop.put("tienThueChungCu", Math.round(tienThueChungCu * 100.0) / 100.0);
         tongHop.put("tongCong", Math.round(tongCong * 100.0) / 100.0);
         chiTiet.put("tongHop", tongHop);
 
-        // ========== 7. THÔNG TIN HÓA ĐƠN ==========
+        // ========== 8. THÔNG TIN HÓA ĐƠN ==========
         Map<String, Object> thongTinHD = new LinkedHashMap<>();
         thongTinHD.put("id", hoaDon.getId());
         thongTinHD.put("maCanHo", canHo.getMaCanHo());
@@ -282,6 +327,7 @@ public class HoaDonService {
             model.addAttribute("chiTietQuanLy", chiTiet.get("quanLy"));
             model.addAttribute("chiTietXe", chiTiet.get("xe"));
             model.addAttribute("chiTietDichVu", chiTiet.get("dichVu"));
+            model.addAttribute("chiTietThueChungCu", chiTiet.get("thueChungCu"));
             model.addAttribute("tongHop", chiTiet.get("tongHop"));
             model.addAttribute("thongTinHoaDon", chiTiet.get("thongTinHoaDon"));
             model.addAttribute("chiTietDayDu", chiTiet);
@@ -298,6 +344,19 @@ public class HoaDonService {
             hoaDon.setTrangThaiThanhToan("Đã đóng");
             hoaDonRepository.save(hoaDon);
         }
+    }
+
+    // Xóa hóa đơn và các bản ghi thanh toán liên quan
+    public void xoaHoaDon(Long id) {
+        HoaDon hoaDon = hoaDonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
+
+        // Xóa các bản ghi thanh toán liên quan đến hóa đơn này
+        List<com.sync.itk65.entity.ThanhToan> danhSachThanhToan = thanhToanRepository.findByHoaDonId(id);
+        thanhToanRepository.deleteAll(danhSachThanhToan);
+
+        // Xóa hóa đơn
+        hoaDonRepository.delete(hoaDon);
     }
 
     /**

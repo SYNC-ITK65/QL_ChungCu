@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/hoa-don")
@@ -23,13 +24,28 @@ public class HoaDonController {
     // Hiển thị danh sách
     @GetMapping
     public String hienThiDanhSach(Model model,
-                                  @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
-        Page<HoaDon> trangDuLieu = hoaDonService.layTatCaHoaDon(page, size);
-        model.addAttribute("danhSachHoaDon", trangDuLieu.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
-        model.addAttribute("size", size);
+                                  @RequestParam(required = false) String maCanHo,
+                                  @RequestParam(required = false) String trangThai,
+                                  @RequestParam(required = false) Integer thang,
+                                  @RequestParam(required = false) Integer nam) {
+        List<HoaDon> danhSachHoaDon;
+
+        // Xử lý empty string thành null để query hoạt động đúng
+        String maCanHoFilter = (maCanHo != null && !maCanHo.trim().isEmpty()) ? maCanHo.trim() : null;
+        String trangThaiFilter = (trangThai != null && !trangThai.trim().isEmpty()) ? trangThai.trim() : null;
+
+        // Nếu có tham số tìm kiếm, sử dụng filter
+        if (maCanHoFilter != null || trangThaiFilter != null || thang != null || nam != null) {
+            danhSachHoaDon = hoaDonService.timKiemHoaDon(maCanHoFilter, trangThaiFilter, thang, nam);
+        } else {
+            danhSachHoaDon = hoaDonService.layTatCaHoaDon();
+        }
+
+        model.addAttribute("danhSachHoaDon", danhSachHoaDon);
+        model.addAttribute("maCanHo", maCanHo != null ? maCanHo : "");
+        model.addAttribute("trangThai", trangThai != null ? trangThai : "");
+        model.addAttribute("thang", thang);
+        model.addAttribute("nam", nam);
         return "admin/hoa_don_list";
     }
 
@@ -104,4 +120,15 @@ public class HoaDonController {
 //        hoaDonService.danhDauDaThanhToan(id);
 //        return "redirect:/admin/hoa-don"; // Quay về trang danh sách
 //    }
+
+    // API Xử lý khi người dùng bấm nút "Xóa"
+    @GetMapping("/xoa/{id}")
+    public String xoaHoaDon(@PathVariable("id") Long id) {
+        try {
+            hoaDonService.xoaHoaDon(id);
+            return "redirect:/admin/hoa-don";
+        } catch (RuntimeException e) {
+            return "redirect:/admin/hoa-don?error=" + e.getMessage();
+        }
+    }
 }
