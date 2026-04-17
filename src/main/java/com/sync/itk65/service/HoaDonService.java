@@ -12,6 +12,9 @@ import com.sync.itk65.repository.PhuongTienRepository;
 import com.sync.itk65.repository.DatDichVuRepository;
 import com.sync.itk65.repository.ThanhToanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -44,6 +47,11 @@ public class HoaDonService {
     // Tìm kiếm hóa đơn theo nhiều điều kiện
     public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
         return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
+    }
+
+    public Page<HoaDon> layTatCaHoaDon(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hoaDonRepository.findAll(pageable);
     }
 
     // Lấy hóa đơn theo ID

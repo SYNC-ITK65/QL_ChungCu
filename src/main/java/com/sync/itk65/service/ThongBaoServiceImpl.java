@@ -3,6 +3,9 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.ThongBao;
 import com.sync.itk65.repository.ThongBaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,12 @@ public class ThongBaoServiceImpl implements ThongBaoService {
     @Override
     public List<ThongBao> getAllThongBao() {
         return thongBaoRepository.findAllByOrderByNgayDangDesc();
+    }
+
+    @Override
+    public Page<ThongBao> getAllThongBao(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return thongBaoRepository.findAllByOrderByNgayDangDesc(pageable);
     }
 
     @Override

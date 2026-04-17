@@ -4,6 +4,7 @@ import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.entity.ChiSoHangThang;
 import com.sync.itk65.repository.CanHoRepository;
 import com.sync.itk65.service.ChiSoHangThangService;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +22,14 @@ public class ChiSoHangThangController {
 
     // Hiển thị danh sách chỉ số
     @GetMapping
-    public String hienThiDanhSach(Model model) {
-        model.addAttribute("danhSachChiSo", chiSoHangThangService.layTatCaChiSo());
+    public String hienThiDanhSach(Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        Page<ChiSoHangThang> trangDuLieu = chiSoHangThangService.layTatCaChiSo(page, size);
+        model.addAttribute("danhSachChiSo", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/chi_so_list"; // Cần tạo file view chi_so_list.html
     }
 

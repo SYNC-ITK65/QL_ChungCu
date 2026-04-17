@@ -4,6 +4,7 @@ import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.entity.HoaDon;
 import com.sync.itk65.service.HoaDonService;
 import com.sync.itk65.repository.CanHoRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,30 +22,36 @@ public class HoaDonController {
     private CanHoRepository canHoRepository;
 
     // Hiển thị danh sách
+   // Hiển thị danh sách kết hợp Filter và Phân trang
     @GetMapping
     public String hienThiDanhSach(Model model,
                                   @RequestParam(required = false) String maCanHo,
                                   @RequestParam(required = false) String trangThai,
                                   @RequestParam(required = false) Integer thang,
-                                  @RequestParam(required = false) Integer nam) {
-        List<HoaDon> danhSachHoaDon;
-
-        // Xử lý empty string thành null để query hoạt động đúng
+                                  @RequestParam(required = false) Integer nam,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        
+        // 1. Xử lý chuẩn hóa dữ liệu filter
         String maCanHoFilter = (maCanHo != null && !maCanHo.trim().isEmpty()) ? maCanHo.trim() : null;
         String trangThaiFilter = (trangThai != null && !trangThai.trim().isEmpty()) ? trangThai.trim() : null;
 
-        // Nếu có tham số tìm kiếm, sử dụng filter
-        if (maCanHoFilter != null || trangThaiFilter != null || thang != null || nam != null) {
-            danhSachHoaDon = hoaDonService.timKiemHoaDon(maCanHoFilter, trangThaiFilter, thang, nam);
-        } else {
-            danhSachHoaDon = hoaDonService.layTatCaHoaDon();
-        }
+        // 2. Gọi service xử lý (Nên cập nhật Service để nhận cả tham số filter và pageable)
+        Page<HoaDon> trangDuLieu = hoaDonService.timKiemHoaDonPhanTrang(maCanHoFilter, trangThaiFilter, thang, nam, page, size);
 
-        model.addAttribute("danhSachHoaDon", danhSachHoaDon);
-        model.addAttribute("maCanHo", maCanHo != null ? maCanHo : "");
-        model.addAttribute("trangThai", trangThai != null ? trangThai : "");
+        // 3. Đưa dữ liệu ra view
+        model.addAttribute("danhSachHoaDon", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("totalItems", trangDuLieu.getTotalElements());
+        model.addAttribute("size", size);
+
+        // Giữ lại các giá trị filter để hiển thị trên form tìm kiếm ở giao diện
+        model.addAttribute("maCanHo", maCanHoFilter != null ? maCanHoFilter : "");
+        model.addAttribute("trangThai", trangThaiFilter != null ? trangThaiFilter : "");
         model.addAttribute("thang", thang);
         model.addAttribute("nam", nam);
+
         return "admin/hoa_don_list";
     }
 

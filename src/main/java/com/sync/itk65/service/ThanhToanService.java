@@ -6,6 +6,9 @@ import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.ThanhToanRepository;
 import com.sync.itk65.service.LichSuThanhToanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,11 @@ public class ThanhToanService {
     // Lấy tất cả lịch sử thanh toán
     public List<ThanhToan> layTatCaThanhToan() {
         return thanhToanRepository.findAll();
+    }
+
+    public Page<ThanhToan> layTatCaThanhToan(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return thanhToanRepository.findAll(pageable);
     }
 
     // Lấy lịch sử thanh toán theo ID hóa đơn
