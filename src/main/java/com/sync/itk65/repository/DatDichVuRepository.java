@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface DatDichVuRepository extends JpaRepository<DatDichVu, Long> {
 
-    @Query("SELECT d FROM DatDichVu d WHERE d.cuDan.canHo.id = :canHoId AND MONTH(d.ngayDat) = :thang AND YEAR(d.ngayDat) = :nam AND d.trangThai IN ('Đã duyệt', 'Đã sử dụng', 'Đã hoàn thành')")
+    @Query("SELECT d FROM DatDichVu d WHERE d.cuDan.canHo.id = :canHoId AND MONTH(d.ngayDat) = :thang AND YEAR(d.ngayDat) = :nam AND d.trangThai IN ('Đã duyệt', 'Đã sử dụng', 'Đã hoàn thành') ORDER BY d.ngayDat DESC")
     List<DatDichVu> findDichVuCuaCanHoTrongThang(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
 
     // Dùng @Query để lấy lịch sử đặt dịch vụ, sắp xếp ngày mới nhất lên đầu

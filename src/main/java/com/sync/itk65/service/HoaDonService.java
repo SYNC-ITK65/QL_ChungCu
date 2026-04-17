@@ -47,12 +47,20 @@ public class HoaDonService {
         int thang = hoaDon.getNgayPhatHanh().getMonthValue();
         int nam = hoaDon.getNgayPhatHanh().getYear();
 
-        Double tongTien = 0.0;
-
-        // BƯỚC 1: Lấy chỉ số điện nước của tháng đó
+        // VALIDATION: Kiểm tra xem đã có chỉ số điện nước cho tháng đó chưa
         ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)
                 .orElseThrow(
-                        () -> new RuntimeException("Chưa ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam));
+                        () -> new RuntimeException("Không thể tạo hóa đơn: Căn hộ chưa được ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam + ". Vui lòng ghi nhận chỉ số trước khi tạo hóa đơn."));
+
+        // VALIDATION: Kiểm tra chỉ số có hợp lệ không
+        if (chiSo.getDienTieuThu() == null || chiSo.getDienTieuThu() < 0) {
+            throw new RuntimeException("Chỉ số điện tiêu thụ không hợp lệ. Vui lòng kiểm tra lại.");
+        }
+        if (chiSo.getNuocTieuThu() == null || chiSo.getNuocTieuThu() < 0) {
+            throw new RuntimeException("Chỉ số nước tiêu thụ không hợp lệ. Vui lòng kiểm tra lại.");
+        }
+
+        Double tongTien = 0.0;
 
         // BƯỚC 2: Tính tiền Điện và Nước
         Double tienDien = tinhTienDienTheoBacThang(chiSo.getDienTieuThu());
@@ -289,7 +297,7 @@ public class HoaDonService {
             tienDien = 50 * 1806 + 50 * 1866 + 100 * 2167 + 100 * 2729 + 100 * 3050 + (soDien - 400) * 3151;
         }
 
-        return tienDien * 1.08;
+        return Math.round(tienDien * 1.08 * 100.0) / 100.0;
     }
 
     private Double tinhPhiGuiXe(String loaiXe) {
