@@ -42,6 +42,23 @@ public class HoaDonService {
         return hoaDonRepository.findAll();
     }
 
+    // Lấy hóa đơn theo ID
+    public HoaDon layHoaDonById(Long id) {
+        return hoaDonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
+    }
+
+    // Cập nhật hóa đơn
+    public void capNhatHoaDon(HoaDon hoaDon) {
+        // Nếu tổng tiền là null hoặc 0, tính lại tổng
+        if (hoaDon.getTongTien() == null || hoaDon.getTongTien() == 0) {
+            taoHoaDonTuDong(hoaDon);
+        } else {
+            // Chỉ cần cập nhật thông tin cơ bản
+            hoaDonRepository.save(hoaDon);
+        }
+    }
+
     public void taoHoaDonTuDong(HoaDon hoaDon) {
         Long canHoId = hoaDon.getCanHo().getId();
         int thang = hoaDon.getNgayPhatHanh().getMonthValue();
