@@ -4,6 +4,7 @@ import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.entity.HoaDon;
 import com.sync.itk65.service.HoaDonService;
 import com.sync.itk65.repository.CanHoRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +22,14 @@ public class HoaDonController {
 
     // Hiển thị danh sách
     @GetMapping
-    public String hienThiDanhSach(Model model) {
-        model.addAttribute("danhSachHoaDon", hoaDonService.layTatCaHoaDon());
+    public String hienThiDanhSach(Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        Page<HoaDon> trangDuLieu = hoaDonService.layTatCaHoaDon(page, size);
+        model.addAttribute("danhSachHoaDon", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/hoa_don_list";
     }
 

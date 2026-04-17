@@ -1,6 +1,8 @@
 package com.sync.itk65.repository;
 
 import com.sync.itk65.entity.ThanhToan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +15,5 @@ public interface ThanhToanRepository extends JpaRepository<ThanhToan, Long> {
 
     // Lấy lịch sử thanh toán theo căn hộ (thông qua hóa đơn), mới nhất trước.
     List<ThanhToan> findByHoaDonCanHoIdOrderByNgayThanhToanDescIdDesc(Long canHoId);
+    Page<ThanhToan> findByHoaDonCanHoIdOrderByNgayThanhToanDescIdDesc(Long canHoId, Pageable pageable);
 }

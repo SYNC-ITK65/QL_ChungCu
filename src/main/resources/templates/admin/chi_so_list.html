@@ -15,7 +15,7 @@
             <a th:href="@{/admin/chi-so/tao-moi}" class="btn btn-primary">+ Ghi nhận Chỉ số mới</a>
         </div>
 
-        <table class="table table-striped table-hover border">
+        <table class="table table-striped table-hover border no-paging">
             <thead class="table-dark">
             <tr>
                 <th>ID</th>
@@ -38,7 +38,11 @@
             </tr>
             </tbody>
         </table>
+        <div th:replace="~{fragments/pagination :: paging('/admin/chi-so', '')}"></div>
     </div>
 </div>
+
+    <!-- Dùng fragment Datatable chung -->
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
 </body>
 </html>
