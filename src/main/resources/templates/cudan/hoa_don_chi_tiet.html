@@ -558,6 +558,35 @@
         </table>
     </div>
 
+    <!-- CHI TIẾT TIỀN THUÊ CHUNG CƯ -->
+    <div class="detail-section" th:if="${chiTietThueChungCu != null and chiTietThueChungCu.tienThueChungCu > 0}">
+        <h3><i class="bi bi-house"></i> Tiền Thuê Chung Cư</h3>
+        <div class="fee-card" style="border-left-color: #f56565; background: linear-gradient(135deg, rgba(245, 101, 101, 0.05) 0%, rgba(245, 101, 101, 0.02) 100%);">
+            <div class="fee-card-header">
+                <span class="fee-card-title">Tiền thuê theo công thức</span>
+                <span class="fee-card-amount" th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+        </div>
+        <table class="detail-table">
+            <tr>
+                <td class="label">Tiền thuê hàng tháng</td>
+                <td class="value" th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
+            </tr>
+            <tr>
+                <td class="label">Số ngày trong tháng</td>
+                <td class="value" th:text="${chiTietThueChungCu.ngayTrongThang}"></td>
+            </tr>
+            <tr>
+                <td class="label">Ngày dọn vào</td>
+                <td class="value" th:text="${chiTietThueChungCu.ngayDonVao}"></td>
+            </tr>
+            <tr style="background: #f7fafc;">
+                <td class="label" style="font-weight: 700; color: #f56565;">Tổng tiền thuê chung cư</td>
+                <td class="value" style="color: #f56565;" th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
+            </tr>
+        </table>
+    </div>
+
     <!-- TỔNG CỘNG -->
     <div class="total-section" th:if="${tongHop}">
         <div class="total-row">
@@ -579,6 +608,10 @@
         <div class="total-row">
             <span class="label">Phí Dịch Vụ</span>
             <span class="amount" th:text="${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="total-row" th:if="${tongHop.tienThueChungCu > 0}">
+            <span class="label">Tiền Thuê Chung Cư</span>
+            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
         </div>
         <div class="total-row">
             <span class="label">TỔNG CỘNG</span>

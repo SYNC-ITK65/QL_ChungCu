@@ -2,7 +2,9 @@ package com.sync.itk65.controller;
 
 import com.sync.itk65.entity.CuDan;
 import com.sync.itk65.entity.HoaDon;
+import com.sync.itk65.entity.NguoiDung;
 import com.sync.itk65.service.HoaDonService;
+import com.sync.itk65.service.CuDanService;
 import com.sync.itk65.repository.HoaDonRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-// import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cudan/hoa-don")
@@ -26,6 +27,9 @@ public class CuDanHoaDonController {
     @Autowired
     private HoaDonService hoaDonService;
 
+    @Autowired
+    private CuDanService cuDanService;
+
     /**
      * 1️⃣ Hiển thị DANH SÁCH HÓA ĐƠN của cư dân
      * URL: /cudan/hoa-don
@@ -36,10 +40,13 @@ public class CuDanHoaDonController {
                                         @RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "10") int size) {
         // Lấy thông tin cư dân từ session
-        CuDan cuDan = (CuDan) session.getAttribute("nguoiDungDangNhap");
-
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user == null) {
+            return "redirect:/"; // Chưa đăng nhập
+        }
+        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
         if (cuDan == null || cuDan.getCanHo() == null) {
-            return "redirect:/"; // Chưa đăng nhập hoặc không có căn hộ
+            return "redirect:/"; // Không có cư dân hoặc không có căn hộ
         }
 
         // Lấy danh sách hóa đơn theo căn hộ
@@ -89,6 +96,7 @@ public class CuDanHoaDonController {
         model.addAttribute("size", size);
         return "cudan/hoa_don_list";
     }
+
     /**
      * 2️⃣ Hiển thị CHI TIẾT HÓA ĐƠN của cư dân
      * URL: /cudan/hoa-don/chi-tiet/{id}
@@ -98,8 +106,11 @@ public class CuDanHoaDonController {
                                    HttpSession session,
                                    Model model) {
         // Kiểm tra đăng nhập
-        CuDan cuDan = (CuDan) session.getAttribute("nguoiDungDangNhap");
-
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user == null) {
+            return "redirect:/";
+        }
+        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
         if (cuDan == null || cuDan.getCanHo() == null) {
             return "redirect:/";
         }
@@ -126,10 +137,13 @@ public class CuDanHoaDonController {
     @ResponseBody
     public java.util.Map<String, Object> layChiTietHoaDonAPI(@PathVariable("id") Long hoaDonId,
                                                              HttpSession session) {
-        CuDan cuDan = (CuDan) session.getAttribute("nguoiDungDangNhap");
-
-        if (cuDan == null) {
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user == null) {
             return java.util.Map.of("error", "Chưa đăng nhập");
+        }
+        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
+        if (cuDan == null) {
+            return java.util.Map.of("error", "Không tìm thấy cư dân");
         }
 
         HoaDon hoaDon = hoaDonRepository.findById(hoaDonId).orElse(null);
@@ -167,8 +181,11 @@ public class CuDanHoaDonController {
     @GetMapping("/thong-ke")
     @ResponseBody
     public java.util.Map<String, Object> thongKeHoaDon(HttpSession session) {
-        CuDan cuDan = (CuDan) session.getAttribute("nguoiDungDangNhap");
-
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user == null) {
+            return java.util.Map.of("error", "Chưa đăng nhập");
+        }
+        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
         if (cuDan == null || cuDan.getCanHo() == null) {
             return java.util.Map.of("error", "Không có quyền");
         }

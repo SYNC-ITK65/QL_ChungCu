@@ -236,6 +236,33 @@
             </div>
         </div>
 
+        <!-- Tiền thuê chung cư -->
+        <div class="card mt-4" th:if="${chiTietThueChungCu != null and chiTietThueChungCu.tienThueChungCu > 0}">
+            <div class="card-header bg-danger text-white">
+                <h6 class="mb-0">Tiền Thuê Chung Cư</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td>Tiền thuê hàng tháng:</td>
+                        <td class="text-end" th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">5,000,000 VNĐ</td>
+                    </tr>
+                    <tr>
+                        <td>Số ngày trong tháng:</td>
+                        <td class="text-end" th:text="${chiTietThueChungCu.ngayTrongThang}">30</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày dọn vào:</td>
+                        <td class="text-end" th:text="${chiTietThueChungCu.ngayDonVao}">20</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>Tổng tiền thuê chung cư:</strong></td>
+                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">1,666,667 VNĐ</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         <!-- Tổng hợp -->
         <div class="card mt-4">
             <div class="card-header grand-total">
