@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -92,38 +93,50 @@ public class NguoiDungController {
         return "admin/nguoi_dung_form";
     }
 
-    // Hàm xử lý lưu dữ liệu từ form
+    // Hàm xử lý lưu dữ liệu từ form (Kèm bắt lỗi Validator bằng Exception)
     @PostMapping("/luu")
-    public String luuNguoiDung(@ModelAttribute("nguoiDung") CuDan cuDan) {
+    public String luuNguoiDung(@ModelAttribute("nguoiDung") CuDan cuDan, RedirectAttributes ra) {
         // Xử lý lỗi Căn hộ rỗng -> Hibernate không lưu được đối tượng có ID null
         if (cuDan.getCanHo() != null && cuDan.getCanHo().getId() == null) {
             cuDan.setCanHo(null);
         }
 
-        if (cuDan.getVaiTro() == 1 || cuDan.getVaiTro() == 2) {
-            // Lưu admin/staff: Chỉ lưu thông tin NguoiDung, tránh lưu vào cả bảng cu_dan
-            NguoiDung adminStaff = new NguoiDung();
-            adminStaff.setId(cuDan.getId()); // Nếu là update
-            adminStaff.setTenDangNhap(cuDan.getTenDangNhap());
-            adminStaff.setMatKhauMaHoa(cuDan.getMatKhauMaHoa());
-            adminStaff.setHoTen(cuDan.getHoTen());
-            adminStaff.setEmail(cuDan.getEmail());
-            adminStaff.setSoDienThoai(cuDan.getSoDienThoai());
-            adminStaff.setVaiTro(cuDan.getVaiTro());
+        try {
+            if (cuDan.getVaiTro() == 1 || cuDan.getVaiTro() == 2) {
+                // Lưu admin/staff: Chỉ lưu thông tin NguoiDung, tránh lưu vào cả bảng cu_dan
+                NguoiDung adminStaff = new NguoiDung();
+                adminStaff.setId(cuDan.getId()); // Nếu là update
+                adminStaff.setTenDangNhap(cuDan.getTenDangNhap());
+                adminStaff.setMatKhauMaHoa(cuDan.getMatKhauMaHoa());
+                adminStaff.setHoTen(cuDan.getHoTen());
+                adminStaff.setEmail(cuDan.getEmail());
+                adminStaff.setSoDienThoai(cuDan.getSoDienThoai());
+                adminStaff.setVaiTro(cuDan.getVaiTro());
 
-            // Đặt mật khẩu mặc định nếu rỗng
-            if (adminStaff.getMatKhauMaHoa() == null || adminStaff.getMatKhauMaHoa().isEmpty()) {
-                adminStaff.setMatKhauMaHoa("1234");
+                // Đặt mật khẩu mặc định nếu rỗng
+                if (adminStaff.getMatKhauMaHoa() == null || adminStaff.getMatKhauMaHoa().isEmpty()) {
+                    adminStaff.setMatKhauMaHoa("1234");
+                }
+                nguoiDungService.luuNguoiDung(adminStaff);
+            } else {
+                // Lưu cư dân (Chủ hộ/Người thuê)
+                if (cuDan.getMatKhauMaHoa() == null || cuDan.getMatKhauMaHoa().isEmpty()) {
+                    cuDan.setMatKhauMaHoa("1234");
+                }
+                cuDanService.luuCuDan(cuDan);
             }
-            nguoiDungService.luuNguoiDung(adminStaff);
-        } else {
-            // Lưu cư dân (Chủ hộ/Người thuê)
-            if (cuDan.getMatKhauMaHoa() == null || cuDan.getMatKhauMaHoa().isEmpty()) {
-                cuDan.setMatKhauMaHoa("1234");
+            return "redirect:/admin/nguoi-dung";
+        } catch (IllegalArgumentException e) {
+            // Ném thông báo lỗi về form thông qua biến flash attribute
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+
+            // Trả người dùng về lại màn hình Cập nhật hoặc Thêm mới tương ứng
+            if (cuDan.getId() != null) {
+                return "redirect:/admin/nguoi-dung/sua/" + cuDan.getId();
+            } else {
+                return "redirect:/admin/nguoi-dung/tao-moi";
             }
-            cuDanService.luuCuDan(cuDan);
         }
-        return "redirect:/admin/nguoi-dung";
     }
 
     // Xóa người dùng
@@ -141,7 +154,8 @@ public class NguoiDungController {
         String filename = "danh_sach_nguoi_dung_" + ts + ".xlsx";
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .contentType(
+                        MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(bytes);
     }

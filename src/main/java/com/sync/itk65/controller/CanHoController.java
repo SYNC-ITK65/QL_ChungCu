@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.sync.itk65.entity.CanHo;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class CanHoController {
     @Autowired
     private CanHoService canHoService;
 
-    // Hàm hiển thị danh sách căn hộ (Có phân trang, tìm kiếm)
+    // Hàm hiển thị danh sách căn hộ (Có phân trang dữ liệu, và các tiêu chí tìm kiếm cơ bản)
     @GetMapping
     public String hienThiDanhSach(
             @RequestParam(required = false) String trangThai,
@@ -30,12 +31,16 @@ public class CanHoController {
             @RequestParam(defaultValue = "5") int size,
             Model model) {
         
-        org.springframework.data.domain.Page<CanHo> pageCanHo = canHoService.timKiemCanHo(trangThai, dienTich, tang, page, size);
+        // Gọi service xử lý tìm kiếm và phân trang, nhận về đối tượng Page chứa dữ liệu căn hộ
+        org.springframework.data.domain.Page<CanHo> trangDuLieuCanHo = canHoService.timKiemCanHo(trangThai, dienTich, tang, page, size);
         
-        model.addAttribute("danhSachCanHo", pageCanHo.getContent());
+        // Đưa danh sách căn hộ của trang hiện tại lên giao diện
+        model.addAttribute("danhSachCanHo", trangDuLieuCanHo.getContent());
+        // Truyền thông tin phân trang (trang hiện tại và tổng số trang) xuống view xử lý nút bấm
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", pageCanHo.getTotalPages());
-        // Giữ lại tham số tìm kiếm để bind lại form
+        model.addAttribute("totalPages", trangDuLieuCanHo.getTotalPages());
+        
+        // Giữ lại tham số tìm kiếm cũ trên giao diện phân trang (ngăn chặn mất tham số khi qua trang khác)
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("dienTich", dienTich);
         model.addAttribute("tang", tang);
@@ -59,11 +64,22 @@ public class CanHoController {
         return "admin/can_ho_form";
     }
 
-    // Hàm xử lý lưu dữ liệu từ form
+    // Hàm xử lý lưu dữ liệu từ form và bắt lỗi Validation bằng try-catch
     @PostMapping("/luu")
-    public String luuCanHo(@ModelAttribute("canHo") CanHo canHo) {
-        canHoService.luuCanHo(canHo);
-        return "redirect:/admin/can-ho"; // Quay về trang danh sách sau khi lưu
+    public String luuCanHo(@ModelAttribute("canHo") CanHo canHo, RedirectAttributes ra) {
+        try {
+            canHoService.luuCanHo(canHo);
+            return "redirect:/admin/can-ho"; // Quay về trang danh sách sau khi lưu thành công
+        } catch (IllegalArgumentException e) {
+            // Ném lỗi Validation về giao diện
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+            // Quay lại trang Cập nhật hoặc Thêm mới
+            if (canHo.getId() != null) {
+                return "redirect:/admin/can-ho/sua/" + canHo.getId();
+            } else {
+                return "redirect:/admin/can-ho/tao-moi";
+            }
+        }
     }
 
     // Xóa căn hộ

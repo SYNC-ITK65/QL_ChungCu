@@ -24,6 +24,12 @@ public class ThongBao {
     @Column(name = "loai", nullable = false)
     private Integer loai; // 1: Bảng tin chung, 2: Cẩm nang
 
+    @Column(name = "doi_tuong_gui")
+    private String doiTuongGui; // Đối tượng nhận: ALL, HO_GIA_DINH, NHIEU_HO, TANG
+
+    @Column(name = "gia_tri_doi_tuong")
+    private String giaTriDoiTuong; // Căn hộ cụ thể hoặc tầng
+
     @PrePersist
     protected void onCreate() {
         if (ngayDang == null) {
@@ -70,6 +76,22 @@ public class ThongBao {
 
     public void setLoai(Integer loai) {
         this.loai = loai;
+    }
+
+    public String getDoiTuongGui() {
+        return doiTuongGui;
+    }
+
+    public void setDoiTuongGui(String doiTuongGui) {
+        this.doiTuongGui = doiTuongGui;
+    }
+
+    public String getGiaTriDoiTuong() {
+        return giaTriDoiTuong;
+    }
+
+    public void setGiaTriDoiTuong(String giaTriDoiTuong) {
+        this.giaTriDoiTuong = giaTriDoiTuong;
     }
 
 }

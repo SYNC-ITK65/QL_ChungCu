@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,30 +23,37 @@ public class CuDanController {
     @Autowired
     private CanHoService canHoService;
 
-    // Xem danh sách cư dân (Có thể lọc theo căn hộ, từ khóa, trạng thái, và có phân trang)
+    // Xem danh sách cư dân (Hỗ trợ phân trang, và áp dụng các tiêu chí tìm kiếm bao gồm Lọc theo ID Căn hộ)
     @GetMapping
     public String hienThiDanhSach(
             @RequestParam(required = false) Long canHoId,
             @RequestParam(required = false) String tuKhoa,
             @RequestParam(required = false) String trangThai,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "0") int page, // Trang bắt đầu (số 0)
+            @RequestParam(defaultValue = "5") int size, // Kích thước phân trang mặc định
             Model model) {
 
-        org.springframework.data.domain.Page<CuDan> pageCuDan;
+        // Đối tượng chứa kết quả cư dân kèm theo thông tin tổng số trang
+        org.springframework.data.domain.Page<CuDan> trangDuLieuCuDan;
 
+        // Xử lý nhánh tìm kiếm: Kiểm tra xem người dùng có chọn cụ thể một Căn hộ để trích xuất không
         if (canHoId != null) {
-            pageCuDan = cuDanService.timKiemTheoCanHo(canHoId, tuKhoa, trangThai, page, size);
+            trangDuLieuCuDan = cuDanService.timKiemTheoCanHo(canHoId, tuKhoa, trangThai, page, size);
             model.addAttribute("canHoHienTai", canHoService.layCanHoTheoId(canHoId));
         } else {
-            pageCuDan = cuDanService.timKiemCuDan(tuKhoa, trangThai, page, size);
+            trangDuLieuCuDan = cuDanService.timKiemCuDan(tuKhoa, trangThai, page, size);
         }
 
-        model.addAttribute("danhSachCuDan", pageCuDan.getContent());
+        // Đẩy danh sách dữ liệu thực tế (danh sách cư dân của trang hiện tại) sang view
+        model.addAttribute("danhSachCuDan", trangDuLieuCuDan.getContent());
+        // Danh sách căn hộ hỗ trợ cho dropdown bộ lọc trên giao diện
         model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
         
+        // Cung cấp dữ liệu phân trang để build thanh Pagination trên View
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", pageCuDan.getTotalPages());
+        model.addAttribute("totalPages", trangDuLieuCuDan.getTotalPages());
+        
+        // Tham số bộ lọc được giữ lại để điền sẵn vào Form (Giữ nguyên trạng thái hiển thị)
         model.addAttribute("canHoId", canHoId);
         model.addAttribute("tuKhoa", tuKhoa);
         model.addAttribute("trangThai", trangThai);
@@ -80,7 +88,7 @@ public class CuDanController {
 
     // Xử lý lưu (Lưu chung cả user info và Resident info nhờ kế thừa)
     @PostMapping("/luu")
-    public String luuCuDan(@ModelAttribute("cuDan") CuDan cuDan) {
+    public String luuCuDan(@ModelAttribute("cuDan") CuDan cuDan, RedirectAttributes ra) {
         // Xử lý lỗi Căn hộ rỗng -> Hibernate không lưu được đối tượng có ID null
         if (cuDan.getCanHo() != null && cuDan.getCanHo().getId() == null) {
             cuDan.setCanHo(null);
@@ -99,8 +107,19 @@ public class CuDanController {
             cuDan.setMatKhauMaHoa("123456");
         }
 
-        cuDanService.luuCuDan(cuDan);
-        return "redirect:/admin/cu-dan";
+        try {
+            cuDanService.luuCuDan(cuDan);
+            return "redirect:/admin/cu-dan";
+        } catch (IllegalArgumentException e) {
+            // Ném lỗi về lại file giao diện (form) để người dùng xem
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+            
+            if (cuDan.getId() != null) {
+                return "redirect:/admin/cu-dan/sua/" + cuDan.getId();
+            } else {
+                return "redirect:/admin/cu-dan/tao-moi";
+            }
+        }
     }
 
     // Xóa cư dân chuyển đi

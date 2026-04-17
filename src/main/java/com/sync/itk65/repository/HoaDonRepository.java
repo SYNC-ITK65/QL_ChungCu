@@ -24,4 +24,12 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     // Lấy hóa đơn đã thanh toán
     @Query("SELECT h FROM HoaDon h WHERE h.trangThaiThanhToan = 'Đã đóng' AND h.canHo.id = :canHoId")
     List<HoaDon> findPaidByCanHoId(@Param("canHoId") Long canHoId);
+
+    // Lấy doanh thu 6 tháng gần nhất
+    @Query("SELECT MONTH(h.ngayPhatHanh), YEAR(h.ngayPhatHanh), COALESCE(SUM(h.tongTien), 0) " +
+           "FROM HoaDon h " +
+           "WHERE h.ngayPhatHanh >= :sixMonthsAgo " +
+           "GROUP BY YEAR(h.ngayPhatHanh), MONTH(h.ngayPhatHanh) " +
+           "ORDER BY YEAR(h.ngayPhatHanh) ASC, MONTH(h.ngayPhatHanh) ASC")
+    List<Object[]> getRevenueLast6Months(@Param("sixMonthsAgo") java.time.LocalDate sixMonthsAgo);
 }

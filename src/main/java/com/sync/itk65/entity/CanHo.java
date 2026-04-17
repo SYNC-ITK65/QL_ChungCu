@@ -2,6 +2,9 @@ package com.sync.itk65.entity;
 
 import java.util.List;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "can_ho")
@@ -11,12 +14,19 @@ public class CanHo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Ràng buộc giá trị rỗng cho mã căn hộ, nếu rỗng sẽ báo lỗi về form
+    @NotBlank(message = "Mã căn hộ không được để trống")
     @Column(name = "ma_can_ho")
     private String maCanHo;
 
+    // Giới hạn giá trị nhỏ nhất cho diện tích để đảm bảo dữ liệu hợp lý
+    @Min(value = 1, message = "Diện tích căn hộ phải lớn hơn 0 m2")
     @Column(name = "dien_tich")
     private Double dienTich;
 
+    // Đảm bảo tầng nằm ở trong giới hạn (từ 1 đến 100) của chung cư
+    @Min(value = 1, message = "Số tầng tối thiểu phải từ tầng 1 trở lên")
+    @Max(value = 100, message = "Số tầng vượt quá mức tối đa của chung cư (100 tầng)")
     @Column(name = "tang")
     private Integer tang;
 

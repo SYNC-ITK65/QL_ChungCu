@@ -4,6 +4,8 @@ import com.sync.itk65.entity.NguoiDung;
 import com.sync.itk65.repository.NguoiDungRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
+@Validated
 public class NguoiDungService {
 
     @Autowired
@@ -24,9 +27,24 @@ public class NguoiDungService {
         return nguoiDungRepository.findAll();
     }
 
-    // 2. Lưu thông tin người dùng (Dùng cho cả Thêm mới và Sửa)
-    public void luuNguoiDung(NguoiDung nguoiDung) {
-        nguoiDungRepository.save(nguoiDung);
+    // 2. Lưu thông tin người dùng kèm kiểm tra Validator tránh trùng lặp Tên đăng nhập
+    public void luuNguoiDung(@Valid NguoiDung nguoiDung) {
+        try {
+            List<NguoiDung> tatCa = layTatCaNguoiDung();
+            for (NguoiDung item : tatCa) {
+                if (item.getTenDangNhap() != null && item.getTenDangNhap().equals(nguoiDung.getTenDangNhap())) {
+                    // Update thì bỏ qua tính chính nó
+                    if (nguoiDung.getId() == null || !item.getId().equals(nguoiDung.getId())) {
+                        throw new IllegalArgumentException("Tên đăng nhập: '" + nguoiDung.getTenDangNhap() + "' đã được đăng ký!");
+                    }
+                }
+            }
+            nguoiDungRepository.save(nguoiDung);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Có lỗi hệ thống xảy ra khi lưu thiết lập Người dùng. Xin thử lại sau!");
+        }
     }
 
     // 3. Lấy thông tin người dùng theo ID (Dùng để sửa)
