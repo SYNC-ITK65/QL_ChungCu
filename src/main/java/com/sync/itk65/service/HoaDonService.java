@@ -11,6 +11,7 @@ import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.PhuongTienRepository;
 import com.sync.itk65.repository.DatDichVuRepository;
 import com.sync.itk65.repository.ThanhToanRepository;
+import com.sync.itk65.repository.HopDongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -40,6 +41,9 @@ public class HoaDonService {
 
     @Autowired
     private ThanhToanRepository thanhToanRepository;
+
+    @Autowired
+    private HopDongRepository hopDongRepository;
 
     // Tìm kiếm hóa đơn theo nhiều điều kiện
     public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
@@ -123,7 +127,17 @@ public class HoaDonService {
             }
         }
 
-        // BƯỚC 6: Lưu hóa đơn vào Database
+        // BƯỚC 6: Tính tiền thuê chung cư
+        com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
+        Double tienThueChungCu = 0.0;
+        if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
+            int ngayTrongThang = hoaDon.getNgayPhatHanh().lengthOfMonth();
+            int ngayDonVao = hopDong.getNgayBatDau().getDayOfMonth();
+            tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * (ngayTrongThang - ngayDonVao + 1);
+        }
+        tongTien += tienThueChungCu;
+
+        // BƯỚC 7: Lưu hóa đơn vào Database
         hoaDon.setTongTien(tongTien);
         hoaDon.setTrangThaiThanhToan("Chưa đóng");
 
@@ -251,8 +265,25 @@ public class HoaDonService {
         dichVu.put("tongPhiDichVu", Math.round(tongPhiDichVu * 100.0) / 100.0);
         chiTiet.put("dichVu", dichVu);
 
-        // ========== 6. TỔNG CỘNG TẤT CẢ ==========
-        Double tongCong = tienDien + tienNuoc + phiQuanLy + tongPhiXe + tongPhiDichVu;
+        // ========== 6. TÍNH TIỀN THUÊ CHUNG CƯ ==========
+        com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
+        Double tienThueChungCu = 0.0;
+        int ngayDonVao = 0;
+        if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
+            int ngayTrongThang = hoaDon.getNgayPhatHanh().lengthOfMonth();
+            ngayDonVao = hopDong.getNgayBatDau().getDayOfMonth();
+            tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * (ngayTrongThang - ngayDonVao + 1);
+        }
+
+        Map<String, Object> thueChungCu = new LinkedHashMap<>();
+        thueChungCu.put("tienThue", hopDong != null ? hopDong.getTienThue() : 0.0);
+        thueChungCu.put("ngayTrongThang", hoaDon.getNgayPhatHanh().lengthOfMonth());
+        thueChungCu.put("ngayDonVao", ngayDonVao);
+        thueChungCu.put("tienThueChungCu", Math.round(tienThueChungCu * 100.0) / 100.0);
+        chiTiet.put("thueChungCu", thueChungCu);
+
+        // ========== 7. TỔNG CỘNG TẤT CẢ ==========
+        Double tongCong = tienDien + tienNuoc + phiQuanLy + tongPhiXe + tongPhiDichVu + tienThueChungCu;
 
         Map<String, Object> tongHop = new LinkedHashMap<>();
         tongHop.put("tienDien", Math.round(tienDien * 100.0) / 100.0);
@@ -260,10 +291,11 @@ public class HoaDonService {
         tongHop.put("phiQuanLy", Math.round(phiQuanLy * 100.0) / 100.0);
         tongHop.put("phiXe", Math.round(tongPhiXe * 100.0) / 100.0);
         tongHop.put("phiDichVu", Math.round(tongPhiDichVu * 100.0) / 100.0);
+        tongHop.put("tienThueChungCu", Math.round(tienThueChungCu * 100.0) / 100.0);
         tongHop.put("tongCong", Math.round(tongCong * 100.0) / 100.0);
         chiTiet.put("tongHop", tongHop);
 
-        // ========== 7. THÔNG TIN HÓA ĐƠN ==========
+        // ========== 8. THÔNG TIN HÓA ĐƠN ==========
         Map<String, Object> thongTinHD = new LinkedHashMap<>();
         thongTinHD.put("id", hoaDon.getId());
         thongTinHD.put("maCanHo", canHo.getMaCanHo());
@@ -287,6 +319,7 @@ public class HoaDonService {
             model.addAttribute("chiTietQuanLy", chiTiet.get("quanLy"));
             model.addAttribute("chiTietXe", chiTiet.get("xe"));
             model.addAttribute("chiTietDichVu", chiTiet.get("dichVu"));
+            model.addAttribute("chiTietThueChungCu", chiTiet.get("thueChungCu"));
             model.addAttribute("tongHop", chiTiet.get("tongHop"));
             model.addAttribute("thongTinHoaDon", chiTiet.get("thongTinHoaDon"));
             model.addAttribute("chiTietDayDu", chiTiet);
