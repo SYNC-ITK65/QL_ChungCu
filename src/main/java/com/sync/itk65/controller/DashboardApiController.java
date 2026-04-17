@@ -39,9 +39,9 @@ public class DashboardApiController {
         // Sử dụng vòng lặp for truyền thống để duyệt từng dòng kết quả
         for (Object[] dongDuLieu : danhSachKetQua) {
             // Ép kiểu theo cấu trúc SELECT của Repository: 0 là Tháng, 1 là Năm, 2 là Tổng tiền
-            Integer thang = (Integer) dongDuLieu[0];
-            Integer nam = (Integer) dongDuLieu[1];
-            Double doanhThuThang = (Double) dongDuLieu[2];
+            Integer thang = ((Number) dongDuLieu[0]).intValue();
+            Integer nam = ((Number) dongDuLieu[1]).intValue();
+            Double doanhThuThang = ((Number) dongDuLieu[2]).doubleValue();
 
             // Nối chuỗi để hiển thị đẹp đẽ
             danhSachNhanThang.add("Tháng " + thang + "/" + nam);
@@ -69,7 +69,7 @@ public class DashboardApiController {
         // Khai báo Mảng (List) chứa Nhãn mô tả trạng thái
         List<String> danhSachNhanTrangThai = new ArrayList<>();
         danhSachNhanTrangThai.add("Đã có cư dân ở");
-        danhSachNhanTrangThai.add("Đang đánh trống");
+        danhSachNhanTrangThai.add("Đang để trống");
 
         // Khai báo Mảng (List) chứa giá trị tương ứng
         List<Long> danhSachTiLeCanHo = new ArrayList<>();

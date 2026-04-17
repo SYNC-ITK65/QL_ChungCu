@@ -1,6 +1,8 @@
 package com.sync.itk65.repository;
 
 import com.sync.itk65.entity.HopDong;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,8 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
 
     @Query("SELECT h FROM HopDong h ORDER BY h.id DESC")
     List<HopDong> findAllOrderByIdDesc();
+    @Query("SELECT h FROM HopDong h ORDER BY h.id DESC")
+    Page<HopDong> findAllOrderByIdDesc(Pageable pageable);
 
     @Query("SELECT h FROM HopDong h WHERE h.cuDan.id = :cuDanId ORDER BY h.ngayBatDau DESC, h.id DESC")
     List<HopDong> findByCuDanId(@Param("cuDanId") Long cuDanId);

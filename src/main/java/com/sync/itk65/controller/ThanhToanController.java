@@ -4,6 +4,7 @@ import com.sync.itk65.entity.HoaDon;
 import com.sync.itk65.entity.ThanhToan;
 import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.service.ThanhToanService;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +26,14 @@ public class ThanhToanController {
     // 1. Xem danh sách Lịch sử thanh toán
     // Đường dẫn: http://localhost:8080/admin/thanh-toan/lich-su
     @GetMapping("/thanh-toan/lich-su")
-    public String danhSachThanhToan(Model model) {
-        model.addAttribute("danhSachThanhToan", thanhToanService.layTatCaThanhToan());
+    public String danhSachThanhToan(Model model,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size) {
+        Page<ThanhToan> trangDuLieu = thanhToanService.layTatCaThanhToan(page, size);
+        model.addAttribute("danhSachThanhToan", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/thanh_toan_list"; // Đã thêm admin/
     }
 

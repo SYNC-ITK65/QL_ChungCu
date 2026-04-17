@@ -51,7 +51,22 @@
                     <div class="col-md-8" id="khungDoiTuong" style="display: none;">
                         <div class="mb-3">
                             <label class="form-label fw-bold text-primary" id="nhanDoiTuong">Phân cách các hộ/tầng bằng dấu phẩy</label>
-                            <input type="text" class="form-control form-control-lg" th:field="*{giaTriDoiTuong}" id="giaTriDoiTuong" placeholder="Ví dụ: P101, P102 hoặc Tầng 1, Tầng 2">
+                            <input type="hidden" id="giaTriDoiTuongText" th:field="*{giaTriDoiTuong}">
+                            
+                            <!-- Container for apartment selection -->
+                            <div id="canHoSelectContainer" style="display: none;">
+                                <select class="form-select" id="chonCanHo" multiple="multiple" style="width: 100%;">
+                                    <option th:each="ch : ${danhSachCanHo}" 
+                                            th:value="${ch.maCanHo}" 
+                                            th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <!-- Container for floor text input -->
+                            <div id="tangInputContainer" style="display: none;">
+                                <input type="text" class="form-control form-control-lg" id="nhapTang" placeholder="Nhập số tầng (VD: 2, 5, 10)">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -77,42 +92,106 @@
         </div>
     </div>
 
-    <!-- Bootstrap & TinyMCE -->
+    <!-- Bootstrap & Optional Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- jQuery & Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
+        $(document).ready(function() {
+            $('#chonCanHo').select2({
+                placeholder: "Chọn căn hộ",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Update hidden input when select changes
+            $('#chonCanHo').on('change', function() {
+                var vals = $(this).val();
+                $('#giaTriDoiTuongText').val(vals ? vals.join(', ') : '');
+            });
+
+            // Update hidden input when tang text changes
+            $('#nhapTang').on('input', function() {
+                $('#giaTriDoiTuongText').val($(this).val());
+            });
+
+            // Initialize values dynamically based on old value if editing
+            initOldValues();
+        });
+
         function toggleDoiTuongInput() {
             var selectObj = document.getElementById("doiTuongGui").value;
             var inputContainer = document.getElementById("khungDoiTuong");
             var labelObj = document.getElementById("nhanDoiTuong");
-            var inputField = document.getElementById("giaTriDoiTuong");
+            
+            var canHoContainer = document.getElementById("canHoSelectContainer");
+            var tangContainer = document.getElementById("tangInputContainer");
+            var txtInput = document.getElementById("giaTriDoiTuongText");
 
-            // Xử lý null khi backend trả ra entity mới
             if (!selectObj) selectObj = "ALL";
 
             if (selectObj === "ALL") {
                 inputContainer.style.display = "none";
-                inputField.removeAttribute("required");
+                txtInput.removeAttribute("required");
+                $('#chonCanHo').removeAttr("required");
+                $('#nhapTang').removeAttr("required");
+                // Clear state when swapping
+                txtInput.value = "";
+                $('#chonCanHo').val(null).trigger('change');
+                $('#nhapTang').val("");
             } else {
                 inputContainer.style.display = "block";
-                inputField.setAttribute("required", "required");
                 
-                if (selectObj === "HO_GIA_DINH") {
-                    labelObj.innerText = "Mã hộ gia đình nhận thông báo";
-                    inputField.placeholder = "Nhập mã căn hộ (VD: C201)";
-                } else if (selectObj === "NHIEU_HO") {
-                    labelObj.innerText = "Danh sách mã hộ (Phân cách bằng dấu phẩy)";
-                    inputField.placeholder = "Nhập các căn hộ (VD: C201, C202, D101)";
+                if (selectObj === "HO_GIA_DINH" || selectObj === "NHIEU_HO") {
+                    labelObj.innerText = selectObj === "HO_GIA_DINH" ? "Chọn 1 hộ gia đình nhận thông báo" : "Chọn nhiều hộ gia đình";
+                    canHoContainer.style.display = "block";
+                    tangContainer.style.display = "none";
+                    $('#chonCanHo').attr("required", "required");
+                    $('#nhapTang').removeAttr("required");
+                    
+                    if (selectObj === "HO_GIA_DINH") {
+                        $('#chonCanHo').select2({ maximumSelectionLength: 1, width: '100%' });
+                    } else {
+                        $('#chonCanHo').select2({ maximumSelectionLength: 0, width: '100%' });
+                    }
+                    
+                    // Trigger change to sync values
+                    var vals = $('#chonCanHo').val();
+                    txtInput.value = vals ? vals.join(', ') : '';
                 } else if (selectObj === "TANG") {
                     labelObj.innerText = "Danh sách tầng (Phân cách bằng dấu phẩy)";
-                    inputField.placeholder = "Nhập số tầng (VD: 2, 5, 10)";
+                    canHoContainer.style.display = "none";
+                    tangContainer.style.display = "block";
+                    $('#nhapTang').attr("required", "required");
+                    $('#chonCanHo').removeAttr("required");
+                    
+                    // Trigger sync
+                    txtInput.value = $('#nhapTang').val();
                 }
             }
         }
 
-        // Tự động kích hoạt khi load trang để phục hồi dữ liệu lúc xem/sửa
+        function initOldValues() {
+            var selectObj = document.getElementById("doiTuongGui").value;
+            var txtInput = document.getElementById("giaTriDoiTuongText").value;
+            
+            if (txtInput) {
+                if (selectObj === "HO_GIA_DINH" || selectObj === "NHIEU_HO") {
+                    var selectedArray = txtInput.split(',').map(item => item.trim());
+                    $('#chonCanHo').val(selectedArray).trigger('change');
+                } else if (selectObj === "TANG") {
+                    $('#nhapTang').val(txtInput);
+                }
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
-            toggleDoiTuongInput();
+            setTimeout(toggleDoiTuongInput, 100);
         });
     </script>
 

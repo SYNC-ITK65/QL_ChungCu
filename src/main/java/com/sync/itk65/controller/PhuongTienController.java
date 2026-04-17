@@ -3,6 +3,7 @@ package com.sync.itk65.controller;
 import com.sync.itk65.entity.PhuongTien;
 import com.sync.itk65.service.PhuongTienService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,15 @@ public class PhuongTienController {
 
     // 1. Hàm hiển thị giao diện và danh sách xe
     @GetMapping
-    public String hienThiTrang(Model model) {
+    public String hienThiTrang(Model model,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "10") int size) {
         // Đẩy danh sách xe xuống bảng
-        model.addAttribute("danhSachXe", phuongTienService.danhSachXe());
+        Page<PhuongTien> trangDuLieu = phuongTienService.danhSachXe(page, size);
+        model.addAttribute("danhSachXe", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
 
         // Tạo một object rỗng đẩy xuống form để hứng dữ liệu người dùng nhập
         model.addAttribute("xeMoi", new PhuongTien());

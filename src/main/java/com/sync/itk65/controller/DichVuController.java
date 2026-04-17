@@ -1,8 +1,10 @@
 package com.sync.itk65.controller;
 
+import com.sync.itk65.entity.DatDichVu;
 import com.sync.itk65.entity.DichVu;
 import com.sync.itk65.service.DatDichVuService;
 import com.sync.itk65.service.DichVuService;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +23,15 @@ public class DichVuController {
     // 1. Hiển thị danh sách dịch vụ
     // Phục vụ cho menu: <a href="/admin/dich-vu" class="nav-link text-white">🛠️ Quản lý Dịch vụ</a>
     @GetMapping
-    public String danhSachDichVu(Model model) {
+    public String danhSachDichVu(Model model,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size) {
         model.addAttribute("danhSachDichVu", dichVuService.layTatCaDichVu());
-        model.addAttribute("danhSachDonDat", datDichVuService.layTatCaDonDatDichVu());
+        Page<DatDichVu> trangDuLieu = datDichVuService.layTatCaDonDatDichVu(page, size);
+        model.addAttribute("danhSachDonDat", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/dich_vu_list"; // File view: templates/admin/dich_vu_list.html
     }
 

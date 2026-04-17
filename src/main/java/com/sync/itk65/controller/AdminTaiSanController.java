@@ -4,6 +4,7 @@ import com.sync.itk65.entity.LichSuBaoTri;
 import com.sync.itk65.entity.TaiSan;
 import com.sync.itk65.service.LichSuBaoTriService;
 import com.sync.itk65.service.TaiSanService;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,15 +27,27 @@ public class AdminTaiSanController {
     private LichSuBaoTriService lichSuBaoTriService;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("listTaiSan", taiSanService.getAllTaiSan());
+    public String list(Model model,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size) {
+        Page<TaiSan> trangDuLieu = taiSanService.getAllTaiSan(page, size);
+        model.addAttribute("listTaiSan", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/tai_san_list";
     }
 
     @GetMapping("/canh-bao")
-    public String alerts(Model model) {
-        model.addAttribute("listTaiSan", taiSanService.getAlertAssets());
+    public String alerts(Model model,
+                         @RequestParam(defaultValue = "0") int page,
+                         @RequestParam(defaultValue = "10") int size) {
+        Page<TaiSan> trangDuLieu = taiSanService.getAlertAssets(page, size);
+        model.addAttribute("listTaiSan", trangDuLieu.getContent());
         model.addAttribute("isAlert", true);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/tai_san_list";
     }
 
@@ -63,10 +76,16 @@ public class AdminTaiSanController {
     }
 
     @GetMapping("/{id}/bao-tri")
-    public String history(@PathVariable Long id, Model model) {
+    public String history(@PathVariable Long id, Model model,
+                          @RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "10") int size) {
         taiSanService.getTaiSanById(id).ifPresent(t -> {
             model.addAttribute("taiSan", t);
-            model.addAttribute("listBaoTri", lichSuBaoTriService.getHistoryByTaiSanId(id));
+            Page<LichSuBaoTri> trangDuLieu = lichSuBaoTriService.getHistoryByTaiSanId(id, page, size);
+            model.addAttribute("listBaoTri", trangDuLieu.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+            model.addAttribute("size", size);
         });
         return "admin/bao_tri_list";
     }

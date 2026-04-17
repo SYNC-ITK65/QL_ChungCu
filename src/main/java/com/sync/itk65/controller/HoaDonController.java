@@ -4,6 +4,7 @@ import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.entity.HoaDon;
 import com.sync.itk65.service.HoaDonService;
 import com.sync.itk65.repository.CanHoRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class HoaDonController {
     private CanHoRepository canHoRepository;
 
     // Hiển thị danh sách
+   // Hiển thị danh sách kết hợp Filter và Phân trang
     @GetMapping
     public String hienThiDanhSach(Model model,
                                   @RequestParam(required = false) String maCanHo,

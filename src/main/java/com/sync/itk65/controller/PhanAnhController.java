@@ -2,6 +2,7 @@ package com.sync.itk65.controller;
 
 import com.sync.itk65.entity.PhanAnh;
 import com.sync.itk65.service.PhanAnhService;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +17,14 @@ public class PhanAnhController {
 
     // 1. Xem danh sách phàn nàn của cư dân
     @GetMapping
-    public String listPhanAnh(Model model) {
-        model.addAttribute("phanAnhs", phanAnhService.findAll());
+    public String listPhanAnh(Model model,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size) {
+        Page<PhanAnh> trangDuLieu = phanAnhService.findAll(page, size);
+        model.addAttribute("phanAnhs", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/phan_anh_list";
     }
 
