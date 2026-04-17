@@ -3,6 +3,8 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.PhuongTien;
 import com.sync.itk65.repository.PhuongTienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
@@ -56,6 +58,12 @@ public class PhuongTienService {
     }
 
     //Xem danh sách bãi xe ---
+    public Page<PhuongTien> danhSachXe(int page, int size) {
+        Page<PhuongTien> ds = phuongTienRepository.findAllByOrderByIdDesc(PageRequest.of(page, size));
+        ds.forEach(x -> x.setTrangThai(chuanHoaTrangThai(x.getTrangThai())));
+        return ds;
+    }
+
     public List<PhuongTien> danhSachXe() {
         List<PhuongTien> ds = phuongTienRepository.findAll();
         ds.forEach(x -> x.setTrangThai(chuanHoaTrangThai(x.getTrangThai())));

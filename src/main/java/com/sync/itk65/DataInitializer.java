@@ -41,6 +41,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setHoTen("Quản Trị Viên Hệ Thống");
             admin.setEmail("admin@sync.com");
             admin.setVaiTro(1);
+            admin.setSoDienThoai("0123456789");
 
             nguoiDungRepository.save(admin);
 
@@ -58,6 +59,7 @@ public class DataInitializer implements CommandLineRunner {
             staff.setHoTen("Nhân Viên Quản Lý");
             staff.setEmail("staff@sync.com");
             staff.setVaiTro(2);
+            staff.setSoDienThoai("0123456789");
 
             nguoiDungRepository.save(staff);
 

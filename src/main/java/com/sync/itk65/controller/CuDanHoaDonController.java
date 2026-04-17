@@ -8,6 +8,9 @@ import com.sync.itk65.service.CuDanService;
 import com.sync.itk65.repository.HoaDonRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +36,9 @@ public class CuDanHoaDonController {
      */
     @GetMapping
     public String hienThiDanhSachHoaDon(HttpSession session, Model model,
-                                        @RequestParam(required = false) String trangThai) {
+                                        @RequestParam(required = false) String trangThai,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
         // Lấy thông tin cư dân từ session
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         if (user == null) {
@@ -46,17 +51,23 @@ public class CuDanHoaDonController {
 
         // Lấy danh sách hóa đơn theo căn hộ
         List<HoaDon> danhSachHoaDon;
+        Page<HoaDon> trangDuLieu;
+        Pageable pageable = PageRequest.of(page, size);
 
         if (trangThai != null && !trangThai.isEmpty()) {
             if ("chua-dong".equalsIgnoreCase(trangThai)) {
                 danhSachHoaDon = hoaDonRepository.findUnpaidByCanHoId(cuDan.getCanHo().getId());
+                trangDuLieu = hoaDonRepository.findUnpaidByCanHoId(cuDan.getCanHo().getId(), pageable);
             } else if ("da-dong".equalsIgnoreCase(trangThai)) {
                 danhSachHoaDon = hoaDonRepository.findPaidByCanHoId(cuDan.getCanHo().getId());
+                trangDuLieu = hoaDonRepository.findPaidByCanHoId(cuDan.getCanHo().getId(), pageable);
             } else {
                 danhSachHoaDon = hoaDonRepository.findByCanHoId(cuDan.getCanHo().getId());
+                trangDuLieu = hoaDonRepository.findByCanHoId(cuDan.getCanHo().getId(), pageable);
             }
         } else {
             danhSachHoaDon = hoaDonRepository.findByCanHoId(cuDan.getCanHo().getId());
+            trangDuLieu = hoaDonRepository.findByCanHoId(cuDan.getCanHo().getId(), pageable);
         }
 
         // === TÍNH TOÁN THỐNG KÊ ===
@@ -74,12 +85,15 @@ public class CuDanHoaDonController {
                 .count();
 
         // Đẩy dữ liệu xuống view
-        model.addAttribute("danhSachHoaDon", danhSachHoaDon);
+        model.addAttribute("danhSachHoaDon", trangDuLieu.getContent());
         model.addAttribute("cuDan", cuDan);
         model.addAttribute("soHoaDonChuaDong", soHoaDonChuaDong);
         model.addAttribute("tongTienNo", tongTienNo);
         model.addAttribute("soHoaDonDaDong", soHoaDonDaDong);
         model.addAttribute("trangThaiFilter", trangThai != null ? trangThai : "");
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "cudan/hoa_don_list";
     }
 
@@ -147,18 +161,17 @@ public class CuDanHoaDonController {
     @GetMapping("/loc")
     public String locHoaDon(@RequestParam(required = false) String trangThai,
                             HttpSession session,
-                            Model model) {
-        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
-        if (user == null) {
-            return "redirect:/";
-        }
-        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
+                            Model model,
+                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "10") int size) {
+        CuDan cuDan = (CuDan) session.getAttribute("nguoiDungDangNhap");
+
         if (cuDan == null || cuDan.getCanHo() == null) {
             return "redirect:/";
         }
 
         // Tái sử dụng logic từ hienThiDanhSachHoaDon
-        return hienThiDanhSachHoaDon(session, model, trangThai);
+        return hienThiDanhSachHoaDon(session, model, trangThai, page, size);
     }
 
     /**

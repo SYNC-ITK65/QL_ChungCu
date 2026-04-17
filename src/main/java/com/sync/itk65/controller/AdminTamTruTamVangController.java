@@ -1,7 +1,9 @@
 package com.sync.itk65.controller;
 
+import com.sync.itk65.entity.TamTruTamVang;
 import com.sync.itk65.service.TamTruTamVangService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +15,14 @@ public class AdminTamTruTamVangController {
     @Autowired private TamTruTamVangService service;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("list", service.getAll());
+    public String list(Model model,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size) {
+        Page<TamTruTamVang> trangDuLieu = service.getAll(page, size);
+        model.addAttribute("list", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/tamtru_tamvang_list";
     }
 

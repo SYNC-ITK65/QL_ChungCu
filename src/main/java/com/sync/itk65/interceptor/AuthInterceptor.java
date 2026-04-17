@@ -43,6 +43,9 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
         }
 
+        response.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
         return true;
     }
 }

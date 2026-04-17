@@ -1,7 +1,9 @@
 package com.sync.itk65.controller;
 
 import com.sync.itk65.entity.ThongBao;
+import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.ThongBaoService;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,15 +16,25 @@ public class AdminThongBaoController {
     @Autowired
     private ThongBaoService thongBaoService;
 
+    @Autowired
+    private CanHoService canHoService;
+
     @GetMapping
-    public String hienThiDanhSach(Model model) {
-        model.addAttribute("danhSachThongBao", thongBaoService.getAllThongBao());
+    public String hienThiDanhSach(Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        Page<ThongBao> trangDuLieu = thongBaoService.getAllThongBao(page, size);
+        model.addAttribute("danhSachThongBao", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/thong_bao_list";
     }
 
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
         model.addAttribute("thongBao", new ThongBao());
+        model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
         return "admin/thong_bao_form";
     }
 
@@ -34,6 +46,7 @@ public class AdminThongBaoController {
         } else {
             return "redirect:/admin/thong-bao";
         }
+        model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
         return "admin/thong_bao_form";
     }
 

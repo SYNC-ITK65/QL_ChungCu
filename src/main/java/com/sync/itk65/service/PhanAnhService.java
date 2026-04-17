@@ -3,6 +3,9 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.PhanAnh;
 import com.sync.itk65.repository.PhanAnhRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +18,11 @@ public class PhanAnhService {
 
     public List<PhanAnh> findAll() {
         return phanAnhRepository.findAll();
+    }
+
+    public Page<PhanAnh> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return phanAnhRepository.findAll(pageable);
     }
 
     public PhanAnh findById(Long id) {

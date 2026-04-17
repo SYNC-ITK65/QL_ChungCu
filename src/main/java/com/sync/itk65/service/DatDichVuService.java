@@ -3,6 +3,8 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.DatDichVu;
 import com.sync.itk65.repository.DatDichVuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
@@ -58,6 +60,12 @@ public class DatDichVuService {
     }
 
     // 2. Lấy danh sách tất cả các dịch vụ đã được đặt (Dành cho Admin quản lý)
+    public Page<DatDichVu> layTatCaDonDatDichVu(int page, int size) {
+        Page<DatDichVu> ds = datDichVuRepository.findAllByOrderByNgayDatDesc(PageRequest.of(page, size));
+        ds.forEach(d -> d.setTrangThai(chuanHoaTrangThai(d.getTrangThai())));
+        return ds;
+    }
+
     public List<DatDichVu> layTatCaDonDatDichVu() {
         List<DatDichVu> ds = datDichVuRepository.findAll();
         ds.forEach(d -> d.setTrangThai(chuanHoaTrangThai(d.getTrangThai())));

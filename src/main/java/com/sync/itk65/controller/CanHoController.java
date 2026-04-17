@@ -44,6 +44,7 @@ public class CanHoController {
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("dienTich", dienTich);
         model.addAttribute("tang", tang);
+        model.addAttribute("size", size);
 
         return "admin/can_ho_list";
     }

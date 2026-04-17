@@ -15,6 +15,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 @Service
 @Validated
 public class NguoiDungService {
@@ -25,6 +29,11 @@ public class NguoiDungService {
     // 1. Lấy danh sách tất cả người dùng
     public List<NguoiDung> layTatCaNguoiDung() {
         return nguoiDungRepository.findAll();
+    }
+
+    public Page<NguoiDung> layTatCaNguoiDung(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return nguoiDungRepository.findAll(pageable);
     }
 
     // 2. Lưu thông tin người dùng kèm kiểm tra Validator tránh trùng lặp Tên đăng nhập

@@ -290,10 +290,6 @@
                         <td>Phí Dịch Vụ:</td>
                         <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">150,000 VNĐ</td>
                     </tr>
-                    <tr th:if="${tongHop.tienThueChungCu > 0}">
-                        <td>Tiền Thuê Chung Cư:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienThueChungCu, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">1,666,667 VNĐ</td>
-                    </tr>
                     <tr class="grand-total">
                         <td><h5 class="mb-0">TỔNG CỘNG:</h5></td>
                         <td class="text-end"><h5 class="mb-0 text-success" th:text="${#numbers.formatDecimal(tongHop.tongCong, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">3,066,000 VNĐ</h5></td>
@@ -318,5 +314,8 @@
         </div>
     </div>
 </div>
+
+    <!-- Dùng fragment Datatable chung -->
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
 </body>
 </html>
