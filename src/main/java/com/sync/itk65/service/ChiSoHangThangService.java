@@ -3,6 +3,9 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.ChiSoHangThang;
 import com.sync.itk65.repository.ChiSoHangThangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,6 +21,11 @@ public class ChiSoHangThangService {
     // Lấy danh sách toàn bộ chỉ số
     public List<ChiSoHangThang> layTatCaChiSo() {
         return chiSoHangThangRepository.findAll();
+    }
+
+    public Page<ChiSoHangThang> layTatCaChiSo(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return chiSoHangThangRepository.findAll(pageable);
     }
 
     // Lấy chỉ số theo ID căn hộ

@@ -3,6 +3,9 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.TaiSan;
 import com.sync.itk65.repository.TaiSanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -25,8 +28,18 @@ public class TaiSanService {
         return taiSanRepository.findAll();
     }
 
+    public Page<TaiSan> getAllTaiSan(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return taiSanRepository.findAll(pageable);
+    }
+
     public List<TaiSan> getAlertAssets() {
         return taiSanRepository.findAlertAssets(LocalDate.now().plusDays(7));
+    }
+
+    public Page<TaiSan> getAlertAssets(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return taiSanRepository.findAlertAssets(LocalDate.now().plusDays(7), pageable);
     }
 
     public Optional<TaiSan> getTaiSanById(Long id) {

@@ -7,10 +7,10 @@ import java.util.List;
 
 @Repository
 public interface PhanAnhRepository extends JpaRepository<PhanAnh, Long> {
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE UPPER(p.trangThai) LIKE 'CHỜ%'")
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE LOWER(p.trangThai) LIKE 'chờ%'")
     long countChoXuLy();
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE UPPER(p.trangThai) LIKE 'ĐANG%'")
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE LOWER(p.trangThai) LIKE 'đang%'")
     long countDangXuLy();
     List<PhanAnh> findByCanHoIdOrderByNgayGuiDesc(Long canHoId);
 }

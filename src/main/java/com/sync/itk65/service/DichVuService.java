@@ -3,6 +3,9 @@ package com.sync.itk65.service;
 import com.sync.itk65.entity.DichVu;
 import com.sync.itk65.repository.DichVuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,11 @@ public class DichVuService {
     // 1. Lấy danh sách tất cả dịch vụ
     public List<DichVu> layTatCaDichVu() {
         return dichVuRepository.findAll();
+    }
+
+    public Page<DichVu> layTatCaDichVu(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return dichVuRepository.findAll(pageable);
     }
 
     // 2. Lưu dịch vụ (Dùng chung cho cả Thêm mới và Cập nhật)

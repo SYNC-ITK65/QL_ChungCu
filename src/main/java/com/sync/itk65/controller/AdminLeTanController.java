@@ -3,12 +3,12 @@ package com.sync.itk65.controller;
 import com.sync.itk65.entity.*;
 import com.sync.itk65.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/duyet-yeu-cau")
@@ -18,10 +18,14 @@ public class AdminLeTanController {
     private DangKyKhachThamService khachThamService;
 
     @GetMapping
-    public String hienThiTrangDuyet(Model model) {
-        // Gửi toàn bộ danh sách khách thăm sang giao diện trong 1 biến duy nhất
-        List<DangKyKhachTham> listKhach = khachThamService.layTatCa();
-        model.addAttribute("listKhach", listKhach);
+    public String hienThiTrangDuyet(Model model,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size) {
+        Page<DangKyKhachTham> trangDuLieu = khachThamService.layTatCa(page, size);
+        model.addAttribute("listKhach", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
 
         return "admin/duyet_yeu_cau";
     }

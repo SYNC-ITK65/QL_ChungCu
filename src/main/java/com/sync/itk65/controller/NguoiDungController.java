@@ -33,9 +33,18 @@ public class NguoiDungController {
 
     // Hàm hiển thị danh sách người dùng
     @GetMapping
-    public String hienThiDanhSach(Model model) {
+    public String hienThiDanhSach(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        
+        org.springframework.data.domain.Page<NguoiDung> trangDuLieu = nguoiDungService.layTatCaNguoiDung(page, size);
+
         // Nhờ Service lấy dữ liệu từ Database
-        model.addAttribute("danhSachNguoiDung", nguoiDungService.layTatCaNguoiDung());
+        model.addAttribute("danhSachNguoiDung", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
 
         // Trả về tên file HTML giao diện (sẽ tạo sau trong thư mục resources/templates)
         return "admin/nguoi_dung_list";

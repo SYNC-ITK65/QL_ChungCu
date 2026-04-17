@@ -4,6 +4,7 @@ import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.entity.KienHang;
 import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.KienHangService;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +22,14 @@ public class AdminKienHangController {
     private CanHoService canHoService;
 
     @GetMapping("")
-    public String danhSach(Model model) {
-        model.addAttribute("danhSachKienHang", kienHangService.layTatCaKienHang());
+    public String danhSach(Model model,
+                           @RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "10") int size) {
+        Page<KienHang> trangDuLieu = kienHangService.layTatCaKienHang(page, size);
+        model.addAttribute("danhSachKienHang", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/kien_hang_list";
     }
 

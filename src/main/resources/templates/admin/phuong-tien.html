@@ -11,7 +11,7 @@
 
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="container-fluid p-4">
+    <div class="flex-grow-1 p-4">
         <div class="bg-white p-4 shadow rounded">
             <h2 class="text-primary border-bottom pb-3 mb-4">🚗 Quản Lý Bãi Xe (Admin)</h2>
             <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -79,11 +79,15 @@
                         </tr>
                         </tbody>
                     </table>
+                    <div th:replace="~{fragments/pagination :: paging('/admin/phuong-tien', '')}"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+    <!-- Dùng fragment Datatable chung -->
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
 </body>
 </html>
