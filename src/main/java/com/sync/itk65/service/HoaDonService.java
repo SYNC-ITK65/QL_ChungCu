@@ -51,9 +51,6 @@ public class HoaDonService {
     // Tìm kiếm hóa đơn theo nhiều điều kiện
     public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
         return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
-    // Tìm kiếm hóa đơn theo nhiều điều kiện
-    public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
-        return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
     }
 
     public Page<HoaDon> timKiemHoaDonPhanTrang(String maCanHo, String trangThai, Integer thang, Integer nam, int page, int size) {
