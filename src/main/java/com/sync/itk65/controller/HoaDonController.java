@@ -58,6 +58,39 @@ public class HoaDonController {
         }
     }
 
+    // API Xử lý khi người dùng bấm nút "Xem"
+    @GetMapping("/xem/{id}")
+    public String xemHoaDon(@PathVariable("id") Long id, Model model) {
+        hoaDonService.themChiTietHoaDonVaoModel(id, model);
+        return "admin/hoa_don_chi_tiet";
+    }
+
+    // API Xử lý khi người dùng bấm nút "Sửa"
+    @GetMapping("/sua/{id}")
+    public String suaHoaDon(@PathVariable("id") Long id, Model model) {
+        HoaDon hoaDon = hoaDonService.layHoaDonById(id);
+        model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("danhSachCanHo", canHoRepository.findAll());
+        return "admin/hoa_don_sua";
+    }
+
+    // API Xử lý khi người dùng bấm nút "Lưu thay đổi"
+    @PostMapping("/cap-nhat")
+    public String capNhatHoaDon(@ModelAttribute("hoaDon") HoaDon hoaDon,
+                               @RequestParam("canHoId") Long canHoId) {
+        try {
+            CanHo canHo = new CanHo();
+            canHo.setId(canHoId);
+            hoaDon.setCanHo(canHo);
+
+            hoaDonService.capNhatHoaDon(hoaDon);
+            return "redirect:/admin/hoa-don";
+
+        } catch (RuntimeException e) {
+            return "redirect:/admin/hoa-don/sua/" + hoaDon.getId() + "?error=" + e.getMessage();
+        }
+    }
+
     // API Xử lý khi người dùng bấm nút "Thanh toán"
 //    @GetMapping("/thanh-toan/{id}")
 //    public String thanhToan(@PathVariable("id") Long id) {

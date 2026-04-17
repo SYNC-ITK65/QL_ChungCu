@@ -6,6 +6,7 @@ import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.ThanhToanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,27 +34,38 @@ public class ThanhToanService {
         return thanhToanRepository.findByHoaDonCanHoIdOrderByNgayThanhToanDescIdDesc(canHoId);
     }
 
-    // Xử lý thanh toán mới
+    // Xử lý thanh toán mới với transaction đảm bảo tính toàn vẹn
+    @Transactional(rollbackFor = Exception.class)
     public ThanhToan thucHienThanhToan(ThanhToan thanhToan) {
+        // VALIDATION: Kiểm tra thông tin hóa đơn
         if (thanhToan.getHoaDon() == null || thanhToan.getHoaDon().getId() == null) {
             throw new RuntimeException("Thiếu thông tin hóa đơn cần thanh toán.");
         }
+        
         HoaDon hoaDon = hoaDonRepository.findById(thanhToan.getHoaDon().getId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn."));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn ID: " + thanhToan.getHoaDon().getId()));
+        
+        // VALIDATION: Kiểm tra trạng thái hóa đơn
         if ("Đã đóng".equalsIgnoreCase(hoaDon.getTrangThaiThanhToan())) {
-            throw new RuntimeException("Hóa đơn đã được thanh toán trước đó.");
+            throw new RuntimeException("Hóa đơn #" + hoaDon.getId() + " đã được thanh toán trước đó.");
         }
+        
+        // VALIDATION: Kiểm tra số tiền
         if (thanhToan.getSoTien() == null || thanhToan.getSoTien() <= 0) {
-            throw new RuntimeException("Số tiền thanh toán không hợp lệ.");
+            throw new RuntimeException("Số tiền thanh toán không hợp lệ: " + thanhToan.getSoTien());
         }
+        
         if (hoaDon.getTongTien() != null && Math.abs(thanhToan.getSoTien() - hoaDon.getTongTien()) > 0.01) {
-            throw new RuntimeException("Số tiền thanh toán phải đúng bằng tổng tiền hóa đơn.");
+            throw new RuntimeException(String.format("Số tiền thanh toán (%.2f) phải đúng bằng tổng tiền hóa đơn (%.2f).", 
+                    thanhToan.getSoTien(), hoaDon.getTongTien()));
         }
+        
+        // VALIDATION: Kiểm tra phương thức thanh toán
         if (thanhToan.getPhuongThuc() == null || thanhToan.getPhuongThuc().trim().isEmpty()) {
             throw new RuntimeException("Phương thức thanh toán không được để trống.");
         }
 
-        // 1. Tự động gán ngày thanh toán nếu chưa có
+        // 1. Chuẩn bị thông tin thanh toán
         if (thanhToan.getNgayThanhToan() == null) {
             thanhToan.setNgayThanhToan(LocalDate.now());
         }
@@ -63,7 +75,7 @@ public class ThanhToanService {
         // 2. Lưu giao dịch thanh toán vào DB
         ThanhToan savedThanhToan = thanhToanRepository.save(thanhToan);
 
-        // 3. Cập nhật trạng thái Hóa Đơn thành "Đã đóng"
+        // 3. Cập nhật trạng thái Hóa Đơn thành "Đã đóng" ngay lập tức
         hoaDon.setTrangThaiThanhToan("Đã đóng");
         hoaDonRepository.save(hoaDon);
 
