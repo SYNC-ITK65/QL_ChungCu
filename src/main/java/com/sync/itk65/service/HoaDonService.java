@@ -10,6 +10,7 @@ import com.sync.itk65.repository.ChiSoHangThangRepository;
 import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.PhuongTienRepository;
 import com.sync.itk65.repository.DatDichVuRepository;
+import com.sync.itk65.repository.ThanhToanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,9 +41,12 @@ public class HoaDonService {
     @Autowired
     private DatDichVuRepository datDichVuRepository;
 
-    // Lấy danh sách toàn bộ hóa đơn
-    public List<HoaDon> layTatCaHoaDon() {
-        return hoaDonRepository.findAll();
+    @Autowired
+    private ThanhToanRepository thanhToanRepository;
+
+    // Tìm kiếm hóa đơn theo nhiều điều kiện
+    public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
+        return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
     }
 
     public Page<HoaDon> layTatCaHoaDon(int page, int size) {
@@ -55,7 +59,10 @@ public class HoaDonService {
         return hoaDonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
     }
-
+    // Lấy danh sách toàn bộ hóa đơn
+    public List<HoaDon> layTatCaHoaDon() {
+        return hoaDonRepository.findAll();
+    }
     // Cập nhật hóa đơn
     public void capNhatHoaDon(HoaDon hoaDon) {
         // Nếu tổng tiền là null hoặc 0, tính lại tổng
@@ -71,6 +78,12 @@ public class HoaDonService {
         Long canHoId = hoaDon.getCanHo().getId();
         int thang = hoaDon.getNgayPhatHanh().getMonthValue();
         int nam = hoaDon.getNgayPhatHanh().getYear();
+
+        // VALIDATION: Kiểm tra xem đã có hóa đơn cho căn hộ trong tháng đó chưa (tránh tạo trùng)
+        Long soLuongHoaDonTrung = hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam);
+        if (soLuongHoaDonTrung > 0) {
+            throw new RuntimeException("Không thể tạo hóa đơn: Căn hộ này đã có hóa đơn cho tháng " + thang + "/" + nam + ". Vui lòng kiểm tra lại.");
+        }
 
         // VALIDATION: Kiểm tra xem đã có chỉ số điện nước cho tháng đó chưa
         ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)
@@ -298,6 +311,19 @@ public class HoaDonService {
             hoaDon.setTrangThaiThanhToan("Đã đóng");
             hoaDonRepository.save(hoaDon);
         }
+    }
+
+    // Xóa hóa đơn và các bản ghi thanh toán liên quan
+    public void xoaHoaDon(Long id) {
+        HoaDon hoaDon = hoaDonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
+
+        // Xóa các bản ghi thanh toán liên quan đến hóa đơn này
+        List<com.sync.itk65.entity.ThanhToan> danhSachThanhToan = thanhToanRepository.findByHoaDonId(id);
+        thanhToanRepository.deleteAll(danhSachThanhToan);
+
+        // Xóa hóa đơn
+        hoaDonRepository.delete(hoaDon);
     }
 
     /**

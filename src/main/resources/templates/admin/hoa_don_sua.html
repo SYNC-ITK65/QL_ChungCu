@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>S a Hóa Ð n</title>
+    <title>Sửa Hóa Đơn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -34,12 +34,12 @@
         <div class="form-header">
             <div class="row">
                 <div class="col-md-8">
-                    <h2 class="mb-0">S a Hóa Ð n</h2>
-                    <p class="mb-0 text-muted">Ch nh s a thông tin hóa ð n</p>
+                    <h2 class="mb-0">Sửa Hóa Đơn</h2>
+                    <p class="mb-0 text-muted">Chỉnh sửa thông tin hóa đơn</p>
                 </div>
                 <div class="col-md-4 text-end">
                     <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Quay v danh sách
+                        <i class="fas fa-arrow-left"></i> Quay về danh sách
                     </a>
                 </div>
             </div>
@@ -47,14 +47,14 @@
 
         <!-- Warning -->
         <div class="warning-box">
-            <h6 class="text-warning"><i class="fas fa-exclamation-triangle"></i> L ý ý:</h6>
-            <p class="mb-0">Vi c ch nh s a hóa ð n s tác ð ng ð n các chi phí tính toán. Các chi phí s  ð c tính l i t y theo thông tin m i. Hãy ch c ch n r ng b n ñã ki m tra l i các thông tin tr c khi l u.</p>
+            <h6 class="text-warning"><i class="fas fa-exclamation-triangle"></i> Lưu ý:</h6>
+            <p class="mb-0">Việc chỉnh sửa hóa đơn sẽ tác động đến các chi phí tính toán. Các chi phí sẽ được tính lại theo thông tin mới. Hãy chắc chắn rằng bạn đã kiểm tra lại các thông tin trước khi lưu.</p>
         </div>
 
         <!-- Form -->
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Thông tin Hóa Ð n</h5>
+                <h5 class="mb-0">Thông tin Hóa Đơn</h5>
             </div>
             <div class="card-body">
                 <form th:action="@{/admin/hoa-don/cap-nhat}" th:object="${hoaDon}" method="post" style="max-width: 800px;">
@@ -62,15 +62,15 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Mã hóa ð n</label>
+                            <label class="form-label">Mã hóa đơn</label>
                             <input type="text" class="form-control" th:value="'HD-' + *{id}" readonly>
-                            <small class="form-text text-muted">Mã hóa ð n không th thay ð i</small>
+                            <small class="form-text text-muted">Mã hóa đơn không thể thay đổi</small>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Trang thái thanh toán</label>
+                            <label class="form-label">Trạng thái thanh toán</label>
                             <select class="form-select" th:field="*{trangThaiThanhToan}">
-                                <option value="Ch a ð ng">Ch a ð ng</option>
-                                <option value="Ðã ð ng">Ðã ð ng</option>
+                                <option value="Chưa thanh toán">Chưa thanh toán</option>
+                                <option value="Đã thanh toán">Đã thanh toán</option>
                             </select>
                         </div>
                     </div>
@@ -81,15 +81,15 @@
                             <input type="date" class="form-control" th:field="*{ngayPhatHanh}" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Ngày ð n h n</label>
+                            <label class="form-label">Ngày đến hạn</label>
                             <input type="date" class="form-control" th:field="*{ngayDenHan}" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Ch n C n H</label>
+                        <label class="form-label">Chọn Căn Hộ</label>
                         <select class="form-select" name="canHoId" required>
-                            <option value="" disabled>-- Ch n c n h c n xu t hóa ð n --</option>
+                            <option value="" disabled>-- Chọn căn hộ cần xuất hóa đơn --</option>
                             <option th:each="ch : ${danhSachCanHo}"
                                     th:value="${ch.id}"
                                     th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'"
@@ -100,39 +100,39 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">T ng ti n (VNÐ)</label>
+                            <label class="form-label">Tổng tiền (VNĐ)</label>
                             <input type="number" class="form-control" th:field="*{tongTien}" step="0.01" min="0">
-                            <small class="form-text text-muted">N u ð tr ng, s  ð c tính toán t ð ng</small>
+                            <small class="form-text text-muted">Nếu để trống, sẽ được tính toán tự động</small>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">T ng ti n hi n t i</label>
+                            <label class="form-label">Tổng tiền hiện tại</label>
                             <input type="text" class="form-control" 
-                                   th:value="${hoaDon.tongTien != null ? #numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNÐ' : '0 VNÐ'}" 
+                                   th:value="${hoaDon.tongTien != null ? #numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}" 
                                    readonly>
-                            <small class="form-text text-muted">Giá tr hi n t i trong h th ng</small>
+                            <small class="form-text text-muted">Giá trị hiện tại trong hệ thống</small>
                         </div>
                     </div>
 
                     <div class="alert alert-info">
-                        <h6><i class="fas fa-info-circle"></i> L ý ý:</h6>
+                        <h6><i class="fas fa-info-circle"></i> Lưu ý:</h6>
                         <ul class="mb-0">
-                            <li>N u b n thay ð i c n h , ngày phát hành ho c b tr ng t ng ti n, h th ng s tính l i toàn b chi phí</li>
-                            <li>Các chi phí bao g m: ti n ði n, ti n n c, phí qu n lý, phí g i xe, phí d ch v phát sinh</li>
-                            <li>Vi c tính l i s d a trên các ch s ði n n c và thông tin hi n t i trong h th ng</li>
+                            <li>Nếu bạn thay đổi căn hộ, ngày phát hành hoặc bỏ trống tổng tiền, hệ thống sẽ tính lại toàn bộ chi phí</li>
+                            <li>Các chi phí bao gồm: tiền điện, tiền nước, phí quản lý, phí gửi xe, phí dịch vụ phát sinh</li>
+                            <li>Việc tính lại sẽ dựa trên các chỉ số điện nước và thông tin hiện tại trong hệ thống</li>
                         </ul>
                     </div>
 
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> L u thay ð i
+                                <i class="fas fa-save"></i> Lưu thay đổi
                             </button>
                             <a th:href="@{/admin/hoa-don/xem/{id}(id=${hoaDon.id})}" class="btn btn-info text-white ms-2">
-                                <i class="fas fa-eye"></i> Xem chi ti t
+                                <i class="fas fa-eye"></i> Xem chi tiết
                             </a>
                         </div>
                         <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> H y
+                            <i class="fas fa-times"></i> Hủy
                         </a>
                     </div>
                 </form>
@@ -142,33 +142,33 @@
         <!-- Chi ti t hóa ð n hi n t i -->
         <div class="card mt-4">
             <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">Chi Ti t Hóa Ð n Hi n T i</h5>
+                <h5 class="mb-0">Chi Tiết Hóa Đơn Hiện Tại</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <strong>C n h:</strong>
-                        <p class="mb-0" th:text="${hoaDon.canHo?.maCanHo ?: 'Ch a g n'}">A1-01</p>
+                        <strong>Căn hộ:</strong>
+                        <p class="mb-0" th:text="${hoaDon.canHo?.maCanHo ?: 'Chưa gắn'}">A1-01</p>
                     </div>
                     <div class="col-md-4">
                         <strong>Ngày phát hành:</strong>
                         <p class="mb-0" th:text="${hoaDon.ngayPhatHanh != null ? #temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy') : ''}">01/10/2026</p>
                     </div>
                     <div class="col-md-4">
-                        <strong>Ngày ð n h n:</strong>
+                        <strong>Ngày đến hạn:</strong>
                         <p class="mb-0" th:text="${hoaDon.ngayDenHan != null ? #temporals.format(hoaDon.ngayDenHan, 'dd/MM/yyyy') : ''}">15/10/2026</p>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-4">
-                        <strong>T ng ti n:</strong>
-                        <p class="mb-0" th:text="${hoaDon.tongTien != null ? #numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNÐ' : '0 VNÐ'}">3,066,000 VNÐ</p>
+                        <strong>Tổng tiền:</strong>
+                        <p class="mb-0" th:text="${hoaDon.tongTien != null ? #numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">3,066,000 VNĐ</p>
                     </div>
                     <div class="col-md-4">
-                        <strong>Trang thái:</strong>
+                        <strong>Trạng thái:</strong>
                         <p class="mb-0">
-                            <span th:if="${hoaDon.trangThaiThanhToan == 'Ðã ð ng'}" class="badge bg-success">Ðã ð ng</span>
-                            <span th:if="${hoaDon.trangThaiThanhToan == 'Ch a ð ng' or hoaDon.trangThaiThanhToan == null}" class="badge bg-danger">Ch a ð ng</span>
+                            <span th:if="${hoaDon.trangThaiThanhToan == 'Đã thanh toán'}" class="badge bg-success">Đã thanh toán</span>
+                            <span th:if="${hoaDon.trangThaiThanhToan == 'Chưa thanh toán' or hoaDon.trangThaiThanhToan == null}" class="badge bg-danger">Chưa thanh toán</span>
                         </p>
                     </div>
                 </div>

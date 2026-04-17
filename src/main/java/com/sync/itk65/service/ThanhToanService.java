@@ -4,6 +4,7 @@ import com.sync.itk65.entity.HoaDon;
 import com.sync.itk65.entity.ThanhToan;
 import com.sync.itk65.repository.HoaDonRepository;
 import com.sync.itk65.repository.ThanhToanRepository;
+import com.sync.itk65.service.LichSuThanhToanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,9 @@ public class ThanhToanService {
 
     @Autowired
     private HoaDonRepository hoaDonRepository;
+
+    @Autowired
+    private LichSuThanhToanService lichSuThanhToanService;
 
     // Lấy tất cả lịch sử thanh toán
     public List<ThanhToan> layTatCaThanhToan() {
@@ -86,6 +90,19 @@ public class ThanhToanService {
         // 3. Cập nhật trạng thái Hóa Đơn thành "Đã đóng" ngay lập tức
         hoaDon.setTrangThaiThanhToan("Đã đóng");
         hoaDonRepository.save(hoaDon);
+
+        // 4. Thêm vào lịch sử thanh toán
+        try {
+            lichSuThanhToanService.themLichSuThanhToan(
+                hoaDon,
+                thanhToan.getPhuongThuc(),
+                "Admin",
+                "Thanh toán hóa đơn #" + hoaDon.getId()
+            );
+        } catch (Exception e) {
+            // Nếu có lỗi khi thêm lịch sử, vẫn cho thanh toán thành công nhưng log lỗi
+            System.err.println("Lỗi khi thêm lịch sử thanh toán: " + e.getMessage());
+        }
 
         return savedThanhToan;
     }
