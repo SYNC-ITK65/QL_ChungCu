@@ -42,6 +42,11 @@ public class HoaDonService {
         return hoaDonRepository.findAll();
     }
 
+    // Tìm kiếm hóa đơn theo nhiều điều kiện
+    public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
+        return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
+    }
+
     // Lấy hóa đơn theo ID
     public HoaDon layHoaDonById(Long id) {
         return hoaDonRepository.findById(id)
@@ -63,6 +68,12 @@ public class HoaDonService {
         Long canHoId = hoaDon.getCanHo().getId();
         int thang = hoaDon.getNgayPhatHanh().getMonthValue();
         int nam = hoaDon.getNgayPhatHanh().getYear();
+
+        // VALIDATION: Kiểm tra xem đã có hóa đơn cho căn hộ trong tháng đó chưa (tránh tạo trùng)
+        Long soLuongHoaDonTrung = hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam);
+        if (soLuongHoaDonTrung > 0) {
+            throw new RuntimeException("Không thể tạo hóa đơn: Căn hộ này đã có hóa đơn cho tháng " + thang + "/" + nam + ". Vui lòng kiểm tra lại.");
+        }
 
         // VALIDATION: Kiểm tra xem đã có chỉ số điện nước cho tháng đó chưa
         ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)

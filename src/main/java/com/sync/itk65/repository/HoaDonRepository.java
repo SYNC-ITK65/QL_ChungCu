@@ -42,4 +42,27 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     // Đếm số lượng hóa đơn theo trạng thái - cho dashboard
     @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.trangThaiThanhToan = :trangThai")
     Long countByStatus(@Param("trangThai") String trangThai);
+
+    // Kiểm tra hóa đơn trùng theo căn hộ, tháng, năm
+    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.canHo.id = :canHoId AND MONTH(h.ngayPhatHanh) = :thang AND YEAR(h.ngayPhatHanh) = :nam")
+    Long countByCanHoAndThangNam(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
+
+    // Tìm kiếm hóa đơn theo từ khóa (mã căn hộ, trạng thái)
+    @Query("SELECT h FROM HoaDon h WHERE " +
+           "LOWER(h.canHo.maCanHo) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(h.trangThaiThanhToan) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "ORDER BY h.ngayPhatHanh DESC")
+    List<HoaDon> searchByKeyword(@Param("keyword") String keyword);
+
+    // Tìm kiếm hóa đơn theo nhiều điều kiện
+    @Query("SELECT h FROM HoaDon h WHERE " +
+           "(:maCanHo IS NULL OR :maCanHo = '' OR LOWER(h.canHo.maCanHo) LIKE LOWER(CONCAT('%', :maCanHo, '%'))) AND " +
+           "(:trangThai IS NULL OR :trangThai = '' OR h.trangThaiThanhToan = :trangThai) AND " +
+           "(:thang IS NULL OR MONTH(h.ngayPhatHanh) = :thang) AND " +
+           "(:nam IS NULL OR YEAR(h.ngayPhatHanh) = :nam) " +
+           "ORDER BY h.ngayPhatHanh DESC")
+    List<HoaDon> searchWithFilters(@Param("maCanHo") String maCanHo,
+                                    @Param("trangThai") String trangThai,
+                                    @Param("thang") Integer thang,
+                                    @Param("nam") Integer nam);
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/hoa-don")
@@ -21,8 +22,29 @@ public class HoaDonController {
 
     // Hiển thị danh sách
     @GetMapping
-    public String hienThiDanhSach(Model model) {
-        model.addAttribute("danhSachHoaDon", hoaDonService.layTatCaHoaDon());
+    public String hienThiDanhSach(Model model,
+                                  @RequestParam(required = false) String maCanHo,
+                                  @RequestParam(required = false) String trangThai,
+                                  @RequestParam(required = false) Integer thang,
+                                  @RequestParam(required = false) Integer nam) {
+        List<HoaDon> danhSachHoaDon;
+
+        // Xử lý empty string thành null để query hoạt động đúng
+        String maCanHoFilter = (maCanHo != null && !maCanHo.trim().isEmpty()) ? maCanHo.trim() : null;
+        String trangThaiFilter = (trangThai != null && !trangThai.trim().isEmpty()) ? trangThai.trim() : null;
+
+        // Nếu có tham số tìm kiếm, sử dụng filter
+        if (maCanHoFilter != null || trangThaiFilter != null || thang != null || nam != null) {
+            danhSachHoaDon = hoaDonService.timKiemHoaDon(maCanHoFilter, trangThaiFilter, thang, nam);
+        } else {
+            danhSachHoaDon = hoaDonService.layTatCaHoaDon();
+        }
+
+        model.addAttribute("danhSachHoaDon", danhSachHoaDon);
+        model.addAttribute("maCanHo", maCanHo != null ? maCanHo : "");
+        model.addAttribute("trangThai", trangThai != null ? trangThai : "");
+        model.addAttribute("thang", thang);
+        model.addAttribute("nam", nam);
         return "admin/hoa_don_list";
     }
 

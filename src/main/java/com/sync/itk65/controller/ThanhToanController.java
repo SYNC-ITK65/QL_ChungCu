@@ -53,9 +53,11 @@ public class ThanhToanController {
         try {
             thanhToanService.thucHienThanhToan(thanhToan);
             ra.addFlashAttribute("thongBaoThanhCong", "Xác nhận thanh toán thành công.");
+            // Redirect về trang lịch sử thanh toán thay vì danh sách hóa đơn
+            return "redirect:/admin/thanh-toan/lich-su";
         } catch (Exception e) {
             ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+            return "redirect:/admin/hoa-don";
         }
-        return "redirect:/admin/hoa-don";
     }
 }

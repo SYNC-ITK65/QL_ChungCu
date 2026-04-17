@@ -21,6 +21,43 @@
             <a th:href="@{/admin/hoa-don/tao-moi}" class="btn btn-primary">+ Tạo Hóa Đơn Mới</a>
         </div>
 
+        <!-- Form tìm kiếm -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">🔍 Tìm kiếm hóa đơn</h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/hoa-don}" method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Mã căn hộ</label>
+                        <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}" placeholder="Nhập mã căn hộ...">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" name="trangThai">
+                            <option value="">-- Tất cả --</option>
+                            <option value="Chưa đóng" th:selected="${trangThai == 'Chưa đóng'}">Chưa đóng</option>
+                            <option value="Đã đóng" th:selected="${trangThai == 'Đã đóng'}">Đã đóng</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Tháng</label>
+                        <input type="number" class="form-control" name="thang" th:value="${thang}" min="1" max="12" placeholder="1-12">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Năm</label>
+                        <input type="number" class="form-control" name="nam" th:value="${nam}" placeholder="2024">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                    </div>
+                </form>
+                <div class="mt-2">
+                    <a th:href="@{/admin/hoa-don}" class="btn btn-sm btn-secondary">↻ Xóa bộ lọc</a>
+                </div>
+            </div>
+        </div>
+
         <table class="table table-striped table-hover border">
             <thead class="table-dark">
             <tr>
