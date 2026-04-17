@@ -74,4 +74,16 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
                                     @Param("trangThai") String trangThai,
                                     @Param("thang") Integer thang,
                                     @Param("nam") Integer nam);
+
+    @Query("SELECT h FROM HoaDon h WHERE " +
+           "(:maCanHo IS NULL OR :maCanHo = '' OR LOWER(h.canHo.maCanHo) LIKE LOWER(CONCAT('%', :maCanHo, '%'))) AND " +
+           "(:trangThai IS NULL OR :trangThai = '' OR h.trangThaiThanhToan = :trangThai) AND " +
+           "(:thang IS NULL OR MONTH(h.ngayPhatHanh) = :thang) AND " +
+           "(:nam IS NULL OR YEAR(h.ngayPhatHanh) = :nam) " +
+           "ORDER BY h.ngayPhatHanh DESC")
+    Page<HoaDon> searchWithFilters(@Param("maCanHo") String maCanHo,
+                                    @Param("trangThai") String trangThai,
+                                    @Param("thang") Integer thang,
+                                    @Param("nam") Integer nam,
+                                    Pageable pageable);
 }

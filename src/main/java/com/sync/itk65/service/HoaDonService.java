@@ -49,6 +49,11 @@ public class HoaDonService {
         return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
     }
 
+    public Page<HoaDon> timKiemHoaDonPhanTrang(String maCanHo, String trangThai, Integer thang, Integer nam, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam, pageable);
+    }
+
     public Page<HoaDon> layTatCaHoaDon(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return hoaDonRepository.findAll(pageable);
