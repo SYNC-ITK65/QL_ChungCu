@@ -13,7 +13,7 @@
 
         <div class="container-fluid p-4">
             <h2>Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</h2>
-            <table class="table table-bordered table-striped mt-3">
+            <table class="table table-bordered table-striped mt-3 no-paging">
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
@@ -45,8 +45,12 @@
                     </tr>
                 </tbody>
             </table>
+            <div th:replace="~{fragments/pagination :: paging('/admin/phan-anh', '')}"></div>
         </div>
     </div>
+
+    <!-- Dùng fragment Datatable chung -->
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
 </body>
 
 </html>

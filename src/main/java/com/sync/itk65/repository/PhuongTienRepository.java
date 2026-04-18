@@ -1,6 +1,8 @@
 package com.sync.itk65.repository;
 
 import com.sync.itk65.entity.PhuongTien;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +17,7 @@ public interface PhuongTienRepository extends JpaRepository<PhuongTien, Long> {
     boolean existsByBienSoXe(String bienSoXe);
     //  lấy danh sách xe của 1 căn hộ
     List<PhuongTien> findByCanHoId(Long canHoId);
+    Page<PhuongTien> findAllByOrderByIdDesc(Pageable pageable);
 
     @Modifying
     @Transactional

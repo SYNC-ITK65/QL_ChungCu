@@ -1,6 +1,8 @@
 package com.sync.itk65.repository;
 
 import com.sync.itk65.entity.TaiSan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,8 @@ public interface TaiSanRepository extends JpaRepository<TaiSan, Long> {
 
     @Query("SELECT t FROM TaiSan t WHERE t.ngayBaoTriTiepTheo <= :date OR t.tinhTrang = 'Đang hỏng'")
     List<TaiSan> findAlertAssets(@Param("date") LocalDate date);
+    @Query("SELECT t FROM TaiSan t WHERE t.ngayBaoTriTiepTheo <= :date OR t.tinhTrang = 'Đang hỏng'")
+    Page<TaiSan> findAlertAssets(@Param("date") LocalDate date, Pageable pageable);
 
     List<TaiSan> findByTinhTrang(String tinhTrang);
 }

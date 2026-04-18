@@ -16,7 +16,7 @@ public interface CanHoRepository extends JpaRepository<CanHo, Long> {
     long countTotalCanHo();
 
     // Lấy tổng số lượng căn hộ có trạng thái trống (chưa có người ở) để thống kê
-    @Query("SELECT COUNT(canHo) FROM CanHo canHo WHERE canHo.trangThai IS NULL OR canHo.trangThai LIKE 'Trống%'")
+    @Query("SELECT COUNT(canHo) FROM CanHo canHo WHERE canHo.trangThai IS NULL OR LOWER(canHo.trangThai) LIKE '%trống%'")
     long countVacantCanHo();
 
     // Truy vấn danh sách căn hộ có kết hợp tìm kiếm và phân trang
