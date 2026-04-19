@@ -50,4 +50,14 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
 
     @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.trangThai = 'ACTIVE'")
     Optional<HopDong> findActiveByCanHoId(@Param("canHoId") Long canHoId);
+
+    @Query("SELECT h FROM HopDong h WHERE " +
+           "(:maCanHo IS NULL OR :maCanHo = '' OR h.canHo.maCanHo LIKE %:maCanHo%) AND " +
+           "(:loaiHopDong IS NULL OR :loaiHopDong = '' OR h.loaiHopDong = :loaiHopDong) AND " +
+           "(:trangThai IS NULL OR :trangThai = '' OR h.trangThai = :trangThai) " +
+           "ORDER BY h.id DESC")
+    Page<HopDong> timKiemHopDong(@Param("maCanHo") String maCanHo,
+                                  @Param("loaiHopDong") String loaiHopDong,
+                                  @Param("trangThai") String trangThai,
+                                  Pageable pageable);
 }

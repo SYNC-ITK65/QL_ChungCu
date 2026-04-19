@@ -38,12 +38,18 @@ public class AdminHopDongController {
     @GetMapping
     public String hienThiDanhSach(Model model,
                                   @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
-        Page<HopDong> trangDuLieu = hopDongService.layTatCaHopDong(page, size);
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(required = false) String maCanHo,
+                                  @RequestParam(required = false) String loaiHopDong,
+                                  @RequestParam(required = false) String trangThai) {
+        Page<HopDong> trangDuLieu = hopDongService.timKiemHopDong(maCanHo, loaiHopDong, trangThai, page, size);
         model.addAttribute("danhSachHopDong", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("maCanHo", maCanHo);
+        model.addAttribute("loaiHopDong", loaiHopDong);
+        model.addAttribute("trangThai", trangThai);
         return "admin/hop_dong_list";
     }
 

@@ -172,7 +172,7 @@ public class CuDanHoaDonController {
         }
 
         // Tái sử dụng logic từ hienThiDanhSachHoaDon
-        return hienThiDanhSachHoaDon(session, model, trangThai, page, size);
+        return hienThiDanhSachHoaDon(session, model, trangThai, 1, 2 );
     }
 
     /**
