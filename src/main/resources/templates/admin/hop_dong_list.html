@@ -25,7 +25,47 @@
             <a th:href="@{/admin/hop-dong/tao-moi}" class="btn btn-primary">+ Tạo Hợp đồng mới</a>
         </div>
 
-        <table class="table table-striped table-hover border">
+        <!-- Form tìm kiếm -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">🔍 Tìm kiếm hợp đồng</h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/hop-dong}" method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Mã căn hộ</label>
+                        <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}" placeholder="Nhập mã căn hộ...">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Loại hợp đồng</label>
+                        <select class="form-select" name="loaiHopDong">
+                            <option value="">-- Tất cả --</option>
+                            <option value="Thuê chung cư" th:selected="${loaiHopDong == 'Thuê chung cư'}">Thuê chung cư</option>
+                            <option value="Thuê phòng" th:selected="${loaiHopDong == 'Thuê phòng'}">Thuê phòng</option>
+                            <option value="Khác" th:selected="${loaiHopDong == 'Khác'}">Khác</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" name="trangThai">
+                            <option value="">-- Tất cả --</option>
+                            <option value="ACTIVE" th:selected="${trangThai == 'ACTIVE'}">ACTIVE</option>
+                            <option value="EXPIRED" th:selected="${trangThai == 'EXPIRED'}">EXPIRED</option>
+                            <option value="TERMINATED" th:selected="${trangThai == 'TERMINATED'}">TERMINATED</option>
+                            <option value="DRAFT" th:selected="${trangThai == 'DRAFT'}">DRAFT</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                    </div>
+                </form>
+                <div class="mt-2">
+                    <a th:href="@{/admin/hop-dong}" class="btn btn-sm btn-secondary" id="clearFilterBtn">↻ Xóa bộ lọc</a>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-striped table-hover border no-paging">
             <thead class="table-dark">
             <tr>
                 <th>ID</th>
@@ -79,8 +119,72 @@
             </tbody>
         </table>
 
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <form method="GET" th:action="@{/admin/hop-dong}" class="d-flex align-items-center gap-2">
+                <input type="hidden" name="maCanHo" th:value="${maCanHo}" />
+                <input type="hidden" name="loaiHopDong" th:value="${loaiHopDong}" />
+                <input type="hidden" name="trangThai" th:value="${trangThai}" />
+                <input type="hidden" name="page" value="0" />
+                <label class="form-label mb-0">Hiển thị</label>
+                <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                    <option value="5" th:selected="${size == 5}">5 dòng</option>
+                    <option value="10" th:selected="${size == 10}">10 dòng</option>
+                    <option value="20" th:selected="${size == 20}">20 dòng</option>
+                    <option value="50" th:selected="${size == 50}">50 dòng</option>
+                </select>
+            </form>
+            <div th:if="${totalPages > 1}">
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/hop-dong(page=0, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Đầu</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/hop-dong(page=${currentPage - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Trước</a>
+                        </li>
+                        <li class="page-item active">
+                            <span class="page-link" th:text="${currentPage + 1} + '/' + ${totalPages}"></span>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/hop-dong(page=${currentPage + 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Sau</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/hop-dong(page=${totalPages - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Cuối</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<script>
+    // Save scroll position before form submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.querySelector('form[action="/admin/hop-dong"]');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function() {
+                sessionStorage.setItem('scrollPosition', window.scrollY);
+            });
+        }
+
+        // Save scroll position before clear filter link click
+        const clearFilterBtn = document.getElementById('clearFilterBtn');
+        if (clearFilterBtn) {
+            clearFilterBtn.addEventListener('click', function() {
+                sessionStorage.setItem('scrollPosition', window.scrollY);
+            });
+        }
+
+        // Restore scroll position after page load
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+            sessionStorage.removeItem('scrollPosition');
+        }
+    });
+</script>
 
 </body>
 

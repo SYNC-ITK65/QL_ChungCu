@@ -55,6 +55,13 @@ public class HopDongService {
         return trangDuLieu;
     }
 
+    public Page<HopDong> timKiemHopDong(String maCanHo, String loaiHopDong, String trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<HopDong> trangDuLieu = hopDongRepository.timKiemHopDong(maCanHo, loaiHopDong, trangThai, pageable);
+        trangDuLieu.forEach(this::apDungDuLieuMacDinh);
+        return trangDuLieu;
+    }
+
     public List<HopDong> layHopDongCuaCuDan(Long cuDanId) {
         List<HopDong> danhSach = hopDongRepository.findByCuDanId(cuDanId);
         danhSach.forEach(this::apDungDuLieuMacDinh);
