@@ -11,5 +11,4 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, Long> {
 
     // Tìm người dùng theo Số điện thoại
     NguoiDung findBySoDienThoai(String soDienThoai);
-
 }

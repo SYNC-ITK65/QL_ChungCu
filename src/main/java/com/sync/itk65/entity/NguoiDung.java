@@ -8,11 +8,12 @@ import jakarta.validation.constraints.Pattern;
 @Table(name = "nguoi_dung")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class NguoiDung {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // Đánh dấu là khóa chính (primary key)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Tự động tăng giá trị id
     private Long id;
 
-    // Tên đăng nhập không được để rỗng, yêu cầu chỉ chứa chữ và số từ 4 đến 20 ký tự
+    // Tên đăng nhập không được để rỗng, yêu cầu chỉ chứa chữ và số từ 4 đến 20 ký
+    // tự
     @NotBlank(message = "Tên đăng nhập không được để trống")
     @Pattern(regexp = "^[a-zA-Z0-9_]{4,20}$", message = "Tên đăng nhập phải từ 4-20 ký tự và không chứa ký tự đặc biệt")
     @Column(name = "ten_dang_nhap")
@@ -28,7 +29,8 @@ public class NguoiDung {
     @Column(name = "ho_ten")
     private String hoTen;
 
-    // Kiểm tra cấu trúc Email đúng chuẩn thư điện tử bằng biểu thức chính quy (Regex)
+    // Kiểm tra cấu trúc Email đúng chuẩn thư điện tử bằng biểu thức chính quy
+    // (Regex)
     @NotBlank(message = "Email không được để trống")
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "Cấu trúc Email không hợp lệ (Ví dụ: abc@gmail.com)")
     @Column(name = "email")
@@ -41,7 +43,7 @@ public class NguoiDung {
     private String soDienThoai;
 
     @Column(name = "vai_tro")
-    private int vaiTro; // 1: Admin, 2: Nhân viên, 3: Cư dân
+    private int vaiTro; // 1: Admin, 2: Nhân viên, 3: Cư dân,... (Phát triển thêm)
 
     public NguoiDung() {
     }

@@ -1,6 +1,9 @@
 package com.sync.itk65.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,17 +14,21 @@ public class PhanAnh {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "tieu_de", columnDefinition = "NVARCHAR(255)")
+    @NotBlank(message = "Tiêu đề không được để trống")
     private String tieuDe;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "noi_dung", columnDefinition = "NVARCHAR(MAX)")
+    @NotBlank(message = "Nội dung không được để trống")
     private String noiDung;
 
-    @Column(nullable = false)
+    @Column(name = "ngay_gui")
+    @NotNull(message = "Ngày gửi không được để trống")
     private LocalDateTime ngayGui;
 
-    @Column(nullable = false)
+    @Column(name = "trang_thai")
+    @NotBlank(message = "Trạng thái không được để trống")
     private String trangThai; // Chờ xử lý, Đang xử lý, Đã xong
 
     // Khóa ngoại liên kết với Căn hộ
@@ -30,9 +37,10 @@ public class PhanAnh {
     private CanHo canHo;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "phan_hoi", columnDefinition = "NVARCHAR(MAX)")
     private String phanHoi;
 
+    @Column(name = "ngay_phan_hoi")
     private LocalDateTime ngayPhanHoi;
 
     // Tự động set ngày giờ hiện tại và trạng thái mặc định khi thêm mới

@@ -7,26 +7,31 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+// @Entity: Đánh dấu class này là bảng trong DB, kiểu gì cũng phải có tên trong
+// danh sách bảng
+
 @Table(name = "can_ho")
+// @Table: Để đặt cái tên cho bảng nếu không muốn dùng tên mặc định của class
 public class CanHo {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // để đánh dấu là khóa chính (primary key)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // để trường id tăng tự động
     private Long id;
 
     // Ràng buộc giá trị rỗng cho mã căn hộ, nếu rỗng sẽ báo lỗi về form
-    @NotBlank(message = "Mã căn hộ không được để trống")
-    @Column(name = "ma_can_ho")
+    @NotBlank(message = "Mã căn hộ không được để trống") // @NotBlank: để không cho phép rỗng
+    @Column(name = "ma_can_ho") // @Column: để đặt cái tên cho cột
     private String maCanHo;
 
-    // Giới hạn giá trị nhỏ nhất cho diện tích để đảm bảo dữ liệu hợp lý
-    @Min(value = 1, message = "Diện tích căn hộ phải lớn hơn 0 m2")
-    @Column(name = "dien_tich")
+    // Diện tích căn hộ nhỏ nhất phải >1m2
+    @Min(value = 1, message = "Diện tích căn hộ phải lớn hơn 0 m2") // @Min: để giới hạn giá trị nhỏ nhất
+    @Column(name = "dien_tich") // @Column: để đặt cái tên cho cột
     private Double dienTich;
 
-    // Đảm bảo tầng nằm ở trong giới hạn (từ 1 đến 100) của chung cư
-    @Min(value = 1, message = "Số tầng tối thiểu phải từ tầng 1 trở lên")
-    @Max(value = 100, message = "Số tầng vượt quá mức tối đa của chung cư (100 tầng)")
+    // Số tầng của chung cư phải >= 1 và <= 100
+    @Min(value = 1, message = "Số tầng tối thiểu phải từ tầng 1 trở lên") // @Min: để giới hạn giá trị nhỏ nhất
+    @Max(value = 100, message = "Số tầng vượt quá mức tối đa của chung cư (100 tầng)") // @Max: để giới hạn giá trị lớn
+                                                                                       // nhất
     @Column(name = "tang")
     private Integer tang;
 
@@ -36,8 +41,9 @@ public class CanHo {
     @Column(name = "trang_thai")
     private String trangThai;
 
-    @OneToMany(mappedBy = "canHo", cascade = CascadeType.ALL)
-    private List<CuDan> danhSachCuDan;
+    // 1 căn hộ có thể có nhiều cư dân sinh sống
+    @OneToMany(mappedBy = "canHo", cascade = CascadeType.ALL) // @OneToMany: 1 căn hộ có thể có nhiều cư dân (1,n)
+    private List<CuDan> danhSachCuDan; //
 
     public CanHo() {
     }

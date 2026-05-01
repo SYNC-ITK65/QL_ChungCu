@@ -11,8 +11,8 @@ public class KienHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "can_ho_id")
+    @ManyToOne // 1 căn hộ có thể có nhiều kiện hàng (1,n)
+    @JoinColumn(name = "can_ho_id") // Khóa ngoại liên kết đến bảng căn hộ
     private CanHo canHo;
 
     @Column(name = "nguoi_gui")

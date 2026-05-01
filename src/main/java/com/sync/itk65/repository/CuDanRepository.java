@@ -13,40 +13,42 @@ import java.util.List;
 @Repository
 public interface CuDanRepository extends JpaRepository<CuDan, Long> {
 
-    // Truy vấn danh sách cư dân thuộc một căn hộ cụ thể có kết hợp tìm kiếm và phân trang
-    // - Lọc chính xác theo id của căn hộ
-    // - Tìm kiếm LIKE (từ khóa) trên các trường: hoTen, soDienThoai, cccd
-    // - Tìm kiếm LIKE trên trường trangThai
-    // Trả về đối tượng Page<CuDan> dùng cho phân trang trên giao diện
-    @Query("SELECT cuDan FROM CuDan cuDan WHERE cuDan.canHo.id = :canHoId " +
-           "AND (:tuKhoa IS NULL OR :tuKhoa = '' OR LOWER(cuDan.hoTen) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) " +
-           "OR cuDan.soDienThoai LIKE CONCAT('%', :tuKhoa, '%') " +
-           "OR cuDan.cccd LIKE CONCAT('%', :tuKhoa, '%')) " +
-           "AND (:trangThai IS NULL OR :trangThai = '' OR LOWER(cuDan.trangThai) LIKE LOWER(CONCAT('%', :trangThai, '%')))")
-    Page<CuDan> layDanhSachCuDanTheoCanHo(@Param("canHoId") Long canHoId,
-                                          @Param("tuKhoa") String tuKhoa, 
-                                          @Param("trangThai") String trangThai, 
-                                          Pageable pageable);
+       // Truy vấn danh sách cư dân thuộc một căn hộ cụ thể có kết hợp tìm kiếm và phân
+       // trang
+       // - Lọc chính xác theo id của căn hộ
+       // - Tìm kiếm LIKE (từ khóa) trên các trường: hoTen, soDienThoai, cccd
+       // - Tìm kiếm LIKE trên trường trangThai
+       // Trả về đối tượng Page<CuDan> dùng cho phân trang trên giao diện
+       @Query("SELECT c FROM CuDan c WHERE c.canHo.id = :canHoId " +
+                     "AND (:tuKhoa IS NULL OR :tuKhoa = '' OR LOWER(c.hoTen) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) " +
+                     "OR c.soDienThoai LIKE CONCAT('%', :tuKhoa, '%') " +
+                     "OR c.cccd LIKE CONCAT('%', :tuKhoa, '%')) " +
+                     "AND (:trangThai IS NULL OR :trangThai = '' OR LOWER(c.trangThai) LIKE LOWER(CONCAT('%', :trangThai, '%')))")
+       Page<CuDan> layDanhSachCuDanTheoCanHo(@Param("canHoId") Long canHoId,
+                     @Param("tuKhoa") String tuKhoa,
+                     @Param("trangThai") String trangThai,
+                     Pageable pageable);
 
-    // Truy vấn danh sách tất cả cư dân có kết hợp tìm kiếm và phân trang
-    // - Tìm kiếm LIKE (từ khóa) trên các trường: hoTen, soDienThoai, cccd
-    // - Tìm kiếm LIKE trên trường trangThai
-    // Trả về Page<CuDan> hỗ trợ hiển thị phân trang
-    @Query("SELECT cuDan FROM CuDan cuDan WHERE " +
-           "(:tuKhoa IS NULL OR :tuKhoa = '' OR LOWER(cuDan.hoTen) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) " +
-           "OR cuDan.soDienThoai LIKE CONCAT('%', :tuKhoa, '%') " +
-           "OR cuDan.cccd LIKE CONCAT('%', :tuKhoa, '%')) AND " +
-           "(:trangThai IS NULL OR :trangThai = '' OR LOWER(cuDan.trangThai) LIKE LOWER(CONCAT('%', :trangThai, '%')))")
-    Page<CuDan> timKiemCuDan(@Param("tuKhoa") String tuKhoa, 
-                             @Param("trangThai") String trangThai, 
-                             Pageable pageable);
+       // Truy vấn danh sách tất cả cư dân có kết hợp tìm kiếm và phân trang
+       // - Tìm kiếm LIKE (từ khóa) trên các trường: hoTen, soDienThoai, cccd
+       // - Tìm kiếm LIKE trên trường trangThai
+       // Trả về Page<CuDan> hỗ trợ hiển thị phân trang
+       @Query("SELECT c FROM CuDan c WHERE " +
+                     "(:tuKhoa IS NULL OR :tuKhoa = '' OR LOWER(c.hoTen) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) " +
+                     "OR c.soDienThoai LIKE CONCAT('%', :tuKhoa, '%') " +
+                     "OR c.cccd LIKE CONCAT('%', :tuKhoa, '%')) AND " +
+                     "(:trangThai IS NULL OR :trangThai = '' OR LOWER(c.trangThai) LIKE LOWER(CONCAT('%', :trangThai, '%')))")
+       Page<CuDan> timKiemCuDan(@Param("tuKhoa") String tuKhoa,
+                     @Param("trangThai") String trangThai,
+                     Pageable pageable);
 
-    // Lấy tất cả danh sách cư dân thuộc một căn hộ 
-    // (Dùng cho chức năng xuất dữ liệu Excel, không phân trang)
-    @Query("SELECT cuDan FROM CuDan cuDan WHERE cuDan.canHo.id = :canHoId")
-    List<CuDan> layTatCaCuDanTheoCanHo(@Param("canHoId") Long canHoId);
+       // Lấy tất cả danh sách cư dân thuộc một căn hộ
+       // (Dùng cho chức năng xuất dữ liệu Excel, không phân trang)
+       @Query("SELECT c FROM CuDan c WHERE c.canHo.id = :canHoId")
+       List<CuDan> layTatCaCuDanTheoCanHo(@Param("canHoId") Long canHoId);
 
-    // Đếm tổng số lượng cư dân đang có trạng thái bắt đầu bằng chữ 'ĐANG' (ví dụ: 'Đang ở')
-    @Query("SELECT COUNT(cuDan) FROM CuDan cuDan WHERE UPPER(cuDan.trangThai) LIKE 'ĐANG%'")
-    long countResidentResiding();
+       // Đếm tổng số lượng cư dân đang có trạng thái bắt đầu bằng chữ 'ĐANG' (ví dụ:
+       // 'Đang ở')
+       @Query("SELECT COUNT(c) FROM CuDan c WHERE UPPER(c.trangThai) LIKE 'ĐANG%'")
+       long countResidentResiding();
 }

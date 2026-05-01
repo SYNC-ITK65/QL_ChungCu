@@ -2,15 +2,17 @@ package com.sync.itk65.repository;
 
 import com.sync.itk65.entity.PhanAnh;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
 public interface PhanAnhRepository extends JpaRepository<PhanAnh, Long> {
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE LOWER(p.trangThai) LIKE 'chờ%'")
+    @Query("SELECT COUNT(pa) FROM PhanAnh pa WHERE LOWER(pa.trangThai) LIKE 'chờ%'")
     long countChoXuLy();
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE LOWER(p.trangThai) LIKE 'đang%'")
+    @Query("SELECT COUNT(pa) FROM PhanAnh pa WHERE LOWER(pa.trangThai) LIKE 'đang%'")
     long countDangXuLy();
+
     List<PhanAnh> findByCanHoIdOrderByNgayGuiDesc(Long canHoId);
-}
+}

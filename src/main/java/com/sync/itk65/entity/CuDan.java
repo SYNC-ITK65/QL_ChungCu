@@ -11,12 +11,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 @PrimaryKeyJoinColumn(name = "id") // THÊM DÒNG NÀY ĐỂ BÁO ĐÂY LÀ KẾT NỐI TỪ BẢNG CHA
 public class CuDan extends NguoiDung {
 
-    // MÃ CĂN HỘ LÀ KHÓA NGOẠI LIÊN KẾT ĐẾN BẢNG CĂN HỘ
+    // 1 căn hộ có thể có nhiều cư dân sinh sống
+    // Mã căn hộ là khóa ngoại liên kết đến bảng căn hộ
     @ManyToOne
     @JoinColumn(name = "ma_can_ho")
     private CanHo canHo;
 
     // Mối quan hệ với chủ hộ bắt buộc phải có để quản lý nhân khẩu
+    // @NotBlank: để không cho phép rỗng
     @NotBlank(message = "Mối quan hệ với chủ hộ không được để trống")
     @Column(name = "moi_quan_he")
     private String moiQuanHe;
@@ -26,13 +28,16 @@ public class CuDan extends NguoiDung {
     private String trangThai;
 
     // Ngày sinh cư dân
+    // @DateTimeFormat: để định dạng ngày tháng
     @Column(name = "ngay_sinh")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngaySinh;
 
-    // Số định danh cá nhân / Căn cước công dân yêu cầu đúng chuẩn định dạng 12 chữ số
-    @NotBlank(message = "Căn cước công dân không được để trống")
+    // Số định danh cá nhân / Căn cước công dân yêu cầu đúng chuẩn định dạng 12 chữ
+    @NotBlank(message = "Căn cước công dân không được để trống") // @NotBlank: để không cho phép rỗng
     @Pattern(regexp = "^\\d{12}$", message = "Căn cước công dân (CCCD) phải bao gồm đúng 12 chữ số")
+    // @Pattern: để giới hạn giá trị theo định dạng
+
     @Column(name = "cccd", length = 12)
     private String cccd;
 

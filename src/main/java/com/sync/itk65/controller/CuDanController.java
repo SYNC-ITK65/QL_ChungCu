@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -55,7 +54,8 @@ public class CuDanController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieuCuDan.getTotalPages());
 
-        // Tham số bộ lọc được giữ lại để điền sẵn vào Form (Giữ nguyên trạng thái hiển thị)
+        // Tham số bộ lọc được giữ lại để điền sẵn vào Form (Giữ nguyên trạng thái hiển
+        // thị)
         model.addAttribute("canHoId", canHoId);
         model.addAttribute("tuKhoa", tuKhoa);
         model.addAttribute("trangThai", trangThai);
