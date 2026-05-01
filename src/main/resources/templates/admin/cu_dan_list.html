@@ -3,142 +3,154 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Danh sách Cư Dân</title>
+    <title th:text="#{cd.ds.tieude_tat_ca}">Danh sách Cư Dân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>
-            <span th:if="${canHoHienTai == null}">Danh sách toàn bộ Cư Dân</span>
-            <span th:if="${canHoHienTai != null}">Cư Dân thuộc căn hộ: <strong th:text="${canHoHienTai.maCanHo}"></strong></span>
-        </h2>
-        <div>
-            <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/xuat-excel(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/xuat-excel}" class="btn btn-success me-2">Xuất Excel</a>
-            <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/tao-moi(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/tao-moi}" class="btn btn-primary">+ Thêm Cư Dân Mới</a>
+    <div class="d-flex">
+        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+        <div class="flex-grow-1 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <span th:if="${canHoHienTai == null}" th:text="#{cd.ds.tieude_tat_ca}">Danh sách toàn bộ Cư Dân</span>
+                    <span th:if="${canHoHienTai != null}"><span th:text="#{cd.ds.tieude_theo_can}">Cư Dân thuộc căn hộ:</span> <strong th:text="${canHoHienTai.maCanHo}"></strong></span>
+                </h2>
+                <div>
+                    <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/xuat-excel(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/xuat-excel}" class="btn btn-success me-2" th:text="#{chung.xuat_excel}">Xuất Excel</a>
+                    <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/tao-moi(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/tao-moi}" class="btn btn-primary" th:text="#{cd.ds.nut_them}">+ Thêm Cư Dân Mới</a>
+                </div>
+            </div>
+
+            <!-- Form tìm kiếm Cư Dân -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" th:action="@{/admin/cu-dan}" class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label" th:text="#{cd.ds.loc_can}">Căn hộ</label>
+                            <select name="canHoId" class="form-select">
+                                <option value="" th:text="#{chung.tat_ca}">-- Tất cả --</option>
+                                <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|Phòng ${ch.maCanHo}|" th:selected="${canHoId == ch.id}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" th:text="#{cd.ds.tu_khoa}">Từ khóa</label>
+                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="form-control" th:placeholder="#{cd.ds.tu_khoa_goi_y}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" th:text="#{chung.trang_thai}">Trạng thái</label>
+                            <select name="trangThai" class="form-select">
+                                <option value="" th:text="#{chung.tat_ca}">-- Tất cả --</option>
+                                <option value="Đang Ở" th:selected="${trangThai == 'Đang Ở'}" th:text="#{cd.tt.dang_o}">Đang Ở</option>
+                                <option value="Chưa Đến" th:selected="${trangThai == 'Chưa Đến'}" th:text="#{cd.tt.chua_den}">Chưa Đến</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2" th:text="#{chung.tim}">Tìm kiếm</button>
+                            <a th:href="@{/admin/cu-dan}" class="btn btn-secondary" th:text="#{chung.dat_lai}">Đặt lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover border no-paging">
+                <thead class="table-dark">
+                    <tr>
+                        <th th:text="#{chung.id}">ID</th>
+                        <th th:text="#{cd.ds.bang_ten}">Họ Tên</th>
+                        <th th:text="#{cd.ds.bang_sdt}">Số Điện Thoại</th>
+                        <th th:text="#{cd.ds.bang_can}">Căn Hộ</th>
+                        <th th:text="#{cd.ds.bang_qh}">Mối Quan Hệ</th>
+                        <th th:text="#{chung.trang_thai}">Trạng Thái</th>
+                        <th th:text="#{chung.hanh_dong}">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cd : ${danhSachCuDan}">
+                        <td th:text="${cd.id}">1</td>
+                        <!-- Lấy trực tiếp từ CuDan vì nó đã kế thừa NguoiDung -->
+                        <td th:text="${cd.hoTen}">Tên cư dân</td>
+                        <td th:text="${cd.soDienThoai}">SĐT</td>
+                        <td th:text="${cd.canHo != null ? cd.canHo.maCanHo : 'N/A'}">Căn hộ</td>
+                        <td>
+                            <span th:if="${cd.moiQuanHe == 'Chủ Hộ'}" class="badge bg-primary" th:text="#{cd.qh.chu_ho}">Chủ Hộ</span>
+                            <span th:if="${cd.moiQuanHe != 'Chủ Hộ'}" th:text="${cd.moiQuanHe}"></span>
+                        </td>
+                        <td>
+                            <span th:class="${cd.trangThai == 'Đang Ở' ? 'text-success' : 'text-warning'}" th:text="${cd.trangThai}"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/cu-dan/sua/{id}(id=${cd.id})}" class="btn btn-sm btn-outline-primary me-1" th:text="#{chung.sua}">Sửa</a>
+                            <a th:href="@{/admin/cu-dan/xoa/{id}(id=${cd.id})}" class="btn btn-sm btn-outline-danger" th:onclick="|return confirm('#{cd.ds.xac_nhan_xoa}')|" th:text="#{chung.xoa}">Xóa</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(danhSachCuDan)}">
+                        <td colspan="7" class="text-center text-muted" th:text="#{cd.ds.trong}">Không có dữ liệu cư dân!</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <form method="GET" th:action="@{/admin/cu-dan}" class="d-flex align-items-center gap-2">
+                    <input type="hidden" name="canHoId" th:value="${canHoId}" />
+                    <input type="hidden" name="tuKhoa" th:value="${tuKhoa}" />
+                    <input type="hidden" name="trangThai" th:value="${trangThai}" />
+                    <input type="hidden" name="page" value="0" />
+                    <label class="form-label mb-0" th:text="#{pagi.hien_thi}">Hiển thị</label>
+                    <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                        <option value="10" th:selected="${size == 10}" th:text="|10 #{pagi.dong}|">10 dòng</option>
+                        <option value="25" th:selected="${size == 25}" th:text="|25 #{pagi.dong}|">25 dòng</option>
+                        <option value="50" th:selected="${size == 50}" th:text="|50 #{pagi.dong}|">50 dòng</option>
+                    </select>
+                </form>
+            </div>
+
+            <!-- Pagination -->
+            <nav th:if="${totalPages > 0}" aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/admin/cu-dan(page=${currentPage - 1}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="#{pagi.truoc}">Trước</a>
+                    </li>
+                    
+                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <li th:if="${i == 0}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/cu-dan(page=${i}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="${i + 1}">1</a>
+                        </li>
+                        
+                        <li th:if="${i == 1 and currentPage > 3}" class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        
+                        <li th:if="${i > 0 and i < totalPages - 1 and i >= currentPage - 2 and i <= currentPage + 2}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/cu-dan(page=${i}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="${i + 1}">1</a>
+                        </li>
+                        
+                        <li th:if="${i == totalPages - 2 and currentPage < totalPages - 4}" class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                        
+                        <li th:if="${i == totalPages - 1 and totalPages > 1}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/cu-dan(page=${i}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="${i + 1}">1</a>
+                        </li>
+                    </th:block>
+                    
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/admin/cu-dan(page=${currentPage + 1}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="#{pagi.sau}">Sau</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
-
-    <!-- Form tìm kiếm Cư Dân -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="GET" th:action="@{/admin/cu-dan}" class="row g-3">
-                <div class="col-md-2">
-                    <label class="form-label">Căn hộ</label>
-                    <select name="canHoId" class="form-select">
-                        <option value="">-- Tất cả --</option>
-                        <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|Phòng ${ch.maCanHo}|" th:selected="${canHoId == ch.id}"></option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Từ khóa</label>
-                    <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="form-control" placeholder="Tên, SĐT, CCCD">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Trạng thái</label>
-                    <select name="trangThai" class="form-select">
-                        <option value="">-- Tất cả --</option>
-                        <option value="Đang Ở" th:selected="${trangThai == 'Đang Ở'}">Đang Ở</option>
-                        <option value="Chưa Đến" th:selected="${trangThai == 'Chưa Đến'}">Chưa Đến</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">Tìm kiếm</button>
-                    <a th:href="@{/admin/cu-dan}" class="btn btn-secondary">Đặt lại</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <table class="table table-striped table-hover border no-paging">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Họ Tên</th>
-                <th>Số Điện Thoại</th>
-                <th>Căn Hộ</th>
-                <th>Mối Quan Hệ</th>
-                <th>Trạng Thái</th>
-                <th>Hành Động</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="cd : ${danhSachCuDan}">
-                <td th:text="${cd.id}">1</td>
-                <!-- Lấy trực tiếp từ CuDan vì nó đã kế thừa NguoiDung -->
-                <td th:text="${cd.hoTen}">Tên cư dân</td>
-                <td th:text="${cd.soDienThoai}">SĐT</td>
-                <td th:text="${cd.canHo != null ? cd.canHo.maCanHo : 'N/A'}">Căn hộ</td>
-                <td>
-                    <span th:if="${cd.moiQuanHe == 'Chủ Hộ'}" class="badge bg-primary">Chủ Hộ</span>
-                    <span th:if="${cd.moiQuanHe != 'Chủ Hộ'}" th:text="${cd.moiQuanHe}"></span>
-                </td>
-                <td>
-                    <span th:class="${cd.trangThai == 'Đang Ở' ? 'text-success' : 'text-warning'}" th:text="${cd.trangThai}"></span>
-                </td>
-                <td>
-                    <a th:href="@{/admin/cu-dan/sua/{id}(id=${cd.id})}" class="btn btn-sm btn-outline-primary me-1">Sửa</a>
-                    <a th:href="@{/admin/cu-dan/xoa/{id}(id=${cd.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa cư dân chuyển đi này không?');">Xóa</a>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(danhSachCuDan)}">
-                <td colspan="7" class="text-center text-muted">Không có dữ liệu cư dân!</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <form method="GET" th:action="@{/admin/cu-dan}" class="d-flex align-items-center gap-2">
-            <input type="hidden" name="canHoId" th:value="${canHoId}" />
-            <input type="hidden" name="tuKhoa" th:value="${tuKhoa}" />
-            <input type="hidden" name="trangThai" th:value="${trangThai}" />
-            <input type="hidden" name="page" value="0" />
-            <label class="form-label mb-0">Hiển thị</label>
-            <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
-                <option value="10" th:selected="${size == 10}">10 dòng</option>
-                <option value="25" th:selected="${size == 25}">25 dòng</option>
-                <option value="50" th:selected="${size == 50}">50 dòng</option>
-            </select>
-        </form>
-    </div>
-
-    <!-- Pagination -->
-    <nav th:if="${totalPages > 0}" aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{/admin/cu-dan(page=${currentPage - 1}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}">Trước</a>
-            </li>
-            
-            <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                <li th:if="${i == 0}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
-                    <a class="page-link" th:href="@{/admin/cu-dan(page=${i}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="${i + 1}">1</a>
-                </li>
-                
-                <li th:if="${i == 1 and currentPage > 3}" class="page-item disabled">
-                    <span class="page-link">...</span>
-                </li>
-                
-                <li th:if="${i > 0 and i < totalPages - 1 and i >= currentPage - 2 and i <= currentPage + 2}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
-                    <a class="page-link" th:href="@{/admin/cu-dan(page=${i}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="${i + 1}">1</a>
-                </li>
-                
-                <li th:if="${i == totalPages - 2 and currentPage < totalPages - 4}" class="page-item disabled">
-                    <span class="page-link">...</span>
-                </li>
-                
-                <li th:if="${i == totalPages - 1 and totalPages > 1}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
-                    <a class="page-link" th:href="@{/admin/cu-dan(page=${i}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}" th:text="${i + 1}">1</a>
-                </li>
-            </th:block>
-            
-            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{/admin/cu-dan(page=${currentPage + 1}, canHoId=${canHoId}, tuKhoa=${tuKhoa}, trangThai=${trangThai}, size=${size})}">Sau</a>
-            </li>
-        </ul>
-    </nav>
-
 </body>
-
 </html>
+
+
+
+
+
+
+
+
+
+
+

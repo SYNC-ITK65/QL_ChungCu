@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Kiện hàng</title>
+    <title th:text="#{kh.ds.tieude}">Quản lý Kiện hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -27,8 +27,8 @@
 
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-primary"><i class="bi bi-box-seam"></i> Quản lý Kiện hàng / Bưu phẩm</h2>
-            <a th:href="@{/admin/kien-hang/them}" class="btn btn-primary shadow-sm">+ Ghi nhận kiện hàng mới</a>
+            <h2 class="text-primary"><i class="bi bi-box-seam"></i> <span th:text="#{kh.ds.tieude}">Quản lý Kiện hàng / Bưu phẩm</span></h2>
+            <a th:href="@{/admin/kien-hang/them}" class="btn btn-primary shadow-sm" th:text="#{kh.ds.nut_them}">+ Ghi nhận kiện hàng mới</a>
         </div>
 
         <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -41,13 +41,13 @@
                 <table class="table table-hover mb-0 no-paging">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
-                            <th>Căn hộ</th>
-                            <th>Người gửi (Vận chuyển)</th>
-                            <th>Người nhận (Cư dân)</th>
-                            <th>Ngày nhận</th>
-                            <th>Trạng thái</th>
-                            <th>Hành động</th>
+                            <th th:text="#{chung.id}">ID</th>
+                            <th th:text="#{kh.ds.bang_can}">Căn hộ</th>
+                            <th th:text="#{kh.ds.bang_nguoi_gui}">Người gửi (Vận chuyển)</th>
+                            <th th:text="#{kh.ds.bang_nguoi_nhan}">Người nhận (Cư dân)</th>
+                            <th th:text="#{kh.ds.bang_ngay_nhan}">Ngày nhận</th>
+                            <th th:text="#{chung.trang_thai}">Trạng thái</th>
+                            <th th:text="#{chung.hanh_dong}">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,14 +69,14 @@
                             <td>
                                 <a th:if="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã'))}" 
                                    th:href="@{/admin/kien-hang/xac-nhan/{id}(id=${kh.id})}" 
-                                   class="btn btn-sm btn-outline-success">
+                                   class="btn btn-sm btn-outline-success" th:text="#{kh.ds.xac_nhan_lay}">
                                     Xác nhận đã lấy
                                 </a>
-                                <span th:if="${kh.trangThai != null && kh.trangThai.contains('Đã')}" class="text-muted small">Quy trình kết thúc</span>
+                                <span th:if="${kh.trangThai != null && kh.trangThai.contains('Đã')}" class="text-muted small" th:text="#{kh.ds.da_xong}">Quy trình kết thúc</span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(danhSachKienHang)}">
-                            <td colspan="7" class="text-center py-4 text-muted">Không có kiện hàng nào trong kho.</td>
+                             <td colspan="7" class="text-center py-4 text-muted" th:text="#{kh.ds.trong}">Không có kiện hàng nào trong kho.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -92,3 +92,14 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+

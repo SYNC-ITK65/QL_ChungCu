@@ -50,9 +50,9 @@
                 <a th:href="@{/cudan/thong-bao/chi-tiet/{id}(id=${tb.id})}"
                     class="card h-100 shadow-sm border-0 news-card rounded-4">
                     <div class="card-body p-4">
-                        <span th:if="${tb.loai == 1}" class="badge bg-info text-dark mb-2 rounded-pill px-3">Bảng tin
+                        <span th:if="${tb.loai == 1}" class="badge bg-info text-dark mb-2 rounded-pill px-3" th:text="#{tb.loai.tin_tuc}">Bảng tin
                             chung</span>
-                        <span th:if="${tb.loai == 2}" class="badge bg-success text-white mb-2 rounded-pill px-3">Cẩm
+                        <span th:if="${tb.loai == 2}" class="badge bg-success text-white mb-2 rounded-pill px-3" th:text="#{tb.loai.cam_nang}">Cẩm
                             nang</span>
                         <h5 class="card-title fw-bold text-dark mb-2" th:text="${tb.tieuDe}"></h5>
                         <div class="news-date mb-3">
@@ -66,7 +66,7 @@
         </div>
 
         <div th:if="${#lists.isEmpty(danhSach)}" class="text-center py-5">
-            <div class="text-muted fs-5">Hiện chưa có bài viết nào trong chuyên mục này.</div>
+            <div class="text-muted fs-5" th:text="#{user.bt.trong}">Hiện chưa có bài viết nào trong chuyên mục này.</div>
         </div>
     </div>
 
@@ -74,3 +74,13 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+

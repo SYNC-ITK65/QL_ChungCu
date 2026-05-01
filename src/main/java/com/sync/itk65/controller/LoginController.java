@@ -25,8 +25,8 @@ public class LoginController {
     // Xử lý đăng nhập
     @PostMapping("/login")
     public String xuLyDangNhap(@RequestParam("tenDangNhap") String tenDangNhap,
-                               @RequestParam("matKhau") String matKhau,
-                               HttpSession session, Model model) {
+            @RequestParam("matKhau") String matKhau,
+            HttpSession session, Model model) {
 
         NguoiDung user = nguoiDungService.timTheoTenDangNhap(tenDangNhap);
 

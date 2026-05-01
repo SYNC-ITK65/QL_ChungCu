@@ -2,7 +2,7 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Tủ đồ của tôi</title>
+    <title th:text="#{kh.user.tieude}">Tủ đồ của tôi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .pending-card {
@@ -25,16 +25,16 @@
 
 <div class="container p-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📦 Tủ đồ của tôi</h2>
-        <span class="badge bg-primary px-3 py-2">
-            Tổng số: <span th:text="${#lists.size(danhSachKienHang)}">0</span> kiện hàng
+        <h2 th:text="#{kh.user.tieude}">📦 Tủ đồ của tôi</h2>
+        <span class="badge bg-primary px-3 py-2" th:text="#{kh.user.tong_cong(${#lists.size(danhSachKienHang)})}">
+            Tổng số: 0 kiện hàng
         </span>
     </div>
 
     <div th:if="${#lists.isEmpty(danhSachKienHang)}" class="text-center py-5">
         <div class="package-icon mb-3">📭</div>
-        <h4 class="text-muted">Hiện tại không có kiện hàng nào dành cho căn hộ của bạn.</h4>
-        <p class="text-muted">Khi có bưu phẩm gửi đến sảnh, lễ tân sẽ cập nhật tại đây.</p>
+        <h4 class="text-muted" th:text="#{kh.user.trong}">Hiện tại không có kiện hàng nào dành cho căn hộ của bạn.</h4>
+        <p class="text-muted" th:text="#{kh.user.trong_mo_ta}">Khi có bưu phẩm gửi đến sảnh, lễ tân sẽ cập nhật tại đây.</p>
     </div>
 
     <div class="row g-3" th:if="${!#lists.isEmpty(danhSachKienHang)}">
@@ -47,14 +47,14 @@
                             <small class="text-muted ms-2" th:text="${kh.ngayNhan}"></small>
                         </h5>
                         <p class="card-text mb-0">
-                            <strong>Người nhận:</strong> <span th:text="${kh.nguoiNhan}"></span>
+                            <strong th:text="#{kh.user.nguoi_nhan}">Người nhận:</strong> <span th:text="${kh.nguoiNhan}"></span>
                         </p>
                     </div>
                     <div class="text-end">
-                        <div th:if="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã'))}" class="text-warning fw-bold mb-1">
+                        <div th:if="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã'))}" class="text-warning fw-bold mb-1" th:text="#{kh.user.dang_cho}">
                             ⚠️ Đang chờ bạn xuống nhận
                         </div>
-                        <div th:if="${kh.trangThai != null && kh.trangThai.contains('Đã')}" class="text-success mb-1">
+                        <div th:if="${kh.trangThai != null && kh.trangThai.contains('Đã')}" class="text-success mb-1" th:text="#{kh.user.da_nhan}">
                             ✅ Đã nhận thành công
                         </div>
                         <span class="badge" th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã')) ? 'bg-warning text-dark' : 'bg-success'}"
@@ -66,10 +66,10 @@
     </div>
 
     <div class="mt-4 p-3 bg-white rounded shadow-sm border">
-        <h5>💡 Lưu ý:</h5>
+        <h5 th:text="#{kh.user.luu_y}">💡 Lưu ý:</h5>
         <ul>
-            <li>Vui lòng mang theo điện thoại hoặc giấy tờ tùy thân khi xuống nhận đồ tại sảnh.</li>
-            <li>Nếu bưu phẩm bị hư hỏng, vui lòng phản hồi ngay với lễ tân tại thời điểm nhận.</li>
+            <li th:text="#{kh.user.luu_y_1}">Vui lòng mang theo điện thoại hoặc giấy tờ tùy thân khi xuống nhận đồ tại sảnh.</li>
+            <li th:text="#{kh.user.luu_y_2}">Nếu bưu phẩm bị hư hỏng, vui lòng phản hồi ngay với lễ tân tại thời điểm nhận.</li>
         </ul>
     </div>
 </div>
@@ -77,3 +77,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+

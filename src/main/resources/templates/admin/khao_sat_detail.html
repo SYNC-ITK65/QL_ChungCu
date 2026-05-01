@@ -1,89 +1,95 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <title>Chi tiết Khảo sát</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
-<div class="d-flex">
-  <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+  <div class="d-flex">
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-  <div class="content p-4 w-100">
-    <a th:href="@{/admin/khao-sat}" class="btn btn-light mb-3">← Trở về danh sách</a>
+    <div class="content p-4 w-100">
+      <a th:href="@{/admin/khao-sat}" class="btn btn-light mb-3">← Trở về danh sách</a>
 
-    <div class="d-flex justify-content-end mb-3 gap-2">
-      <a th:if="${khaoSat.trangThaiHienTai == 'ĐANG MỞ'}"
-         th:href="@{/admin/khao-sat/ket-thuc/{id}(id=${khaoSat.id})}"
-         class="btn btn-warning" onclick="return confirm('Bạn muốn đóng khảo sát này ngay bây giờ?');">
-        <i class="fas fa-stop-circle"></i> Kết thúc sớm
-      </a>
+      <div class="d-flex justify-content-end mb-3 gap-2">
+        <a th:if="${khaoSat.trangThaiHienTai == 'ĐANG MỞ'}" th:href="@{/admin/khao-sat/ket-thuc/{id}(id=${khaoSat.id})}"
+          class="btn btn-warning" onclick="return confirm('Bạn muốn đóng khảo sát này ngay bây giờ?');">
+          <i class="fas fa-stop-circle"></i> Kết thúc sớm
+        </a>
 
-      <a th:if="${khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}"
-         th:href="@{/admin/khao-sat/sua/{id}(id=${khaoSat.id})}" class="btn btn-primary">
-        <i class="fas fa-edit"></i> Chỉnh sửa
-      </a>
+        <a th:if="${khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}" th:href="@{/admin/khao-sat/sua/{id}(id=${khaoSat.id})}"
+          class="btn btn-primary">
+          <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
 
-      <a th:if="${khaoSat.tongSoVote == 0 and khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}"
-         th:href="@{/admin/khao-sat/xoa/{id}(id=${khaoSat.id})}"
-         class="btn btn-danger" onclick="return confirm('Xóa vĩnh viễn khảo sát này?');">
-        <i class="fas fa-trash"></i> Xóa
-      </a>
-    </div>
+        <a th:if="${khaoSat.tongSoVote == 0 and khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}"
+          th:href="@{/admin/khao-sat/xoa/{id}(id=${khaoSat.id})}" class="btn btn-danger"
+          onclick="return confirm('Xóa vĩnh viễn khảo sát này?');">
+          <i class="fas fa-trash"></i> Xóa
+        </a>
+      </div>
 
-    <div class="card shadow-sm mb-4 border-0">
-      <div class="card-body">
-        <h3 class="fw-bold text-primary" th:text="${khaoSat.tieuDe}"></h3>
-        <p class="text-secondary" th:text="${khaoSat.moTa}"></p>
-        <hr>
-        <h5 class="fw-bold mb-3"><i class="fas fa-chart-bar"></i> KẾT QUẢ THỐNG KÊ (Tổng: [[${khaoSat.tongSoVote}]] vote)</h5>
+      <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body">
+          <h3 class="fw-bold text-primary" th:text="${khaoSat.tieuDe}"></h3>
+          <p class="text-secondary" th:text="${khaoSat.moTa}"></p>
+          <hr>
+          <h5 class="fw-bold mb-3"><i class="fas fa-chart-bar"></i> KẾT QUẢ THỐNG KÊ (Tổng: [[${khaoSat.tongSoVote}]]
+            vote)</h5>
 
-        <div th:each="lc : ${khaoSat.danhSachLuaChon}" th:if="${lc != null}" class="mb-3">
-          <div class="d-flex justify-content-between mb-1 fw-semibold">
-            <span th:text="${lc.noiDungLuaChon}"></span>
-            <span th:text="${khaoSat.tongSoVote == 0 ? '0%' : (#numbers.formatDecimal((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote, 1, 1) + '%')}"></span>
-          </div>
-          <div class="progress" style="height: 20px;">
-            <div class="progress-bar bg-success"
-                 th:style="'width: ' + ${khaoSat.tongSoVote == 0 ? 0 : ((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote)} + '%'"
-                 th:text="${(lc.soLuotBinhChon ?: 0)} + ' lượt'"></div>
+          <div th:each="lc : ${khaoSat.danhSachLuaChon}" th:if="${lc != null}" class="mb-3">
+            <div class="d-flex justify-content-between mb-1 fw-semibold">
+              <span th:text="${lc.noiDungLuaChon}"></span>
+              <span
+                th:text="${khaoSat.tongSoVote == 0 ? '0%' : (#numbers.formatDecimal((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote, 1, 1) + '%')}"></span>
+            </div>
+            <div class="progress" style="height: 20px;">
+              <div class="progress-bar bg-success"
+                th:style="'width: ' + ${khaoSat.tongSoVote == 0 ? 0 : ((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote)} + '%'"
+                th:text="${(lc.soLuotBinhChon ?: 0)} + ' lượt'"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="card shadow-sm border-0">
-      <div class="card-header bg-white py-3">
-        <h5 class="fw-bold mb-0"><i class="fas fa-history"></i> LỊCH SỬ BÌNH CHỌN</h5>
-      </div>
-      <div class="card-body p-0">
-        <table class="table table-striped mb-0">
-          <thead>
-          <tr>
-            <th class="ps-4">Họ tên Cư dân</th>
-            <th>Mã Cư Dân</th>
-            <th>Phương án đã chọn</th>
-            <th>Thời gian Vote</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:if="${#lists.isEmpty(lichSuList)}">
-            <td colspan="4" class="text-center text-muted py-3">Chưa có ai tham gia bình chọn.</td>
-          </tr>
-          <tr th:each="ls : ${lichSuList}">
-            <td class="ps-4 fw-bold" th:text="${ls.cuDan?.hoTen}"></td>
-            <td th:text="${ls.cuDan?.id}"></td>
-            <td class="text-success fw-bold">
-              <i class="fas fa-check-circle"></i> [[${ls.luaChonDaNgan?.noiDungLuaChon}]]
-            </td>
-            <td th:text="${ls.thoiGianVote != null ? #temporals.format(ls.thoiGianVote, 'dd/MM/yyyy HH:mm:ss') : 'Không xác định'}"></td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+          <h5 class="fw-bold mb-0"><i class="fas fa-history"></i> LỊCH SỬ BÌNH CHỌN</h5>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-striped mb-0">
+            <thead>
+              <tr>
+                <th class="ps-4">Họ tên Cư dân</th>
+                <th>Mã Cư Dân</th>
+                <th>Phương án đã chọn</th>
+                <th>Thời gian Vote</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(lichSuList)}">
+                <td colspan="4" class="text-center text-muted py-3">Chưa có ai tham gia bình chọn.</td>
+              </tr>
+              <tr th:each="ls : ${lichSuList}">
+                <td class="ps-4 fw-bold" th:text="${ls.cuDan?.hoTen}"></td>
+                <td th:text="${ls.cuDan?.id}"></td>
+                <td class="text-success fw-bold">
+                  <i class="fas fa-check-circle"></i> [[${ls.luaChonDaNgan?.noiDungLuaChon}]]
+                </td>
+                <td
+                  th:text="${ls.thoiGianVote != null ? #temporals.format(ls.thoiGianVote, 'dd/MM/yyyy HH:mm:ss') : 'Không xác định'}">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </body>
+
 </html>

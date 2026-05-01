@@ -3,92 +3,96 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Form Thông báo</title>
+    <title th:text="#{tb.form.tieude}">Form Thông báo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+    <div class="d-flex">
+        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="card shadow-sm mt-3 mb-4">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0" th:text="${thongBao.id == null ? 'Thêm Thông báo / Cẩm nang mới' : 'Cập nhật Thông báo / Cẩm nang'}"></h4>
-        </div>
-        <div class="card-body">
-            <form th:action="@{/admin/thong-bao/luu}" th:object="${thongBao}" method="post">
-                <input type="hidden" th:field="*{id}">
-
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tiêu đề</label>
-                            <input type="text" class="form-control form-control-lg" th:field="*{tieuDe}" required placeholder="Nhập tiêu đề thông báo...">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Loại bài viết</label>
-                            <select class="form-select" th:field="*{loai}">
-                                <option value="1">📢 Bảng tin chung</option>
-                                <option value="2">📚 Cẩm nang cư dân</option>
-                            </select>
-                        </div>
-                    </div>
+        <div class="flex-grow-1 p-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0" th:text="${thongBao.id == null ? #messages.msg('admin.thongbao.form.addTitle') : #messages.msg('admin.thongbao.form.editTitle')}"></h4>
                 </div>
-                
-                <div class="row mb-2">
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Đối tượng nhận thông báo</label>
-                            <select class="form-select" th:field="*{doiTuongGui}" id="doiTuongGui" onchange="toggleDoiTuongInput()">
-                                <option value="ALL">Gửi cho tất cả (Mặc định)</option>
-                                <option value="HO_GIA_DINH">Gửi theo một hộ cụ thể</option>
-                                <option value="NHIEU_HO">Gửi theo nhiều hộ</option>
-                                <option value="TANG">Gửi theo tầng</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-8" id="khungDoiTuong" style="display: none;">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-primary" id="nhanDoiTuong">Phân cách các hộ/tầng bằng dấu phẩy</label>
-                            <input type="hidden" id="giaTriDoiTuongText" th:field="*{giaTriDoiTuong}">
-                            
-                            <!-- Container for apartment selection -->
-                            <div id="canHoSelectContainer" style="display: none;">
-                                <select class="form-select" id="chonCanHo" multiple="multiple" style="width: 100%;">
-                                    <option th:each="ch : ${danhSachCanHo}" 
-                                            th:value="${ch.maCanHo}" 
-                                            th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
-                                    </option>
-                                </select>
+                <div class="card-body">
+                    <form th:action="@{/admin/thong-bao/luu}" th:object="${thongBao}" method="post">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold" th:text="#{tb.form.tieude}">Tiêu đề</label>
+                                    <input type="text" class="form-control form-control-lg" th:field="*{tieuDe}" required th:placeholder="#{tb.form.tieude_goi_y}">
+                                </div>
                             </div>
-                            
-                            <!-- Container for floor text input -->
-                            <div id="tangInputContainer" style="display: none;">
-                                <input type="text" class="form-control form-control-lg" id="nhapTang" placeholder="Nhập số tầng (VD: 2, 5, 10)">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold" th:text="#{tb.form.loai}">Loại bài viết</label>
+                                    <select class="form-select" th:field="*{loai}">
+                                        <option value="1" th:text="#{tb.loai.tin_tuc}">📢 Bảng tin chung</option>
+                                        <option value="2" th:text="#{tb.loai.cam_nang}">📚 Cẩm nang cư dân</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Nội dung chi tiết (Nhập mã HTML)</label>
-                    <textarea class="form-control font-monospace" th:field="*{noiDung}" rows="15" placeholder="<h2>Tiêu đề HTML</h2><p>Nội dung văn bản</p>"></textarea>
-                </div>
-
-                <div class="card bg-light mb-3">
-                    <div class="card-body py-2">
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-save me-1"></i> Lưu bài viết
-                            </button>
-                            <a th:href="@{/admin/thong-bao}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle me-1"></i> Hủy bỏ
-                            </a>
+                        
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold" th:text="#{tb.form.doi_tuong}">Đối tượng nhận thông báo</label>
+                                    <select class="form-select" th:field="*{doiTuongGui}" id="doiTuongGui" onchange="toggleDoiTuongInput()">
+                                        <option value="ALL" th:text="#{tb.dt.tat_ca}">Gửi cho tất cả (Mặc định)</option>
+                                        <option value="HO_GIA_DINH" th:text="#{tb.dt.ho_dan}">Gửi theo một hộ cụ thể</option>
+                                        <option value="NHIEU_HO" th:text="#{tb.dt.nhieu_ho}">Gửi theo nhiều hộ</option>
+                                        <option value="TANG" th:text="#{tb.dt.tang}">Gửi theo tầng</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8" id="khungDoiTuong" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-primary" id="nhanDoiTuong" th:text="#{tb.form.ds_tang}">Phân cách các hộ/tầng bằng dấu phẩy</label>
+                                    <input type="hidden" id="giaTriDoiTuongText" th:field="*{giaTriDoiTuong}">
+                                    
+                                    <!-- Container for apartment selection -->
+                                    <div id="canHoSelectContainer" style="display: none;">
+                                        <select class="form-select" id="chonCanHo" multiple="multiple" style="width: 100%;">
+                                            <option th:each="ch : ${danhSachCanHo}" 
+                                                    th:value="${ch.maCanHo}" 
+                                                    th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Container for floor text input -->
+                                    <div id="tangInputContainer" style="display: none;">
+                                        <input type="text" class="form-control form-control-lg" id="nhapTang" th:placeholder="#{tb.form.ds_tang_goi_y}">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" th:text="#{tb.form.noi_dung}">Nội dung chi tiết (Nhập mã HTML)</label>
+                            <textarea class="form-control font-monospace" th:field="*{noiDung}" rows="15" th:placeholder="#{tb.form.noi_dung_goi_y}"></textarea>
+                        </div>
+
+                        <div class="card bg-light mb-3">
+                            <div class="card-body py-2">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-save me-1"></i> <span th:text="#{tb.form.nut_luu}">Lưu bài viết</span>
+                                    </button>
+                                    <a th:href="@{/admin/thong-bao}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x-circle me-1"></i> <span th:text="#{chung.huy}">Hủy bỏ</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -198,3 +202,14 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
