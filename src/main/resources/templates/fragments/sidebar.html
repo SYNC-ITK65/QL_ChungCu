@@ -6,60 +6,82 @@
         style="width: 280px; min-height: 100vh;">
 
         <!-- Title -->
-        <a href="/" class="d-flex align-items-center mb-3 text-white text-decoration-none">
-            <span class="fs-4">🏢 Quản Lý Chung Cư</span>
-        </a>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="/" class="text-white text-decoration-none">
+                <span class="fs-4" th:text="#{side.admin.tieude}">🏢 Quản Lý Chung Cư</span>
+            </a>
+            <div class="d-flex gap-1">
+                <a href="javascript:void(0)" onclick="changeLang('vi')" class="btn btn-sm p-0 text-white" style="font-size: 1.2rem;" title="Tiếng Việt">🇻🇳</a>
+                <a href="javascript:void(0)" onclick="changeLang('en')" class="btn btn-sm p-0 text-white" style="font-size: 1.2rem;" title="English">🇺🇸</a>
+            </div>
+        </div>
         <hr>
+        <script>
+            function changeLang(lang) {
+                var url = new URL(window.location.href);
+                url.searchParams.set('lang', lang);
+                window.location.href = url.toString();
+            }
+        </script>
 
         <!-- Menu -->
         <ul class="nav nav-pills flex-column mb-auto" id="main-menu">
             <li class="nav-item">
-                <a href="/admin/can-ho" class="nav-link text-white">🏠 Quản lý Căn hộ</a>
+                <a href="/admin/can-ho" class="nav-link text-white" th:text="#{side.admin.can_ho}">🏠 Quản lý Căn hộ</a>
             </li>
             <li class="nav-item">
-                <a href="/admin/cu-dan" class="nav-link text-white">👥 Quản lý Cư dân</a>
+                <a href="/admin/cu-dan" class="nav-link text-white" th:text="#{side.admin.cu_dan}">👥 Quản lý Cư dân</a>
             </li>
             <li class="nav-item">
-                <a href="/admin/nguoi-dung" class="nav-link text-white">👤 Quản lý Người dùng</a>
+                <a href="/admin/nguoi-dung" class="nav-link text-white" th:text="#{side.admin.nguoi_dung}">👤 Quản lý
+                    Người dùng</a>
             </li>
             <li class="nav-item">
-                <a href="/admin/chi-so" class="nav-link text-white">📊 Quản lý Chỉ số</a>
+                <a href="/admin/chi-so" class="nav-link text-white" th:text="#{side.admin.chi_so}">📊 Quản lý Chỉ số</a>
             </li>
             <li>
-                <a href="/admin/hoa-don" class="nav-link text-white">💰 Tài chính & Hóa đơn</a>
+                <a href="/admin/hoa-don" class="nav-link text-white" th:text="#{side.admin.tai_chinh}">💰 Tài chính &
+                    Hóa đơn</a>
             </li>
             <li>
-                <a href="/admin/hop-dong" class="nav-link text-white">📄 Quản lý Hợp đồng</a>
+                <a href="/admin/hop-dong" class="nav-link text-white" th:text="#{side.admin.hop_dong}">📄 Quản lý Hợp
+                    đồng</a>
             </li>
             <li>
-                <a href="/admin/duyet-yeu-cau" class="nav-link text-white">🛠️ Vận hành & Tiện ích</a>
+                <a href="/admin/duyet-yeu-cau" class="nav-link text-white" th:text="#{side.admin.van_hanh}">🛠️ Vận hành
+                    & Tiện ích</a>
             </li>
             <li>
-                <a href="/admin/phuong-tien" class="nav-link text-white">🚗 Quản lý Phương tiện</a>
+                <a href="/admin/phuong-tien" class="nav-link text-white" th:text="#{side.admin.phuong_tien}">🚗 Quản lý
+                    Phương tiện</a>
             </li>
             <li>
-                <a href="/admin/khao-sat" class="nav-link text-white">📊 Quản lý Khảo sát</a>
-            </li>
-            <!-- Code của bạn giữ lại -->
-            <li class="nav-item">
-                <a href="/admin/dich-vu" class="nav-link text-white">🛠️ Quản lý Dịch vụ</a>
+                <a href="/admin/khao-sat" class="nav-link text-white" th:text="#{side.admin.khao_sat}">📊 Quản lý Khảo
+                    sát</a>
             </li>
             <li class="nav-item">
-                <a href="/admin/kien-hang" class="nav-link text-white">📦 Quản lý Kiện hàng</a>
+                <a href="/admin/dich-vu" class="nav-link text-white" th:text="#{side.admin.dich_vu}">🛠️ Quản lý Dịch
+                    vụ</a>
             </li>
             <li class="nav-item">
-                <a href="/admin/thanh-toan/lich-su" class="nav-link text-white">💳 Lịch sử Thanh toán</a>
-            </li>
-
-            <!-- Code bên remote -->
-            <li class="nav-item">
-                <a th:href="@{/admin/phan-anh}" class="nav-link text-white">📢 Quản lý Phản ánh</a>
+                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý Kiện
+                    hàng</a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/admin/tai-san}" class="nav-link text-white">🛠️ Quản lý Tài Sản</a>
+                <a href="/admin/thanh-toan/lich-su" class="nav-link text-white" th:text="#{side.admin.lich_su_tt}">💳
+                    Lịch sử Thanh toán</a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/admin/thong-bao}" class="nav-link text-white">📢 Quản lý Thông báo</a>
+                <a th:href="@{/admin/phan-anh}" class="nav-link text-white" th:text="#{side.admin.phan_anh}">📢 Quản lý
+                    Phản ánh</a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/tai-san}" class="nav-link text-white" th:text="#{side.admin.tai_san}">🛠️ Quản lý
+                    Tài Sản</a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/thong-bao}" class="nav-link text-white" th:text="#{side.admin.thong_bao}">📢 Quản
+                    lý Thông báo</a>
             </li>
         </ul>
 
@@ -68,14 +90,15 @@
         <!-- User -->
         <div>
             <span
-                th:text="'Xin chào, ' + (${session.nguoiDungDangNhap != null} ? ${session.nguoiDungDangNhap.hoTen} : 'Admin')">
+                th:text="#{side.admin.xin_chao(${session.nguoiDungDangNhap != null ? session.nguoiDungDangNhap.hoTen : 'Admin'})}">
                 👤 Admin
             </span>
             <br>
             <br>
-            <a href="/user/doi-mat-khau" class="text-white mt-2 d-block text-decoration-none small opacity-75">🔑 Đổi
-                mật khẩu</a>
-            <a href="/logout" class="text-white mt-1 d-block text-decoration-none">🚪 Đăng xuất</a>
+            <a href="/user/doi-mat-khau" class="text-white mt-2 d-block text-decoration-none small opacity-75"
+                th:text="#{side.admin.doi_mk}">🔑 Đổi mật khẩu</a>
+            <a href="/logout" class="text-white mt-1 d-block text-decoration-none" th:text="#{side.admin.dang_xuat}">🚪
+                Đăng xuất</a>
         </div>
 
         <!-- Active menu script -->

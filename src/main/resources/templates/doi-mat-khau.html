@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đổi Mật Khẩu</title>
+    <title th:text="#{mk.tieude}">Đổi Mật Khẩu</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts: Inter -->
@@ -57,11 +57,11 @@
     <div class="flex-grow-1 p-5">
         <div class="container" style="max-width: 600px;">
             <div class="d-flex align-items-center mb-4">
-                <h2 class="mb-0">🔐 Đổi Mật Khẩu</h2>
+                <h2 class="mb-0" th:text="#{mk.tieude}">🔐 Đổi Mật Khẩu</h2>
             </div>
             
             <div class="card shadow-sm p-4">
-                <p class="text-muted mb-4">Vui lòng điền đầy đủ các thông tin bên dưới để cập nhật mật khẩu mới cho tài khoản của bạn.</p>
+                <p class="text-muted mb-4" th:text="#{mk.mo_ta}">Vui lòng điền đầy đủ các thông tin bên dưới để cập nhật mật khẩu mới cho tài khoản của bạn.</p>
 
                 <!-- Alerts -->
                 <div th:if="${error}" class="alert alert-danger d-flex align-items-center" role="alert">
@@ -79,26 +79,26 @@
 
                 <form th:action="@{/user/doi-mat-khau}" method="POST">
                     <div class="mb-3">
-                        <label for="oldPassword" class="form-label">Mật khẩu hiện tại</label>
-                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" required placeholder="Nhập mật khẩu cũ">
+                        <label for="oldPassword" class="form-label" th:text="#{mk.pass_cu}">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" required th:placeholder="#{mk.pass_cu_goi_y}">
                     </div>
                     <div class="mb-3">
-                        <label for="newPassword" class="form-label">Mật khẩu mới</label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" required placeholder="Nhập mật khẩu mới">
-                        <div class="form-text">Mật khẩu nên chứa ít nhất 8 ký tự, bao gồm cả chữ và số.</div>
+                        <label for="newPassword" class="form-label" th:text="#{mk.pass_moi}">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required th:placeholder="#{mk.pass_moi_goi_y}">
+                        <div class="form-text" th:text="#{mk.pass_moi_hint}">Mật khẩu nên chứa ít nhất 8 ký tự, bao gồm cả chữ và số.</div>
                     </div>
                     <div class="mb-4">
-                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required placeholder="Nhập lại mật khẩu mới">
+                        <label for="confirmPassword" class="form-label" th:text="#{mk.xac_nhan}">Xác nhận mật khẩu mới</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required th:placeholder="#{mk.xac_nhan_goi_y}">
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">🔄 Cập nhật mật khẩu</button>
+                        <button type="submit" class="btn btn-primary" th:text="#{mk.nut_cap_nhat}">🔄 Cập nhật mật khẩu</button>
                     </div>
                 </form>
             </div>
 
             <div class="mt-4 text-center">
-                <a href="javascript:history.back()" class="text-decoration-none text-secondary small">← Quay lại trang trước</a>
+                <a href="javascript:history.back()" class="text-decoration-none text-secondary small" th:text="#{mk.nut_quay_lai}">← Quay lại trang trước</a>
             </div>
         </div>
     </div>
@@ -108,3 +108,14 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+

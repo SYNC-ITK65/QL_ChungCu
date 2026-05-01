@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghi nhận Bảo Trì</title>
+    <title th:text="#{bt.form.tieude}">Ghi nhận Bảo Trì</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -12,34 +12,34 @@
     <div class="d-flex">
         <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
         <div class="flex-grow-1 p-4">
-            <h2 class="mb-4">Ghi nhận Bảo Trì cho: <span th:text="${taiSan.tenTaiSan}">Tên tài sản</span></h2>
+            <h2 class="mb-4"><span th:text="#{bt.form.tieude}">Ghi nhận Bảo Trì cho:</span> <span th:text="${taiSan.tenTaiSan}">Tên tài sản</span></h2>
             <form th:action="@{/admin/tai-san/{id}/bao-tri/save(id=${taiSan.id})}" th:object="${history}" method="post">
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label">Ngày Thực Hiện</label>
+                        <label class="form-label" th:text="#{bt.form.ngay}">Ngày Thực Hiện</label>
                         <input type="date" class="form-control" th:field="*{ngayBaoTri}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Chi Phí</label>
+                        <label class="form-label" th:text="#{bt.form.phi}">Chi Phí</label>
                         <input type="number" class="form-control" th:field="*{chiPhi}">
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Người Thực Hiện</label>
+                    <label class="form-label" th:text="#{bt.form.nguoi_thuc_hien}">Người Thực Hiện</label>
                     <input type="text" class="form-control" th:field="*{nguoiThucHien}">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Nội Dung Bảo Trì</label>
+                    <label class="form-label" th:text="#{bt.form.noi_dung}">Nội Dung Bảo Trì</label>
                     <textarea class="form-control" th:field="*{noiDung}" rows="3"></textarea>
                 </div>
 
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-primary px-4">Lưu</button>
+                    <button type="submit" class="btn btn-primary px-4" th:text="#{chung.luu}">Lưu</button>
                     <a th:href="@{/admin/tai-san/{id}/bao-tri(id=${taiSan.id})}"
-                        class="btn btn-secondary px-4 ms-2">Hủy</a>
+                        class="btn btn-secondary px-4 ms-2" th:text="#{chung.huy}">Hủy</a>
                 </div>
             </form>
         </div>
