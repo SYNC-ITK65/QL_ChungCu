@@ -109,25 +109,29 @@ public class HopDongService {
         hopDong.setCuDan(cuDan);
         hopDong.setBenChoThue(hopDong.getBenChoThue().trim());
         hopDong.setBenThue(cuDan.getHoTen());
-        hopDong.setLoaiHopDong("Thuê");
+        
+        // VALIDATION: Loại hợp đồng - nếu null thì mặc định là "Thue", ngược lại giữ nguyên giá trị người dùng nhập
+        if (hopDong.getLoaiHopDong() == null || hopDong.getLoaiHopDong().trim().isEmpty()) {
+            hopDong.setLoaiHopDong("Thue");
+        } else {
+            hopDong.setLoaiHopDong(hopDong.getLoaiHopDong().trim());
+        }
+        
         // Giữ tương thích dữ liệu cũ: map giá trị hợp đồng = tiền thuê.
         hopDong.setGiaTriHopDong(hopDong.getTienThue());
-        // Tự động set tiền cọc = tiền thuê
-        hopDong.setTienCoc(hopDong.getTienThue());
-
-        boolean biTrung;
-        if (hopDong.getNgayKetThuc() == null) {
-            biTrung = hopDongRepository.existsActiveOverlapOpenEnded(
-                    canHo.getId(),
-                    hopDong.getNgayBatDau()
-            );
-        } else {
-            biTrung = hopDongRepository.existsActiveOverlapWithEndDate(
-                    canHo.getId(),
-                    hopDong.getNgayBatDau(),
-                    hopDong.getNgayKetThuc()
-            );
+        
+        // VALIDATION: Tiền cọc - chỉ set mặc định nếu null, cho phép người dùng tùy chỉnh
+        if (hopDong.getTienCoc() == null) {
+            hopDong.setTienCoc(hopDong.getTienThue());
         }
+
+        // VALIDATION: Kiểm tra trùng thời gian với hợp đồng ACTIVE khác
+        // Vì đã validate ngayKetThuc không được null ở trên, nên chỉ cần check existsActiveOverlapWithEndDate
+        boolean biTrung = hopDongRepository.existsActiveOverlapWithEndDate(
+                canHo.getId(),
+                hopDong.getNgayBatDau(),
+                hopDong.getNgayKetThuc()
+        );
         if (biTrung) {
             throw new RuntimeException("Đã tồn tại hợp đồng ACTIVE trùng thời gian cho căn hộ này.");
         }
@@ -257,6 +261,7 @@ public class HopDongService {
         List<HopDong> expiredContracts = hopDongRepository.findExpiredActiveContracts(LocalDate.now());
         for (HopDong hopDong : expiredContracts) {
             hopDong.setTrangThai("EXPIRED");
+            hopDongRepository.save(hopDong);
         }
     }
 }
