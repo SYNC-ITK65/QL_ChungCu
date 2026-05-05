@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 @Service
 public class HoaDonService {
@@ -73,9 +74,15 @@ public class HoaDonService {
         if (hoaDon.getTongTien() == null || hoaDon.getTongTien() == 0) {
             taoHoaDonTuDong(hoaDon);
         } else {
-            // Chỉ cần cập nhật thông tin cơ bản
+            // VALIDATION: Nếu người dùng muốn tính lại chi tiết, gọi taoHoaDonTuDong
+            // Ngược lại, chỉ cập nhật thông tin cơ bản
             hoaDonRepository.save(hoaDon);
         }
+    }
+
+    // Cập nhật hóa đơn và tính lại toàn bộ chi tiết
+    public void capNhatVaTinhLaiHoaDon(HoaDon hoaDon) {
+        taoHoaDonTuDong(hoaDon);
     }
 
     public void taoHoaDonTuDong(HoaDon hoaDon) {
@@ -93,6 +100,22 @@ public class HoaDonService {
         ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)
                 .orElseThrow(
                         () -> new RuntimeException("Không thể tạo hóa đơn: Căn hộ chưa được ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam + ". Vui lòng ghi nhận chỉ số trước khi tạo hóa đơn."));
+
+        // VALIDATION: Kiểm tra ngày ghi nhận chỉ số có hợp lý không
+        if (chiSo.getNgayGhiNhan() != null) {
+            LocalDate ngayGhiNhan = chiSo.getNgayGhiNhan();
+            LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
+            
+            // Kiểm tra ngày ghi nhận không được sau ngày phát hành hóa đơn
+            if (ngayGhiNhan.isAfter(ngayPhatHanh)) {
+                throw new RuntimeException("Ngày ghi nhận chỉ số (" + ngayGhiNhan + ") không được sau ngày phát hành hóa đơn (" + ngayPhatHanh + "). Vui lòng kiểm tra lại.");
+            }
+            
+            // Kiểm tra ngày ghi nhận phải thuộc tháng phát hành hóa đơn
+            if (ngayGhiNhan.getMonthValue() != thang || ngayGhiNhan.getYear() != nam) {
+                throw new RuntimeException("Ngày ghi nhận chỉ số (" + ngayGhiNhan + ") không thuộc tháng " + thang + "/" + nam + ". Vui lòng kiểm tra lại.");
+            }
+        }
 
         // VALIDATION: Kiểm tra chỉ số có hợp lệ không
         if (chiSo.getDienTieuThu() == null || chiSo.getDienTieuThu() < 0) {
@@ -129,8 +152,15 @@ public class HoaDonService {
         List<DatDichVu> dichVuDaDung = datDichVuRepository.findDichVuCuaCanHoTrongThang(canHoId, thang, nam);
         for (DatDichVu dv : dichVuDaDung) {
             if ("Đã duyệt".equalsIgnoreCase(dv.getTrangThai()) || "Đã hoàn thành".equalsIgnoreCase(dv.getTrangThai())) {
-                if (dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
-                    tongTien += dv.getDichVu().getDonGia();
+                // VALIDATION: Kiểm tra ngày đặt dịch vụ có thuộc tháng phát hành hóa đơn không
+                if (dv.getNgayDat() != null) {
+                    int thangDat = dv.getNgayDat().getMonthValue();
+                    int namDat = dv.getNgayDat().getYear();
+                    if (thangDat == thang && namDat == nam) {
+                        if (dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
+                            tongTien += dv.getDichVu().getDonGia();
+                        }
+                    }
                 }
             }
         }
@@ -139,9 +169,43 @@ public class HoaDonService {
         com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
         Double tienThueChungCu = 0.0;
         if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
-            int ngayTrongThang = hoaDon.getNgayPhatHanh().lengthOfMonth();
-            int ngayDonVao = hopDong.getNgayBatDau().getDayOfMonth();
-            tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * (ngayTrongThang - ngayDonVao + 1);
+            // VALIDATION: Kiểm tra hợp đồng phải là loại "Thue"
+            if (!"Thue".equalsIgnoreCase(hopDong.getLoaiHopDong())) {
+                // Hợp đồng mua bán không tính tiền thuê
+                tienThueChungCu = 0.0;
+            } else {
+                // VALIDATION: Kiểm tra hợp đồng còn hiệu lực trong tháng phát hành hóa đơn
+                LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
+                LocalDate ngayBatDau = hopDong.getNgayBatDau();
+                LocalDate ngayKetThuc = hopDong.getNgayKetThuc();
+
+                // Kiểm tra tháng phát hành hóa đơn có nằm trong thời gian hợp đồng không
+                LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
+                LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
+
+                if (ngayKetThuc != null && ngayKetThuc.isBefore(firstDayOfMonth)) {
+                    // Hợp đồng đã hết hạn trước tháng phát hành hóa đơn
+                    tienThueChungCu = 0.0;
+                } else if (ngayBatDau.isAfter(lastDayOfMonth)) {
+                    // Hợp đồng bắt đầu sau tháng phát hành hóa đơn
+                    tienThueChungCu = 0.0;
+                } else {
+                    // Tính tiền thuê theo số ngày thực tế trong tháng
+                    int ngayTrongThang = ngayPhatHanh.lengthOfMonth();
+                    
+                    // Xác định ngày bắt đầu tính tiền
+                    LocalDate ngayBatDauTinh = ngayBatDau.isAfter(firstDayOfMonth) ? ngayBatDau : firstDayOfMonth;
+                    
+                    // Xác định ngày kết thúc tính tiền
+                    LocalDate ngayKetThucTinh = (ngayKetThuc != null && ngayKetThuc.isBefore(lastDayOfMonth)) ? ngayKetThuc : lastDayOfMonth;
+                    
+                    // Tính số ngày phải trả tiền
+                    int soNgayTinh = (int) java.time.temporal.ChronoUnit.DAYS.between(ngayBatDauTinh, ngayKetThucTinh) + 1;
+                    
+                    // Tính tiền thuê theo số ngày
+                    tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * soNgayTinh;
+                }
+            }
         }
         tongTien += tienThueChungCu;
 
@@ -254,16 +318,23 @@ public class HoaDonService {
 
         for (DatDichVu dv : dichVuDaDung) {
             if ("Đã duyệt".equalsIgnoreCase(dv.getTrangThai()) || "Đã hoàn thành".equalsIgnoreCase(dv.getTrangThai())) {
-                if (dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
-                    Map<String, Object> dv_info = new LinkedHashMap<>();
-                    dv_info.put("tenDichVu", dv.getDichVu().getTen());
-                    dv_info.put("loai", dv.getDichVu().getLoai());
-                    dv_info.put("donGia", dv.getDichVu().getDonGia());
-                    dv_info.put("donViTinh", dv.getDichVu().getDonViTinh());
-                    dv_info.put("trangThai", dv.getTrangThai());
+                // VALIDATION: Kiểm tra ngày đặt dịch vụ có thuộc tháng phát hành hóa đơn không
+                if (dv.getNgayDat() != null) {
+                    int thangDat = dv.getNgayDat().getMonthValue();
+                    int namDat = dv.getNgayDat().getYear();
+                    if (thangDat == thang && namDat == nam) {
+                        if (dv.getDichVu() != null && dv.getDichVu().getDonGia() != null) {
+                            Map<String, Object> dv_info = new LinkedHashMap<>();
+                            dv_info.put("tenDichVu", dv.getDichVu().getTen());
+                            dv_info.put("loai", dv.getDichVu().getLoai());
+                            dv_info.put("donGia", dv.getDichVu().getDonGia());
+                            dv_info.put("donViTinh", dv.getDichVu().getDonViTinh());
+                            dv_info.put("trangThai", dv.getTrangThai());
 
-                    danhSachDichVuChiTiet.add(dv_info);
-                    tongPhiDichVu += dv.getDichVu().getDonGia();
+                            danhSachDichVuChiTiet.add(dv_info);
+                            tongPhiDichVu += dv.getDichVu().getDonGia();
+                        }
+                    }
                 }
             }
         }
@@ -276,17 +347,51 @@ public class HoaDonService {
         // ========== 6. TÍNH TIỀN THUÊ CHUNG CƯ ==========
         com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
         Double tienThueChungCu = 0.0;
-        int ngayDonVao = 0;
+        int soNgayTinh = 0;
         if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
-            int ngayTrongThang = hoaDon.getNgayPhatHanh().lengthOfMonth();
-            ngayDonVao = hopDong.getNgayBatDau().getDayOfMonth();
-            tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * (ngayTrongThang - ngayDonVao + 1);
+            // VALIDATION: Kiểm tra hợp đồng phải là loại "Thue"
+            if (!"Thue".equalsIgnoreCase(hopDong.getLoaiHopDong())) {
+                // Hợp đồng mua bán không tính tiền thuê
+                tienThueChungCu = 0.0;
+            } else {
+                // VALIDATION: Kiểm tra hợp đồng còn hiệu lực trong tháng phát hành hóa đơn
+                LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
+                LocalDate ngayBatDau = hopDong.getNgayBatDau();
+                LocalDate ngayKetThuc = hopDong.getNgayKetThuc();
+
+                // Kiểm tra tháng phát hành hóa đơn có nằm trong thời gian hợp đồng không
+                LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
+                LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
+
+                if (ngayKetThuc != null && ngayKetThuc.isBefore(firstDayOfMonth)) {
+                    // Hợp đồng đã hết hạn trước tháng phát hành hóa đơn
+                    tienThueChungCu = 0.0;
+                } else if (ngayBatDau.isAfter(lastDayOfMonth)) {
+                    // Hợp đồng bắt đầu sau tháng phát hành hóa đơn
+                    tienThueChungCu = 0.0;
+                } else {
+                    // Tính tiền thuê theo số ngày thực tế trong tháng
+                    int ngayTrongThang = ngayPhatHanh.lengthOfMonth();
+                    
+                    // Xác định ngày bắt đầu tính tiền
+                    LocalDate ngayBatDauTinh = ngayBatDau.isAfter(firstDayOfMonth) ? ngayBatDau : firstDayOfMonth;
+                    
+                    // Xác định ngày kết thúc tính tiền
+                    LocalDate ngayKetThucTinh = (ngayKetThuc != null && ngayKetThuc.isBefore(lastDayOfMonth)) ? ngayKetThuc : lastDayOfMonth;
+                    
+                    // Tính số ngày phải trả tiền
+                    soNgayTinh = (int) java.time.temporal.ChronoUnit.DAYS.between(ngayBatDauTinh, ngayKetThucTinh) + 1;
+                    
+                    // Tính tiền thuê theo số ngày
+                    tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * soNgayTinh;
+                }
+            }
         }
 
         Map<String, Object> thueChungCu = new LinkedHashMap<>();
         thueChungCu.put("tienThue", hopDong != null ? hopDong.getTienThue() : 0.0);
         thueChungCu.put("ngayTrongThang", hoaDon.getNgayPhatHanh().lengthOfMonth());
-        thueChungCu.put("ngayDonVao", ngayDonVao);
+        thueChungCu.put("soNgayTinh", soNgayTinh);
         thueChungCu.put("tienThueChungCu", Math.round(tienThueChungCu * 100.0) / 100.0);
         chiTiet.put("thueChungCu", thueChungCu);
 
