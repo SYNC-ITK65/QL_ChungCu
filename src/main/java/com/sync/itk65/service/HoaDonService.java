@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -86,20 +87,71 @@ public class HoaDonService {
     }
 
     public void taoHoaDonTuDong(HoaDon hoaDon) {
+        // VALIDATION: Kiểm tra thông tin cơ bản
+        if (hoaDon.getCanHo() == null || hoaDon.getCanHo().getId() == null) {
+            throw new RuntimeException("Lỗi: Vui lòng chọn căn hộ để tạo hóa đơn.");
+        }
+        
+        if (hoaDon.getNgayPhatHanh() == null) {
+            throw new RuntimeException("Lỗi: Vui lòng chọn ngày phát hành hóa đơn.");
+        }
+        
+        if (hoaDon.getNgayDenHan() == null) {
+            throw new RuntimeException("Lỗi: Vui lòng chọn ngày đến hạn hóa đơn.");
+        }
+        
         Long canHoId = hoaDon.getCanHo().getId();
         int thang = hoaDon.getNgayPhatHanh().getMonthValue();
         int nam = hoaDon.getNgayPhatHanh().getYear();
 
+        System.out.println("DEBUG: Creating invoice for apartment ID: " + canHoId + ", month: " + thang + ", year: " + nam);
+
+        // VALIDATION: Kiểm tra logic ngày tháng
+        LocalDate ngayHienTai = LocalDate.now();
+        LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
+        LocalDate ngayDenHan = hoaDon.getNgayDenHan();
+        
+        // Ngày phát hành không được sau ngày hiện tại quá 1 tháng
+        if (ngayPhatHanh.isAfter(ngayHienTai.plusMonths(1))) {
+            throw new RuntimeException("Lỗi: Ngày phát hành (" + ngayPhatHanh + ") không được sau ngày hiện tại quá 1 tháng. Vui lòng chọn ngày hợp lệ.");
+        }
+        
+        // Ngày phát hành không được trước ngày hiện tại quá 3 tháng
+        if (ngayPhatHanh.isBefore(ngayHienTai.minusMonths(3))) {
+            throw new RuntimeException("Lỗi: Ngày phát hành (" + ngayPhatHanh + ") không được trước ngày hiện tại quá 3 tháng. Vui lòng chọn ngày hợp lệ.");
+        }
+        
+        // Ngày đến hạn phải sau ngày phát hành
+        if (ngayDenHan.isBefore(ngayPhatHanh)) {
+            throw new RuntimeException("Lỗi: Ngày đến hạn (" + ngayDenHan + ") phải sau hoặc bằng ngày phát hành (" + ngayPhatHanh + "). Vui lòng kiểm tra lại.");
+        }
+        
+        // Ngày đến hạn không được sau ngày phát hành quá 60 ngày
+        if (ngayDenHan.isAfter(ngayPhatHanh.plusDays(60))) {
+            throw new RuntimeException("Lỗi: Ngày đến hạn (" + ngayDenHan + ") không được sau ngày phát hành quá 60 ngày. Vui lòng kiểm tra lại.");
+        }
+
         // VALIDATION: Kiểm tra xem đã có hóa đơn cho căn hộ trong tháng đó chưa (tránh tạo trùng)
         Long soLuongHoaDonTrung = hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam);
         if (soLuongHoaDonTrung > 0) {
-            throw new RuntimeException("Không thể tạo hóa đơn: Căn hộ này đã có hóa đơn cho tháng " + thang + "/" + nam + ". Vui lòng kiểm tra lại.");
+            throw new RuntimeException("Lỗi: Căn hộ này đã có hóa đơn cho tháng " + thang + "/" + nam + ". Mỗi căn hộ chỉ có một hóa đơn mỗi tháng. Vui lòng kiểm tra lại hoặc sửa hóa đơn đã có.");
         }
 
         // VALIDATION: Kiểm tra xem đã có chỉ số điện nước cho tháng đó chưa
+        System.out.println("DEBUG: Looking for chi so for apartment ID: " + canHoId + ", month: " + thang + ", year: " + nam);
         ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)
-                .orElseThrow(
-                        () -> new RuntimeException("Không thể tạo hóa đơn: Căn hộ chưa được ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam + ". Vui lòng ghi nhận chỉ số trước khi tạo hóa đơn."));
+                .orElseThrow(() -> {
+                    String errorMsg = "Lỗi: Căn hộ chưa được ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam + ".\n" +
+                                   "Hướng dẫn:\n" +
+                                   "1. Vào menu 'Quản lý' → 'Chỉ số điện nước'\n" +
+                                   "2. Click 'Ghi nhận Chỉ số mới'\n" +
+                                   "3. Chọn căn hộ và nhập chỉ số điện, nước\n" +
+                                   "4. Chọn ngày ghi nhận trong tháng " + thang + "/" + nam + "\n" +
+                                   "5. Lưu lại rồi quay lại tạo hóa đơn";
+                    return new RuntimeException(errorMsg);
+                });
+
+        System.out.println("DEBUG: Found chi so: " + chiSo.getId() + ", dien: " + chiSo.getDienTieuThu() + ", nuoc: " + chiSo.getNuocTieuThu());
 
         // VALIDATION: Kiểm tra ngày ghi nhận chỉ số có hợp lý không
         if (chiSo.getNgayGhiNhan() != null) {
@@ -118,11 +170,24 @@ public class HoaDonService {
         }
 
         // VALIDATION: Kiểm tra chỉ số có hợp lệ không
-        if (chiSo.getDienTieuThu() == null || chiSo.getDienTieuThu() < 0) {
-            throw new RuntimeException("Chỉ số điện tiêu thụ không hợp lệ. Vui lòng kiểm tra lại.");
+        if (chiSo.getDienTieuThu() == null) {
+            throw new RuntimeException("Lỗi: Chỉ số điện tiêu thụ không được để trống. Vui lòng kiểm tra lại dữ liệu chỉ số.");
         }
-        if (chiSo.getNuocTieuThu() == null || chiSo.getNuocTieuThu() < 0) {
-            throw new RuntimeException("Chỉ số nước tiêu thụ không hợp lệ. Vui lòng kiểm tra lại.");
+        if (chiSo.getDienTieuThu() < 0) {
+            throw new RuntimeException("Lỗi: Chỉ số điện tiêu thụ không được âm (hiện tại: " + chiSo.getDienTieuThu() + "). Vui lòng kiểm tra lại dữ liệu chỉ số.");
+        }
+        if (chiSo.getDienTieuThu() > 10000) {
+            throw new RuntimeException("Lỗi: Chỉ số điện tiêu thụ quá cao (hiện tại: " + chiSo.getDienTieuThu() + " kWh). Giới hạn cho phép là 10,000 kWh/tháng. Vui lòng kiểm tra lại dữ liệu.");
+        }
+        
+        if (chiSo.getNuocTieuThu() == null) {
+            throw new RuntimeException("Lỗi: Chỉ số nước tiêu thụ không được để trống. Vui lòng kiểm tra lại dữ liệu chỉ số.");
+        }
+        if (chiSo.getNuocTieuThu() < 0) {
+            throw new RuntimeException("Lỗi: Chỉ số nước tiêu thụ không được âm (hiện tại: " + chiSo.getNuocTieuThu() + "). Vui lòng kiểm tra lại dữ liệu chỉ số.");
+        }
+        if (chiSo.getNuocTieuThu() > 1000) {
+            throw new RuntimeException("Lỗi: Chỉ số nước tiêu thụ quá cao (hiện tại: " + chiSo.getNuocTieuThu() + " m³). Giới hạn cho phép là 1,000 m³/tháng. Vui lòng kiểm tra lại dữ liệu.");
         }
 
         Double tongTien = 0.0;
@@ -168,12 +233,18 @@ public class HoaDonService {
         // BƯỚC 6: Tính tiền thuê chung cư
         com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
         Double tienThueChungCu = 0.0;
-        if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
-            // VALIDATION: Kiểm tra hợp đồng phải là loại "Thue"
-            if (!"Thue".equalsIgnoreCase(hopDong.getLoaiHopDong())) {
-                // Hợp đồng mua bán không tính tiền thuê
-                tienThueChungCu = 0.0;
+        if (hopDong != null) {
+            // VALIDATION: Kiểm tra thông tin hợp đồng
+            if (hopDong.getTienThue() == null) {
+                System.out.println("WARNING: Hợp đồng tồn tại nhưng không có tiền thuê. Bỏ qua tính tiền thuê.");
+            } else if (hopDong.getNgayBatDau() == null) {
+                System.out.println("WARNING: Hợp đồng tồn tại nhưng không có ngày bắt đầu. Bỏ qua tính tiền thuê.");
             } else {
+                // VALIDATION: Kiểm tra hợp đồng phải là loại "Thue"
+                if (!"Thue".equalsIgnoreCase(hopDong.getLoaiHopDong())) {
+                    System.out.println("INFO: Hợp đồng loại '" + hopDong.getLoaiHopDong() + "' không tính tiền thuê. Bỏ qua.");
+                    tienThueChungCu = 0.0;
+                } else {
                 // VALIDATION: Kiểm tra hợp đồng còn hiệu lực trong tháng phát hành hóa đơn
                 LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
                 LocalDate ngayBatDau = hopDong.getNgayBatDau();
@@ -210,6 +281,14 @@ public class HoaDonService {
         tongTien += tienThueChungCu;
 
         // BƯỚC 7: Lưu hóa đơn vào Database
+        // VALIDATION: Kiểm tra tổng tiền trước khi lưu
+        if (tongTien < 0) {
+            throw new RuntimeException("Lỗi: Tổng tiền hóa đơn không được âm (hiện tại: " + tongTien + " VNĐ). Vui lòng kiểm tra lại cách tính tiền.");
+        }
+        if (tongTien > 100000000) { // 100 triệu
+            throw new RuntimeException("Lỗi: Tổng tiền hóa đơn quá cao (hiện tại: " + String.format("%,.0f", tongTien) + " VNĐ). Vui lòng kiểm tra lại dữ liệu.");
+        }
+        
         hoaDon.setTongTien(tongTien);
         hoaDon.setTrangThaiThanhToan("Chưa đóng");
 
@@ -217,7 +296,12 @@ public class HoaDonService {
             hoaDon.setNgayDenHan(hoaDon.getNgayPhatHanh().plusDays(10));
         }
 
-        hoaDonRepository.save(hoaDon);
+        try {
+            hoaDonRepository.save(hoaDon);
+            System.out.println("INFO: Hóa đơn ID " + hoaDon.getId() + " đã được tạo thành công cho căn hộ " + canHoId + ", tháng " + thang + "/" + nam + ", tổng tiền: " + String.format("%,.0f", tongTien) + " VNĐ");
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi: Không thể lưu hóa đơn vào database. Chi tiết lỗi: " + e.getMessage());
+        }
     }
 
     /**
@@ -452,6 +536,7 @@ public class HoaDonService {
     }
 
     // Xóa hóa đơn và các bản ghi thanh toán liên quan
+    @Transactional
     public void xoaHoaDon(Long id) {
         HoaDon hoaDon = hoaDonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
