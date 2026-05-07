@@ -132,9 +132,18 @@ public class HoaDonService {
         }
 
         // VALIDATION: Kiểm tra xem đã có hóa đơn cho căn hộ trong tháng đó chưa (tránh tạo trùng)
+        System.out.println("DEBUG: Checking for existing invoices for apartment ID: " + canHoId + ", month: " + thang + ", year: " + nam);
         Long soLuongHoaDonTrung = hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam);
+        System.out.println("DEBUG: Found " + soLuongHoaDonTrung + " existing invoices");
+        
         if (soLuongHoaDonTrung > 0) {
-            throw new RuntimeException("Lỗi: Căn hộ này đã có hóa đơn cho tháng " + thang + "/" + nam + ". Mỗi căn hộ chỉ có một hóa đơn mỗi tháng. Vui lòng kiểm tra lại hoặc sửa hóa đơn đã có.");
+            String errorMsg = "Lỗi: Căn hộ này ĐÃ THANH TOÁN hóa đơn cho tháng " + thang + "/" + nam + ".\n\n" +
+                             "Mỗi căn hộ chỉ có MỘT hóa đơn mỗi tháng.\n" +
+                             "Vui lòng:\n" +
+                             "1. Kiểm tra lại danh sách hóa đơn đã có\n" +
+                             "2. Chọn tháng khác để tạo hóa đơn mới\n" +
+                             "3. Hoặc sửa hóa đơn đã tồn tại nếu cần";
+            throw new RuntimeException(errorMsg);
         }
 
         // VALIDATION: Kiểm tra xem đã có chỉ số điện nước cho tháng đó chưa
@@ -156,7 +165,6 @@ public class HoaDonService {
         // VALIDATION: Kiểm tra ngày ghi nhận chỉ số có hợp lý không
         if (chiSo.getNgayGhiNhan() != null) {
             LocalDate ngayGhiNhan = chiSo.getNgayGhiNhan();
-            LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
             
             // Kiểm tra ngày ghi nhận không được sau ngày phát hành hóa đơn
             if (ngayGhiNhan.isAfter(ngayPhatHanh)) {
@@ -246,7 +254,6 @@ public class HoaDonService {
                     tienThueChungCu = 0.0;
                 } else {
                 // VALIDATION: Kiểm tra hợp đồng còn hiệu lực trong tháng phát hành hóa đơn
-                LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
                 LocalDate ngayBatDau = hopDong.getNgayBatDau();
                 LocalDate ngayKetThuc = hopDong.getNgayKetThuc();
 
@@ -275,6 +282,7 @@ public class HoaDonService {
                     
                     // Tính tiền thuê theo số ngày
                     tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * soNgayTinh;
+                }
                 }
             }
         }

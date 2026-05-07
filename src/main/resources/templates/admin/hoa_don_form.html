@@ -19,6 +19,12 @@
         <h2>Tạo Hóa Đơn Mới</h2>
         <hr>
 
+        <!-- Hiển thị lỗi nếu có -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <strong>Lỗi:</strong>
+            <div th:utext="${#strings.replace(errorMessage, '&#10;', '&lt;br&gt;')}"></div>
+        </div>
+
         <form th:action="@{/admin/hoa-don/luu}" method="post" style="max-width: 600px;" id="invoiceForm">
 
             <div class="row">
@@ -43,26 +49,9 @@
                 </select>
             </div>
 
-            <button type="button" class="btn btn-success" onclick="submitForm()">Tính tiền & Lưu Hóa Đơn</button>
+            <button type="submit" class="btn btn-success">Tính tiền & Lưu Hóa Đơn</button>
             <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">Hủy</a>
         </form>
-
-    <script>
-        function submitForm() {
-            console.log('Submit button clicked');
-            const form = document.getElementById('invoiceForm');
-            console.log('Form element:', form);
-            console.log('Form action:', form.action);
-            console.log('Form data:');
-            
-            const formData = new FormData(form);
-            for (let [key, value] of formData.entries()) {
-                console.log(key + ': ' + value);
-            }
-            
-            form.submit();
-        }
-    </script>
     </div>
 </div>
 </body>

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -55,8 +56,18 @@ public class HoaDonController {
     // Mở trang Form tạo mới
     // 1. API Hiển thị form tạo mới
     @GetMapping("/tao-moi")
-    public String hienThiFormTaoMoi(Model model) {
+    public String hienThiFormTaoMoi(Model model, @RequestParam(value = "error", required = false) String error) {
         model.addAttribute("hoaDon", new HoaDon());
+        
+        // Nếu có lỗi từ redirect, hiển thị trên form
+        if (error != null && !error.isEmpty()) {
+            try {
+                String decodedError = java.net.URLDecoder.decode(error, java.nio.charset.StandardCharsets.UTF_8.name());
+                model.addAttribute("errorMessage", decodedError);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", error);
+            }
+        }
 
         // Gửi danh sách căn hộ sang Form để làm menu xổ xuống
         model.addAttribute("danhSachCanHo", canHoRepository.findAll());
