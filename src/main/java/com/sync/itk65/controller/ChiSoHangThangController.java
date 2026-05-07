@@ -44,13 +44,8 @@ public class ChiSoHangThangController {
 
     // Xử lý lưu thông tin chỉ số
     @PostMapping("/luu")
-    public String luuChiSoHangThang(@ModelAttribute("chiSo") ChiSoHangThang chiSoHangThang,
+    public String luuChiSoHangThang(@ModelAttribute("chiSoHangThang") ChiSoHangThang chiSoHangThang,
                                     @RequestParam("canHoId") Long canHoId) {
-        // Tự động set ngày ghi nhận là ngày hiện tại
-        if (chiSoHangThang.getNgayGhiNhan() == null) {
-            chiSoHangThang.setNgayGhiNhan(java.time.LocalDate.now());
-        }
-        
         // Gán căn hộ vào chỉ số dựa trên ID được chọn từ form
         CanHo canHo = new CanHo();
         canHo.setId(canHoId);

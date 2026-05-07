@@ -17,8 +17,8 @@
 
             <form th:action="@{/admin/chi-so/luu}" th:object="${chiSo}" method="post" style="max-width: 600px;">
                 <div class="mb-3">
-                    <label class="form-label">Ngày Ghi Nhận: <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></span> (Chốt số)</label>
-                    <input type="date" class="form-control" th:field="*{ngayGhiNhan}" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" readonly style="background-color: #f8f9fa;">
+                    <label class="form-label">Ngày Ghi Nhận (Chốt số)</label>
+                    <input type="date" class="form-control" th:field="*{ngayGhiNhan}" required>
                 </div>
 
                 <div class="mb-3">
