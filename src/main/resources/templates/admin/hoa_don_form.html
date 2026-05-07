@@ -10,6 +10,16 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
+    <script>
+        // Tự động điền ngày hiện tại khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const ngayPhatHanhInput = document.querySelector('input[name="ngayPhatHanh"]');
+            if (ngayPhatHanhInput) {
+                ngayPhatHanhInput.value = today;
+            }
+        });
+    </script>
 </head>
 <body>
 <div class="d-flex">
@@ -30,7 +40,7 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày Phát Hành</label>
-                    <input type="date" class="form-control" name="ngayPhatHanh" required>
+                    <input type="date" class="form-control" name="ngayPhatHanh" required readonly>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày Đến Hạn</label>
