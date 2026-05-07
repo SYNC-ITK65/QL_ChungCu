@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 
 @Controller
-@RequestMapping("/admin/thanh-toan")
+@RequestMapping("/admin")
 public class ThanhToanController {
 
     @Autowired
@@ -25,7 +25,7 @@ public class ThanhToanController {
 
     // 1. Xem danh sách Lịch sử thanh toán
     // Đường dẫn: http://localhost:8080/admin/thanh-toan/lich-su
-    @GetMapping("/lich-su")
+    @GetMapping("/thanh-toan/lich-su")
     public String danhSachThanhToan(Model model,
                                     @RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "10") int size) {
@@ -39,7 +39,7 @@ public class ThanhToanController {
 
     // 2. Mở Form xác nhận thu tiền
     // Đường dẫn: http://localhost:8080/admin/thanh-toan/xac-nhan/{id}
-    @GetMapping("/xac-nhan/{id}")
+    @GetMapping("/thanh-toan/xac-nhan/{id}")
     public String hienThiFormThanhToan(@PathVariable("id") Long hoaDonId, Model model) {
         HoaDon hoaDon = hoaDonRepository.findById(hoaDonId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy Hóa Đơn với ID: " + hoaDonId));
@@ -55,7 +55,7 @@ public class ThanhToanController {
     }
 
     // 3. Xử lý lưu thanh toán
-    @PostMapping("/luu")
+    @PostMapping("/thanh-toan/luu")
     public String luuThanhToan(@ModelAttribute("thanhToan") ThanhToan thanhToan, RedirectAttributes ra) {
         try {
             thanhToanService.thucHienThanhToan(thanhToan);

@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -66,48 +63,21 @@ public class HoaDonController {
 
     // Xử lý lưu hóa đơn khi bấm nút Lưu
     @PostMapping("/luu")
-    public String luuHoaDon(@RequestParam("ngayPhatHanh") String ngayPhatHanhStr,
-                            @RequestParam("ngayDenHan") String ngayDenHanStr,
+    public String luuHoaDon(@ModelAttribute("hoaDon") HoaDon hoaDon,
                             @RequestParam("canHoId") Long canHoId) {
         try {
-            System.out.println("DEBUG: Creating invoice with dates: " + ngayPhatHanhStr + " to " + ngayDenHanStr + " for apartment ID: " + canHoId);
-            
-            // Validate inputs
-            if (ngayPhatHanhStr == null || ngayPhatHanhStr.trim().isEmpty()) {
-                throw new RuntimeException("Vui lòng chọn ngày phát hành");
-            }
-            if (ngayDenHanStr == null || ngayDenHanStr.trim().isEmpty()) {
-                throw new RuntimeException("Vui lòng chọn ngày đến hạn");
-            }
-            if (canHoId == null) {
-                throw new RuntimeException("Vui lòng chọn căn hộ");
-            }
-            
-            HoaDon hoaDon = new HoaDon();
-            hoaDon.setNgayPhatHanh(LocalDate.parse(ngayPhatHanhStr));
-            hoaDon.setNgayDenHan(LocalDate.parse(ngayDenHanStr));
-
             CanHo canHo = new CanHo();
             canHo.setId(canHoId);
             hoaDon.setCanHo(canHo);
 
             // Trigger tính tiền tự động toàn bộ
             hoaDonService.taoHoaDonTuDong(hoaDon);
-            
-            System.out.println("DEBUG: Invoice created successfully");
 
             return "redirect:/admin/hoa-don";
 
         } catch (RuntimeException e) {
-            System.out.println("DEBUG: Runtime Exception: " + e.getMessage());
             // e.getMessage() sẽ trả về "Chưa ghi nhận chỉ số điện nước..."
-            String errorMessage = URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
-            return "redirect:/admin/hoa-don/tao-moi?error=" + errorMessage;
-        } catch (Exception e) {
-            System.out.println("DEBUG: General Exception: " + e.getMessage());
-            e.printStackTrace();
-            String errorMessage = URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
-            return "redirect:/admin/hoa-don/tao-moi?error=" + errorMessage;
+            return "redirect:/admin/hoa-don/tao-moi?error=" + e.getMessage();
         }
     }
 
