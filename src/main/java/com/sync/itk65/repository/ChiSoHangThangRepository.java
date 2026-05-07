@@ -16,4 +16,20 @@ public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, 
 
     @Query("SELECT c FROM ChiSoHangThang c WHERE c.canHo.id = :canHoId AND MONTH(c.ngayGhiNhan) = :thang AND YEAR(c.ngayGhiNhan) = :nam")
     Optional<ChiSoHangThang> findByCanHoAndThangNam(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
+
+    // Lấy toàn bộ chỉ số, sắp xếp ngày giảm dần
+    @Query("SELECT c FROM ChiSoHangThang c ORDER BY c.ngayGhiNhan DESC")
+    List<ChiSoHangThang> findAllOrderByNgayGhiNhanDesc();
+
+    // Tìm kiếm theo nhiều điều kiện, sắp xếp ngày giảm dần
+    @Query("SELECT c FROM ChiSoHangThang c WHERE " +
+            "(:maCanHo IS NULL OR :maCanHo = '' OR LOWER(c.canHo.maCanHo) LIKE LOWER(CONCAT('%', :maCanHo, '%'))) AND " +
+            "(:canHoId IS NULL OR c.canHo.id = :canHoId) AND " +
+            "(:thang IS NULL OR MONTH(c.ngayGhiNhan) = :thang) AND " +
+            "(:nam IS NULL OR YEAR(c.ngayGhiNhan) = :nam) " +
+            "ORDER BY c.ngayGhiNhan DESC")
+    List<ChiSoHangThang> searchWithFilters(@Param("maCanHo") String maCanHo,
+                                           @Param("canHoId") Long canHoId,
+                                           @Param("thang") Integer thang,
+                                           @Param("nam") Integer nam);
 }

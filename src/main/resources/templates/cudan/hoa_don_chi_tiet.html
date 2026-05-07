@@ -1,646 +1,374 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Hóa Đơn - Cư Dân</title>
+    <title>Chi Tiết Hóa Đơn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --danger: #f56565;
-            --success: #48bb78;
-            --warning: #ed8936;
-            --light-bg: #f7fafc;
-        }
+        body { background: #f8f9fa; }
 
-        body {
-            background: #f0f2f5;
-            padding: 20px 0;
-        }
-
-        .container-main {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* ========== HEADER ========== */
-        .invoice-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .invoice-header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .invoice-header .breadcrumb {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-top: 10px;
-            font-size: 13px;
-        }
-
-        .invoice-header .breadcrumb a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-        }
-
-        .invoice-header .breadcrumb a:hover {
-            color: white;
-            text-decoration: underline;
-        }
-
-        /* ========== THÔNG TIN CHUNG ========== */
-        .info-section {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .info-section h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid var(--primary);
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .info-label {
-            font-size: 12px;
-            color: #718096;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
-        }
-
-        .info-value {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a202c;
-        }
-
-        .info-value.status-paid {
-            color: var(--success);
-        }
-
-        .info-value.status-unpaid {
-            color: var(--danger);
-        }
-
-        /* ========== BẢNG CHI TIẾT ========== */
-        .detail-section {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .detail-section h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .detail-section h3 i {
-            color: var(--primary);
-            font-size: 20px;
-        }
-
-        .detail-table {
-            width: 100%;
-            margin: 0;
-        }
-
-        .detail-table tr {
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .detail-table tr:last-child {
-            border-bottom: none;
-        }
-
-        .detail-table td {
-            padding: 15px 0;
-            color: #4a5568;
-        }
-
-        .detail-table td.label {
-            font-weight: 600;
-            color: #2d3748;
-            width: 60%;
-        }
-
-        .detail-table td.value {
-            text-align: right;
-            font-weight: 600;
-            color: #1a202c;
-            font-size: 15px;
-        }
-
-        .detail-table .sub-item {
-            padding: 10px 0 10px 20px;
-            font-size: 14px;
-            color: #718096;
-        }
-
-        .detail-table .sub-label {
-            font-weight: 500;
-        }
-
-        .detail-table .sub-value {
-            text-align: right;
-            color: #4a5568;
-        }
-
-        /* ========== CÁC KHOẢN PHÍ ========== */
-        .fee-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-            border-left: 4px solid var(--primary);
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-        }
-
-        .fee-card.electricity {
-            border-left-color: #f6ad55;
-            background: linear-gradient(135deg, rgba(246, 173, 85, 0.05) 0%, rgba(246, 173, 85, 0.02) 100%);
-        }
-
-        .fee-card.water {
-            border-left-color: #4299e1;
-            background: linear-gradient(135deg, rgba(66, 153, 225, 0.05) 0%, rgba(66, 153, 225, 0.02) 100%);
-        }
-
-        .fee-card.management {
-            border-left-color: #48bb78;
-            background: linear-gradient(135deg, rgba(72, 187, 120, 0.05) 0%, rgba(72, 187, 120, 0.02) 100%);
-        }
-
-        .fee-card.parking {
-            border-left-color: #ed8936;
-            background: linear-gradient(135deg, rgba(237, 137, 54, 0.05) 0%, rgba(237, 137, 54, 0.02) 100%);
-        }
-
-        .fee-card.service {
-            border-left-color: #9f7aea;
-            background: linear-gradient(135deg, rgba(159, 122, 234, 0.05) 0%, rgba(159, 122, 234, 0.02) 100%);
-        }
-
+        /* Tiêu đề mỗi card khoản phí */
         .fee-card-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .fee-card-title {
-            font-weight: 700;
-            color: #1a202c;
-            font-size: 15px;
-        }
-
-        .fee-card-amount {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 18px;
-        }
-
-        /* ========== TỔNG CỘNG ========== */
-        .total-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-        }
-
-        .total-row {
-            display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 16px;
-            color: #4a5568;
+            padding: 14px 18px;
+            border-bottom: 1px solid #f0f0f0;
         }
-
-        .total-row:last-child {
-            border-bottom: none;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 15px;
-            font-size: 22px;
+        .fee-card-header .fee-title {
             font-weight: 700;
-        }
-
-        .total-row .label {
-            font-weight: 600;
-        }
-
-        .total-row .amount {
-            font-weight: 700;
-            font-size: 18px;
-        }
-
-        /* ========== ACTION BUTTONS ========== */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
-
-        .btn-custom {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 0.92rem;
             display: flex;
             align-items: center;
             gap: 8px;
-            text-decoration: none;
-            font-size: 14px;
+        }
+        .fee-card-header .fee-amount {
+            font-weight: 700;
+            font-size: 1rem;
         }
 
-        .btn-back {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
+        /* Dòng chi tiết bên trong card */
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 18px;
+            border-bottom: 1px solid #f8f9fa;
+            font-size: 0.875rem;
+        }
+        .fee-row:last-child { border-bottom: none; }
+        .fee-row .row-label { color: #6c757d; }
+        .fee-row .row-value { font-weight: 600; color: #212529; }
+
+        /* Badge trạng thái */
+        .badge-unpaid {
+            background: #fff3cd; color: #856404;
+            font-weight: 600; font-size: 0.8rem;
+            padding: 5px 12px; border-radius: 20px;
+        }
+        .badge-paid {
+            background: #d1e7dd; color: #0a3622;
+            font-weight: 600; font-size: 0.8rem;
+            padding: 5px 12px; border-radius: 20px;
         }
 
-        .btn-back:hover {
-            background: var(--primary);
+        /* Dòng tổng cộng cuối mỗi card */
+        .fee-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 18px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        /* Card tổng hợp cuối */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 11px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f0f0f0;
+            color: #495057;
+        }
+        .summary-row:last-child { border-bottom: none; }
+        .summary-row .s-label { display: flex; align-items: center; gap: 6px; }
+        .summary-row .s-value { font-weight: 600; }
+
+        .grand-total {
+            background: #0d6efd;
             color: white;
-            transform: translateY(-2px);
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
         }
+        .grand-total .gt-label { font-weight: 700; font-size: 0.95rem; }
+        .grand-total .gt-value { font-weight: 800; font-size: 1.3rem; }
 
-        .btn-print {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-print:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-pay {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-pay:hover {
-            background: #38a169;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
-        }
-
-        .btn-pay:disabled {
-            background: #cbd5e0;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* ========== PRINT STYLE ========== */
         @media print {
-            body {
-                background: white;
-            }
-
-            .action-buttons {
-                display: none;
-            }
-
-            .invoice-header {
-                box-shadow: none;
-                page-break-after: avoid;
-            }
-
-            .info-section,
-            .detail-section,
-            .total-section {
-                box-shadow: none;
-                page-break-inside: avoid;
-            }
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
-            .invoice-header h1 {
-                font-size: 20px;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .detail-table td.label,
-            .detail-table td.value {
-                display: block;
-                width: 100%;
-                text-align: left;
-            }
-
-            .detail-table td.value {
-                text-align: right;
-                margin-top: 5px;
-            }
-
-            .total-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .total-row .amount {
-                align-self: flex-end;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .btn-custom {
-                width: 100%;
-                justify-content: center;
-            }
+            .no-print { display: none !important; }
+            body { background: white; }
         }
     </style>
 </head>
-<body>
-<div class="container-main">
-    <!-- HEADER -->
-    <div class="invoice-header">
-        <h1><i class="bi bi-receipt"></i> Chi Tiết Hóa Đơn</h1>
-        <div class="breadcrumb">
-            <a href="/cudan/hoa-don"><i class="bi bi-arrow-left"></i> Quay Lại Danh Sách</a>
-            <span> / Hóa Đơn #HD-<span th:text="${hoaDon.id}"></span></span>
-        </div>
-    </div>
+<body class="d-flex">
 
-    <!-- THÔNG TIN CHUNG -->
-    <div class="info-section">
-        <h3><i class="bi bi-info-circle"></i> Thông Tin Chung</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <div class="info-label">Căn Hộ</div>
-                <div class="info-value" th:text="${hoaDon.canHo.maCanHo}"></div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Ngày Phát Hành</div>
-                <div class="info-value" th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}"></div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Hạn Thanh Toán</div>
-                <div class="info-value" th:text="${#temporals.format(hoaDon.ngayDenHan, 'dd/MM/yyyy')}"></div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Trạng Thái</div>
-                <div class="info-value" th:classappend="${hoaDon.trangThaiThanhToan == 'Chưa đóng' ? 'status-unpaid' : 'status-paid'}" th:text="${hoaDon.trangThaiThanhToan}"></div>
-            </div>
-        </div>
-    </div>
+<div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
-    <!-- CHI TIẾT TIỀN ĐIỆN -->
-    <div class="detail-section" th:if="${chiTietDien}">
-        <h3><i class="bi bi-lightning-charge"></i> Tiền Điện</h3>
-        <div class="fee-card electricity">
-            <div class="fee-card-header">
-                    <span class="fee-card-title">
-                        <span th:text="${chiTietDien.soKwh}"></span> kWh
-                    </span>
-                <span class="fee-card-amount" th:text="${#numbers.formatDecimal(chiTietDien.tongTienDien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-            </div>
-        </div>
-        <table class="detail-table">
-            <tr>
-                <td class="label">Chỉ số tiêu thụ</td>
-                <td class="value" th:text="${chiTietDien.soKwh} + ' kWh'"></td>
-            </tr>
-            <tr>
-                <td class="label">Tiền trước thuế</td>
-                <td class="value" th:text="${#numbers.formatDecimal(chiTietDien.tienTruocThue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-            <tr>
-                <td class="label">Thuế VAT (8%)</td>
-                <td class="value" th:text="${#numbers.formatDecimal(chiTietDien.thueVat, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-            <tr style="background: #f7fafc;">
-                <td class="label" style="font-weight: 700; color: var(--primary);">Tổng tiền điện</td>
-                <td class="value" style="color: var(--primary);" th:text="${#numbers.formatDecimal(chiTietDien.tongTienDien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-        </table>
-    </div>
+<div class="flex-grow-1 p-4" style="max-width: 860px;">
 
-    <!-- CHI TIẾT TIỀN NƯỚC -->
-    <div class="detail-section" th:if="${chiTietNuoc}">
-        <h3><i class="bi bi-droplet"></i> Tiền Nước</h3>
-        <div class="fee-card water">
-            <div class="fee-card-header">
-                    <span class="fee-card-title">
-                        <span th:text="${chiTietNuoc.soKhoiNuoc}"></span> m³
-                    </span>
-                <span class="fee-card-amount" th:text="${#numbers.formatDecimal(chiTietNuoc.tongTienNuoc, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-            </div>
-        </div>
-        <table class="detail-table">
-            <tr>
-                <td class="label">Chỉ số tiêu thụ</td>
-                <td class="value" th:text="${chiTietNuoc.soKhoiNuoc} + ' m³'"></td>
-            </tr>
-            <tr>
-                <td class="label">Đơn giá</td>
-                <td class="value" th:text="${#numbers.formatDecimal(chiTietNuoc.donGia, 0, 'COMMA', 0, 'POINT')} + ' ₫/m³'"></td>
-            </tr>
-            <tr style="background: #f7fafc;">
-                <td class="label" style="font-weight: 700; color: #4299e1;">Tổng tiền nước</td>
-                <td class="value" style="color: #4299e1;" th:text="${#numbers.formatDecimal(chiTietNuoc.tongTienNuoc, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- CHI TIẾT PHÍ QUẢN LÝ -->
-    <div class="detail-section" th:if="${chiTietQuanLy}">
-        <h3><i class="bi bi-building"></i> Phí Quản Lý</h3>
-        <div class="fee-card management">
-            <div class="fee-card-header">
-                    <span class="fee-card-title">
-                        <span th:text="${chiTietQuanLy.dienTich}"></span> m²
-                    </span>
-                <span class="fee-card-amount" th:text="${#numbers.formatDecimal(chiTietQuanLy.tongPhiQuanLy, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-            </div>
-        </div>
-        <table class="detail-table">
-            <tr>
-                <td class="label">Diện tích căn hộ</td>
-                <td class="value" th:text="${chiTietQuanLy.dienTich} + ' m²'"></td>
-            </tr>
-            <tr>
-                <td class="label">Đơn giá</td>
-                <td class="value" th:text="${#numbers.formatDecimal(chiTietQuanLy.donGia, 0, 'COMMA', 0, 'POINT')} + ' ₫/m²'"></td>
-            </tr>
-            <tr style="background: #f7fafc;">
-                <td class="label" style="font-weight: 700; color: #48bb78;">Tổng phí quản lý</td>
-                <td class="value" style="color: #48bb78;" th:text="${#numbers.formatDecimal(chiTietQuanLy.tongPhiQuanLy, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- CHI TIẾT PHÍ GỬI XE -->
-    <div class="detail-section" th:if="${chiTietXe != null and chiTietXe.danhSachXe.size() > 0}">
-        <h3><i class="bi bi-car-front"></i> Phí Gửi Xe</h3>
-        <div th:each="xe : ${chiTietXe.danhSachXe}" class="fee-card parking">
-            <div class="fee-card-header">
-                    <span class="fee-card-title">
-                        <span th:text="${xe.loaiXe}"></span> - <span th:text="${xe.bienSo}"></span>
-                    </span>
-                <span class="fee-card-amount" th:text="${#numbers.formatDecimal(xe.tienXe, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-            </div>
-        </div>
-        <table class="detail-table">
-            <tr style="background: #f7fafc;">
-                <td class="label" style="font-weight: 700; color: #ed8936;">Tổng phí gửi xe</td>
-                <td class="value" style="color: #ed8936;" th:text="${#numbers.formatDecimal(chiTietXe.tongPhiXe, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- CHI TIẾT DỊCH VỤ -->
-    <div class="detail-section" th:if="${chiTietDichVu != null and chiTietDichVu.danhSachDichVu.size() > 0}">
-        <h3><i class="bi bi-star"></i> Dịch Vụ Phát Sinh</h3>
-        <div th:each="dv : ${chiTietDichVu.danhSachDichVu}" class="fee-card service">
-            <div class="fee-card-header">
-                <span class="fee-card-title" th:text="${dv.tenDichVu}"></span>
-                <span class="fee-card-amount" th:text="${#numbers.formatDecimal(dv.donGia, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-            </div>
-        </div>
-        <table class="detail-table">
-            <tr style="background: #f7fafc;">
-                <td class="label" style="font-weight: 700; color: #9f7aea;">Tổng phí dịch vụ</td>
-                <td class="value" style="color: #9f7aea;" th:text="${#numbers.formatDecimal(chiTietDichVu.tongPhiDichVu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- CHI TIẾT TIỀN THUÊ CHUNG CƯ -->
-    <div class="detail-section" th:if="${chiTietThueChungCu != null and chiTietThueChungCu.tienThueChungCu > 0}">
-        <h3><i class="bi bi-house"></i> Tiền Thuê Chung Cư</h3>
-        <div class="fee-card" style="border-left-color: #f56565; background: linear-gradient(135deg, rgba(245, 101, 101, 0.05) 0%, rgba(245, 101, 101, 0.02) 100%);">
-            <div class="fee-card-header">
-                <span class="fee-card-title">Tiền thuê theo công thức</span>
-                <span class="fee-card-amount" th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-            </div>
-        </div>
-        <table class="detail-table">
-            <tr>
-                <td class="label">Tiền thuê hàng tháng</td>
-                <td class="value" th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-            <tr>
-                <td class="label">Số ngày trong tháng</td>
-                <td class="value" th:text="${chiTietThueChungCu.ngayTrongThang}"></td>
-            </tr>
-            <tr>
-                <td class="label">Ngày dọn vào</td>
-                <td class="value" th:text="${chiTietThueChungCu.ngayDonVao}"></td>
-            </tr>
-            <tr style="background: #f7fafc;">
-                <td class="label" style="font-weight: 700; color: #f56565;">Tổng tiền thuê chung cư</td>
-                <td class="value" style="color: #f56565;" th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- TỔNG CỘNG -->
-    <div class="total-section" th:if="${tongHop}">
-        <div class="total-row">
-            <span class="label">Tiền Điện</span>
-            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.tienDien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-        </div>
-        <div class="total-row">
-            <span class="label">Tiền Nước</span>
-            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.tienNuoc, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-        </div>
-        <div class="total-row">
-            <span class="label">Phí Quản Lý</span>
-            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.phiQuanLy, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-        </div>
-        <div class="total-row">
-            <span class="label">Phí Gửi Xe</span>
-            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.phiXe, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-        </div>
-        <div class="total-row">
-            <span class="label">Phí Dịch Vụ</span>
-            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-        </div>
-        <div class="total-row" th:if="${tongHop.tienThueChungCu > 0}">
-            <span class="label">Tiền Thuê Chung Cư</span>
-            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-        </div>
-        <div class="total-row">
-            <span class="label">TỔNG CỘNG</span>
-            <span class="amount" th:text="${#numbers.formatDecimal(tongHop.tongCong, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-        </div>
-    </div>
-
-    <!-- ACTION BUTTONS -->
-    <div class="action-buttons">
-        <a href="/cudan/hoa-don" class="btn-custom btn-back">
-            <i class="bi bi-arrow-left"></i> Quay Lại
+    <!-- Tiêu đề trang -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="/cudan/hoa-don" class="btn btn-sm btn-outline-secondary no-print">
+            <i class="bi bi-arrow-left"></i>
         </a>
-        <button onclick="window.print()" class="btn-custom btn-print">
-            <i class="bi bi-printer"></i> In Hóa Đơn
+        <div>
+            <h4 class="mb-0 fw-bold">
+                Chi Tiết Hóa Đơn
+                <span class="text-primary fs-6 fw-normal"
+                      th:text="'#HD-' + ${hoaDon.id}"></span>
+            </h4>
+            <small class="text-muted">
+                Căn hộ
+                <span class="fw-semibold" th:text="${hoaDon.canHo.maCanHo}"></span>
+            </small>
+        </div>
+    </div>
+
+    <!-- Thông tin chung -->
+    <div class="card shadow-sm border-0 rounded-3 mb-3">
+        <div class="card-header bg-primary text-white rounded-top-3 d-flex justify-content-between align-items-center py-3">
+            <span class="fw-bold">
+                <i class="bi bi-receipt me-2"></i>
+                Hóa đơn tháng
+                <span th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'MM/yyyy')}"></span>
+            </span>
+            <span th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}" class="badge-unpaid">⏳ Chưa đóng</span>
+            <span th:if="${hoaDon.trangThaiThanhToan == 'Đã đóng'}"   class="badge-paid">✓ Đã đóng</span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small mb-1">Ngày phát hành</div>
+                    <div class="fw-semibold"
+                         th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}"></div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small mb-1">Hạn thanh toán</div>
+                    <div class="fw-semibold"
+                         th:text="${#temporals.format(hoaDon.ngayDenHan, 'dd/MM/yyyy')}"></div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small mb-1">Căn hộ</div>
+                    <div class="fw-semibold" th:text="${hoaDon.canHo.maCanHo}"></div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small mb-1">Tổng tiền</div>
+                    <div class="fw-bold text-primary"
+                         th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Tiền Điện ===== -->
+    <div class="card shadow-sm border-0 rounded-3 mb-3" th:if="${chiTietDien}">
+        <div class="fee-card-header">
+            <span class="fee-title text-warning">
+                <i class="bi bi-lightning-charge-fill"></i> Tiền Điện
+            </span>
+            <span class="fee-amount text-warning"
+                  th:text="${#numbers.formatDecimal(chiTietDien.tongTienDien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Điện tiêu thụ</span>
+            <span class="row-value" th:text="${chiTietDien.soKwh} + ' kWh'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Tiền trước thuế</span>
+            <span class="row-value"
+                  th:text="${#numbers.formatDecimal(chiTietDien.tienTruocThue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Thuế VAT (8%)</span>
+            <span class="row-value"
+                  th:text="${#numbers.formatDecimal(chiTietDien.thueVat, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-total-row">
+            <span>Tổng tiền điện</span>
+            <span th:text="${#numbers.formatDecimal(chiTietDien.tongTienDien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+    </div>
+
+    <!-- ===== Tiền Nước ===== -->
+    <div class="card shadow-sm border-0 rounded-3 mb-3" th:if="${chiTietNuoc}">
+        <div class="fee-card-header">
+            <span class="fee-title text-info">
+                <i class="bi bi-droplet-fill"></i> Tiền Nước
+            </span>
+            <span class="fee-amount text-info"
+                  th:text="${#numbers.formatDecimal(chiTietNuoc.tongTienNuoc, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Nước tiêu thụ</span>
+            <span class="row-value" th:text="${chiTietNuoc.soKhoiNuoc} + ' m³'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Đơn giá</span>
+            <span class="row-value"
+                  th:text="${#numbers.formatDecimal(chiTietNuoc.donGia, 0, 'COMMA', 0, 'POINT')} + ' ₫/m³'"></span>
+        </div>
+        <div class="fee-total-row">
+            <span>Tổng tiền nước</span>
+            <span th:text="${#numbers.formatDecimal(chiTietNuoc.tongTienNuoc, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+    </div>
+
+    <!-- ===== Phí Quản Lý ===== -->
+    <div class="card shadow-sm border-0 rounded-3 mb-3" th:if="${chiTietQuanLy}">
+        <div class="fee-card-header">
+            <span class="fee-title text-success">
+                <i class="bi bi-building"></i> Phí Quản Lý
+            </span>
+            <span class="fee-amount text-success"
+                  th:text="${#numbers.formatDecimal(chiTietQuanLy.tongPhiQuanLy, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Diện tích căn hộ</span>
+            <span class="row-value" th:text="${chiTietQuanLy.dienTich} + ' m²'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Đơn giá</span>
+            <span class="row-value"
+                  th:text="${#numbers.formatDecimal(chiTietQuanLy.donGia, 0, 'COMMA', 0, 'POINT')} + ' ₫/m²'"></span>
+        </div>
+        <div class="fee-total-row">
+            <span>Tổng phí quản lý</span>
+            <span th:text="${#numbers.formatDecimal(chiTietQuanLy.tongPhiQuanLy, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+    </div>
+
+    <!-- ===== Phí Gửi Xe ===== -->
+    <div class="card shadow-sm border-0 rounded-3 mb-3"
+         th:if="${chiTietXe != null and chiTietXe.danhSachXe.size() > 0}">
+        <div class="fee-card-header">
+            <span class="fee-title text-warning">
+                <i class="bi bi-car-front-fill"></i> Phí Gửi Xe
+                <span class="badge bg-warning text-dark fw-normal ms-1"
+                      th:text="${chiTietXe.soLuongXe} + ' xe'"></span>
+            </span>
+            <span class="fee-amount text-warning"
+                  th:text="${#numbers.formatDecimal(chiTietXe.tongPhiXe, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row" th:each="xe : ${chiTietXe.danhSachXe}">
+            <span class="row-label">
+                <span th:text="${xe.tenXe}"></span>
+                <span class="text-muted ms-1" style="font-size:.8rem;"
+                      th:text="'(' + ${xe.bienSo} + ')'"></span>
+            </span>
+            <span class="row-value"
+                  th:text="${#numbers.formatDecimal(xe.tienXe, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-total-row">
+            <span>Tổng phí gửi xe</span>
+            <span th:text="${#numbers.formatDecimal(chiTietXe.tongPhiXe, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+    </div>
+
+    <!-- ===== Dịch Vụ Phát Sinh ===== -->
+    <div class="card shadow-sm border-0 rounded-3 mb-3"
+         th:if="${chiTietDichVu != null and chiTietDichVu.danhSachDichVu.size() > 0}">
+        <div class="fee-card-header">
+            <span class="fee-title" style="color:#6f42c1;">
+                <i class="bi bi-stars"></i> Dịch Vụ Phát Sinh
+            </span>
+            <span class="fee-amount" style="color:#6f42c1;"
+                  th:text="${#numbers.formatDecimal(chiTietDichVu.tongPhiDichVu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row" th:each="dv : ${chiTietDichVu.danhSachDichVu}">
+            <span class="row-label" th:text="${dv.tenDichVu}"></span>
+            <span class="row-value"
+                  th:text="${#numbers.formatDecimal(dv.donGia, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-total-row">
+            <span>Tổng phí dịch vụ</span>
+            <span th:text="${#numbers.formatDecimal(chiTietDichVu.tongPhiDichVu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+    </div>
+
+    <!-- ===== Tiền Thuê Chung Cư ===== -->
+    <div class="card shadow-sm border-0 rounded-3 mb-3"
+         th:if="${chiTietThueChungCu != null and chiTietThueChungCu.tienThueChungCu > 0}">
+        <div class="fee-card-header">
+            <span class="fee-title text-danger">
+                <i class="bi bi-house-fill"></i> Tiền Thuê Chung Cư
+            </span>
+            <span class="fee-amount text-danger"
+                  th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row">
+            <span class="row-label">Tiền thuê hàng tháng</span>
+            <span class="row-value"
+                  th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+        <div class="fee-row" th:if="${chiTietThueChungCu.ngayDonVao != null and chiTietThueChungCu.ngayDonVao > 0}">
+            <span class="row-label">Ngày dọn vào (tháng đầu)</span>
+            <span class="row-value">Ngày <span th:text="${chiTietThueChungCu.ngayDonVao}"></span></span>
+        </div>
+        <div class="fee-total-row">
+            <span>Tổng tiền thuê</span>
+            <span th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+        </div>
+    </div>
+
+    <!-- ===== Tổng Hợp ===== -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4" th:if="${tongHop}">
+        <div class="card-header bg-light fw-bold py-3 rounded-top-3">
+            <i class="bi bi-calculator me-2"></i> Tổng Hợp Hóa Đơn
+        </div>
+        <div class="card-body">
+            <div class="summary-row">
+                <span class="s-label"><i class="bi bi-lightning-charge text-warning"></i> Tiền điện</span>
+                <span class="s-value" th:text="${#numbers.formatDecimal(tongHop.tienDien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+            <div class="summary-row">
+                <span class="s-label"><i class="bi bi-droplet text-info"></i> Tiền nước</span>
+                <span class="s-value" th:text="${#numbers.formatDecimal(tongHop.tienNuoc, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+            <div class="summary-row">
+                <span class="s-label"><i class="bi bi-building text-success"></i> Phí quản lý</span>
+                <span class="s-value" th:text="${#numbers.formatDecimal(tongHop.phiQuanLy, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+            <div class="summary-row" th:if="${tongHop.phiXe > 0}">
+                <span class="s-label"><i class="bi bi-car-front text-warning"></i> Phí gửi xe</span>
+                <span class="s-value" th:text="${#numbers.formatDecimal(tongHop.phiXe, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+            <div class="summary-row" th:if="${tongHop.phiDichVu > 0}">
+                <span class="s-label" style="color:#6f42c1;"><i class="bi bi-stars"></i> Phí dịch vụ</span>
+                <span class="s-value" th:text="${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+            <div class="summary-row" th:if="${tongHop.tienThueChungCu > 0}">
+                <span class="s-label"><i class="bi bi-house text-danger"></i> Tiền thuê chung cư</span>
+                <span class="s-value" th:text="${#numbers.formatDecimal(tongHop.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+
+            <div class="grand-total">
+                <span class="gt-label">TỔNG CỘNG</span>
+                <span class="gt-value"
+                      th:text="${#numbers.formatDecimal(tongHop.tongCong, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="d-flex gap-2 flex-wrap no-print">
+        <a href="/cudan/hoa-don" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+        <button onclick="window.print()" class="btn btn-outline-secondary">
+            <i class="bi bi-printer"></i> In hóa đơn
         </button>
         <a th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}"
            th:href="'/admin/thanh-toan/xac-nhan/' + ${hoaDon.id}"
-           class="btn-custom btn-pay">
-            <i class="bi bi-credit-card"></i> Thanh Toán
+           class="btn btn-success">
+            <i class="bi bi-credit-card"></i> Thanh Toán Ngay
         </a>
-        <button th:if="${hoaDon.trangThaiThanhToan == 'Đã đóng'}" class="btn-custom btn-pay" disabled>
+        <button th:if="${hoaDon.trangThaiThanhToan == 'Đã đóng'}"
+                class="btn btn-success" disabled>
             <i class="bi bi-check-circle"></i> Đã Thanh Toán
         </button>
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Dùng fragment Datatable chung -->
-    <div th:replace="~{fragments/datatable :: scripts}"></div>
+<div th:replace="~{fragments/datatable :: scripts}"></div>
 </body>
 </html>

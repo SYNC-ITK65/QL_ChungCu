@@ -18,14 +18,19 @@ public class ChiSoHangThangService {
     @Autowired
     private ChiSoHangThangRepository chiSoHangThangRepository;
 
-    // Lấy danh sách toàn bộ chỉ số
+    // Lấy danh sách toàn bộ chỉ số, sắp xếp ngày mới nhất lên đầu
     public List<ChiSoHangThang> layTatCaChiSo() {
-        return chiSoHangThangRepository.findAll();
+        return chiSoHangThangRepository.findAllOrderByNgayGhiNhanDesc();
     }
 
     public Page<ChiSoHangThang> layTatCaChiSo(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return chiSoHangThangRepository.findAll(pageable);
+    }
+
+    // Tìm kiếm chỉ số theo nhiều điều kiện
+    public List<ChiSoHangThang> timKiemChiSo(String maCanHo, Long canHoId, Integer thang, Integer nam) {
+        return chiSoHangThangRepository.searchWithFilters(maCanHo, canHoId, thang, nam);
     }
 
     // Lấy chỉ số theo ID căn hộ
@@ -51,7 +56,7 @@ public class ChiSoHangThangService {
             ChiSoHangThang cs = chiSoCu.get();
             cs.setDienTieuThu(chiSoMoi.getDienTieuThu());
             cs.setNuocTieuThu(chiSoMoi.getNuocTieuThu());
-            cs.setNgayGhiNhan(chiSoMoi.getNgayGhiNhan()); // Cập nhật lại ngày ghi nhận mới nhất
+            cs.setNgayGhiNhan(chiSoMoi.getNgayGhiNhan());
 
             return chiSoHangThangRepository.save(cs);
         }
