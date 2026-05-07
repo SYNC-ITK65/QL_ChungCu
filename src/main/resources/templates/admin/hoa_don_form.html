@@ -19,16 +19,22 @@
         <h2>Tạo Hóa Đơn Mới</h2>
         <hr>
 
-        <form th:action="@{/admin/hoa-don/luu}" th:object="${hoaDon}" method="post" style="max-width: 600px;">
+        <!-- Hiển thị lỗi nếu có -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <strong>Lỗi:</strong>
+            <div th:utext="${#strings.replace(errorMessage, '&#10;', '&lt;br&gt;')}"></div>
+        </div>
+
+        <form th:action="@{/admin/hoa-don/luu}" method="post" style="max-width: 600px;" id="invoiceForm">
 
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày Phát Hành</label>
-                    <input type="date" class="form-control" th:field="*{ngayPhatHanh}" required>
+                    <input type="date" class="form-control" name="ngayPhatHanh" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ngày Đến Hạn</label>
-                    <input type="date" class="form-control" th:field="*{ngayDenHan}" required>
+                    <input type="date" class="form-control" name="ngayDenHan" required>
                 </div>
             </div>
 
