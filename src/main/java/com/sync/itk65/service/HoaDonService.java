@@ -137,7 +137,7 @@ public class HoaDonService {
         System.out.println("DEBUG: Found " + soLuongHoaDonTrung + " existing invoices");
         
         if (soLuongHoaDonTrung > 0) {
-            String errorMsg = "Lỗi: Căn hộ này ĐÃ THANH TOÁN hóa đơn cho tháng " + thang + "/" + nam + ".\n\n" +
+            String errorMsg = "Lỗi: Căn hộ này đã có hóa đơn cho tháng " + thang + "/" + nam + ".\n\n" +
                              "Mỗi căn hộ chỉ có MỘT hóa đơn mỗi tháng.\n" +
                              "Vui lòng:\n" +
                              "1. Kiểm tra lại danh sách hóa đơn đã có\n" +
