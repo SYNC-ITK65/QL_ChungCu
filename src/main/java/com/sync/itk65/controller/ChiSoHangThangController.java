@@ -4,11 +4,12 @@ import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.entity.ChiSoHangThang;
 import com.sync.itk65.repository.CanHoRepository;
 import com.sync.itk65.service.ChiSoHangThangService;
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/chi-so")
@@ -20,38 +21,49 @@ public class ChiSoHangThangController {
     @Autowired
     private CanHoRepository canHoRepository;
 
-    // Hiển thị danh sách chỉ số
+    // Hiển thị danh sách chỉ số (có lọc, sắp xếp ngày mới nhất)
     @GetMapping
     public String hienThiDanhSach(Model model,
-                                  @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
-        Page<ChiSoHangThang> trangDuLieu = chiSoHangThangService.layTatCaChiSo(page, size);
-        model.addAttribute("danhSachChiSo", trangDuLieu.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
-        model.addAttribute("size", size);
-        return "admin/chi_so_list"; // Cần tạo file view chi_so_list.html
+                                  @RequestParam(required = false) String maCanHo,
+                                  @RequestParam(required = false) Long canHoId,
+                                  @RequestParam(required = false) Integer thang,
+                                  @RequestParam(required = false) Integer nam) {
+        List<ChiSoHangThang> danhSachChiSo;
+
+        String maCanHoFilter = (maCanHo != null && !maCanHo.trim().isEmpty()) ? maCanHo.trim() : null;
+        boolean coBoLoc = maCanHoFilter != null || canHoId != null || thang != null || nam != null;
+
+        if (coBoLoc) {
+            danhSachChiSo = chiSoHangThangService.timKiemChiSo(maCanHoFilter, canHoId, thang, nam);
+        } else {
+            danhSachChiSo = chiSoHangThangService.layTatCaChiSo();
+        }
+
+        model.addAttribute("danhSachChiSo", danhSachChiSo);
+        model.addAttribute("maCanHo", maCanHo != null ? maCanHo : "");
+        model.addAttribute("canHoId", canHoId);
+        model.addAttribute("thang", thang);
+        model.addAttribute("nam", nam);
+        model.addAttribute("danhSachCanHo", canHoRepository.findAll());
+        return "admin/chi_so_list";
     }
 
     // Hiển thị form thêm mới chỉ số
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
         model.addAttribute("chiSo", new ChiSoHangThang());
-        // Load danh sách căn hộ để chọn trong dropdown
         model.addAttribute("danhSachCanHo", canHoRepository.findAll());
-        return "admin/chi_so_form"; // Cần tạo file view chi_so_form.html
+        return "admin/chi_so_form";
     }
 
     // Xử lý lưu thông tin chỉ số
     @PostMapping("/luu")
     public String luuChiSoHangThang(@ModelAttribute("chiSo") ChiSoHangThang chiSoHangThang,
                                     @RequestParam("canHoId") Long canHoId) {
-        // Tự động set ngày ghi nhận là ngày hiện tại
         if (chiSoHangThang.getNgayGhiNhan() == null) {
             chiSoHangThang.setNgayGhiNhan(java.time.LocalDate.now());
         }
-        
-        // Gán căn hộ vào chỉ số dựa trên ID được chọn từ form
+
         CanHo canHo = new CanHo();
         canHo.setId(canHoId);
         chiSoHangThang.setCanHo(canHo);

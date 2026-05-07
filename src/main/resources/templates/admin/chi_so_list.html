@@ -10,9 +10,44 @@
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
     <div class="container-fluid p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Danh sách Chỉ số Điện Nước</h2>
-            <a th:href="@{/admin/chi-so/tao-moi}" class="btn btn-primary">+ Ghi nhận Chỉ số mới</a>
+        <!-- Form tìm kiếm -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">🔍 Tìm kiếm chỉ số</h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/chi-so}" method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Mã căn hộ</label>
+                        <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}" placeholder="Nhập mã căn hộ...">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Căn hộ</label>
+                        <select class="form-select" name="canHoId">
+                            <option value="">-- Tất cả căn hộ --</option>
+                            <option th:each="ch : ${danhSachCanHo}"
+                                    th:value="${ch.id}"
+                                    th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'"
+                                    th:selected="${canHoId != null and canHoId == ch.id}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Tháng</label>
+                        <input type="number" class="form-control" name="thang" th:value="${thang}" min="1" max="12" placeholder="1-12">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Năm</label>
+                        <input type="number" class="form-control" name="nam" th:value="${nam}" placeholder="2024">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                    </div>
+                </form>
+                <div class="mt-2">
+                    <a th:href="@{/admin/chi-so}" class="btn btn-sm btn-secondary">↻ Xóa bộ lọc</a>
+                </div>
+            </div>
         </div>
 
         <table class="table table-striped table-hover border no-paging">
@@ -23,6 +58,7 @@
                 <th>Căn Hộ</th>
                 <th>Số Điện (kWh)</th>
                 <th>Số Nước (m3)</th>
+                <th>Hành Động</th>
             </tr>
             </thead>
             <tbody>
@@ -32,17 +68,21 @@
                 <td th:text="${cs.canHo?.maCanHo ?: 'Chưa gắn'}">A1-01</td>
                 <td th:text="${cs.dienTieuThu}">100</td>
                 <td th:text="${cs.nuocTieuThu}">10</td>
+                <td>
+                    <a th:href="@{/admin/chi-so/xoa/{id}(id=${cs.id})}"
+                       onclick="return confirm('Bạn có chắc muốn xóa chỉ số này?')"
+                       class="btn btn-sm btn-danger">Xóa</a>
+                </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachChiSo)}">
-                <td colspan="5" class="text-center text-muted">Chưa có chỉ số nào được ghi nhận!</td>
+                <td colspan="6" class="text-center text-muted">Chưa có chỉ số nào được ghi nhận!</td>
             </tr>
             </tbody>
         </table>
-        <div th:replace="~{fragments/pagination :: paging('/admin/chi-so', '')}"></div>
     </div>
 </div>
 
-    <!-- Dùng fragment Datatable chung -->
-    <div th:replace="~{fragments/datatable :: scripts}"></div>
+<!-- Dùng fragment Datatable chung -->
+<div th:replace="~{fragments/datatable :: scripts}"></div>
 </body>
 </html>
