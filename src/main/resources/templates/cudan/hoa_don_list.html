@@ -1,471 +1,217 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Hóa Đơn - Cư Dân</title>
+    <title>Hóa Đơn Của Tôi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --danger: #f56565;
-            --success: #48bb78;
-            --warning: #ed8936;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px 0;
-        }
-
-        .container-main {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .page-header {
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        .page-header h1 {
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .breadcrumb-custom {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 10px 15px;
-            color: white;
-        }
-
-        /* ========== THẺ THỐNG KÊ ========== */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+        body { background: #f8f9fa; }
 
         .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-
-        .stat-icon.unpaid {
-            background: rgba(245, 101, 101, 0.1);
-            color: var(--danger);
-        }
-
-        .stat-icon.paid {
-            background: rgba(72, 187, 120, 0.1);
-            color: var(--success);
-        }
-
-        .stat-icon.total {
-            background: rgba(102, 126, 234, 0.1);
-            color: var(--primary);
-        }
-
-        .stat-content h3 {
-            font-size: 14px;
-            color: #718096;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .stat-content .value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1a202c;
-        }
-
-        .stat-content .amount {
-            font-size: 18px;
-            color: var(--danger);
-            font-weight: 600;
-        }
-
-        /* ========== BỘ LỌC ========== */
-        .filter-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .filter-section h5 {
-            margin-bottom: 15px;
-            color: #1a202c;
-            font-weight: 600;
-        }
-
-        .filter-btn {
-            border: 2px solid #e2e8f0;
-            background: white;
-            color: #4a5568;
-            border-radius: 8px;
-            padding: 10px 20px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-/* ========== NÚT QUAY LẠI SIDEBAR ========== */
-.btn-back-sidebar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    border-radius: 10px;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
-
-.btn-back-sidebar:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.6);
-    transform: translateX(-3px);
-}
-
-.btn-back-sidebar:active {
-    transform: scale(0.95);
-}
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* ========== BẢNG HÓA ĐƠN ========== */
-        .invoice-table-container {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .invoice-table {
-            width: 100%;
-            margin: 0;
-        }
-
-        .invoice-table thead {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-        }
-
-        .invoice-table thead th {
-            padding: 18px;
-            font-weight: 600;
             border: none;
+            border-radius: 12px;
+            padding: 20px 24px;
+        }
+        .stat-card .stat-num {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .stat-card .stat-label {
+            font-size: 0.78rem;
+            font-weight: 600;
             text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
+            letter-spacing: .5px;
+            opacity: .75;
         }
 
-        .invoice-table tbody tr {
-            border-bottom: 1px solid #e2e8f0;
-            transition: background 0.2s ease;
-        }
-
-        .invoice-table tbody tr:hover {
-            background: #f7fafc;
-        }
-
-        .invoice-table tbody td {
-            padding: 18px;
-            color: #4a5568;
+        .filter-tabs .nav-link {
+            color: #6c757d;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 0.875rem;
             font-weight: 500;
         }
+        .filter-tabs .nav-link.active {
+            background: #0d6efd;
+            color: #fff;
+        }
+        .filter-tabs .nav-link:not(.active):hover {
+            background: #e9ecef;
+            color: #212529;
+        }
 
-        .invoice-number {
-            color: var(--primary);
+        .invoice-table th {
+            font-size: 0.75rem;
             font-weight: 700;
-            font-size: 14px;
-        }
-
-        .invoice-date {
-            color: #718096;
-            font-size: 13px;
-        }
-
-        .invoice-amount {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a202c;
-        }
-
-        .badge-status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 12px;
             text-transform: uppercase;
+            letter-spacing: .5px;
+            color: #6c757d;
+            border-bottom-width: 1px;
+            padding: 12px 16px;
         }
+        .invoice-table td {
+            padding: 14px 16px;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        .invoice-table tbody tr:hover { background: #f8f9fa; }
 
         .badge-unpaid {
-            background: rgba(245, 101, 101, 0.1);
-            color: var(--danger);
-        }
-
-        .badge-paid {
-            background: rgba(72, 187, 120, 0.1);
-            color: var(--success);
-        }
-
-        .btn-view-detail {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+            background: #fff3cd;
+            color: #856404;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
+            font-size: 0.775rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .badge-paid {
+            background: #d1e7dd;
+            color: #0a3622;
+            font-weight: 600;
+            font-size: 0.775rem;
+            padding: 5px 10px;
+            border-radius: 20px;
         }
 
-        .btn-view-detail:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
+        .invoice-id { font-weight: 700; color: #0d6efd; }
 
-        /* ========== EMPTY STATE ========== */
-        .empty-state {
-            text-align: center;
+        .empty-box {
             padding: 60px 20px;
-            background: white;
-            border-radius: 15px;
+            text-align: center;
+            color: #adb5bd;
         }
-
-        .empty-state i {
-            font-size: 64px;
-            color: #cbd5e0;
-            margin-bottom: 20px;
-        }
-
-        .empty-state h4 {
-            color: #4a5568;
-            margin-bottom: 10px;
-        }
-
-        .empty-state p {
-            color: #a0aec0;
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 1.8rem;
-            }
-
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-
-            .invoice-table thead {
-                display: none;
-            }
-
-            .invoice-table tbody tr {
-                display: block;
-                margin-bottom: 15px;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                overflow: hidden;
-            }
-
-            .invoice-table tbody td {
-                display: block;
-                padding: 12px;
-                text-align: right;
-                position: relative;
-                padding-left: 50%;
-            }
-
-            .invoice-table tbody td:before {
-                content: attr(data-label);
-                position: absolute;
-                left: 12px;
-                font-weight: 600;
-                color: #4a5568;
-            }
-        }
+        .empty-box i { font-size: 3rem; margin-bottom: 12px; display: block; }
     </style>
 </head>
-<body>
-<div class="page-header">
-    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-        <a href="/cudan/thong-tin" class="btn-back-sidebar">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-        <h1 style="margin: 0;"><i class="bi bi-receipt"></i> Danh Sách Hóa Đơn</h1>
-    </div>
-    <div class="breadcrumb-custom">
-        Căn hộ: <strong th:text="${cuDan.canHo.maCanHo}"></strong>
-    </div>
-</div>
-<div class="container-main">
-    <!-- HEADER -->
-    <div class="page-header">
-        <h1><i class="bi bi-receipt"></i> Danh Sách Hóa Đơn</h1>
-        <div class="breadcrumb-custom">
-            Căn hộ: <strong th:text="${cuDan.canHo.maCanHo}"></strong>
-        </div>
-    </div>
+<body class="d-flex">
 
-    <!-- THẺ THỐNG KÊ -->
-    <div class="stats-container">
-        <!-- Chưa đóng -->
-        <div class="stat-card">
-            <div class="stat-icon unpaid">
-                <i class="bi bi-exclamation-circle"></i>
-            </div>
-            <div class="stat-content">
-                <h3>Chưa Đóng</h3>
-                <div class="value" th:text="${soHoaDonChuaDong}">0</div>
-            </div>
-        </div>
+<div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
-        <!-- Tổng tiền nợ -->
-        <div class="stat-card">
-            <div class="stat-icon unpaid">
-                <i class="bi bi-cash-coin"></i>
-            </div>
-            <div class="stat-content">
-                <h3>Tổng Tiền Nợ</h3>
-                <div class="amount" th:text="${#numbers.formatDecimal(tongTienNo, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
-            </div>
-        </div>
+<div class="flex-grow-1 p-4" style="max-width: 1000px;">
 
-        <!-- Đã đóng -->
-        <div class="stat-card">
-            <div class="stat-icon paid">
-                <i class="bi bi-check-circle"></i>
-            </div>
-            <div class="stat-content">
-                <h3>Đã Đóng</h3>
-                <div class="value" th:text="${soHoaDonDaDong}">0</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- BỘ LỌC -->
-    <div class="filter-section">
-        <h5>Lọc Hóa Đơn</h5>
+    <!-- Tiêu đề trang -->
+    <div class="d-flex align-items-center gap-3 mb-4">
         <div>
-            <a href="/cudan/hoa-don" class="filter-btn" th:classappend="${trangThaiFilter == '' ? 'active' : ''}">
-                <i class="bi bi-funnel"></i> Tất Cả
-            </a>
-            <a href="/cudan/hoa-don/loc?trangThai=chua-dong" class="filter-btn" th:classappend="${trangThaiFilter == 'chua-dong' ? 'active' : ''}">
-                <i class="bi bi-clock"></i> Chưa Đóng
-            </a>
-            <a href="/cudan/hoa-don/loc?trangThai=da-dong" class="filter-btn" th:classappend="${trangThaiFilter == 'da-dong' ? 'active' : ''}">
-                <i class="bi bi-check"></i> Đã Đóng
-            </a>
+            <h4 class="mb-0 fw-bold">💰 Hóa Đơn Của Tôi</h4>
+            <small class="text-muted">
+                Căn hộ:
+                <span class="fw-semibold text-primary" th:text="${cuDan.canHo.maCanHo}"></span>
+            </small>
         </div>
     </div>
 
-    <!-- DANH SÁCH HÓA ĐƠN -->
-    <div th:if="${danhSachHoaDon.size() > 0}">
-        <div class="invoice-table-container">
-            <table class="invoice-table no-paging">
-                <thead>
-                <tr>
-                    <th><i class="bi bi-hash"></i> Mã HĐ</th>
-                    <th><i class="bi bi-calendar"></i> Ngày Phát Hành</th>
-                    <th><i class="bi bi-hourglass"></i> Hạn Thanh Toán</th>
-                    <th><i class="bi bi-cash"></i> Số Tiền</th>
-                    <th><i class="bi bi-flag"></i> Trạng Thái</th>
-                    <th><i class="bi bi-eye"></i> Hành Động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="hoaDon : ${danhSachHoaDon}">
-                    <td data-label="Mã HĐ">
-                        <span class="invoice-number">#HD-<span th:text="${hoaDon.id}"></span></span>
-                    </td>
-                    <td data-label="Ngày Phát Hành">
-                        <span class="invoice-date" th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}"></span>
-                    </td>
-                    <td data-label="Hạn Thanh Toán">
-                        <span th:text="${#temporals.format(hoaDon.ngayDenHan, 'dd/MM/yyyy')}"></span>
-                    </td>
-                    <td data-label="Số Tiền">
-                        <span class="invoice-amount" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
-                    </td>
-                    <td data-label="Trạng Thái">
-                                <span th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}" class="badge-status badge-unpaid">
-                                    <i class="bi bi-clock"></i> Chưa Đóng
-                                </span>
-                        <span th:if="${hoaDon.trangThaiThanhToan == 'Đã đóng'}" class="badge-status badge-paid">
-                                    <i class="bi bi-check-circle"></i> Đã Đóng
-                                </span>
-                    </td>
-                    <td data-label="Hành Động">
-                        <a th:href="'/cudan/hoa-don/chi-tiet/' + ${hoaDon.id}" class="btn-view-detail">
-                            <i class="bi bi-eye"></i> Xem Chi Tiết
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    <!-- Thẻ thống kê -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card bg-white shadow-sm">
+                <div class="stat-label text-danger mb-1">Chưa Thanh Toán</div>
+                <div class="stat-num text-danger" th:text="${soHoaDonChuaDong}">0</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-white shadow-sm">
+                <div class="stat-label text-secondary mb-1">Tổng Tiền Còn Nợ</div>
+                <div class="stat-num text-danger" style="font-size:1.4rem;"
+                     th:text="${#numbers.formatDecimal(tongTienNo, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-white shadow-sm">
+                <div class="stat-label text-success mb-1">Đã Thanh Toán</div>
+                <div class="stat-num text-success" th:text="${soHoaDonDaDong}">0</div>
+            </div>
         </div>
     </div>
 
-    <!-- TRỐNG -->
-    <div th:if="${danhSachHoaDon.size() == 0}" class="empty-state">
-        <i class="bi bi-inbox"></i>
-        <h4>Không Có Hóa Đơn</h4>
-        <p>Hiện tại chưa có hóa đơn nào. Vui lòng quay lại sau.</p>
+    <!-- Bộ lọc -->
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <ul class="nav filter-tabs gap-1 mb-0">
+            <li class="nav-item">
+                <a class="nav-link" href="/cudan/hoa-don"
+                   th:classappend="${trangThaiFilter == null or trangThaiFilter == '' ? ' active' : ''}">
+                    Tất cả
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cudan/hoa-don/loc?trangThai=chua-dong"
+                   th:classappend="${trangThaiFilter == 'chua-dong' ? ' active' : ''}">
+                    Chưa đóng
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/cudan/hoa-don/loc?trangThai=da-dong"
+                   th:classappend="${trangThaiFilter == 'da-dong' ? ' active' : ''}">
+                    Đã đóng
+                </a>
+            </li>
+        </ul>
     </div>
 
-    <div th:with="hoaDonQuery=${trangThaiFilter != null and !#strings.isEmpty(trangThaiFilter) ? 'trangThai=' + trangThaiFilter : ''}"
-         th:replace="~{fragments/pagination :: paging('/cudan/hoa-don', ${hoaDonQuery})}"></div>
+    <!-- Bảng hóa đơn -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <!-- Có dữ liệu -->
+            <div th:if="${danhSachHoaDon.size() > 0}">
+                <table class="table invoice-table mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Mã HĐ</th>
+                        <th>Ngày Phát Hành</th>
+                        <th>Hạn Đóng</th>
+                        <th>Số Tiền</th>
+                        <th>Trạng Thái</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="hd : ${danhSachHoaDon}">
+                        <td>
+                            <span class="invoice-id">#HD-<span th:text="${hd.id}"></span></span>
+                        </td>
+                        <td th:text="${#temporals.format(hd.ngayPhatHanh, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${#temporals.format(hd.ngayDenHan, 'dd/MM/yyyy')}"></td>
+                        <td class="fw-semibold"
+                            th:text="${#numbers.formatDecimal(hd.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
+                        <td>
+                                <span th:if="${hd.trangThaiThanhToan == 'Chưa đóng'}" class="badge-unpaid">
+                                    ⏳ Chưa đóng
+                                </span>
+                            <span th:if="${hd.trangThaiThanhToan == 'Đã đóng'}" class="badge-paid">
+                                    ✓ Đã đóng
+                                </span>
+                        </td>
+                        <td>
+                            <a th:href="'/cudan/hoa-don/chi-tiet/' + ${hd.id}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Xem
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Không có dữ liệu -->
+            <div th:if="${danhSachHoaDon.size() == 0}" class="empty-box">
+                <i class="bi bi-inbox"></i>
+                <p class="mb-0 fw-semibold">Không có hóa đơn nào</p>
+                <small>Hiện tại chưa có hóa đơn trong danh mục này.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="mt-3"
+         th:with="hoaDonQuery=${trangThaiFilter != null and !#strings.isEmpty(trangThaiFilter) ? 'trangThai=' + trangThaiFilter : ''}"
+         th:replace="~{fragments/pagination :: paging('/cudan/hoa-don', ${hoaDonQuery})}">
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Dùng fragment Datatable chung -->
-    <div th:replace="~{fragments/datatable :: scripts}"></div>
+<div th:replace="~{fragments/datatable :: scripts}"></div>
 </body>
 </html>
