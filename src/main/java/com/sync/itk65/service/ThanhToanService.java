@@ -61,6 +61,12 @@ public class ThanhToanService {
         if ("Đã đóng".equalsIgnoreCase(hoaDon.getTrangThaiThanhToan())) {
             throw new RuntimeException("Hóa đơn #" + hoaDon.getId() + " đã được thanh toán trước đó.");
         }
+
+        // VALIDATION: Kiểm tra xem hóa đơn đã có giao dịch trong bảng thanh_toan chưa
+        List<ThanhToan> existingPayments = thanhToanRepository.findByHoaDonId(hoaDon.getId());
+        if (!existingPayments.isEmpty()) {
+            throw new RuntimeException("Hóa đơn #" + hoaDon.getId() + " đã có giao dịch thanh toán trong hệ thống. Không thể tạo thêm.");
+        }
         
         // VALIDATION: Kiểm tra số tiền
         if (thanhToan.getSoTien() == null || thanhToan.getSoTien() <= 0) {

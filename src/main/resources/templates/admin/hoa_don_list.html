@@ -85,12 +85,18 @@
                     <span th:if="${hd.trangThaiThanhToan == 'Đã đóng'}" class="badge bg-success">Đã đóng</span>
 
                     <span th:if="${hd.trangThaiThanhToan == 'Chưa đóng' or hd.trangThaiThanhToan == null}" class="badge bg-danger">Chưa đóng</span>
+
+                    <span th:if="${hd.trangThaiThanhToan == 'Chờ duyệt'}" class="badge bg-warning text-dark">Chờ duyệt</span>
                 </td>
 
                 <td>
                     <a th:if="${hd.trangThaiThanhToan == 'Chưa đóng' or hd.trangThaiThanhToan == null}"
                        th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${hd.id})}"
                        class="btn btn-sm btn-success">Thanh toán</a>
+
+                    <a th:if="${hd.trangThaiThanhToan == 'Chờ duyệt'}"
+                       th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${hd.id})}"
+                       class="btn btn-sm btn-warning">Duyệt</a>
 
                     <a th:href="@{/admin/hoa-don/xem/{id}(id=${hd.id})}"
                        class="btn btn-sm btn-info text-white">Xem</a>

@@ -49,6 +49,11 @@ public class ThanhToanController {
         thanhToan.setSoTien(hoaDon.getTongTien());
         thanhToan.setNgayThanhToan(LocalDate.now());
 
+        // Nếu hóa đơn đang ở trạng thái "Chờ duyệt", mặc định là chuyển khoản QR
+        if ("Chờ duyệt".equals(hoaDon.getTrangThaiThanhToan())) {
+            thanhToan.setPhuongThuc("Chuyển khoản QR");
+        }
+
         model.addAttribute("thanhToan", thanhToan);
         model.addAttribute("hoaDon", hoaDon);
         return "admin/thanh_toan_form"; // Đã thêm admin/
