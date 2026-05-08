@@ -1,12 +1,16 @@
 package com.sync.itk65.controller;
 
+import com.sync.itk65.entity.CuDan;
+import com.sync.itk65.entity.NguoiDung;
+import com.sync.itk65.entity.ThongBao;
+import com.sync.itk65.service.CuDanService;
 import com.sync.itk65.service.ThongBaoService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/cudan/thong-bao")
@@ -15,16 +19,61 @@ public class CuDanThongBaoController {
     @Autowired
     private ThongBaoService thongBaoService;
 
+    @Autowired
+    private CuDanService cuDanService;
+
     @GetMapping("/bang-tin")
-    public String hienThiBangTin(Model model) {
-        model.addAttribute("danhSach", thongBaoService.getThongBaoByLoai(1));
+    public String hienThiBangTin(HttpSession session, Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "6") int size) {
+        // Lấy thông tin cư dân đang đăng nhập
+        String maCanHo = null;
+        String tang = null;
+
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user != null) {
+            CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
+            if (cuDan != null && cuDan.getCanHo() != null) {
+                maCanHo = cuDan.getCanHo().getMaCanHo();
+                tang = cuDan.getCanHo().getTang() != null ? String.valueOf(cuDan.getCanHo().getTang()) : null;
+            }
+        }
+
+        // Lọc thông báo loại 1 (Bảng tin) theo đối tượng cư dân, có phân trang
+        Page<ThongBao> trangDuLieu = thongBaoService.locThongBaoTheoCuDan(1, maCanHo, tang, page, size);
+
+        model.addAttribute("danhSach", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         model.addAttribute("tieuDeTrang", "Bảng tin chung");
         return "cudan/bang_tin";
     }
 
     @GetMapping("/cam-nang")
-    public String hienThiCamNang(Model model) {
-        model.addAttribute("danhSach", thongBaoService.getThongBaoByLoai(2));
+    public String hienThiCamNang(HttpSession session, Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "6") int size) {
+        // Lấy thông tin cư dân đang đăng nhập
+        String maCanHo = null;
+        String tang = null;
+
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user != null) {
+            CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
+            if (cuDan != null && cuDan.getCanHo() != null) {
+                maCanHo = cuDan.getCanHo().getMaCanHo();
+                tang = cuDan.getCanHo().getTang() != null ? String.valueOf(cuDan.getCanHo().getTang()) : null;
+            }
+        }
+
+        // Lọc thông báo loại 2 (Cẩm nang) theo đối tượng cư dân, có phân trang
+        Page<ThongBao> trangDuLieu = thongBaoService.locThongBaoTheoCuDan(2, maCanHo, tang, page, size);
+
+        model.addAttribute("danhSach", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
         model.addAttribute("tieuDeTrang", "Cẩm nang cư dân");
         return "cudan/cam_nang";
     }

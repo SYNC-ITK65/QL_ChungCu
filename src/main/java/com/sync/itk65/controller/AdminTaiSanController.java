@@ -29,12 +29,16 @@ public class AdminTaiSanController {
     @GetMapping
     public String list(Model model,
                        @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size) {
-        Page<TaiSan> trangDuLieu = taiSanService.getAllTaiSan(page, size);
+                       @RequestParam(defaultValue = "10") int size,
+                       @RequestParam(required = false) String tuKhoa,
+                       @RequestParam(required = false) String tinhTrang) {
+        Page<TaiSan> trangDuLieu = taiSanService.searchTaiSan(tuKhoa, tinhTrang, page, size);
         model.addAttribute("listTaiSan", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("tinhTrang", tinhTrang);
         return "admin/tai_san_list";
     }
 

@@ -9,6 +9,8 @@ public interface ThongBaoService {
 
     Page<ThongBao> getAllThongBao(int page, int size);
 
+    Page<ThongBao> searchThongBao(String tuKhoa, Integer loai, int page, int size);
+
     List<ThongBao> getThongBaoByLoai(Integer loai);
 
     ThongBao getThongBaoById(Long id);
@@ -16,4 +18,10 @@ public interface ThongBaoService {
     ThongBao saveThongBao(ThongBao thongBao);
 
     void deleteThongBao(Long id);
+
+    /**
+     * Lọc thông báo theo đối tượng cư dân (maCanHo, tang) có phân trang.
+     * Nếu maCanHo = null → chỉ lấy thông báo ALL.
+     */
+    Page<ThongBao> locThongBaoTheoCuDan(Integer loai, String maCanHo, String tang, int page, int size);
 }

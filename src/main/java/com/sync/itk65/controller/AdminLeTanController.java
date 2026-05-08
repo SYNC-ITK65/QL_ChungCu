@@ -20,12 +20,16 @@ public class AdminLeTanController {
     @GetMapping
     public String hienThiTrangDuyet(Model model,
                                     @RequestParam(defaultValue = "0") int page,
-                                    @RequestParam(defaultValue = "10") int size) {
-        Page<DangKyKhachTham> trangDuLieu = khachThamService.layTatCa(page, size);
+                                    @RequestParam(defaultValue = "10") int size,
+                                    @RequestParam(required = false) String tuKhoa,
+                                    @RequestParam(required = false) String trangThai) {
+        Page<DangKyKhachTham> trangDuLieu = khachThamService.searchKhachTham(tuKhoa, trangThai, page, size);
         model.addAttribute("listKhach", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("trangThai", trangThai);
 
         return "admin/duyet_yeu_cau";
     }

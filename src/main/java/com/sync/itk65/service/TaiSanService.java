@@ -1,12 +1,14 @@
 package com.sync.itk65.service;
 
 import com.sync.itk65.entity.TaiSan;
+import com.sync.itk65.repository.LichSuBaoTriRepository;
 import com.sync.itk65.repository.TaiSanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -24,6 +26,9 @@ public class TaiSanService {
     @Autowired
     private TaiSanRepository taiSanRepository;
 
+    @Autowired
+    private LichSuBaoTriRepository lichSuBaoTriRepository;
+
     public List<TaiSan> getAllTaiSan() {
         return taiSanRepository.findAll();
     }
@@ -31,6 +36,11 @@ public class TaiSanService {
     public Page<TaiSan> getAllTaiSan(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return taiSanRepository.findAll(pageable);
+    }
+
+    public Page<TaiSan> searchTaiSan(String tuKhoa, String tinhTrang, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return taiSanRepository.searchTaiSan(tuKhoa, tinhTrang, pageable);
     }
 
     public List<TaiSan> getAlertAssets() {
@@ -47,15 +57,29 @@ public class TaiSanService {
     }
 
     public TaiSan saveTaiSan(TaiSan taiSan) {
-        // Initial calculation of ngayBaoTriTiepTheo if not set
+        // Tạo mới: Tính ngayBaoTriTiepTheo nếu chưa có
         if (taiSan.getId() == null && taiSan.getNgayBaoTriTiepTheo() == null
                 && taiSan.getNgayMua() != null && taiSan.getChuKyBaoTri() != null) {
             taiSan.setNgayBaoTriTiepTheo(taiSan.getNgayMua().plusMonths(taiSan.getChuKyBaoTri()));
         }
+
+        // Cập nhật: Nếu ngayBaoTriTiepTheo bị để trống nhưng có ngayMua và chuKyBaoTri,
+        // tự động tính lại để đảm bảo dữ liệu luôn hợp lý
+        if (taiSan.getId() != null && taiSan.getNgayBaoTriTiepTheo() == null
+                && taiSan.getNgayMua() != null && taiSan.getChuKyBaoTri() != null) {
+            taiSan.setNgayBaoTriTiepTheo(taiSan.getNgayMua().plusMonths(taiSan.getChuKyBaoTri()));
+        }
+
         return taiSanRepository.save(taiSan);
     }
 
+    /**
+     * Xóa tài sản: Xóa toàn bộ lịch sử bảo trì liên quan trước khi xóa tài sản
+     * để tránh lỗi khóa ngoại (FK constraint violation).
+     */
+    @Transactional
     public void deleteTaiSan(Long id) {
+        lichSuBaoTriRepository.deleteByTaiSanId(id);
         taiSanRepository.deleteById(id);
     }
 

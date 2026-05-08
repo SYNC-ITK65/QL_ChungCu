@@ -28,6 +28,12 @@ public class ThongBaoServiceImpl implements ThongBaoService {
     }
 
     @Override
+    public Page<ThongBao> searchThongBao(String tuKhoa, Integer loai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return thongBaoRepository.searchThongBao(tuKhoa, loai, pageable);
+    }
+
+    @Override
     public List<ThongBao> getThongBaoByLoai(Integer loai) {
         return thongBaoRepository.findByLoaiOrderByNgayDangDesc(loai);
     }
@@ -45,5 +51,19 @@ public class ThongBaoServiceImpl implements ThongBaoService {
     @Override
     public void deleteThongBao(Long id) {
         thongBaoRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<ThongBao> locThongBaoTheoCuDan(Integer loai, String maCanHo, String tang, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Nếu cư dân chưa có căn hộ (maCanHo = null), chỉ lấy thông báo gửi ALL
+        if (maCanHo == null || maCanHo.isEmpty()) {
+            return thongBaoRepository.locThongBaoChiAll(loai, pageable);
+        }
+
+        // Nếu có căn hộ, lọc theo maCanHo và tầng
+        String tangStr = (tang != null) ? tang : "";
+        return thongBaoRepository.locThongBaoTheoCuDan(loai, maCanHo, tangStr, pageable);
     }
 }

@@ -55,7 +55,8 @@ public class CuDanController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieuCuDan.getTotalPages());
 
-        // Tham số bộ lọc được giữ lại để điền sẵn vào Form (Giữ nguyên trạng thái hiển thị)
+        // Tham số bộ lọc được giữ lại để điền sẵn vào Form (Giữ nguyên trạng thái hiển
+        // thị)
         model.addAttribute("canHoId", canHoId);
         model.addAttribute("tuKhoa", tuKhoa);
         model.addAttribute("trangThai", trangThai);
@@ -102,22 +103,39 @@ public class CuDanController {
         // Gán cứng vai trò 3 cho tất cả cư dân (User)
         cuDan.setVaiTro(3);
 
-        // Giữ lại mật khẩu cũ khi sửa, đặt mặc định khi tạo mới
+        // Giữ lại thông tin bảo mật khi sửa, đặt mặc định khi tạo mới
         if (cuDan.getId() != null) {
             CuDan cuDanCu = cuDanService.layCuDanTheoId(cuDan.getId());
             if (cuDanCu != null) {
+                // Giữ lại mật khẩu cũ (form sửa cư dân không có trường mật khẩu)
                 cuDan.setMatKhauMaHoa(cuDanCu.getMatKhauMaHoa());
+                // Giữ lại tên đăng nhập nếu form không gửi lên hoặc bị null
+                if (cuDan.getTenDangNhap() == null || cuDan.getTenDangNhap().isEmpty()) {
+                    cuDan.setTenDangNhap(cuDanCu.getTenDangNhap());
+                }
             }
-        } else if (cuDan.getMatKhauMaHoa() == null || cuDan.getMatKhauMaHoa().isEmpty()) {
-            cuDan.setMatKhauMaHoa("123456");
+        } else {
+            // Tạo mới: đặt mật khẩu mặc định nếu rỗng
+            if (cuDan.getMatKhauMaHoa() == null || cuDan.getMatKhauMaHoa().isEmpty()) {
+                cuDan.setMatKhauMaHoa("1234");
+            }
         }
 
         try {
             cuDanService.luuCuDan(cuDan);
             return "redirect:/admin/cu-dan";
         } catch (IllegalArgumentException e) {
-            // Ném lỗi về lại file giao diện (form) để người dùng xem
+            // Ném lỗi nghiệp vụ về lại file giao diện (form) để người dùng xem
             ra.addFlashAttribute("errorMessage", e.getMessage());
+
+            if (cuDan.getId() != null) {
+                return "redirect:/admin/cu-dan/sua/" + cuDan.getId();
+            } else {
+                return "redirect:/admin/cu-dan/tao-moi";
+            }
+        } catch (Exception e) {
+            // Bắt tất cả lỗi khác (bao gồm ConstraintViolationException) tránh lỗi 500
+            ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi lưu cư dân. Vui lòng kiểm tra lại thông tin!");
 
             if (cuDan.getId() != null) {
                 return "redirect:/admin/cu-dan/sua/" + cuDan.getId();

@@ -6,6 +6,7 @@ import com.sync.itk65.repository.TamTruTamVangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,12 @@ public class TamTruTamVangService {
     private TamTruTamVangRepository repository;
 
     public Page<TamTruTamVang> getAll(int page, int size) { return repository.findAllByOrderByIdDesc(PageRequest.of(page, size)); }
+    
+    public Page<TamTruTamVang> searchTamTruTamVang(String loai, String trangThaiDuyet, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.searchTamTruTamVang(loai, trangThaiDuyet, pageable);
+    }
+
     public List<TamTruTamVang> getAll() { return repository.findAll(); }
     public List<TamTruTamVang> getByCuDan(CuDan cuDan) { return repository.findByCuDanOrderByIdDesc(cuDan); }
     public TamTruTamVang getById(Long id) {

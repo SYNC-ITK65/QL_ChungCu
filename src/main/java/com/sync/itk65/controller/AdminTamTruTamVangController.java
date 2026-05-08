@@ -17,12 +17,16 @@ public class AdminTamTruTamVangController {
     @GetMapping
     public String list(Model model,
                        @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size) {
-        Page<TamTruTamVang> trangDuLieu = service.getAll(page, size);
+                       @RequestParam(defaultValue = "10") int size,
+                       @RequestParam(required = false) String loai,
+                       @RequestParam(required = false) String trangThaiDuyet) {
+        Page<TamTruTamVang> trangDuLieu = service.searchTamTruTamVang(loai, trangThaiDuyet, page, size);
         model.addAttribute("list", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("loai", loai);
+        model.addAttribute("trangThaiDuyet", trangThaiDuyet);
         return "admin/tamtru_tamvang_list";
     }
 

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title th:text="#{tb.ds.tieude}">Danh sách Thông báo & Cẩm nang</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -15,6 +16,32 @@
             <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
                 <h2 th:text="#{tb.ds.tieude}">Quản lý Thông báo & Cẩm nang</h2>
                 <a th:href="@{/admin/thong-bao/tao-moi}" class="btn btn-primary" th:text="#{chung.them}">+ Tạo mới</a>
+            </div>
+
+            <!-- Form Tìm kiếm & Lọc -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <form th:action="@{/admin/thong-bao}" method="GET" class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold">Tiêu đề thông báo</label>
+                            <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}" 
+                                   placeholder="Nhập tiêu đề cần tìm...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Phân loại</label>
+                            <select name="loai" class="form-select">
+                                <option value="">-- Tất cả loại --</option>
+                                <option value="1" th:selected="${loai == 1}">Bảng tin chung</option>
+                                <option value="2" th:selected="${loai == 2}">Cẩm nang cư dân</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i> Lọc thông báo
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <table class="table table-striped table-hover border no-paging">
@@ -43,12 +70,12 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(danhSachThongBao)}">
-                        <td colspan="5" class="text-center text-muted" th:text="#{tb.ds.trong}">Chưa có thông báo nào!</td>
+                        <td colspan="5" class="text-center text-muted" th:text="#{tb.ds.trong}">Chưa có thông báo nào phù hợp!</td>
                     </tr>
                 </tbody>
             </table>
 
-            <div th:replace="~{fragments/pagination :: paging('/admin/thong-bao', '')}"></div>
+            <div th:replace="~{fragments/pagination :: paging('/admin/thong-bao', 'tuKhoa=' + (${tuKhoa} ?: '') + '&loai=' + (${loai} ?: ''))}"></div>
 
             <!-- Dùng fragment Datatable chung -->
             <div th:replace="~{fragments/datatable :: scripts}"></div>
@@ -57,13 +84,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
