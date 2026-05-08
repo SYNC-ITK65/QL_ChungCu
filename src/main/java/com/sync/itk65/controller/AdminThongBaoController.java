@@ -22,12 +22,16 @@ public class AdminThongBaoController {
     @GetMapping
     public String hienThiDanhSach(Model model,
                                   @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
-        Page<ThongBao> trangDuLieu = thongBaoService.getAllThongBao(page, size);
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(required = false) String tuKhoa,
+                                  @RequestParam(required = false) Integer loai) {
+        Page<ThongBao> trangDuLieu = thongBaoService.searchThongBao(tuKhoa, loai, page, size);
         model.addAttribute("danhSachThongBao", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("loai", loai);
         return "admin/thong_bao_list";
     }
 

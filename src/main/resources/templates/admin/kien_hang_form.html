@@ -31,11 +31,12 @@
     <div class="main-content">
         <div class="card form-card">
             <div class="card-header bg-primary text-white text-center py-3">
-                <h4 class="mb-0" th:text="#{kh.form.them_tieude}">📦 Ghi nhận bưu phẩm mới</h4>
+                <h4 class="mb-0" th:text="${kienHang.id != null} ? 'Cập nhật kiện hàng' : #{kh.form.them_tieude}">📦 Ghi nhận bưu phẩm mới</h4>
             </div>
             <div class="card-body p-4">
                 <form th:action="@{/admin/kien-hang/luu}" th:object="${kienHang}" method="POST">
-                    
+                    <!-- Giữ lại ID khi sửa -->
+                    <input type="hidden" th:field="*{id}">
                     <div class="mb-4">
                         <label class="form-label fw-bold" th:text="#{kh.form.chon_can}">1. Chọn Căn hộ nhận</label>
                         <select class="form-select" th:field="*{canHo.id}" required>

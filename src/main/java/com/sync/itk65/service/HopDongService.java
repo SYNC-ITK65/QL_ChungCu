@@ -247,7 +247,7 @@ public class HopDongService {
             thongBao.setNoiDung(noiDung);
             thongBao.setLoai(1); // Loại thông báo chung
             thongBao.setDoiTuongGui("HO_GIA_DINH");
-            thongBao.setGiaTriDoiTuong(hopDong.getCanHo() != null ? hopDong.getCanHo().getId().toString() : "");
+            thongBao.setGiaTriDoiTuong(hopDong.getCanHo() != null ? hopDong.getCanHo().getMaCanHo() : "");
             thongBaoService.saveThongBao(thongBao);
         } catch (Exception e) {
             // Không throw exception để không ảnh hưởng đến việc tạo hợp đồng

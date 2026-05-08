@@ -3,6 +3,7 @@
 <head>
   <title>Duyệt Yêu Cầu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
 <div class="d-flex">
@@ -10,6 +11,33 @@
 
   <div class="main-content p-4 w-100 bg-light">
     <h2 class="mb-4">📋 Quản Lý Yêu Cầu Lễ Tân</h2>
+
+    <!-- Form Tìm kiếm & Lọc -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/admin/duyet-yeu-cau}" method="GET" class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-bold">Tìm kiếm khách</label>
+                    <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}" 
+                           placeholder="Nhập tên khách hoặc CMND/CCCD...">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Trạng thái</label>
+                    <select name="trangThai" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="Chờ duyệt" th:selected="${trangThai == 'Chờ duyệt'}">Chờ duyệt</option>
+                        <option value="Đã duyệt" th:selected="${trangThai == 'Đã duyệt'}">Đã duyệt</option>
+                        <option value="Không duyệt" th:selected="${trangThai == 'Không duyệt'}">Không duyệt</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Lọc yêu cầu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="card shadow-sm mb-4">
       <div class="card-header bg-primary text-white"><h5 class="mb-0">Danh Sách Khách Thăm</h5></div>
@@ -52,10 +80,13 @@
               </th:block>
             </td>
           </tr>
+          <tr th:if="${#lists.isEmpty(listKhach)}">
+             <td colspan="6" class="text-center py-4 text-muted">Không tìm thấy yêu cầu nào phù hợp.</td>
+          </tr>
           </tbody>
         </table>
         <div class="p-3">
-          <div th:replace="~{fragments/pagination :: paging('/admin/duyet-yeu-cau', '')}"></div>
+          <div th:replace="~{fragments/pagination :: paging('/admin/duyet-yeu-cau', 'tuKhoa=' + (${tuKhoa} ?: '') + '&trangThai=' + (${trangThai} ?: ''))}"></div>
         </div>
       </div>
     </div>

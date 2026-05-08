@@ -1,8 +1,6 @@
 package com.sync.itk65.controller;
 
-import com.sync.itk65.entity.CuDan;
 import com.sync.itk65.entity.NguoiDung;
-import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.CuDanService;
 import com.sync.itk65.service.NguoiDungService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +24,6 @@ public class NguoiDungController {
     private NguoiDungService nguoiDungService;
 
     @Autowired
-    private CanHoService canHoService;
-
-    @Autowired
     private CuDanService cuDanService;
 
     // Hàm hiển thị danh sách người dùng
@@ -50,107 +45,100 @@ public class NguoiDungController {
         return "admin/nguoi_dung_list";
     }
 
-    // Hàm hiển thị form tạo mới
+    // Hàm hiển thị form tạo mới (Chỉ dành cho Admin / Nhân viên BQL)
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
-        CuDan cuDan = new CuDan();
-        cuDan.setCanHo(new com.sync.itk65.entity.CanHo()); // Tránh NPE
-        model.addAttribute("nguoiDung", cuDan);
-        model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+        NguoiDung nguoiDung = new NguoiDung();
+        nguoiDung.setVaiTro(1); // Mặc định là Admin
+        model.addAttribute("nguoiDung", nguoiDung);
         return "admin/nguoi_dung_form";
     }
 
-    // Hàm hiển thị form cập nhật (Sửa)
+    // Hàm hiển thị form cập nhật (Sửa) - Chỉ cho Admin/Nhân viên
     @GetMapping("/sua/{id}")
-    public String hienThiFormSua(@PathVariable("id") Long id, Model model) {
+    public String hienThiFormSua(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
         NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(id);
 
-        // Nếu là cư dân (vai trò 3), lấy thêm thông tin cư dân
-        if (nguoiDung.getVaiTro() == 3) {
-            CuDan cuDan = cuDanService.layCuDanTheoId(id);
-            if (cuDan != null) {
-                model.addAttribute("nguoiDung", cuDan);
-            } else {
-                // Nếu không tìm thấy CuDan, tạo CuDan từ NguoiDung
-                CuDan cuDanMoi = new CuDan();
-                cuDanMoi.setId(nguoiDung.getId());
-                cuDanMoi.setTenDangNhap(nguoiDung.getTenDangNhap());
-                cuDanMoi.setMatKhauMaHoa(nguoiDung.getMatKhauMaHoa());
-                cuDanMoi.setHoTen(nguoiDung.getHoTen());
-                cuDanMoi.setEmail(nguoiDung.getEmail());
-                cuDanMoi.setSoDienThoai(nguoiDung.getSoDienThoai());
-                cuDanMoi.setVaiTro(nguoiDung.getVaiTro());
-                cuDanMoi.setCanHo(new com.sync.itk65.entity.CanHo());
-                model.addAttribute("nguoiDung", cuDanMoi);
-            }
-        } else {
-            // Admin: Tạo CuDan wrapper để Thymeleaf có thể bind các field canHo, moiQuanHe,
-            // trangThai
-            CuDan cuDanWrapper = new CuDan();
-            cuDanWrapper.setId(nguoiDung.getId());
-            cuDanWrapper.setTenDangNhap(nguoiDung.getTenDangNhap());
-            cuDanWrapper.setMatKhauMaHoa(nguoiDung.getMatKhauMaHoa());
-            cuDanWrapper.setHoTen(nguoiDung.getHoTen());
-            cuDanWrapper.setEmail(nguoiDung.getEmail());
-            cuDanWrapper.setSoDienThoai(nguoiDung.getSoDienThoai());
-            cuDanWrapper.setVaiTro(nguoiDung.getVaiTro());
-            cuDanWrapper.setCanHo(new com.sync.itk65.entity.CanHo()); // Tránh NPE
-            model.addAttribute("nguoiDung", cuDanWrapper);
+        if (nguoiDung == null) {
+            ra.addFlashAttribute("errorMessage", "Không tìm thấy người dùng với ID: " + id);
+            return "redirect:/admin/nguoi-dung";
         }
 
-        model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+        // Nếu là Cư dân (vaiTro = 3), chuyển hướng sang module Quản lý cư dân
+        if (nguoiDung.getVaiTro() == 3) {
+            return "redirect:/admin/cu-dan/sua/" + id;
+        }
+
+        model.addAttribute("nguoiDung", nguoiDung);
         return "admin/nguoi_dung_form";
     }
 
-    // Hàm xử lý lưu dữ liệu từ form (Kèm bắt lỗi Validator bằng Exception)
+    // Hàm xử lý lưu dữ liệu từ form (Chỉ lưu Admin/Nhân viên - NguoiDung thuần túy)
     @PostMapping("/luu")
-    public String luuNguoiDung(@ModelAttribute("nguoiDung") CuDan cuDan, RedirectAttributes ra) {
-        // Xử lý lỗi Căn hộ rỗng -> Hibernate không lưu được đối tượng có ID null
-        if (cuDan.getCanHo() != null && cuDan.getCanHo().getId() == null) {
-            cuDan.setCanHo(null);
-        }
-
+    public String luuNguoiDung(@ModelAttribute("nguoiDung") NguoiDung nguoiDung, RedirectAttributes ra) {
         try {
-            if (cuDan.getVaiTro() == 1 || cuDan.getVaiTro() == 2) {
-                // Lưu admin/staff: Chỉ lưu thông tin NguoiDung, tránh lưu vào cả bảng cu_dan
-                NguoiDung adminStaff = new NguoiDung();
-                adminStaff.setId(cuDan.getId()); // Nếu là update
-                adminStaff.setTenDangNhap(cuDan.getTenDangNhap());
-                adminStaff.setMatKhauMaHoa(cuDan.getMatKhauMaHoa());
-                adminStaff.setHoTen(cuDan.getHoTen());
-                adminStaff.setEmail(cuDan.getEmail());
-                adminStaff.setSoDienThoai(cuDan.getSoDienThoai());
-                adminStaff.setVaiTro(cuDan.getVaiTro());
-
-                // Đặt mật khẩu mặc định nếu rỗng
-                if (adminStaff.getMatKhauMaHoa() == null || adminStaff.getMatKhauMaHoa().isEmpty()) {
-                    adminStaff.setMatKhauMaHoa("1234");
-                }
-                nguoiDungService.luuNguoiDung(adminStaff);
-            } else {
-                // Lưu cư dân (Chủ hộ/Người thuê)
-                if (cuDan.getMatKhauMaHoa() == null || cuDan.getMatKhauMaHoa().isEmpty()) {
-                    cuDan.setMatKhauMaHoa("1234");
-                }
-                cuDanService.luuCuDan(cuDan);
+            // Đảm bảo vai trò chỉ là Admin (1) hoặc Nhân viên (2)
+            if (nguoiDung.getVaiTro() != 1 && nguoiDung.getVaiTro() != 2) {
+                ra.addFlashAttribute("errorMessage", "Module này chỉ quản lý tài khoản Admin và Nhân viên. Vui lòng sử dụng module Quản lý cư dân.");
+                return "redirect:/admin/nguoi-dung/tao-moi";
             }
+
+            // Xử lý mật khẩu: giữ mật khẩu cũ khi sửa, đặt mặc định khi tạo mới
+            if (nguoiDung.getId() != null) {
+                NguoiDung nguoiDungCu = nguoiDungService.layNguoiDungTheoId(nguoiDung.getId());
+                if (nguoiDungCu != null) {
+                    // Nếu mật khẩu rỗng (không sửa), giữ nguyên mật khẩu cũ
+                    if (nguoiDung.getMatKhauMaHoa() == null || nguoiDung.getMatKhauMaHoa().isEmpty()) {
+                        nguoiDung.setMatKhauMaHoa(nguoiDungCu.getMatKhauMaHoa());
+                    }
+                }
+            } else {
+                // Tạo mới: đặt mật khẩu mặc định nếu rỗng
+                if (nguoiDung.getMatKhauMaHoa() == null || nguoiDung.getMatKhauMaHoa().isEmpty()) {
+                    nguoiDung.setMatKhauMaHoa("1234");
+                }
+            }
+
+            nguoiDungService.luuNguoiDung(nguoiDung);
             return "redirect:/admin/nguoi-dung";
         } catch (IllegalArgumentException e) {
             // Ném thông báo lỗi về form thông qua biến flash attribute
             ra.addFlashAttribute("errorMessage", e.getMessage());
 
             // Trả người dùng về lại màn hình Cập nhật hoặc Thêm mới tương ứng
-            if (cuDan.getId() != null) {
-                return "redirect:/admin/nguoi-dung/sua/" + cuDan.getId();
+            if (nguoiDung.getId() != null) {
+                return "redirect:/admin/nguoi-dung/sua/" + nguoiDung.getId();
+            } else {
+                return "redirect:/admin/nguoi-dung/tao-moi";
+            }
+        } catch (Exception e) {
+            // Bắt tất cả lỗi khác (bao gồm ConstraintViolationException)
+            ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi lưu người dùng. Vui lòng kiểm tra lại thông tin!");
+
+            if (nguoiDung.getId() != null) {
+                return "redirect:/admin/nguoi-dung/sua/" + nguoiDung.getId();
             } else {
                 return "redirect:/admin/nguoi-dung/tao-moi";
             }
         }
     }
 
-    // Xóa người dùng
+    // Xóa người dùng - Chặn xóa Cư dân từ module này
     @GetMapping("/xoa/{id}")
-    public String xoaNguoiDung(@PathVariable("id") Long id) {
+    public String xoaNguoiDung(@PathVariable("id") Long id, RedirectAttributes ra) {
+        NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(id);
+
+        if (nguoiDung == null) {
+            ra.addFlashAttribute("errorMessage", "Không tìm thấy người dùng với ID: " + id);
+            return "redirect:/admin/nguoi-dung";
+        }
+
+        // Nếu là Cư dân, chuyển hướng sang module Quản lý cư dân để xóa
+        if (nguoiDung.getVaiTro() == 3) {
+            ra.addFlashAttribute("errorMessage", "Không thể xóa Cư dân từ module này. Vui lòng sử dụng trang Quản lý cư dân.");
+            return "redirect:/admin/nguoi-dung";
+        }
+
         nguoiDungService.xoaNguoiDung(id);
         return "redirect:/admin/nguoi-dung";
     }
