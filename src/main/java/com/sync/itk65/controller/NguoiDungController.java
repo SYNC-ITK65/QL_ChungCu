@@ -31,15 +31,26 @@ public class NguoiDungController {
     public String hienThiDanhSach(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String tuKhoa,
+            @RequestParam(required = false) Integer vaiTro,
             Model model) {
         
-        org.springframework.data.domain.Page<NguoiDung> trangDuLieu = nguoiDungService.layTatCaNguoiDung(page, size);
+        org.springframework.data.domain.Page<NguoiDung> trangDuLieu;
+        
+        // Nếu có từ khóa tìm kiếm hoặc vai trò, thực hiện tìm kiếm
+        if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) || vaiTro != null) {
+            trangDuLieu = nguoiDungService.timKiemNguoiDung(tuKhoa, vaiTro, page, size);
+        } else {
+            trangDuLieu = nguoiDungService.layTatCaNguoiDung(page, size);
+        }
 
         // Nhờ Service lấy dữ liệu từ Database
         model.addAttribute("danhSachNguoiDung", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("vaiTro", vaiTro);
 
         // Trả về tên file HTML giao diện (sẽ tạo sau trong thư mục resources/templates)
         return "admin/nguoi_dung_list";

@@ -21,8 +21,8 @@
                         Cảnh Báo</a>
                     <a th:if="${isAlert != null}" th:href="@{/admin/tai-san}" class="btn btn-secondary" th:text="#{ts.ds.nut_tat_ca}">📋 Xem Tất
                         Cả</a>
-                    <a th:href="${isAlert != null} ? @{/admin/tai-san/xuat-excel(canhBao=true)} : @{/admin/tai-san/xuat-excel}"
-                        class="btn btn-success" th:text="#{chung.xuat_excel}">Xuất Excel</a>
+                    <a th:href="@{/admin/tai-san/xuat-excel(canhBao=${isAlert != null})}"
+                       class="btn btn-success" th:text="#{chung.xuat_excel}">Xuất Excel</a>
                     <a th:href="@{/admin/tai-san/add}" class="btn btn-primary" th:text="#{ts.ds.nut_them}">+ Thêm tài sản</a>
                 </div>
             </div>

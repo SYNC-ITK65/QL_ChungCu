@@ -37,6 +37,11 @@ public class ThanhToanService {
         return thanhToanRepository.findAll(pageable);
     }
 
+    public Page<ThanhToan> timKiemThanhToan(String maCanHo, String phuongThuc, LocalDate tuNgay, LocalDate denNgay, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return thanhToanRepository.timKiemThanhToan(maCanHo, phuongThuc, tuNgay, denNgay, pageable);
+    }
+
     // Lấy lịch sử thanh toán theo ID hóa đơn
     public List<ThanhToan> layThanhToanTheoHoaDon(Long hoaDonId) {
         return thanhToanRepository.findByHoaDonId(hoaDonId);

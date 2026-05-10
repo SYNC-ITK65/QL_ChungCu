@@ -36,6 +36,11 @@ public class NguoiDungService {
         return nguoiDungRepository.findAll(pageable);
     }
 
+    public Page<NguoiDung> timKiemNguoiDung(String tuKhoa, Integer vaiTro, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return nguoiDungRepository.timKiemNguoiDung(tuKhoa, vaiTro, pageable);
+    }
+
     // 2. Lưu thông tin người dùng kèm kiểm tra Validator tránh trùng lặp Tên đăng nhập
     public void luuNguoiDung(@Valid NguoiDung nguoiDung) {
         try {

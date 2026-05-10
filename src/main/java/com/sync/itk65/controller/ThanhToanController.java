@@ -28,13 +28,21 @@ public class ThanhToanController {
     @GetMapping("/lich-su")
     public String danhSachThanhToan(Model model,
                                     @RequestParam(defaultValue = "0") int page,
-                                    @RequestParam(defaultValue = "10") int size) {
-        Page<ThanhToan> trangDuLieu = thanhToanService.layTatCaThanhToan(page, size);
+                                    @RequestParam(defaultValue = "10") int size,
+                                    @RequestParam(required = false) String maCanHo,
+                                    @RequestParam(required = false) String phuongThuc,
+                                    @RequestParam(required = false) LocalDate tuNgay,
+                                    @RequestParam(required = false) LocalDate denNgay) {
+        Page<ThanhToan> trangDuLieu = thanhToanService.timKiemThanhToan(maCanHo, phuongThuc, tuNgay, denNgay, page, size);
         model.addAttribute("danhSachThanhToan", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
-        return "admin/thanh_toan_list"; // Đã thêm admin/
+        model.addAttribute("maCanHo", maCanHo);
+        model.addAttribute("phuongThuc", phuongThuc);
+        model.addAttribute("tuNgay", tuNgay);
+        model.addAttribute("denNgay", denNgay);
+        return "admin/thanh_toan_list";
     }
 
     // 2. Mở Form xác nhận thu tiền
