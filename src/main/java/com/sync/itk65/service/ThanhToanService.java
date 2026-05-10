@@ -47,8 +47,9 @@ public class ThanhToanService {
     }
 
     // Xử lý thanh toán mới với transaction đảm bảo tính toàn vẹn
+    // synchronized để chống double-click/race condition
     @Transactional(rollbackFor = Exception.class)
-    public ThanhToan thucHienThanhToan(ThanhToan thanhToan) {
+    public synchronized ThanhToan thucHienThanhToan(ThanhToan thanhToan) {
         // VALIDATION: Kiểm tra thông tin hóa đơn
         if (thanhToan.getHoaDon() == null || thanhToan.getHoaDon().getId() == null) {
             throw new RuntimeException("Thiếu thông tin hóa đơn cần thanh toán.");
