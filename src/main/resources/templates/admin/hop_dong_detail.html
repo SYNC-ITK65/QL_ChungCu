@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết Hợp đồng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="d-flex overflow-hidden" style="height: 100vh;">
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <div class="flex-grow-1 p-4 overflow-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-file-text me-2"></i>Chi tiết Hợp đồng</h2>
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/hop-dong/sua/{id}(id=${hopDong.id})}" class="btn btn-warning">
+                    <i class="bi bi-pencil me-1"></i>Sửa
+                </a>
+                <a th:href="@{/admin/hop-dong}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Quay lại
+                </a>
+            </div>
+        </div>
+
+        <!-- Thông tin chính -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">
+                            <span th:if="${hopDong.loaiHopDong == 'Mua'}">🏢 Hợp đồng Mua căn hộ</span>
+                            <span th:if="${hopDong.loaiHopDong == 'Thue'}">🏠 Hợp đồng Thuê căn hộ</span>
+                            <span th:if="${hopDong.loaiHopDong != 'Mua' and hopDong.loaiHopDong != 'Thue'}" th:text="${hopDong.loaiHopDong}"></span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="text-muted small">Mã hợp đồng</label>
+                                <p class="fw-bold fs-5" th:text="'HD-' + ${hopDong.id}">HD-1</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small">Trạng thái</label>
+                                <p>
+                                    <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success fs-6">ACTIVE</span>
+                                    <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-secondary fs-6">EXPIRED</span>
+                                    <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="badge bg-danger fs-6">TERMINATED</span>
+                                    <span th:if="${hopDong.trangThai == 'DRAFT'}" class="badge bg-warning fs-6">DRAFT</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <h6 class="text-primary mb-3">👥 Thông tin các bên</h6>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="text-muted small" th:text="${hopDong.loaiHopDong == 'Mua'} ? 'Bên bán' : 'Bên cho thuê'">Bên cho thuê</label>
+                                <p class="fw-bold" th:text="${hopDong.benChoThue}">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small" th:text="${hopDong.loaiHopDong == 'Mua'} ? 'Bên mua' : 'Bên thuê'">Bên thuê</label>
+                                <p class="fw-bold" th:text="${hopDong.benThue}">-</p>
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary mb-3">🏢 Thông tin căn hộ</h6>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="text-muted small">Căn hộ</label>
+                                <p class="fw-bold" th:text="${hopDong.canHo != null ? hopDong.canHo.maCanHo : '-'}">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small">Cư dân</label>
+                                <p class="fw-bold" th:text="${hopDong.cuDan != null ? hopDong.cuDan.hoTen : '-'}">-</p>
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary mb-3">💰 Thông tin tài chính</h6>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="text-muted small" th:text="${hopDong.loaiHopDong == 'Mua'} ? 'Giá trị hợp đồng' : 'Tiền thuê'">Tiền thuê</label>
+                                <p class="fw-bold text-success fs-5" 
+                                   th:text="${hopDong.tienThue != null ? #numbers.formatDecimal(hopDong.tienThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">0 VNĐ</p>
+                            </div>
+                            <div class="col-md-6" th:if="${hopDong.loaiHopDong != 'Mua'}">
+                                <label class="text-muted small">Tiền cọc</label>
+                                <p class="fw-bold text-info" 
+                                   th:text="${hopDong.tienCoc != null ? #numbers.formatDecimal(hopDong.tienCoc, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">0 VNĐ</p>
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary mb-3">📅 Thời hạn</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="text-muted small">Ngày bắt đầu</label>
+                                <p class="fw-bold" th:text="${hopDong.ngayBatDau != null ? #temporals.format(hopDong.ngayBatDau, 'dd/MM/yyyy') : '-'}">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small">Ngày kết thúc</label>
+                                <p class="fw-bold" th:text="${hopDong.ngayKetThuc != null ? #temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy') : 'Không có (hợp đồng mua)'}">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar actions -->
+            <div class="col-md-4">
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header bg-light py-3">
+                        <h6 class="mb-0">⚡ Thao tác nhanh</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/admin/hop-dong/xuat-pdf/{id}(id=${hopDong.id})}" class="btn btn-outline-primary">
+                                <i class="bi bi-file-pdf me-1"></i>Xuất PDF
+                            </a>
+                            <a th:if="${hopDong.trangThai == 'ACTIVE'}"
+                               th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hopDong.id},trangThai='TERMINATED')}"
+                               class="btn btn-outline-danger"
+                               onclick="return confirm('Bạn có chắc muốn thanh lý hợp đồng này?')">
+                                <i class="bi bi-x-octagon me-1"></i>Thanh lý
+                            </a>
+                            <a th:if="${hopDong.trangThai == 'TERMINATED' or hopDong.trangThai == 'EXPIRED'}"
+                               th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hopDong.id},trangThai='ACTIVE')}"
+                               class="btn btn-outline-success"
+                               onclick="return confirm('Bạn có chắc muốn kích hoạt lại hợp đồng này?')">
+                                <i class="bi bi-check-circle me-1"></i>Kích hoạt lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0">
+                    <div class="card-header bg-light py-3">
+                        <h6 class="mb-0">📊 Thống kê</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Giá trị:</span>
+                            <span class="fw-bold" th:text="${hopDong.giaTriHopDong != null ? #numbers.formatDecimal(hopDong.giaTriHopDong, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">0 VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -42,22 +42,29 @@ public class LichSuThanhToanService {
     }
 
     // Thêm l ch s thanh toán khi hóa ð n ñã thanh toán
-    public void themLichSuThanhToan(HoaDon hoaDon, String phuongThuc, String nguoiThanhToan, String ghiChu) {
-        // Ki m tra hóa ð n ñã có trong l ch s ch a
+    // synchronized để chống race condition khi admin double-click
+    public synchronized void themLichSuThanhToan(HoaDon hoaDon, String phuongThuc, String nguoiThanhToan, String ghiChu) {
+        // Kiểm tra hóa đơn đã có trong lịch sử chưa (check 1)
         if (kiemTraDaThanhToan(hoaDon.getId())) {
-            throw new RuntimeException("Hóa ð n này ñã có trong l ch s thanh toán");
+            throw new RuntimeException("Hóa đơn này đã có trong lịch sử thanh toán");
         }
 
         LichSuThanhToan lichSu = new LichSuThanhToan();
         lichSu.setHoaDonId(hoaDon.getId());
-        lichSu.setMaHoaDon("HD-" + hoaDon.getId());
+        // Tạo mã hóa đơn có thêm thông tin để dễ phân biệt
+        lichSu.setMaHoaDon("HD-" + hoaDon.getId() + "-" + hoaDon.getCanHo().getMaCanHo());
         lichSu.setNgayThanhToan(LocalDateTime.now());
         lichSu.setSoTienThanhToan(hoaDon.getTongTien());
-        lichSu.setPhuongThucThanhToan(phuongThuc != null ? phuongThuc : "Tiên m t");
+        lichSu.setPhuongThucThanhToan(phuongThuc != null ? phuongThuc : "Tiền mặt");
         lichSu.setNguoiThanhToan(nguoiThanhToan);
         lichSu.setGhiChu(ghiChu);
         lichSu.setCanHo(hoaDon.getCanHo());
-        lichSu.setTrangThaiSua("Bình th ng");
+        lichSu.setTrangThaiSua("Bình thường");
+
+        // Re-validation trước khi save (check 2 - chống race condition)
+        if (kiemTraDaThanhToan(hoaDon.getId())) {
+            throw new RuntimeException("Hóa đơn này vừa được thêm vào lịch sử bởi request khác");
+        }
 
         lichSuThanhToanRepository.save(lichSu);
     }

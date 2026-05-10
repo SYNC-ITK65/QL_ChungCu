@@ -55,10 +55,29 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Xác nhận Đã Thu Tiền</button>
+            <button type="submit" class="btn btn-success" id="btnSubmit">
+                <span id="btnText">Xác nhận Đã Thu Tiền</span>
+                <span id="btnLoading" class="d-none">
+                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                    Đang xử lý...
+                </span>
+            </button>
             <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">Hủy bỏ</a>
         </form>
     </div>
 </div>
+
+<script>
+    // Chống double-click khi submit form
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const btn = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        const btnLoading = document.getElementById('btnLoading');
+
+        btn.disabled = true;
+        btnText.classList.add('d-none');
+        btnLoading.classList.remove('d-none');
+    });
+</script>
 </body>
 </html>

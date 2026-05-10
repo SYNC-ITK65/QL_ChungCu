@@ -37,6 +37,11 @@ public class ThanhToanService {
         return thanhToanRepository.findAll(pageable);
     }
 
+    public Page<ThanhToan> timKiemThanhToan(String maCanHo, String phuongThuc, LocalDate tuNgay, LocalDate denNgay, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return thanhToanRepository.timKiemThanhToan(maCanHo, phuongThuc, tuNgay, denNgay, pageable);
+    }
+
     // Lấy lịch sử thanh toán theo ID hóa đơn
     public List<ThanhToan> layThanhToanTheoHoaDon(Long hoaDonId) {
         return thanhToanRepository.findByHoaDonId(hoaDonId);
@@ -47,8 +52,9 @@ public class ThanhToanService {
     }
 
     // Xử lý thanh toán mới với transaction đảm bảo tính toàn vẹn
+    // synchronized để chống double-click/race condition
     @Transactional(rollbackFor = Exception.class)
-    public ThanhToan thucHienThanhToan(ThanhToan thanhToan) {
+    public synchronized ThanhToan thucHienThanhToan(ThanhToan thanhToan) {
         // VALIDATION: Kiểm tra thông tin hóa đơn
         if (thanhToan.getHoaDon() == null || thanhToan.getHoaDon().getId() == null) {
             throw new RuntimeException("Thiếu thông tin hóa đơn cần thanh toán.");
