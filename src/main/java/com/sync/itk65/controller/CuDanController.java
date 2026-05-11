@@ -1,19 +1,26 @@
 package com.sync.itk65.controller;
 
-import com.sync.itk65.entity.CuDan;
-import com.sync.itk65.service.CanHoService;
-import com.sync.itk65.service.CuDanService;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.List;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import com.sync.itk65.entity.CuDan;
+import com.sync.itk65.service.CanHoService;
+import com.sync.itk65.service.CuDanService;
 
 @Controller
 @RequestMapping("/admin/cu-dan")
@@ -147,8 +154,18 @@ public class CuDanController {
 
     // Xóa cư dân chuyển đi
     @GetMapping("/xoa/{id}")
-    public String xoaCuDan(@PathVariable("id") Long id) {
-        cuDanService.xoaCuDan(id);
+    public String xoaCuDan(@PathVariable("id") Long id, RedirectAttributes ra) {
+        try {
+            cuDanService.xoaCuDan(id);
+            ra.addFlashAttribute("successMessage", "Xóa cư dân thành công!");
+        } catch (DataIntegrityViolationException e) {
+            // Bắt lỗi ràng buộc khóa ngoại (Foreign Key Constraint)
+            ra.addFlashAttribute("errorMessage", 
+                "Không thể xóa cư dân này vì đang tồn tại dữ liệu ràng buộc như Hợp đồng, Dịch vụ, Khách thăm, Tạm trú/Tạm vắng hoặc Lịch sử vote. Vui lòng xóa các dữ liệu liên quan trước!");
+        } catch (Exception e) {
+            // Bắt các lỗi khác
+            ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi xóa cư dân: " + e.getMessage());
+        }
         return "redirect:/admin/cu-dan";
     }
 

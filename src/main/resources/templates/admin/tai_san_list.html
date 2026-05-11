@@ -32,22 +32,22 @@
                 <div class="card-body">
                     <form th:action="@{/admin/tai-san}" method="GET" class="row g-3">
                         <div class="col-md-5">
-                            <label class="form-label fw-bold" th:text="#{chung.tim}">Tìm kiếm</label>
+                            <label class="form-label fw-bold">Tìm kiếm</label>
                             <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}" 
-                                   th:placeholder="#{ts.ds.loc_tu_khoa_goi_y}" placeholder="Nhập mã hoặc tên tài sản...">
+                                   placeholder="Nhập mã hoặc tên tài sản...">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold" th:text="#{chung.trang_thai}">Tình trạng</label>
+                            <label class="form-label fw-bold">Tình trạng</label>
                             <select name="tinhTrang" class="form-select">
-                                <option value="" th:text="#{chung.tat_ca}">-- Tất cả tình trạng --</option>
-                                <option value="Hoạt động tốt" th:selected="${tinhTrang == 'Hoạt động tốt'}" th:text="#{ts.tt.tot}">Hoạt động tốt</option>
-                                <option value="Đang hỏng" th:selected="${tinhTrang == 'Đang hỏng'}" th:text="#{ts.tt.hong}">Đang hỏng</option>
-                                <option value="Chờ thanh lý" th:selected="${tinhTrang == 'Chờ thanh lý'}" th:text="#{ts.tt.thanh_ly}">Chờ thanh lý</option>
+                                <option value="">-- Tất cả tình trạng --</option>
+                                <option value="Hoạt động tốt" th:selected="${tinhTrang == 'Hoạt động tốt'}">Hoạt động tốt</option>
+                                <option value="Đang hỏng" th:selected="${tinhTrang == 'Đang hỏng'}">Đang hỏng</option>
+                                <option value="Chờ thanh lý" th:selected="${tinhTrang == 'Chờ thanh lý'}">Chờ thanh lý</option>
                             </select>
                         </div>
                         <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-search"></i> <span th:text="#{chung.tim}">Lọc dữ liệu</span>
+                                <i class="bi bi-search"></i> Lọc dữ liệu
                             </button>
                         </div>
                     </form>

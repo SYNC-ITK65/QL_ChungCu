@@ -1,10 +1,20 @@
 package com.sync.itk65.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import java.time.LocalDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "cu_dan")
@@ -35,6 +45,26 @@ public class CuDan extends NguoiDung {
     @Pattern(regexp = "^\\d{12}$", message = "Căn cước công dân (CCCD) phải bao gồm đúng 12 chữ số")
     @Column(name = "cccd", length = 12)
     private String cccd;
+
+    // Mối quan hệ 1-N với đăng ký khách thăm - Xóa cư dân sẽ xóa tất cả đăng ký khách thăm
+    @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DangKyKhachTham> dangKyKhachThams;
+
+    // Mối quan hệ 1-N với hợp đồng - Xóa cư dân sẽ xóa tất cả hợp đồng
+    @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HopDong> hopDongs;
+
+    // Mối quan hệ 1-N với đặt dịch vụ - Xóa cư dân sẽ xóa tất cả đặt dịch vụ
+    @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DatDichVu> datDichVus;
+
+    // Mối quan hệ 1-N với tạm trú tạm vắng - Xóa cư dân sẽ xóa tất cả tạm trú tạm vắng
+    @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TamTruTamVang> tamTruTamVangs;
+
+    // Mối quan hệ 1-N với lịch sử vote - Xóa cư dân sẽ xóa tất cả lịch sử vote
+    @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LichSuVote> lichSuVotes;
 
     public CanHo getCanHo() {
         return canHo;
@@ -74,6 +104,46 @@ public class CuDan extends NguoiDung {
 
     public void setCccd(String cccd) {
         this.cccd = cccd;
+    }
+
+    public List<DangKyKhachTham> getDangKyKhachThams() {
+        return dangKyKhachThams;
+    }
+
+    public void setDangKyKhachThams(List<DangKyKhachTham> dangKyKhachThams) {
+        this.dangKyKhachThams = dangKyKhachThams;
+    }
+
+    public List<HopDong> getHopDongs() {
+        return hopDongs;
+    }
+
+    public void setHopDongs(List<HopDong> hopDongs) {
+        this.hopDongs = hopDongs;
+    }
+
+    public List<DatDichVu> getDatDichVus() {
+        return datDichVus;
+    }
+
+    public void setDatDichVus(List<DatDichVu> datDichVus) {
+        this.datDichVus = datDichVus;
+    }
+
+    public List<TamTruTamVang> getTamTruTamVangs() {
+        return tamTruTamVangs;
+    }
+
+    public void setTamTruTamVangs(List<TamTruTamVang> tamTruTamVangs) {
+        this.tamTruTamVangs = tamTruTamVangs;
+    }
+
+    public List<LichSuVote> getLichSuVotes() {
+        return lichSuVotes;
+    }
+
+    public void setLichSuVotes(List<LichSuVote> lichSuVotes) {
+        this.lichSuVotes = lichSuVotes;
     }
 
 }

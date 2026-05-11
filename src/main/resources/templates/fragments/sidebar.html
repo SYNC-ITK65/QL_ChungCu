@@ -11,8 +11,10 @@
                 <span class="fs-4" th:text="#{side.admin.tieude}">🏢 Quản Lý Chung Cư</span>
             </a>
             <div class="d-flex gap-1">
-                <a href="javascript:void(0)" onclick="changeLang('vi')" class="btn btn-sm p-0 text-white" style="font-size: 1.2rem;" title="Tiếng Việt">🇻🇳</a>
-                <a href="javascript:void(0)" onclick="changeLang('en')" class="btn btn-sm p-0 text-white" style="font-size: 1.2rem;" title="English">🇺🇸</a>
+                <a href="javascript:void(0)" onclick="changeLang('vi')" class="btn btn-sm p-0 text-white"
+                    style="font-size: 1.2rem;" title="Tiếng Việt">🇻🇳</a>
+                <a href="javascript:void(0)" onclick="changeLang('en')" class="btn btn-sm p-0 text-white"
+                    style="font-size: 1.2rem;" title="English">🇺🇸</a>
             </div>
         </div>
         <hr>
@@ -32,39 +34,50 @@
             <li class="nav-item">
                 <a href="/admin/cu-dan" class="nav-link text-white" th:text="#{side.admin.cu_dan}">👥 Quản lý Cư dân</a>
             </li>
-            <li class="nav-item">
+
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap != null and session.nguoiDungDangNhap.vaiTro == 1}">
                 <a href="/admin/nguoi-dung" class="nav-link text-white" th:text="#{side.admin.nguoi_dung}">👤 Quản lý
                     Người dùng</a>
             </li>
+
+
             <li class="nav-item">
-                <a href="/admin/chi-so" class="nav-link text-white" th:text="#{side.admin.chi_so}">📊 Quản lý Chỉ số</a>
+                <a href="/admin/chi-so" class="nav-link text-white" th:text="#{side.admin.chi_so}">📊 Quản lý Chỉ
+                    số</a>
             </li>
             <li>
-                <a href="/admin/hoa-don" class="nav-link text-white" th:text="#{side.admin.tai_chinh}">💰 Tài chính &
+                <a href="/admin/hoa-don" class="nav-link text-white" th:text="#{side.admin.tai_chinh}">💰 Tài chính
+                    &
                     Hóa đơn</a>
             </li>
             <li>
-                <a href="/admin/hop-dong" class="nav-link text-white" th:text="#{side.admin.hop_dong}">📄 Quản lý Hợp
+                <a href="/admin/hop-dong" class="nav-link text-white" th:text="#{side.admin.hop_dong}">📄 Quản lý
+                    Hợp
                     đồng</a>
             </li>
             <li>
-                <a href="/admin/duyet-yeu-cau" class="nav-link text-white" th:text="#{side.admin.van_hanh}">🛠️ Vận hành
+                <a href="/admin/duyet-yeu-cau" class="nav-link text-white" th:text="#{side.admin.van_hanh}">🛠️ Vận
+                    hành
                     & Tiện ích</a>
             </li>
             <li>
-                <a href="/admin/phuong-tien" class="nav-link text-white" th:text="#{side.admin.phuong_tien}">🚗 Quản lý
+                <a href="/admin/phuong-tien" class="nav-link text-white" th:text="#{side.admin.phuong_tien}">🚗 Quản
+                    lý
                     Phương tiện</a>
             </li>
             <li>
-                <a href="/admin/khao-sat" class="nav-link text-white" th:text="#{side.admin.khao_sat}">📊 Quản lý Khảo
+                <a href="/admin/khao-sat" class="nav-link text-white" th:text="#{side.admin.khao_sat}">📊 Quản lý
+                    Khảo
                     sát</a>
             </li>
             <li class="nav-item">
-                <a href="/admin/dich-vu" class="nav-link text-white" th:text="#{side.admin.dich_vu}">🛠️ Quản lý Dịch
+                <a href="/admin/dich-vu" class="nav-link text-white" th:text="#{side.admin.dich_vu}">🛠️ Quản lý
+                    Dịch
                     vụ</a>
             </li>
             <li class="nav-item">
-                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý Kiện
+                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý
+                    Kiện
                     hàng</a>
             </li>
             <li class="nav-item">
@@ -72,15 +85,18 @@
                     Lịch sử Thanh toán</a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/admin/phan-anh}" class="nav-link text-white" th:text="#{side.admin.phan_anh}">📢 Quản lý
+                <a th:href="@{/admin/phan-anh}" class="nav-link text-white" th:text="#{side.admin.phan_anh}">📢 Quản
+                    lý
                     Phản ánh</a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/admin/tai-san}" class="nav-link text-white" th:text="#{side.admin.tai_san}">🛠️ Quản lý
+                <a th:href="@{/admin/tai-san}" class="nav-link text-white" th:text="#{side.admin.tai_san}">🛠️ Quản
+                    lý
                     Tài Sản</a>
             </li>
             <li class="nav-item">
-                <a th:href="@{/admin/thong-bao}" class="nav-link text-white" th:text="#{side.admin.thong_bao}">📢 Quản
+                <a th:href="@{/admin/thong-bao}" class="nav-link text-white" th:text="#{side.admin.thong_bao}">📢
+                    Quản
                     lý Thông báo</a>
             </li>
         </ul>
