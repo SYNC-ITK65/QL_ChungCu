@@ -103,4 +103,56 @@ public class AdminHopDongController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfData);
     }
+
+    @GetMapping("/chi-tiet/{id}")
+    public String xemChiTietHopDong(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
+        HopDong hopDong = hopDongService.layHopDongTheoId(id);
+        if (hopDong == null) {
+            ra.addFlashAttribute("thongBaoLoi", "Không tìm thấy hợp đồng.");
+            return "redirect:/admin/hop-dong";
+        }
+        model.addAttribute("hopDong", hopDong);
+        return "admin/hop_dong_detail";
+    }
+
+    @GetMapping("/sua/{id}")
+    public String hienThiFormSuaHopDong(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
+        HopDong hopDong = hopDongService.layHopDongTheoId(id);
+        if (hopDong == null) {
+            ra.addFlashAttribute("thongBaoLoi", "Không tìm thấy hợp đồng.");
+            return "redirect:/admin/hop-dong";
+        }
+        model.addAttribute("hopDong", hopDong);
+        model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+        model.addAttribute("danhSachCuDan", cuDanService.layTatCaCuDan());
+        model.addAttribute("isEdit", true);
+        return "admin/hop_dong_form";
+    }
+
+    @PostMapping("/cap-nhat/{id}")
+    public String capNhatHopDong(@PathVariable("id") Long id,
+                                  @ModelAttribute("hopDong") HopDong hopDong,
+                                  @RequestParam("canHoId") Long canHoId,
+                                  @RequestParam("cuDanId") Long cuDanId,
+                                  RedirectAttributes ra) {
+        try {
+            hopDongService.capNhatHopDong(id, hopDong, canHoId, cuDanId);
+            ra.addFlashAttribute("thongBaoThanhCong", "Cập nhật hợp đồng thành công.");
+            return "redirect:/admin/hop-dong";
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+            return "redirect:/admin/hop-dong/sua/" + id;
+        }
+    }
+
+    @GetMapping("/xoa/{id}")
+    public String xoaHopDong(@PathVariable("id") Long id, RedirectAttributes ra) {
+        try {
+            hopDongService.xoaHopDong(id);
+            ra.addFlashAttribute("thongBaoThanhCong", "Xóa hợp đồng thành công.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Không thể xóa hợp đồng: " + e.getMessage());
+        }
+        return "redirect:/admin/hop-dong";
+    }
 }

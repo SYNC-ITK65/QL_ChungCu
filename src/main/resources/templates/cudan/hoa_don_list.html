@@ -182,6 +182,9 @@
                             <span th:if="${hd.trangThaiThanhToan == 'Đã đóng'}" class="badge-paid">
                                     ✓ Đã đóng
                                 </span>
+                            <span th:if="${hd.trangThaiThanhToan == 'Chờ duyệt'}" class="badge" style="background: #cfe2ff; color: #084298; font-weight: 600; font-size: 0.775rem; padding: 5px 10px; border-radius: 20px;">
+                                    ⏳ Chờ duyệt
+                                </span>
                         </td>
                         <td>
                             <a th:href="'/cudan/hoa-don/chi-tiet/' + ${hd.id}"

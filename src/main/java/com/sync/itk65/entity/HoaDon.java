@@ -11,7 +11,6 @@ public class HoaDon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // THAY THẾ THÁNG NĂM BẰNG 2 BIẾN NÀY
     @Column(name = "ngay_phat_hanh")
     private LocalDate ngayPhatHanh;
 

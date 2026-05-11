@@ -132,6 +132,7 @@
             </span>
             <span th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}" class="badge-unpaid">⏳ Chưa đóng</span>
             <span th:if="${hoaDon.trangThaiThanhToan == 'Đã đóng'}"   class="badge-paid">✓ Đã đóng</span>
+            <span th:if="${hoaDon.trangThaiThanhToan == 'Chờ duyệt'}" class="badge" style="background: #cfe2ff; color: #084298; font-weight: 600; font-size: 0.8rem; padding: 5px 12px; border-radius: 20px;">⏳ Chờ duyệt</span>
         </div>
         <div class="card-body">
             <div class="row g-3">
@@ -356,10 +357,14 @@
             <i class="bi bi-printer"></i> In hóa đơn
         </button>
         <a th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}"
-           th:href="'/admin/thanh-toan/xac-nhan/' + ${hoaDon.id}"
+           th:href="'/cudan/thanh-toan/qr/' + ${hoaDon.id}"
            class="btn btn-success">
-            <i class="bi bi-credit-card"></i> Thanh Toán Ngay
+            <i class="bi bi-qr-code-scan"></i> Thanh Toán QR
         </a>
+        <button th:if="${hoaDon.trangThaiThanhToan == 'Chờ duyệt'}"
+                class="btn btn-warning" disabled>
+            <i class="bi bi-hourglass-split"></i> Đang Chờ Duyệt
+        </button>
         <button th:if="${hoaDon.trangThaiThanhToan == 'Đã đóng'}"
                 class="btn btn-success" disabled>
             <i class="bi bi-check-circle"></i> Đã Thanh Toán

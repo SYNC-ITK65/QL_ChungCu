@@ -81,61 +81,75 @@ public class HopDongService {
     }
 
     public HopDong taoHopDong(HopDong hopDong, Long canHoId, Long cuDanId) {
+        // 1. Load entities
         CanHo canHo = canHoRepository.findById(canHoId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy căn hộ."));
         CuDan cuDan = cuDanRepository.findById(cuDanId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy cư dân."));
 
-        if (hopDong.getNgayBatDau() == null) {
-            throw new RuntimeException("Ngày bắt đầu không được để trống.");
-        }
-        if (hopDong.getNgayKetThuc() == null) {
-            throw new RuntimeException("Ngày kết thúc không được để trống.");
-        }
-        if (hopDong.getNgayKetThuc().isBefore(hopDong.getNgayBatDau())) {
-            throw new RuntimeException("Ngày kết thúc phải sau ngày bắt đầu.");
-        }
-        if (hopDong.getBenChoThue() == null || hopDong.getBenChoThue().trim().isEmpty()) {
-            throw new RuntimeException("Bên cho thuê không được để trống.");
-        }
-        if (hopDong.getTienThue() == null || hopDong.getTienThue() <= 0) {
-            throw new RuntimeException("Tiền thuê không hợp lệ.");
-        }
+        // 2. Validate cư dân thuộc căn hộ
         if (cuDan.getCanHo() == null || !cuDan.getCanHo().getId().equals(canHo.getId())) {
             throw new RuntimeException("Cư dân không thuộc căn hộ đã chọn.");
         }
 
+        // 3. Xác định loại hợp đồng (mặc định Thuê)
+        String loaiHopDong = hopDong.getLoaiHopDong();
+        if (loaiHopDong == null || loaiHopDong.trim().isEmpty()) {
+            loaiHopDong = "Thue";
+        } else {
+            loaiHopDong = loaiHopDong.trim();
+            if (!"Thue".equals(loaiHopDong) && !"Mua".equals(loaiHopDong)) {
+                throw new RuntimeException("Loại hợp đồng không hợp lệ. Chỉ chấp nhận 'Thue' hoặc 'Mua'.");
+            }
+        }
+        hopDong.setLoaiHopDong(loaiHopDong);
+        boolean laHopDongMua = "Mua".equals(loaiHopDong);
+
+        // 4. Validate cơ bản
+        if (hopDong.getNgayBatDau() == null) {
+            throw new RuntimeException("Ngày bắt đầu không được để trống.");
+        }
+        if (hopDong.getBenChoThue() == null || hopDong.getBenChoThue().trim().isEmpty()) {
+            throw new RuntimeException("Bên cho thuê / Bán không được để trống.");
+        }
+        if (hopDong.getTienThue() == null || hopDong.getTienThue() <= 0) {
+            throw new RuntimeException("Giá trị hợp đồng không hợp lệ.");
+        }
+
+        // 5. Validate và xử lý theo loại hợp đồng
+        if (laHopDongMua) {
+            // Mua: không cần ngày kết thúc, không có tiền cọc
+            hopDong.setNgayKetThuc(null);
+            hopDong.setTienCoc(0.0);
+        } else {
+            // Thuê: bắt buộc ngày kết thúc, có tiền cọc
+            if (hopDong.getNgayKetThuc() == null) {
+                throw new RuntimeException("Ngày kết thúc không được để trống đối với hợp đồng thuê.");
+            }
+            if (hopDong.getNgayKetThuc().isBefore(hopDong.getNgayBatDau())) {
+                throw new RuntimeException("Ngày kết thúc phải sau ngày bắt đầu.");
+            }
+            if (hopDong.getTienCoc() == null) {
+                hopDong.setTienCoc(hopDong.getTienThue());
+            }
+        }
+
+        // 6. Set dữ liệu
         hopDong.setCanHo(canHo);
         hopDong.setCuDan(cuDan);
         hopDong.setBenChoThue(hopDong.getBenChoThue().trim());
         hopDong.setBenThue(cuDan.getHoTen());
-        
-        // VALIDATION: Loại hợp đồng - nếu null thì mặc định là "Thue", ngược lại giữ nguyên giá trị người dùng nhập
-        if (hopDong.getLoaiHopDong() == null || hopDong.getLoaiHopDong().trim().isEmpty()) {
-            hopDong.setLoaiHopDong("Thue");
-        } else {
-            hopDong.setLoaiHopDong(hopDong.getLoaiHopDong().trim());
-        }
-        
-        // Giữ tương thích dữ liệu cũ: map giá trị hợp đồng = tiền thuê.
         hopDong.setGiaTriHopDong(hopDong.getTienThue());
-        
-        // VALIDATION: Tiền cọc - chỉ set mặc định nếu null, cho phép người dùng tùy chỉnh
-        if (hopDong.getTienCoc() == null) {
-            hopDong.setTienCoc(hopDong.getTienThue());
-        }
+        hopDong.setTrangThai("ACTIVE");
 
-        // VALIDATION: Kiểm tra trùng thời gian với hợp đồng ACTIVE khác
-        // Vì đã validate ngayKetThuc không được null ở trên, nên chỉ cần check existsActiveOverlapWithEndDate
-        boolean biTrung = hopDongRepository.existsActiveOverlapWithEndDate(
-                canHo.getId(),
-                hopDong.getNgayBatDau(),
-                hopDong.getNgayKetThuc()
-        );
+        // 7. Kiểm tra trùng thời gian
+        boolean biTrung = laHopDongMua
+            ? hopDongRepository.existsActiveOverlapOpenEnded(canHo.getId(), hopDong.getNgayBatDau())
+            : hopDongRepository.existsActiveOverlapWithEndDate(canHo.getId(), hopDong.getNgayBatDau(), hopDong.getNgayKetThuc());
+
         if (biTrung) {
             throw new RuntimeException("Đã tồn tại hợp đồng ACTIVE trùng thời gian cho căn hộ này.");
         }
-        hopDong.setTrangThai("ACTIVE");
 
         HopDong savedHopDong = hopDongRepository.save(hopDong);
 
@@ -143,6 +157,82 @@ public class HopDongService {
         taoThongBaoHopDongMoi(savedHopDong, cuDan);
 
         return savedHopDong;
+    }
+
+    @Transactional
+    public HopDong capNhatHopDong(Long hopDongId, HopDong hopDongMoi, Long canHoId, Long cuDanId) {
+        // 1. Load hợp đồng hiện tại
+        HopDong hopDong = hopDongRepository.findById(hopDongId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng."));
+        
+        // 2. Load entities mới
+        CanHo canHo = canHoRepository.findById(canHoId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy căn hộ."));
+        CuDan cuDan = cuDanRepository.findById(cuDanId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy cư dân."));
+
+        // 3. Validate cư dân thuộc căn hộ
+        if (cuDan.getCanHo() == null || !cuDan.getCanHo().getId().equals(canHo.getId())) {
+            throw new RuntimeException("Cư dân không thuộc căn hộ đã chọn.");
+        }
+
+        // 4. Xác định loại hợp đồng (giữ nguyên hoặc update)
+        String loaiHopDong = hopDongMoi.getLoaiHopDong();
+        if (loaiHopDong == null || loaiHopDong.trim().isEmpty()) {
+            loaiHopDong = hopDong.getLoaiHopDong();
+        }
+        if (!"Thue".equals(loaiHopDong) && !"Mua".equals(loaiHopDong)) {
+            throw new RuntimeException("Loại hợp đồng không hợp lệ.");
+        }
+        boolean laHopDongMua = "Mua".equals(loaiHopDong);
+
+        // 5. Validate cơ bản
+        if (hopDongMoi.getNgayBatDau() == null) {
+            throw new RuntimeException("Ngày bắt đầu không được để trống.");
+        }
+        if (hopDongMoi.getBenChoThue() == null || hopDongMoi.getBenChoThue().trim().isEmpty()) {
+            throw new RuntimeException("Bên cho thuê / Bán không được để trống.");
+        }
+        if (hopDongMoi.getTienThue() == null || hopDongMoi.getTienThue() <= 0) {
+            throw new RuntimeException("Giá trị hợp đồng không hợp lệ.");
+        }
+
+        // 6. Validate và xử lý theo loại
+        LocalDate ngayKetThuc = hopDongMoi.getNgayKetThuc();
+        if (laHopDongMua) {
+            ngayKetThuc = null;
+        } else {
+            if (ngayKetThuc == null) {
+                throw new RuntimeException("Ngày kết thúc không được để trống đối với hợp đồng thuê.");
+            }
+            if (ngayKetThuc.isBefore(hopDongMoi.getNgayBatDau())) {
+                throw new RuntimeException("Ngày kết thúc phải sau ngày bắt đầu.");
+            }
+        }
+
+        // 7. Kiểm tra trùng thời gian (ngoại trừ chính hợp đồng này)
+        boolean biTrung = laHopDongMua
+            ? hopDongRepository.existsActiveOverlapOpenEndedExcludeId(canHo.getId(), hopDongMoi.getNgayBatDau(), hopDongId)
+            : hopDongRepository.existsActiveOverlapWithEndDateExcludeId(canHo.getId(), hopDongMoi.getNgayBatDau(), ngayKetThuc, hopDongId);
+
+        if (biTrung) {
+            throw new RuntimeException("Đã tồn tại hợp đồng ACTIVE trùng thời gian cho căn hộ này.");
+        }
+
+        // 8. Cập nhật dữ liệu
+        hopDong.setCanHo(canHo);
+        hopDong.setCuDan(cuDan);
+        hopDong.setNgayBatDau(hopDongMoi.getNgayBatDau());
+        hopDong.setNgayKetThuc(ngayKetThuc);
+        hopDong.setBenChoThue(hopDongMoi.getBenChoThue().trim());
+        hopDong.setBenThue(cuDan.getHoTen());
+        hopDong.setTienThue(hopDongMoi.getTienThue());
+        hopDong.setGiaTriHopDong(hopDongMoi.getTienThue());
+        hopDong.setTienCoc(laHopDongMua ? 0.0 : (hopDongMoi.getTienCoc() != null ? hopDongMoi.getTienCoc() : hopDongMoi.getTienThue()));
+        hopDong.setLoaiHopDong(loaiHopDong);
+        // Giữ nguyên trạng thái hiện tại
+
+        return hopDongRepository.save(hopDong);
     }
 
     public void capNhatTrangThai(Long hopDongId, String trangThaiMoi) {
@@ -170,29 +260,41 @@ public class HopDongService {
             PDType1Font bodyFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+            // Xác định loại hợp đồng
+            boolean isMua = "Mua".equals(hopDong.getLoaiHopDong());
+            String title = isMua ? "HOP DONG MUA CAN HO" : "HOP DONG THUE CAN HO";
+            String labelBenA = isMua ? "Ben ban" : "Ben cho thue";
+            String labelBenB = isMua ? "Ben mua" : "Ben thue";
+            String labelGiaTri = isMua ? "Gia tri hop dong" : "Tien thue";
+            String loaiHopDongDisplay = isMua ? "Mua" : "Thue";
+
             try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
                 float x = 50;
                 float y = 780;
                 float line = 24;
 
-                ghiDong(contentStream, titleFont, 16, x, y, "HOP DONG THUE CAN HO");
+                ghiDong(contentStream, titleFont, 16, x, y, title);
                 y -= line * 1.5f;
                 ghiDong(contentStream, bodyFont, 12, x, y, "Ma hop dong: HD-" + hopDong.getId());
                 y -= line;
+                ghiDong(contentStream, bodyFont, 12, x, y, "Loai hop dong: " + loaiHopDongDisplay);
+                y -= line;
                 ghiDong(contentStream, bodyFont, 12, x, y, "Can ho: " + (hopDong.getCanHo() != null ? hopDong.getCanHo().getMaCanHo() : ""));
                 y -= line;
-                ghiDong(contentStream, bodyFont, 12, x, y, "Ben cho thue: " + nullSafe(hopDong.getBenChoThue()));
+                ghiDong(contentStream, bodyFont, 12, x, y, labelBenA + ": " + nullSafe(hopDong.getBenChoThue()));
                 y -= line;
-                ghiDong(contentStream, bodyFont, 12, x, y, "Ben thue: " + nullSafe(hopDong.getBenThue()));
+                ghiDong(contentStream, bodyFont, 12, x, y, labelBenB + ": " + nullSafe(hopDong.getBenThue()));
                 y -= line;
                 ghiDong(contentStream, bodyFont, 12, x, y, "Ngay bat dau: " + (hopDong.getNgayBatDau() != null ? hopDong.getNgayBatDau().format(formatter) : ""));
                 y -= line;
-                ghiDong(contentStream, bodyFont, 12, x, y, "Ngay ket thuc: " + (hopDong.getNgayKetThuc() != null ? hopDong.getNgayKetThuc().format(formatter) : ""));
+                ghiDong(contentStream, bodyFont, 12, x, y, "Ngay ket thuc: " + (hopDong.getNgayKetThuc() != null ? hopDong.getNgayKetThuc().format(formatter) : "Khong co (hop dong mua)"));
                 y -= line;
-                ghiDong(contentStream, bodyFont, 12, x, y, "Tien thue: " + dinhDangTien(hopDong.getTienThue()) + " VND");
+                ghiDong(contentStream, bodyFont, 12, x, y, labelGiaTri + ": " + dinhDangTien(hopDong.getTienThue()) + " VND");
                 y -= line;
-                ghiDong(contentStream, bodyFont, 12, x, y, "Tien coc: " + dinhDangTien(hopDong.getTienCoc()) + " VND");
-                y -= line;
+                if (!isMua) {
+                    ghiDong(contentStream, bodyFont, 12, x, y, "Tien coc: " + dinhDangTien(hopDong.getTienCoc()) + " VND");
+                    y -= line;
+                }
                 ghiDong(contentStream, bodyFont, 12, x, y, "Trang thai: " + nullSafe(hopDong.getTrangThai()));
             }
 
@@ -263,5 +365,12 @@ public class HopDongService {
             hopDong.setTrangThai("EXPIRED");
             hopDongRepository.save(hopDong);
         }
+    }
+
+    @Transactional
+    public void xoaHopDong(Long id) {
+        HopDong hopDong = hopDongRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng có ID: " + id));
+        hopDongRepository.delete(hopDong);
     }
 }

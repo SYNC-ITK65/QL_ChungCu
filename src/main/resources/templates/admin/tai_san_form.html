@@ -12,7 +12,7 @@
     <div class="d-flex">
         <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
         <div class="flex-grow-1 p-4">
-            <h2 class="mb-4" th:text="${taiSan.id == null ? #messages.msg('admin.taisan.form.addTitle') : #messages.msg('admin.taisan.form.editTitle')}">Thông
+            <h2 class="mb-4" th:text="${taiSan.id == null ? #messages.msg('ts.ds.thong_tin') : #messages.msg('admin.taisan.form.editTitle')}">Thông
                 tin Tài Sản</h2>
             <form th:action="@{/admin/tai-san/save}" th:object="${taiSan}" method="post">
                 <input type="hidden" th:field="*{id}">

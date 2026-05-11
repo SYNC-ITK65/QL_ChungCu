@@ -2,17 +2,19 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Tạo hợp đồng mới</title>
-    <link href="https://cdn.jsdelivr.net/bootstrap@5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <title th:text="${isEdit} ? #{hd.form.sua_tieude} : #{hd.form.them_tieude}">Tạo hợp đồng mới</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
-<div class="d-flex">
+<body class="d-flex overflow-hidden" style="height: 100vh;">
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="container-fluid p-4">
+    <div class="flex-grow-1 p-4 overflow-auto">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Tạo Hợp đồng mới</h2>
-            <a th:href="@{/admin/hop-dong}" class="btn btn-secondary">Quay lại</a>
+            <h2 th:text="${isEdit} ? '✏️ ' + #{hd.form.sua_tieude} : '📝 ' + #{hd.form.them_tieude}">Tạo Hợp đồng mới</h2>
+            <a th:href="@{/admin/hop-dong}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i><span th:text="#{hd.form.quay_lai}">Quay lại</span>
+            </a>
         </div>
 
         <div th:if="${thongBaoLoi}" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -21,57 +23,243 @@
         </div>
 
         <div class="card shadow border-0">
-            <div class="card-body">
-                <form th:action="@{/admin/hop-dong/luu}" th:object="${hopDong}" method="post">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Bên cho thuê</label>
-                            <input type="text" class="form-control" th:field="*{benChoThue}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tiền thuê (VNĐ)</label>
-                            <input type="number" min="0" class="form-control" th:field="*{tienThue}" required>
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0" th:text="#{hd.detail.thong_tin}">Thông tin hợp đồng</h5>
+            </div>
+            <div class="card-body p-4">
+                <form th:action="${isEdit} ? @{/admin/hop-dong/cap-nhat/{id}(id=${hopDong.id})} : @{/admin/hop-dong/luu}" th:object="${hopDong}" method="post" id="hopDongForm">
+                    <!-- Hidden ID for edit -->
+                    <input type="hidden" th:field="*{id}" th:if="${isEdit}">
+                    
+                    <!-- Section: Loại hợp đồng -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-file-text me-1"></i><span th:text="#{hd.form.loai_hop_dong}">Loại hợp đồng</span> <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-select-lg" th:field="*{loaiHopDong}" id="loaiHopDong" required
+                                    th:disabled="${isEdit}" th:data-hint-thue="#{hd.form.loai_hint_thue}" th:data-hint-mua="#{hd.form.loai_hint_mua}">
+                                <option value="Thue" th:selected="*{loaiHopDong == 'Thue'}" th:text="#{hd.form.loai_thue}">🏠 Hợp đồng Thuê</option>
+                                <option value="Mua" th:selected="*{loaiHopDong == 'Mua'}" th:text="#{hd.form.loai_mua}">🏢 Hợp đồng Mua</option>
+                            </select>
+                            <input type="hidden" th:field="*{loaiHopDong}" th:if="${isEdit}">
+                            <div class="form-text text-muted" id="loaiHopDongHint" th:text="#{hd.form.loai_hint_thue}">
+                                Hợp đồng thuê có thời hạn và tiền cọc
+                            </div>
                         </div>
                     </div>
 
+                    <hr class="my-4">
+
+                    <!-- Section: Thông tin bên liên quan -->
+                    <h6 class="text-primary mb-3">👥 <span th:text="#{hd.form.thong_tin_ben}">Thông tin các bên</span></h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Ngày bắt đầu</label>
+                            <label class="form-label fw-bold" id="labelBenA">
+                                Bên cho thuê <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" th:field="*{benChoThue}" 
+                                   placeholder="Nhập tên bên cho thuê / bán" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Bên thuê / Mua</label>
+                            <input type="text" class="form-control" id="benThueDisplay" readonly 
+                                   placeholder="Tự động lấy từ cư dân đã chọn">
+                        </div>
+                    </div>
+
+                    <!-- Section: Thông tin căn hộ & cư dân -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-building me-1"></i>Căn hộ <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="canHoId" id="canHoId" required
+                                    th:with="currentCanHoId=${hopDong.canHo != null ? hopDong.canHo.id : ''}">
+                                <option value="" disabled>-- Chọn căn hộ --</option>
+                                <option th:each="canHo : ${danhSachCanHo}"
+                                        th:value="${canHo.id}"
+                                        th:data-trangthai="${canHo.trangThai}"
+                                        th:selected="${currentCanHoId == canHo.id}"
+                                        th:text="${canHo.maCanHo} + ' (' + ${canHo.trangThai} + ')'"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-person me-1"></i>Cư dân <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="cuDanId" id="cuDanId" required
+                                    th:with="currentCuDanId=${hopDong.cuDan != null ? hopDong.cuDan.id : ''}">
+                                <option value="" disabled>-- Chọn cư dân --</option>
+                                <option th:each="cuDan : ${danhSachCuDan}"
+                                        th:value="${cuDan.id}"
+                                        th:data-canho="${cuDan.canHo != null ? cuDan.canHo.id : ''}"
+                                        th:data-hoten="${cuDan.hoTen}"
+                                        th:selected="${currentCuDanId == cuDan.id}"
+                                        th:text="${cuDan.hoTen} + ' - ' + ${cuDan.soDienThoai} + ' (' + ${cuDan.canHo != null ? cuDan.canHo.maCanHo : 'Chưa có căn hộ'} + ')'"></option>
+                            </select>
+                            <div class="form-text text-danger d-none" id="cuDanWarning">
+                                ⚠️ Cư dân này không thuộc căn hộ đã chọn
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Section: Thông tin tài chính -->
+                    <h6 class="text-primary mb-3">💰 Thông tin tài chính</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold" id="labelGiaTri">
+                                Tiền thuê (VNĐ) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" min="1" class="form-control" th:field="*{tienThue}" 
+                                   placeholder="Nhập số tiền" required>
+                        </div>
+                        <div class="col-md-6 mb-3" id="tienCocContainer">
+                            <label class="form-label fw-bold">Tiền cọc (VNĐ)</label>
+                            <input type="number" min="0" class="form-control" th:field="*{tienCoc}" 
+                                   placeholder="Mặc định bằng tiền thuê">
+                            <div class="form-text text-muted">Để trống = mặc định bằng tiền thuê</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Section: Thời hạn hợp đồng -->
+                    <h6 class="text-primary mb-3">📅 Thời hạn hợp đồng</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                Ngày bắt đầu <span class="text-danger">*</span>
+                            </label>
                             <input type="date" class="form-control" th:field="*{ngayBatDau}" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Ngày kết thúc</label>
-                            <input type="date" class="form-control" th:field="*{ngayKetThuc}">
+                        <div class="col-md-6 mb-3" id="ngayKetThucContainer">
+                            <label class="form-label fw-bold">
+                                Ngày kết thúc <span class="text-danger" id="ngayKetThucRequired">*</span>
+                            </label>
+                            <input type="date" class="form-control" th:field="*{ngayKetThuc}" id="ngayKetThuc">
+                            <div class="form-text text-muted d-none" id="ngayKetThucHint">
+                                Hợp đồng mua không có ngày kết thúc
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Căn hộ</label>
-                        <select class="form-select" name="canHoId" required>
-                            <option value="" selected disabled>-- Chọn căn hộ --</option>
-                            <option th:each="canHo : ${danhSachCanHo}"
-                                    th:value="${canHo.id}"
-                                    th:text="${canHo.maCanHo} + ' (' + ${canHo.trangThai} + ')'"></option>
-                        </select>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle me-1"></i>Lưu hợp đồng
+                        </button>
+                        <a th:href="@{/admin/hop-dong}" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-x-circle me-1"></i>Hủy
+                        </a>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Cư dân</label>
-                        <select class="form-select" name="cuDanId" required>
-                            <option value="" selected disabled>-- Chọn cư dân --</option>
-                            <option th:each="cuDan : ${danhSachCuDan}"
-                                    th:value="${cuDan.id}"
-                                    th:text="${cuDan.hoTen} + ' - ' + ${cuDan.soDienThoai}"></option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Lưu hợp đồng</button>
-                    <a th:href="@{/admin/hop-dong}" class="btn btn-secondary">Hủy</a>
                 </form>
             </div>
         </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loaiHopDong = document.getElementById('loaiHopDong');
+        const labelBenA = document.getElementById('labelBenA');
+        const labelGiaTri = document.getElementById('labelGiaTri');
+        const tienCocContainer = document.getElementById('tienCocContainer');
+        const ngayKetThucContainer = document.getElementById('ngayKetThucContainer');
+        const ngayKetThuc = document.getElementById('ngayKetThuc');
+        const ngayKetThucRequired = document.getElementById('ngayKetThucRequired');
+        const ngayKetThucHint = document.getElementById('ngayKetThucHint');
+        const loaiHopDongHint = document.getElementById('loaiHopDongHint');
+        const cuDanId = document.getElementById('cuDanId');
+        const benThueDisplay = document.getElementById('benThueDisplay');
+        const canHoId = document.getElementById('canHoId');
+        const cuDanWarning = document.getElementById('cuDanWarning');
+
+        // Xử lý khi đổi loại hợp đồng
+        function updateFormByLoaiHopDong() {
+            const isMua = loaiHopDong.value === 'Mua';
+            
+            // Cập nhật label
+            labelBenA.innerHTML = (isMua ? 'Bên bán' : 'Bên cho thuê') + ' <span class="text-danger">*</span>';
+            labelGiaTri.innerHTML = (isMua ? 'Giá trị hợp đồng' : 'Tiền thuê') + ' (VNĐ) <span class="text-danger">*</span>';
+            
+            // Cập nhật hint
+            loaiHopDongHint.textContent = isMua 
+                ? 'Hợp đồng mua: vĩnh viễn, không tiền cọc' 
+                : 'Hợp đồng thuê: có thời hạn và tiền cọc';
+            
+            // Hiển thị/ẩn tiền cọc
+            if (isMua) {
+                tienCocContainer.classList.add('d-none');
+                tienCocContainer.querySelector('input').value = '0';
+            } else {
+                tienCocContainer.classList.remove('d-none');
+            }
+            
+            // Hiển thị/ẩn ngày kết thúc
+            if (isMua) {
+                ngayKetThuc.value = '';
+                ngayKetThuc.removeAttribute('required');
+                ngayKetThucRequired.classList.add('d-none');
+                ngayKetThucHint.classList.remove('d-none');
+                ngayKetThuc.disabled = true;
+                ngayKetThucContainer.querySelector('label').innerHTML = 'Ngày kết thúc <span class="text-muted">(Không áp dụng)</span>';
+            } else {
+                ngayKetThuc.setAttribute('required', 'required');
+                ngayKetThucRequired.classList.remove('d-none');
+                ngayKetThucHint.classList.add('d-none');
+                ngayKetThuc.disabled = false;
+                ngayKetThucContainer.querySelector('label').innerHTML = 'Ngày kết thúc <span class="text-danger">*</span>';
+            }
+        }
+
+        // Xử lý khi chọn cư dân -> cập nhật bên thuê và validate
+        function updateCuDanInfo() {
+            const selectedOption = cuDanId.options[cuDanId.selectedIndex];
+            if (selectedOption.value) {
+                const hoTen = selectedOption.getAttribute('data-hoten');
+                const canHoIdCuDan = selectedOption.getAttribute('data-canho');
+                benThueDisplay.value = hoTen || '';
+                
+                // Validate cư dân thuộc căn hộ
+                const selectedCanHo = canHoId.value;
+                if (selectedCanHo && canHoIdCuDan && canHoIdCuDan !== selectedCanHo) {
+                    cuDanWarning.classList.remove('d-none');
+                } else {
+                    cuDanWarning.classList.add('d-none');
+                }
+            } else {
+                benThueDisplay.value = '';
+                cuDanWarning.classList.add('d-none');
+            }
+        }
+
+        // Validate cư dân khi đổi căn hộ
+        function validateCanHoCuDan() {
+            const selectedCuDanOption = cuDanId.options[cuDanId.selectedIndex];
+            if (selectedCuDanOption.value) {
+                const canHoIdCuDan = selectedCuDanOption.getAttribute('data-canho');
+                const selectedCanHo = canHoId.value;
+                if (selectedCanHo && canHoIdCuDan && canHoIdCuDan !== selectedCanHo) {
+                    cuDanWarning.classList.remove('d-none');
+                } else {
+                    cuDanWarning.classList.add('d-none');
+                }
+            }
+        }
+
+        // Event listeners
+        if (!loaiHopDong.disabled) {
+            loaiHopDong.addEventListener('change', updateFormByLoaiHopDong);
+        }
+        cuDanId.addEventListener('change', updateCuDanInfo);
+        canHoId.addEventListener('change', validateCanHoCuDan);
+
+        // Init
+        updateFormByLoaiHopDong();
+        updateCuDanInfo(); // Load tên bên thuê nếu đang edit
+    });
+</script>
 </body>
 </html>
