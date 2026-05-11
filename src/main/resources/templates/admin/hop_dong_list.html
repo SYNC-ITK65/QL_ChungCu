@@ -112,8 +112,9 @@
                     <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}"
                        th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}"
                        class="btn btn-sm btn-success">Kích hoạt</a>
-                    <a th:href="@{/admin/hop-dong/xuat-pdf/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-outline-primary">PDF</a>
+                    <a th:href="@{/admin/hop-dong/xoa/{id}(id=${hd.id})}"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa hợp đồng này?');">Xóa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachHopDong)}">

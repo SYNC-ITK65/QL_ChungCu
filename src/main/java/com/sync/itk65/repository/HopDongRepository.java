@@ -75,6 +75,24 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
     @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.trangThai = 'ACTIVE'")
     Optional<HopDong> findActiveByCanHoId(@Param("canHoId") Long canHoId);
 
+    /**
+     * Tìm hợp đồng THUÊ có hiệu lực trong tháng/năm cụ thể
+     * - Loại hợp đồng là 'Thue'
+     * - Ngày bắt đầu <= ngày cuối tháng
+     * - Ngày kết thúc >= ngày đầu tháng (hoặc null = vĩnh viễn)
+     */
+    @Query("""
+            SELECT h FROM HopDong h
+            WHERE h.canHo.id = :canHoId
+              AND h.loaiHopDong = 'Thue'
+              AND h.ngayBatDau <= :lastDayOfMonth
+              AND (h.ngayKetThuc IS NULL OR h.ngayKetThuc >= :firstDayOfMonth)
+            ORDER BY h.ngayBatDau DESC
+            """)
+    Optional<HopDong> findThueByCanHoAndThangNam(@Param("canHoId") Long canHoId,
+                                                  @Param("firstDayOfMonth") java.time.LocalDate firstDayOfMonth,
+                                                  @Param("lastDayOfMonth") java.time.LocalDate lastDayOfMonth);
+
     @Query("SELECT h FROM HopDong h WHERE " +
            "(:maCanHo IS NULL OR :maCanHo = '' OR h.canHo.maCanHo LIKE %:maCanHo%) AND " +
            "(:loaiHopDong IS NULL OR :loaiHopDong = '' OR " +
