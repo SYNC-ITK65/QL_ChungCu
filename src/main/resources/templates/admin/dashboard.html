@@ -48,7 +48,7 @@
                     <div class="card h-100 text-white bg-warning">
                         <div class="card-body">
                             <h6 class="text-uppercase" th:text="#{db.the.doanh_thu}">Hóa Đơn (Tháng Này)</h6>
-                            <h3 th:text="${#numbers.formatDecimal(sumRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</h3>
+                            <h3 th:text="${#numbers.formatDecimal(sumRevenue, 0, 'COMMA', 0, 'POINT')} + ' ' + #{chung.don_vi_vnd}">0 đ</h3>
                             <p th:text="#{db.the.doanh_thu_mo_ta}">Tổng tiền các hóa đơn trong tháng</p>
                         </div>
                     </div>
@@ -169,7 +169,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return context.raw.toLocaleString('vi-VN') + ' đ';
+                                return context.raw.toLocaleString('vi-VN') + ' ' + [[#{chung.don_vi_vnd}]];
                             }
                         }
                     },

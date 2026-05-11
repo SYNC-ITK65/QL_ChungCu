@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký Khách Thăm</title>
+    <title th:text="#{kt.ui.dang_ky_khach_tham}">Đăng ký Khách Thăm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -10,7 +10,7 @@
     <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
     <div class="main-content p-4 w-100 bg-light">
-        <h2 class="mb-4">📝 Quản Lý Đăng Ký Khách Thăm</h2>
+        <h2 class="mb-4" th:text="#{kt.ui.quan_ly_dang_ky_kha}">📝 Quản Lý Đăng Ký Khách Thăm</h2>
 
         <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
             <span th:text="${thongBaoThanhCong}"></span>
@@ -25,27 +25,27 @@
             <div class="col-md-4">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Đăng ký khách mới</h5>
+                        <h5 class="mb-0" th:text="#{kt.ui.dang_ky_khach_moi}">Đăng ký khách mới</h5>
                     </div>
                     <div class="card-body">
                         <form th:action="@{/cudan/khach-tham/luu}" method="post">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Tên khách thăm <span class="text-danger">*</span></label>
-                                <input type="text" name="tenKhach" class="form-control" placeholder="Nhập tên khách..." required>
+                                <label class="form-label fw-bold"><span th:text="#{kt.ui.ten_khach_tham}" th:remove="tag">Tên khách thăm </span><span class="text-danger">*</span></label>
+                                <input type="text" name="tenKhach" class="form-control" placeholder="Nhập tên khách..." required th:placeholder="#{kt.ui.nhap_ten_khach}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">CMND/CCCD <span class="text-danger">*</span></label>
-                                <input type="text" name="cmnd" class="form-control" placeholder="Nhập số CMND/CCCD..." required>
+                                <label class="form-label fw-bold" th:text="|#{chung.cccd} *|">CMND/CCCD *</label>
+                                <input type="text" name="cmnd" class="form-control" placeholder="Nhập số CMND/CCCD..." required th:placeholder="#{kt.ui.nhap_so_cmnd_cccd}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Biển số xe</label>
-                                <input type="text" name="bienSoXe" class="form-control" placeholder="VD: 59X1-123.45">
+                                <label class="form-label fw-bold" th:text="#{kt.ui.bien_so_xe}">Biển số xe</label>
+                                <input type="text" name="bienSoXe" class="form-control" th:placeholder="#{kt.ui.mau_bien_so}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Thời gian dự kiến đến <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold"><span th:text="#{kt.ui.thoi_gian_du_kien_de}" th:remove="tag">Thời gian dự kiến đến </span><span class="text-danger">*</span></label>
                                 <input type="datetime-local" name="thoiGianDuKien" class="form-control" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 fw-bold">Gửi đăng ký</button>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold" th:text="#{kt.ui.gui_dang_ky}">Gửi đăng ký</button>
                         </form>
                     </div>
                 </div>
@@ -54,18 +54,18 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-secondary text-white">
-                        <h5 class="mb-0">Lịch sử đăng ký khách thăm</h5>
+                        <h5 class="mb-0" th:text="#{kt.ui.lich_su_dang_ky_khac}">Lịch sử đăng ký khách thăm</h5>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-hover table-bordered mb-0 text-center align-middle no-paging">
                             <thead class="table-light">
                             <tr>
-                                <th>Tên khách</th>
-                                <th>CMND/CCCD</th>
-                                <th>Biển số xe</th>
-                                <th>TG Dự kiến đến</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
+                                <th th:text="#{kt.ui.ten_khach}">Tên khách</th>
+                                <th th:text="#{chung.cccd}">CMND/CCCD</th>
+                                <th th:text="#{kt.ui.bien_so_xe}">Biển số xe</th>
+                                <th th:text="#{kt.ui.tg_du_kien_den}">TG Dự kiến đến</th>
+                                <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                                <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -76,62 +76,54 @@
                                 <td th:text="${#temporals.format(khach.thoiGianDuKien, 'dd-MM-yyyy HH:mm')}"></td>
 
                                 <td>
-                    <span class="badge"
-                          th:classappend="${khach.trangThai == 'Đã duyệt' ? 'bg-success' : (khach.trangThai == 'Không duyệt' ? 'bg-danger' : 'bg-warning text-dark')}"
-                          th:text="${khach.trangThai}"></span>
+<span class="badge" th:class="'badge ' + ${khach.trangThai == 'Đã duyệt' ? 'bg-success' : (khach.trangThai == 'Không duyệt' ? 'bg-danger' : 'bg-warning text-dark')}" th:text="${khach.trangThai}"></span>
                                 </td>
 
                                 <td>
                                     <th:block th:if="${khach.trangThai == 'Chờ duyệt'}">
-                                        <button type="button" class="btn btn-sm btn-primary fw-bold px-2 mb-1" data-bs-toggle="modal" th:data-bs-target="'#modalSuaKhach' + ${khach.id}">Sửa</button>
-                                        <a th:href="@{/cudan/khach-tham/xoa/{id}(id=${khach.id})}" class="btn btn-sm btn-danger fw-bold px-2 mb-1" onclick="return confirm('Bạn có chắc chắn muốn hủy đăng ký khách thăm này không?');">Hủy</a>
+                                        <button type="button" class="btn btn-sm btn-primary fw-bold px-2 mb-1" data-bs-toggle="modal" th:data-bs-target="'#modalSuaKhach' + ${khach.id}" th:text="#{hdon.ds.nut_sua}">Sửa</button>
+                                        <a th:href="@{/cudan/khach-tham/xoa/{id}(id=${khach.id})}" class="btn btn-sm btn-danger fw-bold px-2 mb-1" th:onclick="|return confirm('#{kt.ui.xac_nhan_huy}')|" th:text="#{hdon.form.nut_huy}">Hủy</a>
                                     </th:block>
-                                </td>
-
-                                <th:block th:if="${khach.trangThai == 'Chờ duyệt'}">
+                                    <!-- Modal sửa khách -->
                                     <div class="modal fade" th:id="'modalSuaKhach' + ${khach.id}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <form th:action="@{/cudan/khach-tham/sua}" method="post">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-primary text-white">
-                                                        <h5 class="modal-title">Sửa thông tin khách thăm</h5>
+                                                        <h5 class="modal-title" th:text="#{kt.ui.sua_thong_tin_khach}">Sửa thông tin khách thăm</h5>
                                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body text-start">
                                                         <input type="hidden" name="id" th:value="${khach.id}">
-
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold">Tên khách</label>
+                                                            <label class="form-label fw-bold" th:text="#{kt.ui.ten_khach}">Tên khách</label>
                                                             <input type="text" name="tenKhach" class="form-control" th:value="${khach.tenKhach}" required>
                                                         </div>
-
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold">CMND/CCCD</label>
+                                                            <label class="form-label fw-bold" th:text="#{chung.cccd}">CMND/CCCD</label>
                                                             <input type="text" name="cmnd" class="form-control" th:value="${khach.cmnd}" required>
                                                         </div>
-
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold">Biển số xe</label>
+                                                            <label class="form-label fw-bold" th:text="#{kt.ui.bien_so_xe}">Biển số xe</label>
                                                             <input type="text" name="bienSoXe" class="form-control" th:value="${khach.bienSoXe}">
                                                         </div>
-
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold">Thời gian dự kiến đến</label>
+                                                            <label class="form-label fw-bold" th:text="#{kt.ui.thoi_gian_du_kien_de}">Thời gian dự kiến đến</label>
                                                             <input type="datetime-local" name="thoiGianDuKien" class="form-control" th:value="${khach.thoiGianDuKien}" required>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{tttv.ds.dong}">Đóng</button>
+                                                        <button type="submit" class="btn btn-primary" th:text="#{hdon.ui.luu_thay_doi}">Lưu thay đổi</button>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
-                                </th:block>
+                                </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(lichSuKhach)}">
-                                <td colspan="6" class="text-center text-muted py-3">Chưa có dữ liệu đăng ký khách thăm nào.</td>
+                                <td colspan="6" class="text-center text-muted py-3" th:text="#{kt.ui.chua_co_du_lieu_dang}">Chưa có dữ liệu đăng ký khách thăm nào.</td>
                             </tr>
                             </tbody>
                         </table>

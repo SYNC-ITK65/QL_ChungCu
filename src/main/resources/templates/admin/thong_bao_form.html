@@ -18,7 +18,7 @@
         <div class="flex-grow-1 p-4">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0" th:text="${thongBao.id == null ? #messages.msg('admin.thongbao.form.addTitle') : #messages.msg('admin.thongbao.form.editTitle')}"></h4>
+                    <h4 class="mb-0" th:text="${thongBao.id == null} ? #{tb.form.them_tieude} : #{tb.form.sua_tieude}"></h4>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/admin/thong-bao/luu}" th:object="${thongBao}" method="post">
@@ -113,7 +113,7 @@
             // Khởi tạo Summernote WYSIWYG trên textarea #noiDung
             $('#noiDung').summernote({
                 height: 300,
-                placeholder: 'Soạn thảo nội dung...',
+                placeholder: [[#{tb.form.soan_thao_noi_dung}]],
                 tabsize: 2,
                 toolbar: [
                     ['style', ['style']],
@@ -130,7 +130,7 @@
 
             // Khởi tạo Select2 cho chọn căn hộ
             $('#chonCanHo').select2({
-                placeholder: "Chọn căn hộ",
+                placeholder: [[#{tb.form.chon_can_ho}]],
                 allowClear: true,
                 width: '100%'
             });
@@ -174,7 +174,7 @@
                 inputContainer.style.display = "block";
                 
                 if (selectObj === "HO_GIA_DINH" || selectObj === "NHIEU_HO") {
-                    labelObj.innerText = selectObj === "HO_GIA_DINH" ? "Chọn 1 hộ gia đình nhận thông báo" : "Chọn nhiều hộ gia đình";
+                    labelObj.innerText = selectObj === "HO_GIA_DINH" ? [[#{tb.form.chon_1_ho_gia_dinh}]] : [[#{tb.form.chon_nhieu_ho_gia_dinh}]];
                     canHoContainer.style.display = "block";
                     tangContainer.style.display = "none";
                     $('#chonCanHo').attr("required", "required");
@@ -190,7 +190,7 @@
                     var vals = $('#chonCanHo').val();
                     txtInput.value = vals ? vals.join(', ') : '';
                 } else if (selectObj === "TANG") {
-                    labelObj.innerText = "Danh sách tầng (Phân cách bằng dấu phẩy)";
+                    labelObj.innerText = [[#{tb.form.ds_tang_nhan}]];
                     canHoContainer.style.display = "none";
                     tangContainer.style.display = "block";
                     $('#nhapTang').attr("required", "required");

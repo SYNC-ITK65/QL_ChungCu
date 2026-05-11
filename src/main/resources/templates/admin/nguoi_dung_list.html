@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <title>Danh sách Người dùng</title>
+    <title th:text="#{nd.ds.danh_sach_nguoi_dung}">Danh sách Người dùng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
@@ -13,10 +13,10 @@
 
     <div class="flex-grow-1 p-4 overflow-auto">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Danh sách Người dùng</h2>
+                <h2 th:text="#{nd.ds.danh_sach_nguoi_dung}">Danh sách Người dùng</h2>
                 <div class="d-flex gap-2">
-                    <a th:href="@{/admin/nguoi-dung/xuat-excel}" class="btn btn-success">Xuất Excel</a>
-                    <a th:href="@{/admin/nguoi-dung/tao-moi}" class="btn btn-primary">+ Thêm người dùng mới</a>
+                    <a th:href="@{/admin/nguoi-dung/xuat-excel}" class="btn btn-success" th:text="#{chung.xuat_excel}">Xuất Excel</a>
+                    <a th:href="@{/admin/nguoi-dung/tao-moi}" class="btn btn-primary" th:text="#{nd.ds.them_nguoi_dung_moi}">+ Thêm người dùng mới</a>
                 </div>
             </div>
 
@@ -29,27 +29,26 @@
             <!-- Form tìm kiếm -->
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h6 class="mb-0">🔍 Tìm kiếm người dùng</h6>
+                    <h6 class="mb-0" th:text="#{nd.ds.tim_kiem_nguoi_dung}">🔍 Tìm kiếm người dùng</h6>
                 </div>
                 <div class="card-body">
                     <form method="GET" th:action="@{/admin/nguoi-dung}" class="row g-3">
                         <div class="col-md-5">
-                            <label class="form-label">Từ khóa</label>
-                            <input type="text" class="form-control" name="tuKhoa" th:value="${tuKhoa}" 
-                                   placeholder="Tìm theo họ tên, email, SĐT, tên đăng nhập...">
+                            <label class="form-label" th:text="#{cd.ds.tu_khoa}">Từ khóa</label>
+                            <input type="text" class="form-control" name="tuKhoa" th:value="${tuKhoa}" placeholder="Tìm theo họ tên, email, SĐT, tên đăng nhập..." th:placeholder="#{nd.ds.tim_theo_ho_ten_emai}">
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Vai trò</label>
+                            <label class="form-label" th:text="#{nd.form.vai_tro}">Vai trò</label>
                             <select class="form-select" name="vaiTro">
-                                <option value="" th:selected="${vaiTro == null}">-- Tất cả --</option>
-                                <option value="1" th:selected="${vaiTro == 1}">Admin</option>
-                                <option value="2" th:selected="${vaiTro == 2}">Nhân viên</option>
-                                <option value="3" th:selected="${vaiTro == 3}">Cư dân</option>
+                                <option value="" th:selected="${vaiTro == null}" th:text="#{hdon.ds.loc_trang_thai_tat_ca}">-- Tất cả --</option>
+                                <option value="1" th:selected="${vaiTro == 1}" th:text="#{nd.form.admin}">Admin</option>
+                                <option value="2" th:selected="${vaiTro == 2}" th:text="#{nd.form.nhan_vien}">Nhân viên</option>
+                                <option value="3" th:selected="${vaiTro == 3}" th:text="#{hd.form.cu_dan_label}">Cư dân</option>
                             </select>
                         </div>
                         <div class="col-md-4 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary me-2"><i class="bi bi-search me-1"></i>Tìm kiếm</button>
-                            <a th:href="@{/admin/nguoi-dung}" class="btn btn-secondary">↻ Đặt lại</a>
+                            <button type="submit" class="btn btn-primary me-2"><i class="bi bi-search me-1"></i><span th:text="#{hdon.ds.nut_tim_kiem}" th:remove="tag">Tìm kiếm</span></button>
+                            <a th:href="@{/admin/nguoi-dung}" class="btn btn-secondary" th:text="#{nd.ds.dat_lai}">↻ Đặt lại</a>
                         </div>
                     </form>
                 </div>
@@ -59,11 +58,11 @@
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Họ tên</th>
-                        <th>Email</th>
-                        <th>Số điện thoại</th>
-                        <th>Vai trò</th>
-                        <th>Hành động</th>
+                        <th th:text="#{cd.form.ten}">Họ tên</th>
+                        <th th:text="#{cd.form.email}">Email</th>
+                        <th th:text="#{cd.form.sdt}">Số điện thoại</th>
+                        <th th:text="#{nd.form.vai_tro}">Vai trò</th>
+                        <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,41 +72,40 @@
                         <td th:text="${nd.email}"></td>
                         <td th:text="${nd.soDienThoai}"></td>
                         <td>
-                            <span th:if="${nd.vaiTro == 1}" class="badge bg-danger">Admin</span>
-                            <span th:if="${nd.vaiTro == 2}" class="badge bg-success">Nhân viên</span>
-                            <span th:if="${nd.vaiTro == 3}" class="badge bg-info text-dark">Cư dân</span>
+                            <span th:if="${nd.vaiTro == 1}" class="badge bg-danger" th:text="#{nd.form.admin}">Admin</span>
+                            <span th:if="${nd.vaiTro == 2}" class="badge bg-success" th:text="#{nd.form.nhan_vien}">Nhân viên</span>
+                            <span th:if="${nd.vaiTro == 3}" class="badge bg-info text-dark" th:text="#{hd.form.cu_dan_label}">Cư dân</span>
                         </td>
                         <td>
                             <!-- Chỉ hiện nút Sửa/Xóa cho Admin (1) và Nhân viên (2) -->
                             <th:block th:if="${nd.vaiTro == 1 || nd.vaiTro == 2}">
-                                <a th:href="@{/admin/nguoi-dung/sua/{id}(id=${nd.id})}" class="btn btn-sm btn-warning">Sửa</a>
-                                <a th:href="@{/admin/nguoi-dung/xoa/{id}(id=${nd.id})}" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Xóa người dùng này? Thao tác không thể hoàn tác!');">Xóa</a>
+                                <a th:href="@{/admin/nguoi-dung/sua/{id}(id=${nd.id})}" class="btn btn-sm btn-warning" th:text="#{hdon.ds.nut_sua}">Sửa</a>
+                                <a th:href="@{/admin/nguoi-dung/xoa/{id}(id=${nd.id})}" class="btn btn-sm btn-danger" th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>
                             </th:block>
                             <!-- Cư dân (vaiTro = 3): Hiển thị link chuyển sang module Quản lý cư dân -->
                             <th:block th:if="${nd.vaiTro == 3}">
-                                <a th:href="@{/admin/cu-dan/sua/{id}(id=${nd.id})}" class="btn btn-sm btn-outline-info">
+                                <a th:href="@{/admin/cu-dan/sua/{id}(id=${nd.id})}" class="btn btn-sm btn-outline-info" th:text="#{nd.ds.quan_ly_tai_cu_dan}">
                                     Quản lý tại Cư dân
                                 </a>
                             </th:block>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(danhSachNguoiDung)}">
-                        <td colspan="6" class="text-center text-muted">Chưa có người dùng nào trong hệ thống!</td>
+                        <td colspan="6" class="text-center text-muted" th:text="#{nd.ds.chua_co_nguoi_dung_n}">Chưa có người dùng nào trong hệ thống!</td>
                     </tr>
                 </tbody>
             </table>
 
             <div class="d-flex justify-content-between align-items-center mt-3">
                 <form method="GET" th:action="@{/admin/nguoi-dung}" class="d-flex align-items-center gap-2">
-                    <input type="hidden" name="tuKhoa" th:value="${tuKhoa}" />
-                    <input type="hidden" name="vaiTro" th:value="${vaiTro}" />
-                    <input type="hidden" name="page" value="0" />
-                    <label class="form-label mb-0">Hiển thị</label>
+                    <input type="hidden" name="tuKhoa" th:value="${tuKhoa}">
+                    <input type="hidden" name="vaiTro" th:value="${vaiTro}">
+                    <input type="hidden" name="page" value="0">
+                    <label class="form-label mb-0" th:text="#{pagi.hien_thi}">Hiển thị</label>
                     <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
-                        <option value="10" th:selected="${size == 10}">10 dòng</option>
-                        <option value="25" th:selected="${size == 25}">25 dòng</option>
-                        <option value="50" th:selected="${size == 50}">50 dòng</option>
+                        <option value="10" th:selected="${size == 10}" th:text="#{hd.ds.10_dong}">10 dòng</option>
+                        <option value="25" th:selected="${size == 25}" th:text="#{nd.ds.25_dong}">25 dòng</option>
+                        <option value="50" th:selected="${size == 50}" th:text="#{hd.ds.50_dong}">50 dòng</option>
                     </select>
                 </form>
             </div>
@@ -116,38 +114,33 @@
             <nav th:if="${totalPages > 0}" aria-label="Page navigation" class="mt-4">
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                        <a class="page-link" th:href="@{/admin/nguoi-dung(page=${currentPage - 1}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}">Trước</a>
+                        <a class="page-link" th:href="@{/admin/nguoi-dung(page=${currentPage - 1}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}" th:text="#{pagi.truoc}">Trước</a>
                     </li>
 
                     <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
                         <li th:if="${i == 0}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
-                            <a class="page-link" th:href="@{/admin/nguoi-dung(page=${i}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}"
-                                th:text="${i + 1}">1</a>
+                            <a class="page-link" th:href="@{/admin/nguoi-dung(page=${i}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}" th:text="${i + 1}">1</a>
                         </li>
 
                         <li th:if="${i == 1 and currentPage > 3}" class="page-item disabled">
                             <span class="page-link">...</span>
                         </li>
 
-                        <li th:if="${i > 0 and i < totalPages - 1 and i >= currentPage - 2 and i <= currentPage + 2}"
-                            class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
-                            <a class="page-link" th:href="@{/admin/nguoi-dung(page=${i}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}"
-                                th:text="${i + 1}">1</a>
+                        <li th:if="${i > 0 and i < totalPages - 1 and i >= currentPage - 2 and i <= currentPage + 2}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/nguoi-dung(page=${i}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}" th:text="${i + 1}">1</a>
                         </li>
 
                         <li th:if="${i == totalPages - 2 and currentPage < totalPages - 4}" class="page-item disabled">
                             <span class="page-link">...</span>
                         </li>
 
-                        <li th:if="${i == totalPages - 1 and totalPages > 1}" class="page-item"
-                            th:classappend="${currentPage == i ? 'active' : ''}">
-                            <a class="page-link" th:href="@{/admin/nguoi-dung(page=${i}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}"
-                                th:text="${i + 1}">1</a>
+                        <li th:if="${i == totalPages - 1 and totalPages > 1}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/nguoi-dung(page=${i}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}" th:text="${i + 1}">1</a>
                         </li>
                     </th:block>
 
                     <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                        <a class="page-link" th:href="@{/admin/nguoi-dung(page=${currentPage + 1}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}">Sau</a>
+                        <a class="page-link" th:href="@{/admin/nguoi-dung(page=${currentPage + 1}, size=${size}, tuKhoa=${tuKhoa}, vaiTro=${vaiTro})}" th:text="#{pagi.sau}">Sau</a>
                     </li>
                 </ul>
             </nav>
@@ -156,7 +149,7 @@
             <!-- Dùng fragment Datatable chung -->
             <div th:replace="~{fragments/datatable :: scripts}"></div>
         </div>
-    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

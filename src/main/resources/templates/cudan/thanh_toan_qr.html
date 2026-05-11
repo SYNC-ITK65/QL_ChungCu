@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh Toán Qua QR Code</title>
+    <title th:text="#{tt.ui.thanh_toan_qua_qr_co}">Thanh Toán Qua QR Code</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
@@ -153,11 +153,11 @@
     <!-- Tiêu đề -->
     <div class="d-flex align-items-center gap-3 mb-4">
         <a th:href="@{/cudan/hoa-don}" class="btn btn-sm btn-outline-secondary btn-back">
-            <i class="bi bi-arrow-left"></i> Quay lại
-        </a>
+            <i class="bi bi-arrow-left"></i><span th:text="#{hd.form.quay_lai}" th:remove="tag"> Quay lại
+        </span></a>
         <div>
-            <h4 class="mb-0 fw-bold">Thanh Toán Qua QR Code</h4>
-            <small class="text-muted">Quét mã QR để chuyển khoản nhanh chóng</small>
+            <h4 class="mb-0 fw-bold" th:text="#{tt.ui.thanh_toan_qua_qr_co}">Thanh Toán Qua QR Code</h4>
+            <small class="text-muted" th:text="#{tt.ui.quet_ma_qr_de_chuyen}">Quét mã QR để chuyển khoản nhanh chóng</small>
         </div>
     </div>
 
@@ -165,95 +165,93 @@
         <!-- Thông tin hóa đơn -->
         <div class="qr-card mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted">Mã hóa đơn</span>
-                <span class="fw-bold text-primary" th:text="'HD-' + ${hoaDon.id}"></span>
+                <span class="text-muted" th:text="#{hdon.ui.ma_hoa_don}">Mã hóa đơn</span>
+                <span class="fw-bold text-primary" th:text="#{hdon.ds.ma_hd} + '-' + ${hoaDon.id}"></span>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted">Căn hộ</span>
+                <span class="text-muted" th:text="#{hdon.form.can_ho}">Căn hộ</span>
                 <span class="fw-bold" th:text="${hoaDon.canHo.maCanHo}"></span>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted">Tháng/Năm</span>
+                <span class="text-muted" th:text="#{tt.ui.thang_nam}">Tháng/Năm</span>
                 <span class="fw-bold" th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'MM/yyyy')}"></span>
             </div>
             <hr>
             <div class="d-flex justify-content-between align-items-center">
-                <span class="text-muted">Số tiền thanh toán</span>
-                <span class="fw-bold text-danger fs-4"
-                      th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></span>
+                <span class="text-muted" th:text="#{tt.ui.so_tien_thanh_toan}">Số tiền thanh toán</span>
+                <span class="fw-bold text-danger fs-4" th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}|"></span>
             </div>
         </div>
 
         <!-- Trạng thái thanh toán -->
         <div class="qr-card mb-4" th:if="${hoaDon.trangThaiThanhToan == 'Chờ duyệt'}">
             <span class="status-badge status-waiting">
-                <i class="bi bi-hourglass-split me-2"></i>Chờ duyệt
-            </span>
-            <p class="text-muted mt-3 mb-0">
-                Giao dịch của bạn đang chờ admin xác nhận.<br>
+                <i class="bi bi-hourglass-split me-2"></i><span th:text="#{dv.ds.cho_duyet}" th:remove="tag">Chờ duyệt
+            </span></span>
+            <p class="text-muted mt-3 mb-0"><span th:text="#{tt.ui.giao_dich_cua_ban_da}" th:remove="tag">
+                Giao dịch của bạn đang chờ admin xác nhận.</span><br><span th:text="#{tt.ui.vui_long_cho_trong_g}" th:remove="tag">
                 Vui lòng chờ trong giây lát.
-            </p>
+            </span></p>
         </div>
 
         <!-- Form tạo QR (chỉ hiển thị khi chưa thanh toán) -->
         <div class="qr-card" th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}">
             <h5 class="mb-3">
-                <i class="bi bi-qr-code-scan me-2 text-primary"></i>
+                <i class="bi bi-qr-code-scan me-2 text-primary"></i><span th:text="#{tt.ui.tao_ma_qr_thanh_toan}" th:remove="tag">
                 Tạo mã QR thanh toán
-            </h5>
+            </span></h5>
 
             <!-- Nút tạo QR -->
             <button type="button" class="btn btn-primary btn-generate" onclick="generateQR()">
-                <i class="bi bi-qr-code me-2"></i>Tạo QR Code
-            </button>
+                <i class="bi bi-qr-code me-2"></i><span th:text="#{tt.ui.tao_qr_code}" th:remove="tag">Tạo QR Code
+            </span></button>
 
             <!-- Khu vực hiển thị QR -->
             <div id="qrDisplay" class="d-none mt-4">
                 <div class="qr-image">
-                    <img id="qrImage" src="" alt="QR Code Thanh Toán">
+                    <img id="qrImage" src="" alt="QR Code Thanh Toán" th:alt="#{tt.ui.qr_code_thanh_toan}">
                 </div>
 
                 <!-- Thông tin chuyển khoản -->
                 <div class="bank-info">
                     <div class="row">
-                        <div class="col-5 label">Ngân hàng:</div>
-                        <div class="col-7 value">MB Bank (Quân đội)</div>
+                        <div class="col-5 label" th:text="#{tt.ui.ngan_hang}">Ngân hàng:</div>
+                        <div class="col-7 value" th:text="#{tt.ui.mb_bank_quan_doi}">MB Bank (Quân đội)</div>
                     </div>
                     <div class="row">
-                        <div class="col-5 label">Số tài khoản:</div>
+                        <div class="col-5 label" th:text="#{tt.ui.so_tai_khoan}">Số tài khoản:</div>
                         <div class="col-7 value highlight">0854870939</div>
                     </div>
                     <div class="row">
-                        <div class="col-5 label">Số tiền:</div>
-                        <div class="col-7 value text-danger"
-                             th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></div>
+                        <div class="col-5 label" th:text="#{tt.ui.so_tien}">Số tiền:</div>
+                        <div class="col-7 value text-danger" th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}|"></div>
                     </div>
                     <div class="row">
-                        <div class="col-5 label">Nội dung CK:</div>
+                        <div class="col-5 label" th:text="#{tt.ui.noi_dung_ck}">Nội dung CK:</div>
                         <div class="col-7 value" id="transferContent"></div>
                     </div>
                 </div>
 
                 <!-- Hướng dẫn -->
                 <div class="instructions">
-                    <h6><i class="bi bi-info-circle me-2"></i>Hướng dẫn thanh toán</h6>
+                    <h6><i class="bi bi-info-circle me-2"></i><span th:text="#{tt.ui.huong_dan_thanh_toan}" th:remove="tag">Hướng dẫn thanh toán</span></h6>
                     <ol>
-                        <li>Mở ứng dụng ngân hàng hoặc ví điện tử trên điện thoại</li>
-                        <li>Chọn chức năng "Quét mã QR" hoặc "Chuyển khoản"</li>
-                        <li>Quét mã QR hoặc nhập thông tin chuyển khoản bên trên</li>
-                        <li>Kiểm tra số tiền và nội dung chuyển khoản</li>
-                        <li>Xác nhận thanh toán</li>
+                        <li th:text="#{tt.ui.mo_ung_dung_ngan_han}">Mở ứng dụng ngân hàng hoặc ví điện tử trên điện thoại</li>
+                        <li th:text="#{tt.ui.chon_chuc_nang_quet}">Chọn chức năng "Quét mã QR" hoặc "Chuyển khoản"</li>
+                        <li th:text="#{tt.ui.quet_ma_qr_hoac_nhap}">Quét mã QR hoặc nhập thông tin chuyển khoản bên trên</li>
+                        <li th:text="#{tt.ui.kiem_tra_so_tien_va}">Kiểm tra số tiền và nội dung chuyển khoản</li>
+                        <li th:text="#{tt.form.xac_nhan_thanh_toan}">Xác nhận thanh toán</li>
                     </ol>
                 </div>
 
                 <!-- Nút xác nhận đã thanh toán -->
                 <div class="mt-4">
-                    <p class="text-muted mb-3">Sau khi chuyển khoản thành công, vui lòng bấm nút bên dưới:</p>
+                    <p class="text-muted mb-3" th:text="#{tt.ui.sau_khi_chuyen_khoan}">Sau khi chuyển khoản thành công, vui lòng bấm nút bên dưới:</p>
                     <form th:action="@{/cudan/thanh-toan/xac-nhan-qr}" method="post">
                         <input type="hidden" name="hoaDonId" th:value="${hoaDon.id}">
                         <button type="submit" class="btn btn-success w-100">
-                            <i class="bi bi-check-circle me-2"></i>Tôi đã thanh toán
-                        </button>
+                            <i class="bi bi-check-circle me-2"></i><span th:text="#{tt.ui.toi_da_thanh_toan}" th:remove="tag">Tôi đã thanh toán
+                        </span></button>
                     </form>
                 </div>
             </div>

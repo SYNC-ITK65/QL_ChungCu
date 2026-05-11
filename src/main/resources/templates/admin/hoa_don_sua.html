@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Sửa Hóa Đơn</title>
+    <title th:text="#{hdon.form.sua_tieude}">Sửa Hóa Đơn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -34,106 +34,101 @@
         <div class="form-header">
             <div class="row">
                 <div class="col-md-8">
-                    <h2 class="mb-0">Sửa Hóa Đơn</h2>
-                    <p class="mb-0 text-muted">Chỉnh sửa thông tin hóa đơn</p>
+                    <h2 class="mb-0" th:text="#{hdon.form.sua_tieude}">Sửa Hóa Đơn</h2>
+                    <p class="mb-0 text-muted" th:text="#{hdon.ui.chinh_sua_thong_tin}">Chỉnh sửa thông tin hóa đơn</p>
                 </div>
                 <div class="col-md-4 text-end">
                     <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Quay về danh sách
-                    </a>
+                        <i class="fas fa-arrow-left"></i><span th:text="#{hdon.chitiet.quay_ve_danh_sach}" th:remove="tag"> Quay về danh sách
+                    </span></a>
                 </div>
             </div>
         </div>
 
         <!-- Warning -->
         <div class="warning-box">
-            <h6 class="text-warning"><i class="fas fa-exclamation-triangle"></i> Lưu ý:</h6>
-            <p class="mb-0">Việc chỉnh sửa hóa đơn sẽ tác động đến các chi phí tính toán. Các chi phí sẽ được tính lại theo thông tin mới. Hãy chắc chắn rằng bạn đã kiểm tra lại các thông tin trước khi lưu.</p>
+            <h6 class="text-warning"><i class="fas fa-exclamation-triangle"></i><span th:text="#{kh.user.luu_y}" th:remove="tag"> Lưu ý:</span></h6>
+            <p class="mb-0" th:text="#{hdon.ui.viec_chinh_sua_hoa_d}">Việc chỉnh sửa hóa đơn sẽ tác động đến các chi phí tính toán. Các chi phí sẽ được tính lại theo thông tin mới. Hãy chắc chắn rằng bạn đã kiểm tra lại các thông tin trước khi lưu.</p>
         </div>
 
         <!-- Form -->
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Thông tin Hóa Đơn</h5>
+                <h5 class="mb-0" th:text="#{hdon.chi_tiet.thong_tin}">Thông tin Hóa Đơn</h5>
             </div>
             <div class="card-body">
                 <form th:action="@{/admin/hoa-don/cap-nhat}" th:object="${hoaDon}" method="post" style="max-width: 800px;">
-                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" th:field="*{id}">
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Mã hóa đơn</label>
-                            <input type="text" class="form-control" th:value="'HD-' + *{id}" readonly>
-                            <small class="form-text text-muted">Mã hóa đơn không thể thay đổi</small>
+                            <label class="form-label" th:text="#{hdon.ui.ma_hoa_don}">Mã hóa đơn</label>
+                            <input type="text" class="form-control" th:value="#{hdon.ds.ma_hd} + '-' + *{id}" readonly>
+                            <small class="form-text text-muted" th:text="#{hdon.ui.ma_hoa_don_khong_the}">Mã hóa đơn không thể thay đổi</small>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Trạng thái thanh toán</label>
+                            <label class="form-label" th:text="#{hdon.ui.trang_thai_thanh_toa}">Trạng thái thanh toán</label>
                             <select class="form-select" th:field="*{trangThaiThanhToan}">
-                                <option value="Chưa thanh toán">Chưa thanh toán</option>
-                                <option value="Đã thanh toán">Đã thanh toán</option>
+                                <option value="Chưa thanh toán" th:text="#{hdon.chitiet.chua_thanh_toan}">Chưa thanh toán</option>
+                                <option value="Đã thanh toán" th:text="#{hdon.chitiet.da_thanh_toan}">Đã thanh toán</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Ngày phát hành</label>
+                            <label class="form-label" th:text="#{hdon.form.ngay_phat_hanh}">Ngày phát hành</label>
                             <input type="date" class="form-control" th:field="*{ngayPhatHanh}" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Ngày đến hạn</label>
+                            <label class="form-label" th:text="#{hdon.form.ngay_den_han}">Ngày đến hạn</label>
                             <input type="date" class="form-control" th:field="*{ngayDenHan}" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Chọn Căn Hộ</label>
+                        <label class="form-label" th:text="#{hdon.ui.chon_can_ho}">Chọn Căn Hộ</label>
                         <select class="form-select" name="canHoId" required>
-                            <option value="" disabled>-- Chọn căn hộ cần xuất hóa đơn --</option>
-                            <option th:each="ch : ${danhSachCanHo}"
-                                    th:value="${ch.id}"
-                                    th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'"
-                                    th:selected="${hoaDon.canHo != null and hoaDon.canHo.id == ch.id}">
+                            <option value="" disabled th:text="#{hdon.ui.chon_can_ho_can_xua}">-- Chọn căn hộ cần xuất hóa đơn --</option>
+                            <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'" th:selected="${hoaDon.canHo != null and hoaDon.canHo.id == ch.id}">
                             </option>
                         </select>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Tổng tiền (VNĐ)</label>
+                            <label class="form-label" th:text="#{hdon.ui.tong_tien_vnd}">Tổng tiền (VNĐ)</label>
                             <input type="number" class="form-control" th:field="*{tongTien}" step="0.01" min="0">
-                            <small class="form-text text-muted">Nếu để trống, sẽ được tính toán tự động</small>
+                            <small class="form-text text-muted" th:text="#{hdon.ui.neu_de_trong_se_duoc}">Nếu để trống, sẽ được tính toán tự động</small>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Tổng tiền hiện tại</label>
-                            <input type="text" class="form-control" 
-                                   th:value="${hoaDon.tongTien != null ? #numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}" 
-                                   readonly>
-                            <small class="form-text text-muted">Giá trị hiện tại trong hệ thống</small>
+                            <label class="form-label" th:text="#{hdon.ui.tong_tien_hien_tai}">Tổng tiền hiện tại</label>
+                            <input type="text" class="form-control" th:value="${hoaDon.tongTien != null} ? |#{numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|" readonly>
+                            <small class="form-text text-muted" th:text="#{hdon.ui.gia_tri_hien_tai_tro}">Giá trị hiện tại trong hệ thống</small>
                         </div>
                     </div>
 
                     <div class="alert alert-info">
-                        <h6><i class="fas fa-info-circle"></i> Lưu ý:</h6>
+                        <h6><i class="fas fa-info-circle"></i><span th:text="#{kh.user.luu_y}" th:remove="tag"> Lưu ý:</span></h6>
                         <ul class="mb-0">
-                            <li>Nếu bạn thay đổi căn hộ, ngày phát hành hoặc bỏ trống tổng tiền, hệ thống sẽ tính lại toàn bộ chi phí</li>
-                            <li>Các chi phí bao gồm: tiền điện, tiền nước, phí quản lý, phí gửi xe, phí dịch vụ phát sinh</li>
-                            <li>Việc tính lại sẽ dựa trên các chỉ số điện nước và thông tin hiện tại trong hệ thống</li>
+                            <li th:text="#{hdon.ui.neu_ban_thay_doi_can}">Nếu bạn thay đổi căn hộ, ngày phát hành hoặc bỏ trống tổng tiền, hệ thống sẽ tính lại toàn bộ chi phí</li>
+                            <li th:text="#{hdon.ui.cac_chi_phi_bao_gom}">Các chi phí bao gồm: tiền điện, tiền nước, phí quản lý, phí gửi xe, phí dịch vụ phát sinh</li>
+                            <li th:text="#{hdon.ui.viec_tinh_lai_se_dua}">Việc tính lại sẽ dựa trên các chỉ số điện nước và thông tin hiện tại trong hệ thống</li>
                         </ul>
                     </div>
 
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Lưu thay đổi
-                            </button>
+                                <i class="fas fa-save"></i><span th:text="#{hdon.ui.luu_thay_doi}" th:remove="tag"> Lưu thay đổi
+                            </span></button>
                             <a th:href="@{/admin/hoa-don/xem/{id}(id=${hoaDon.id})}" class="btn btn-info text-white ms-2">
-                                <i class="fas fa-eye"></i> Xem chi tiết
-                            </a>
+                                <i class="fas fa-eye"></i><span th:text="#{hdon.ui.xem_chi_tiet}" th:remove="tag"> Xem chi tiết
+                            </span></a>
                         </div>
                         <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Hủy
-                        </a>
+                            <i class="fas fa-times"></i><span th:text="#{hdon.form.nut_huy}" th:remove="tag"> Hủy
+                        </span></a>
                     </div>
                 </form>
             </div>
@@ -142,33 +137,33 @@
         <!-- Chi ti t hóa ð n hi n t i -->
         <div class="card mt-4">
             <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">Chi Tiết Hóa Đơn Hiện Tại</h5>
+                <h5 class="mb-0" th:text="#{hdon.ui.chi_tiet_hoa_don_hie}">Chi Tiết Hóa Đơn Hiện Tại</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <strong>Căn hộ:</strong>
+                        <strong th:text="#{hd.detail.can_ho}">Căn hộ:</strong>
                         <p class="mb-0" th:text="${hoaDon.canHo?.maCanHo ?: 'Chưa gắn'}">A1-01</p>
                     </div>
                     <div class="col-md-4">
-                        <strong>Ngày phát hành:</strong>
+                        <strong th:text="#{hdon.chitiet.ngay_phat_hanh}">Ngày phát hành:</strong>
                         <p class="mb-0" th:text="${hoaDon.ngayPhatHanh != null ? #temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy') : ''}">01/10/2026</p>
                     </div>
                     <div class="col-md-4">
-                        <strong>Ngày đến hạn:</strong>
+                        <strong th:text="#{hdon.chitiet.ngay_den_han}">Ngày đến hạn:</strong>
                         <p class="mb-0" th:text="${hoaDon.ngayDenHan != null ? #temporals.format(hoaDon.ngayDenHan, 'dd/MM/yyyy') : ''}">15/10/2026</p>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-4">
-                        <strong>Tổng tiền:</strong>
-                        <p class="mb-0" th:text="${hoaDon.tongTien != null ? #numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">3,066,000 VNĐ</p>
+                        <strong th:text="#{hdon.ui.tong_tien}">Tổng tiền:</strong>
+                        <p class="mb-0" th:text="${hoaDon.tongTien != null} ? |#{numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></p>
                     </div>
                     <div class="col-md-4">
-                        <strong>Trạng thái:</strong>
+                        <strong th:text="#{hd.detail.trang_thai}">Trạng thái:</strong>
                         <p class="mb-0">
-                            <span th:if="${hoaDon.trangThaiThanhToan == 'Đã thanh toán'}" class="badge bg-success">Đã thanh toán</span>
-                            <span th:if="${hoaDon.trangThaiThanhToan == 'Chưa thanh toán' or hoaDon.trangThaiThanhToan == null}" class="badge bg-danger">Chưa thanh toán</span>
+                            <span th:if="${hoaDon.trangThaiThanhToan == 'Đã thanh toán'}" class="badge bg-success" th:text="#{hdon.chitiet.da_thanh_toan}">Đã thanh toán</span>
+                            <span th:if="${hoaDon.trangThaiThanhToan == 'Chưa thanh toán' or hoaDon.trangThaiThanhToan == null}" class="badge bg-danger" th:text="#{hdon.chitiet.chua_thanh_toan}">Chưa thanh toán</span>
                         </p>
                     </div>
                 </div>

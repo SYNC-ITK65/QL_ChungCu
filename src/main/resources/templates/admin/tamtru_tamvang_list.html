@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Hệ thống Quản lý Tạm trú - Tạm vắng</title>
+    <title th:text="#{tttv.ds.he_thong_quan_ly_tam}">Hệ thống Quản lý Tạm trú - Tạm vắng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -18,11 +18,11 @@
     <div class="main-content p-4 w-100">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold text-dark">👮 Quản Lý Tạm Trú / Tạm Vắng</h2>
-                <p class="text-muted mb-0">Xem và phê duyệt các yêu cầu biến động nhân khẩu trong tòa nhà</p>
+                <h2 class="fw-bold text-dark" th:text="#{tttv.ds.quan_ly_tam_tru_tam}">👮 Quản Lý Tạm Trú / Tạm Vắng</h2>
+                <p class="text-muted mb-0" th:text="#{tttv.ds.xem_va_phe_duyet_cac}">Xem và phê duyệt các yêu cầu biến động nhân khẩu trong tòa nhà</p>
             </div>
             <div class="text-end">
-                <span class="badge bg-primary p-2">Tổng đơn: <span th:text="${list.size()}">0</span></span>
+                <span class="badge bg-primary p-2"><span th:text="#{tttv.ds.tong_don}" th:remove="tag">Tổng đơn: </span><span th:text="${list.size()}">0</span></span>
             </div>
         </div>
 
@@ -31,28 +31,28 @@
             <div class="card-body">
                 <form th:action="@{/admin/tamtru-tamvang}" method="GET" class="row g-3">
                     <div class="col-md-5">
-                        <label class="form-label fw-bold">Loại hình</label>
+                        <label class="form-label fw-bold" th:text="#{tttv.ds.loai_hinh}">Loại hình</label>
                         <select name="loai" class="form-select">
-                            <option value="">-- Tất cả loại hình --</option>
-                            <option value="Tạm trú" th:selected="${loai == 'Tạm trú'}">Tạm trú</option>
-                            <option value="Tạm vắng" th:selected="${loai == 'Tạm vắng'}">Tạm vắng</option>
+                            <option value="" th:text="#{tttv.ds.tat_ca_loai_hinh}">-- Tất cả loại hình --</option>
+                            <option value="Tạm trú" th:selected="${loai == 'Tạm trú'}" th:text="#{tttv.ds.tam_tru}">Tạm trú</option>
+                            <option value="Tạm vắng" th:selected="${loai == 'Tạm vắng'}" th:text="#{tttv.ds.tam_vang}">Tạm vắng</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Trạng thái duyệt</label>
+                        <label class="form-label fw-bold" th:text="#{tttv.ds.trang_thai_duyet}">Trạng thái duyệt</label>
                         <select name="trangThaiDuyet" class="form-select">
-                            <option value="">-- Tất cả trạng thái --</option>
-                            <option value="Chờ duyệt" th:selected="${trangThaiDuyet == 'Chờ duyệt'}">Chờ duyệt</option>
-                            <option value="Đã duyệt" th:selected="${trangThaiDuyet == 'Đã duyệt'}">Đã duyệt</option>
-                            <option value="Từ chối" th:selected="${trangThaiDuyet == 'Từ chối'}">Từ chối</option>
-                            <option value="Đã hoàn thành" th:selected="${trangThaiDuyet == 'Đã hoàn thành'}">Đã hoàn thành</option>
-                            <option value="Quá hạn duyệt" th:selected="${trangThaiDuyet == 'Quá hạn duyệt'}">Quá hạn duyệt</option>
+                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+                            <option value="Chờ duyệt" th:selected="${trangThaiDuyet == 'Chờ duyệt'}" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</option>
+                            <option value="Đã duyệt" th:selected="${trangThaiDuyet == 'Đã duyệt'}" th:text="#{dv.ds.da_duyet}">Đã duyệt</option>
+                            <option value="Từ chối" th:selected="${trangThaiDuyet == 'Từ chối'}" th:text="#{dv.ds.tu_choi}">Từ chối</option>
+                            <option value="Đã hoàn thành" th:selected="${trangThaiDuyet == 'Đã hoàn thành'}" th:text="#{tttv.ds.da_hoan_thanh}">Đã hoàn thành</option>
+                            <option value="Quá hạn duyệt" th:selected="${trangThaiDuyet == 'Quá hạn duyệt'}" th:text="#{tttv.ds.qua_han_duyet}">Quá hạn duyệt</option>
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Lọc đơn đăng ký
-                        </button>
+                            <i class="bi bi-search"></i><span th:text="#{tttv.ds.loc_don_dang_ky}" th:remove="tag"> Lọc đơn đăng ký
+                        </span></button>
                     </div>
                 </form>
             </div>
@@ -72,19 +72,19 @@
                 <table class="table table-hover align-middle mb-0 no-paging">
                     <thead class="table-dark">
                     <tr>
-                        <th class="ps-4">Cư dân / Căn hộ</th>
-                        <th>Loại hình</th>
-                        <th>Thời gian áp dụng</th>
-                        <th>Lý do & Khách</th>
-                        <th class="text-center">Trạng thái</th>
-                        <th class="text-end pe-4">Thao tác</th>
+                        <th class="ps-4" th:text="#{tttv.ds.cu_dan_can_ho}">Cư dân / Căn hộ</th>
+                        <th th:text="#{tttv.ds.loai_hinh}">Loại hình</th>
+                        <th th:text="#{tttv.ds.thoi_gian_ap_dung}">Thời gian áp dụng</th>
+                        <th th:text="#{tttv.ds.ly_do_khach}">Lý do &amp; Khách</th>
+                        <th class="text-center" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                        <th class="text-end pe-4" th:text="#{dv.ds.thao_tac}">Thao tác</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="don : ${list}">
                         <td class="ps-4">
-                            <div class="fw-bold" th:text="${don.cuDan != null ? don.cuDan.hoTen : 'N/A'}"></div>
-                            <small class="text-muted" th:text="${don.cuDan != null && don.cuDan.canHo != null ? 'Căn: ' + don.cuDan.canHo.maCanHo : 'Chưa gán căn'}"></small>
+                            <div class="fw-bold" th:text="${don.cuDan != null ? don.cuDan.hoTen : #{chung.khong_thoi_han}}"></div>
+                            <small class="text-muted" th:text="${don.cuDan != null && don.cuDan.canHo != null} ? |#{hd.detail.can_ho}: ${don.cuDan.canHo.maCanHo}| : #{chung.chua_gan_can}"></small>
                         </td>
                         <td>
                             <span class="badge" th:classappend="${don.loai == 'Tạm trú' ? 'bg-info text-dark' : 'bg-secondary'}" th:text="${don.loai}"></span>
@@ -97,63 +97,63 @@
                         </td>
                         <td>
                             <div class="text-truncate" style="max-width: 200px;" th:title="${don.lyDo}" th:text="${don.lyDo}"></div>
-                            <small th:if="${don.hoTenKhach != null}" class="text-primary d-block">
-                                👤 Khách: <span th:text="${don.hoTenKhach}"></span>
+                            <small th:if="${don.hoTenKhach != null}" class="text-primary d-block"><span th:text="#{tttv.ds.khach}" th:remove="tag">
+                                👤 Khách: </span><span th:text="${don.hoTenKhach}"></span>
                             </small>
                         </td>
                         <td class="text-center">
-                                <span class="badge status-badge py-2"
-                                      th:classappend="${don.trangThaiDuyet == 'Đã duyệt' ? 'bg-success' :
+                                <span class="badge status-badge py-2" th:classappend="${don.trangThaiDuyet == 'Đã duyệt' ? 'bg-success' :
                                                      (don.trangThaiDuyet == 'Từ chối' ? 'bg-danger' :
-                                                     (don.trangThaiDuyet == 'Chờ duyệt' ? 'bg-warning text-dark' : 'bg-dark'))}"
-                                      th:text="${don.trangThaiDuyet}"></span>
-                            <div th:if="${don.lyDoTuChoi != null}" class="text-danger x-small mt-1" style="font-size: 0.75rem;">
-                                Lý do: <span th:text="${don.lyDoTuChoi}"></span>
+                                                     (don.trangThaiDuyet == 'Chờ duyệt' ? 'bg-warning text-dark' : 'bg-dark'))}" th:text="${don.trangThaiDuyet}"></span>
+                            <div th:if="${don.lyDoTuChoi != null}" class="text-danger x-small mt-1" style="font-size: 0.75rem;"><span th:text="#{tttv.ds.ly_do}" th:remove="tag">
+                                Lý do: </span><span th:text="${don.lyDoTuChoi}"></span>
                             </div>
                         </td>
                         <td class="text-end pe-4">
                             <div th:if="${don.trangThaiDuyet == 'Chờ duyệt'}">
                                 <form th:action="@{/admin/tamtru-tamvang/process/{id}(id=${don.id})}" method="post" class="d-inline">
                                     <input type="hidden" name="action" value="approve">
-                                    <button type="submit" class="btn btn-sm btn-success fw-bold">Duyệt</button>
+                                    <button type="submit" class="btn btn-sm btn-success fw-bold" th:text="#{dv.ds.duyet}">Duyệt</button>
                                 </form>
-                                <button class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" th:data-bs-target="'#rejectModal' + ${don.id}">Từ chối</button>
+                                <button class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" th:data-bs-target="'#rejectModal' + ${don.id}" th:text="#{dv.ds.tu_choi}">Từ chối</button>
+                                
+                                <!-- Modal Từ chối (Phải nằm trong loop) -->
+                                <div class="modal fade" th:id="'rejectModal' + ${don.id}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog text-start">
+                                        <form th:action="@{/admin/tamtru-tamvang/process/{id}(id=${don.id})}" method="post">
+                                            <input type="hidden" name="action" value="reject">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" th:text="#{tttv.ds.ly_do_tu_choi_don}">Lý do từ chối đơn</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <textarea name="lyDoTuChoi" class="form-control" rows="3" required th:placeholder="#{tttv.ds.nhap_ly_do_gui_den_c}"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{tttv.ds.dong}">Đóng</button>
+                                                    <button type="submit" class="btn btn-danger" th:text="#{tttv.ds.xac_nhan_tu_choi}">Xác nhận từ chối</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
 
-                            <form th:if="${don.trangThaiDuyet == 'Đã duyệt' or don.trangThaiDuyet == 'Từ chối'}"
-                                  th:action="@{/admin/tamtru-tamvang/undo/{id}(id=${don.id})}" method="post">
-                                <button type="submit" class="btn btn-sm btn-link text-decoration-none text-muted" onclick="return confirm('Hoàn tác về trạng thái Chờ duyệt?')">↩ Hoàn tác</button>
+                            <form th:if="${don.trangThaiDuyet == 'Đã duyệt' or don.trangThaiDuyet == 'Từ chối'}" th:action="@{/admin/tamtru-tamvang/undo/{id}(id=${don.id})}" method="post">
+                                <button type="submit" class="btn btn-sm btn-link text-decoration-none text-muted" th:onclick="|return confirm('#{tttv.ds.xac_nhan_hoan_tac}')|" th:text="#{tttv.ds.hoan_tac}">↩ Hoàn tác</button>
                             </form>
                         </td>
 
-                        <div class="modal fade" th:id="'rejectModal' + ${don.id}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <form th:action="@{/admin/tamtru-tamvang/process/{id}(id=${don.id})}" method="post">
-                                    <input type="hidden" name="action" value="reject">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Lý do từ chối đơn</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <textarea name="lyDoTuChoi" class="form-control" rows="3" placeholder="Nhập lý do gửi đến cư dân..." required></textarea>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                            <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        
                     </tr>
                     <tr th:if="${#lists.isEmpty(list)}">
-                        <td colspan="6" class="text-center py-5 text-muted">Không tìm thấy đơn nào phù hợp.</td>
+                        <td colspan="6" class="text-center py-5 text-muted" th:text="#{tttv.ds.khong_tim_thay_don_n}">Không tìm thấy đơn nào phù hợp.</td>
                     </tr>
                     </tbody>
                 </table>
                 <div class="p-3">
-                    <div th:replace="~{fragments/pagination :: paging('/admin/tamtru-tamvang', 'loai=' + (${loai} ?: '') + '&trangThaiDuyet=' + (${trangThaiDuyet} ?: ''))}"></div>
+                    <div th:replace="~{fragments/pagination :: paging('/admin/tamtru-tamvang', 'loai=' + (${loai} ?: '') + '&amp;trangThaiDuyet=' + (${trangThaiDuyet} ?: ''))}"></div>
                 </div>
             </div>
         </div>

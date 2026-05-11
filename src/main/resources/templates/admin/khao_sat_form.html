@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Sửa Khảo Sát</title>
+  <title th:text="#{ks.form.sua_khao_sat}">Sửa Khảo Sát</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -13,63 +13,60 @@
   <div class="content p-4 w-100">
     <div class="card shadow border-0">
       <div class="card-header bg-primary text-white">
-        <h4 class="mb-0" th:text="${khaoSat.id == null ? 'TẠO KHẢO SÁT MỚI' : 'CHỈNH SỬA KHẢO SÁT'}"></h4>
+        <h4 class="mb-0" th:text="${khaoSat.id == null} ? #{ks.form.them_tieude} : #{ks.form.sua_tieude}"></h4>
       </div>
 
       <div class="card-body p-4">
         <div th:if="${khaoSat.id != null and khaoSat.tongSoVote > 0}" class="alert alert-warning">
-          <i class="fas fa-exclamation-triangle"></i>
-          Khảo sát này đã có <strong>[[${khaoSat.tongSoVote}]] lượt vote</strong>. Hệ thống đã khóa chức năng chỉnh sửa các phương án để bảo vệ dữ liệu!
-        </div>
+          <i class="fas fa-exclamation-triangle"></i><span th:text="#{ks.form.khao_sat_nay_da_co}" th:remove="tag">
+          Khảo sát này đã có </span><strong><span th:text="${khaoSat.tongSoVote}" th:remove="tag"></span> <span th:text="#{ks.chitiet.luot}" th:remove="tag">lượt</span></strong><span th:text="#{ks.form.he_thong_da_khoa_ch}" th:remove="tag">. Hệ thống đã khóa chức năng chỉnh sửa các phương án để bảo vệ dữ liệu!
+        </span></div>
 
         <form th:action="@{/admin/khao-sat/save}" th:object="${khaoSat}" method="POST">
           <input type="hidden" th:field="*{id}">
 
           <div class="mb-3">
-            <label class="form-label fw-bold">Tiêu đề khảo sát *</label>
+            <label class="form-label fw-bold" th:text="#{ks.form.tieu_de_khao_sat}">Tiêu đề khảo sát *</label>
             <input type="text" class="form-control" th:field="*{tieuDe}" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label fw-bold">Mô tả</label>
+            <label class="form-label fw-bold" th:text="#{dv.ds.mo_ta}">Mô tả</label>
             <textarea class="form-control" th:field="*{moTa}" rows="3"></textarea>
           </div>
 
           <div class="row mb-4">
             <div class="col-md-6">
-              <label class="form-label fw-bold">Thời gian bắt đầu *</label>
-              <input type="datetime-local" class="form-control" th:field="*{thoiGianBatDau}"
-                     th:readonly="${khaoSat.id != null}" required>
+              <label class="form-label fw-bold" th:text="#{ks.form.thoi_gian_bat_dau}">Thời gian bắt đầu *</label>
+              <input type="datetime-local" class="form-control" th:field="*{thoiGianBatDau}" th:readonly="${khaoSat.id != null}" required>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-bold">Thời gian kết thúc *</label>
+              <label class="form-label fw-bold" th:text="#{ks.form.thoi_gian_ket_thuc}">Thời gian kết thúc *</label>
               <input type="datetime-local" class="form-control" th:field="*{thoiGianKetThuc}" required>
             </div>
           </div>
 
           <hr>
-          <h5 class="fw-bold mb-3">Các phương án bình chọn</h5>
+          <h5 class="fw-bold mb-3" th:text="#{ks.form.cac_phuong_an_binh_c}">Các phương án bình chọn</h5>
 
           <div id="phuongAnContainer">
             <div th:each="lc, stat : *{danhSachLuaChon}" class="input-group mb-2 phuong-an-item">
               <input type="hidden" th:field="*{danhSachLuaChon[__${stat.index}__].id}">
               <input type="hidden" th:field="*{danhSachLuaChon[__${stat.index}__].soLuotBinhChon}">
 
-              <input type="text" class="form-control" placeholder="Nhập tên phương án..."
-                     th:field="*{danhSachLuaChon[__${stat.index}__].noiDungLuaChon}"
-                     th:readonly="${khaoSat.id != null and khaoSat.tongSoVote > 0}" required>
+              <input type="text" class="form-control" placeholder="Nhập tên phương án..." th:field="*{danhSachLuaChon[__${stat.index}__].noiDungLuaChon}" th:readonly="${khaoSat.id != null and khaoSat.tongSoVote > 0}" required th:placeholder="#{ks.form.nhap_ten_phuong_an}">
 
-              <button th:if="${khaoSat.tongSoVote == 0}" type="button" class="btn btn-outline-danger btn-xoa" onclick="xoaPhuongAn(this)">Xóa</button>
+              <button th:if="${khaoSat.tongSoVote == 0}" type="button" class="btn btn-outline-danger btn-xoa" onclick="xoaPhuongAn(this)" th:text="#{hd.ds.nut_xoa}">Xóa</button>
             </div>
           </div>
 
-          <button th:if="${khaoSat.tongSoVote == 0}" type="button" class="btn btn-sm btn-success mt-2" onclick="themPhuongAn()">
+          <button th:if="${khaoSat.tongSoVote == 0}" type="button" class="btn btn-sm btn-success mt-2" onclick="themPhuongAn()" th:text="#{ks.form.them_phuong_an}">
             + Thêm phương án
           </button>
 
           <div class="mt-5 text-end">
-            <a th:href="@{/admin/khao-sat}" class="btn btn-secondary me-2">Hủy</a>
-            <button type="submit" class="btn btn-primary px-4">Lưu Dữ Liệu</button>
+            <a th:href="@{/admin/khao-sat}" class="btn btn-secondary me-2" th:text="#{hdon.form.nut_huy}">Hủy</a>
+            <button type="submit" class="btn btn-primary px-4" th:text="#{ks.form.luu_du_lieu}">Lưu Dữ Liệu</button>
           </div>
         </form>
       </div>
@@ -83,11 +80,13 @@
 
   function themPhuongAn() {
       const container = document.getElementById('phuongAnContainer');
+      const placeholderText = '[[#{ks.form.nhap_ten_phuong_an}]]';
+      const deleteText = '[[#{hd.ds.nut_xoa}]]';
       const html = `
           <div class="input-group mb-2 phuong-an-item">
               <input type="hidden" name="danhSachLuaChon[${luaChonIndex}].soLuotBinhChon" value="0">
-              <input type="text" class="form-control" name="danhSachLuaChon[${luaChonIndex}].noiDungLuaChon" placeholder="Nhập tên phương án..." required>
-              <button type="button" class="btn btn-outline-danger btn-xoa" onclick="xoaPhuongAn(this)">Xóa</button>
+              <input type="text" class="form-control" name="danhSachLuaChon[${luaChonIndex}].noiDungLuaChon" placeholder="${placeholderText}" required>
+              <button type="button" class="btn btn-outline-danger btn-xoa" onclick="xoaPhuongAn(this)">${deleteText}</button>
           </div>
       `;
       container.insertAdjacentHTML('beforeend', html);
@@ -99,7 +98,7 @@
       if (document.querySelectorAll('.phuong-an-item').length > 2) {
           btn.parentElement.remove();
       } else {
-          alert('Khảo sát phải có ít nhất 2 phương án bình chọn!');
+          alert("[[#{ks.form.it_nhat_2_phuong_an}]]");
       }
   }
 </script>

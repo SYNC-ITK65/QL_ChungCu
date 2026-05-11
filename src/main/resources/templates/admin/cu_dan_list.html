@@ -30,7 +30,7 @@
                             <label class="form-label" th:text="#{cd.ds.loc_can}">Căn hộ</label>
                             <select name="canHoId" class="form-select">
                                 <option value="" th:text="#{chung.tat_ca}">-- Tất cả --</option>
-                                <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|Phòng ${ch.maCanHo}|" th:selected="${canHoId == ch.id}"></option>
+                                <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|#{tb.ui.phong} ${ch.maCanHo}|" th:selected="${canHoId == ch.id}"></option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -71,7 +71,7 @@
                         <!-- Lấy trực tiếp từ CuDan vì nó đã kế thừa NguoiDung -->
                         <td th:text="${cd.hoTen}">Tên cư dân</td>
                         <td th:text="${cd.soDienThoai}">SĐT</td>
-                        <td th:text="${cd.canHo != null ? cd.canHo.maCanHo : 'N/A'}">Căn hộ</td>
+                        <td th:text="${cd.canHo != null} ? ${cd.canHo.maCanHo} : #{chung.n_a}"></td>
                         <td>
                             <span th:if="${cd.moiQuanHe == 'Chủ Hộ'}" class="badge bg-primary" th:text="#{cd.qh.chu_ho}">Chủ Hộ</span>
                             <span th:if="${cd.moiQuanHe != 'Chủ Hộ'}" th:text="${cd.moiQuanHe}"></span>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -84,8 +84,8 @@
             <tr th:each="hd : ${danhSachHopDong}">
                 <td th:text="${hd.id}"></td>
                 <td>
-                    <span th:if="${hd.loaiHopDong == 'Thue'}" class="badge bg-info">Thuê</span>
-                    <span th:if="${hd.loaiHopDong == 'Mua'}" class="badge bg-primary">Mua</span>
+                    <span th:if="${hd.loaiHopDong == 'Thue'}" class="badge bg-info" th:text="#{hd.ds.loai_thue}">Thuê</span>
+                    <span th:if="${hd.loaiHopDong == 'Mua'}" class="badge bg-primary" th:text="#{hd.ds.loai_mua}">Mua</span>
                     <span th:if="${hd.loaiHopDong != 'Thue' and hd.loaiHopDong != 'Mua'}" th:text="${hd.loaiHopDong}"></span>
                 </td>
                 <td th:text="${hd.canHo != null ? hd.canHo.maCanHo : ''}"></td>
@@ -94,7 +94,7 @@
                 <td th:text="${hd.benThue != null ? hd.benThue : ''}"></td>
                 <td th:text="${hd.ngayBatDau != null ? #temporals.format(hd.ngayBatDau, 'dd/MM/yyyy') : ''}"></td>
                 <td th:text="${hd.ngayKetThuc != null ? #temporals.format(hd.ngayKetThuc, 'dd/MM/yyyy') : ''}"></td>
-                <td th:text="${hd.tienThue != null ? #numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}"></td>
+                <td th:text="${hd.tienThue != null} ? |${#numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}| : |0 #{chung.don_vi_vnd_symbol}|"></td>
                 <td>
                     <span th:if="${hd.trangThai == 'ACTIVE'}" class="badge bg-success">ACTIVE</span>
                     <span th:if="${hd.trangThai == 'EXPIRED'}" class="badge bg-secondary">EXPIRED</span>
@@ -102,19 +102,11 @@
                     <span th:if="${hd.trangThai == 'DRAFT'}" class="badge bg-warning">DRAFT</span>
                 </td>
                 <td>
-                    <a th:href="@{/admin/hop-dong/chi-tiet/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-info text-white" th:text="#{hd.ds.nut_xem}">Xem</a>
-                    <a th:href="@{/admin/hop-dong/sua/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-warning" th:text="#{hd.ds.nut_sua}">Sửa</a>
-                    <a th:if="${hd.trangThai == 'ACTIVE'}"
-                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='TERMINATED')}"
-                       class="btn btn-sm btn-danger" th:text="#{hd.ds.nut_thanh_ly}">Thanh lý</a>
-                    <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}"
-                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}"
-                       class="btn btn-sm btn-success" th:text="#{hd.ds.nut_kich_hoat}">Kích hoạt</a>
-                    <a th:href="@{/admin/hop-dong/xoa/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-outline-danger"
-                       th:onclick="return confirm([[#{hd.ds.xac_nhan_xoa}]]);" th:text="#{hd.ds.nut_xoa}">Xóa</a>
+                    <a th:href="@{/admin/hop-dong/chi-tiet/{id}(id=${hd.id})}" class="btn btn-sm btn-info text-white" th:text="#{hd.ds.nut_xem}">Xem</a>
+                    <a th:href="@{/admin/hop-dong/sua/{id}(id=${hd.id})}" class="btn btn-sm btn-warning" th:text="#{hd.ds.nut_sua}">Sửa</a>
+                    <a th:if="${hd.trangThai == 'ACTIVE'}" th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='TERMINATED')}" class="btn btn-sm btn-danger" th:text="#{hd.ds.nut_thanh_ly}">Thanh lý</a>
+                    <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}" th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}" class="btn btn-sm btn-success" th:text="#{hd.ds.nut_kich_hoat}">Kích hoạt</a>
+                    <a th:href="@{/admin/hop-dong/xoa/{id}(id=${hd.id})}" class="btn btn-sm btn-outline-danger" th:onclick="|return confirm('#{hd.ds.xac_nhan_xoa}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachHopDong)}">
@@ -125,26 +117,26 @@
 
         <div class="d-flex justify-content-between align-items-center mt-3">
             <form method="GET" th:action="@{/admin/hop-dong}" class="d-flex align-items-center gap-2">
-                <input type="hidden" name="maCanHo" th:value="${maCanHo}" />
-                <input type="hidden" name="loaiHopDong" th:value="${loaiHopDong}" />
-                <input type="hidden" name="trangThai" th:value="${trangThai}" />
-                <input type="hidden" name="page" value="0" />
-                <label class="form-label mb-0">Hiển thị</label>
+                <input type="hidden" name="maCanHo" th:value="${maCanHo}">
+                <input type="hidden" name="loaiHopDong" th:value="${loaiHopDong}">
+                <input type="hidden" name="trangThai" th:value="${trangThai}">
+                <input type="hidden" name="page" value="0">
+                <label class="form-label mb-0" th:text="#{pagi.hien_thi}">Hiển thị</label>
                 <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
-                    <option value="5" th:selected="${size == 5}">5 dòng</option>
-                    <option value="10" th:selected="${size == 10}">10 dòng</option>
-                    <option value="20" th:selected="${size == 20}">20 dòng</option>
-                    <option value="50" th:selected="${size == 50}">50 dòng</option>
+                    <option value="5" th:selected="${size == 5}" th:text="#{hd.ds.5_dong}">5 dòng</option>
+                    <option value="10" th:selected="${size == 10}" th:text="#{hd.ds.10_dong}">10 dòng</option>
+                    <option value="20" th:selected="${size == 20}" th:text="#{hd.ds.20_dong}">20 dòng</option>
+                    <option value="50" th:selected="${size == 50}" th:text="#{hd.ds.50_dong}">50 dòng</option>
                 </select>
             </form>
             <div th:if="${totalPages > 1}">
                 <nav>
                     <ul class="pagination pagination-sm mb-0">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/hop-dong(page=0, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Đầu</a>
+                            <a class="page-link" th:href="@{/admin/hop-dong(page=0, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}" th:text="#{hd.ds.dau}">Đầu</a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/hop-dong(page=${currentPage - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Trước</a>
+                            <a class="page-link" th:href="@{/admin/hop-dong(page=${currentPage - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}" th:text="#{pagi.truoc}">Trước</a>
                         </li>
                         <li class="page-item active">
                             <span class="page-link" th:text="${currentPage + 1} + '/' + ${totalPages}"></span>
@@ -153,7 +145,7 @@
                             <a class="page-link" th:href="@{/admin/hop-dong(page=${currentPage + 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Sau</a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/hop-dong(page=${totalPages - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Cuối</a>
+                            <a class="page-link" th:href="@{/admin/hop-dong(page=${totalPages - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}" th:text="#{hd.ds.cuoi}">Cuối</a>
                         </li>
                     </ul>
                 </nav>
@@ -161,7 +153,7 @@
         </div>
 
     </div>
-</div>
+
 
 <script>
     // Save scroll position before form submission

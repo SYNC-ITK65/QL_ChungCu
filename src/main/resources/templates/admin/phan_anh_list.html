@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <title>Danh sách Phản ánh</title>
+    <title th:text="#{pa.ds.danh_sach_phan_anh}">Danh sách Phản ánh</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -12,36 +12,35 @@
         <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
         <div class="container-fluid p-4">
-            <h2>Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</h2>
+            <h2 th:text="#{pa.ds.danh_sach_cu_dan_pha}">Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</h2>
             <table class="table table-bordered table-striped mt-3 no-paging">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID</th>
-                        <th>Căn hộ</th>
-                        <th>Tiêu đề</th>
-                        <th>Ngày gửi</th>
-                        <th>Trạng thái</th>
-                        <th>Hành động</th>
+                        <th th:text="#{chung.id}">ID</th>
+                        <th th:text="#{hdon.form.can_ho}">Căn hộ</th>
+                        <th th:text="#{tb.form.tieude}">Tiêu đề</th>
+                        <th th:text="#{pa.ds.ngay_gui}">Ngày gửi</th>
+                        <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                        <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="pa : ${phanAnhs}">
                         <td th:text="${pa.id}"></td>
-                        <td th:text="${pa.canHo != null ? pa.canHo.maCanHo : 'N/A'}"></td>
+                        <td th:text="${pa.canHo != null} ? ${pa.canHo.maCanHo} : #{chung.n_a}"></td>
                         <td th:text="${pa.tieuDe}"></td>
                         <td th:text="${#temporals.format(pa.ngayGui, 'dd/MM/yyyy HH:mm')}"></td>
                         <td>
-                            <span th:text="${pa.trangThai}"
-                                th:classappend="${pa.trangThai == 'Đã xong' ? 'badge bg-success' : (pa.trangThai == 'Đang xử lý' ? 'badge bg-warning text-dark' : 'badge bg-secondary')}">
+                            <span th:text="${pa.trangThai}" th:class="'badge ' + ${pa.trangThai == 'Đã xong' ? 'bg-success' : (pa.trangThai == 'Đang xử lý' ? 'bg-warning text-dark' : 'bg-secondary')}">
                             </span>
                         </td>
                         <td>
-                            <a th:href="@{/admin/phan-anh/edit/{id}(id=${pa.id})}" class="btn btn-sm btn-info">Xem & Xử
+                            <a th:href="@{/admin/phan-anh/edit/{id}(id=${pa.id})}" class="btn btn-sm btn-info" th:text="#{pa.ds.xem_xu_ly}">Xem &amp; Xử
                                 lý</a>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(phanAnhs)}">
-                        <td colspan="6" class="text-center text-muted">Chưa có phản ánh nào từ cư dân!</td>
+                        <td colspan="6" class="text-center text-muted" th:text="#{pa.ds.chua_co_phan_anh_nao}">Chưa có phản ánh nào từ cư dân!</td>
                     </tr>
                 </tbody>
             </table>

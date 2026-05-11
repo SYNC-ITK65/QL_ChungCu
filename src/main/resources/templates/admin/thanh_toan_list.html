@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lịch Sử Thanh Toán</title>
+    <title th:text="#{tt.ds.lich_su_thanh_toan}">Lịch Sử Thanh Toán</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="d-flex overflow-hidden" style="height: 100vh;">
@@ -10,43 +10,43 @@
 
     <div class="flex-grow-1 p-4 overflow-auto">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="bi bi-clock-history me-2"></i>Lịch Sử Giao Dịch / Thanh Toán</h2>
+            <h2><i class="bi bi-clock-history me-2"></i><span th:text="#{tt.ds.lich_su_giao_dich_th}" th:remove="tag">Lịch Sử Giao Dịch / Thanh Toán</span></h2>
         </div>
 
         <!-- Form tìm kiếm -->
         <div class="card mb-4">
             <div class="card-header bg-light">
-                <h6 class="mb-0">🔍 Tìm kiếm giao dịch</h6>
+                <h6 class="mb-0" th:text="#{tt.ds.tim_kiem_giao_dich}">🔍 Tìm kiếm giao dịch</h6>
             </div>
             <div class="card-body">
                 <form th:action="@{/admin/thanh-toan/lich-su}" method="get" class="row g-3">
                     <div class="col-md-3">
-                        <label class="form-label">Mã căn hộ</label>
-                        <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}" placeholder="Nhập mã căn hộ...">
+                        <label class="form-label" th:text="#{hdon.ds.loc_ma_can}">Mã căn hộ</label>
+                        <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}" placeholder="Nhập mã căn hộ..." th:placeholder="#{hdon.ds.loc_ma_can_goi_y}">
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Phương thức</label>
+                        <label class="form-label" th:text="#{tt.ds.phuong_thuc}">Phương thức</label>
                         <select class="form-select" name="phuongThuc">
-                            <option value="" th:selected="${phuongThuc == null or phuongThuc == ''}">-- Tất cả --</option>
-                            <option value="Tiền mặt" th:selected="${phuongThuc == 'Tiền mặt'}">Tiền mặt</option>
-                            <option value="Chuyển khoản" th:selected="${phuongThuc == 'Chuyển khoản'}">Chuyển khoản</option>
-                            <option value="Chuyển khoản QR" th:selected="${phuongThuc == 'Chuyển khoản QR'}">Chuyển khoản QR</option>
+                            <option value="" th:selected="${phuongThuc == null or phuongThuc == ''}" th:text="#{hdon.ds.loc_trang_thai_tat_ca}">-- Tất cả --</option>
+                            <option value="Tiền mặt" th:selected="${phuongThuc == 'Tiền mặt'}" th:text="#{tt.form.tien_mat}">Tiền mặt</option>
+                            <option value="Chuyển khoản" th:selected="${phuongThuc == 'Chuyển khoản'}" th:text="#{tt.ds.chuyen_khoan}">Chuyển khoản</option>
+                            <option value="Chuyển khoản QR" th:selected="${phuongThuc == 'Chuyển khoản QR'}" th:text="#{tt.form.chuyen_khoan_qr}">Chuyển khoản QR</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Từ ngày</label>
+                        <label class="form-label" th:text="#{tt.ds.tu_ngay}">Từ ngày</label>
                         <input type="date" class="form-control" name="tuNgay" th:value="${tuNgay}">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Đến ngày</label>
+                        <label class="form-label" th:text="#{tt.ds.den_ngay}">Đến ngày</label>
                         <input type="date" class="form-control" name="denNgay" th:value="${denNgay}">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                        <button type="submit" class="btn btn-primary w-100" th:text="#{hdon.ds.nut_tim_kiem}">Tìm kiếm</button>
                     </div>
                 </form>
                 <div class="mt-2">
-                    <a th:href="@{/admin/thanh-toan/lich-su}" class="btn btn-sm btn-secondary">↻ Xóa bộ lọc</a>
+                    <a th:href="@{/admin/thanh-toan/lich-su}" class="btn btn-sm btn-secondary" th:text="#{hd.ds.nut_xoa_loc}">↻ Xóa bộ lọc</a>
                 </div>
             </div>
         </div>
@@ -54,12 +54,12 @@
         <table class="table table-striped table-hover border no-paging">
             <thead class="table-dark">
             <tr>
-                <th>Mã GD</th>
-                <th>Mã Hóa Đơn</th>
-                <th>Căn Hộ</th>
-                <th>Ngày Thanh Toán</th>
-                <th>Số Tiền</th>
-                <th>Phương Thức</th>
+                <th th:text="#{tt.ds.ma_gd}">Mã GD</th>
+                <th th:text="#{hdon.ui.ma_hoa_don}">Mã Hóa Đơn</th>
+                <th th:text="#{hdon.form.can_ho}">Căn Hộ</th>
+                <th th:text="#{tt.form.ngay_thanh_toan}">Ngày Thanh Toán</th>
+                <th th:text="#{tt.ds.so_tien}">Số Tiền</th>
+                <th th:text="#{tt.ds.phuong_thuc}">Phương Thức</th>
             </tr>
             </thead>
             <tbody>
@@ -74,34 +74,34 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachThanhToan)}">
-                <td colspan="6" class="text-center text-muted">Chưa có giao dịch thanh toán nào.</td>
+                <td colspan="6" class="text-center text-muted" th:text="#{tt.ds.chua_co_giao_dich_th}">Chưa có giao dịch thanh toán nào.</td>
             </tr>
             </tbody>
         </table>
         <!-- Phân trang -->
         <div class="d-flex justify-content-between align-items-center mt-3" th:if="${totalPages > 0}">
             <form method="GET" th:action="@{/admin/thanh-toan/lich-su}" class="d-flex align-items-center gap-2">
-                <input type="hidden" name="maCanHo" th:value="${maCanHo}" />
-                <input type="hidden" name="phuongThuc" th:value="${phuongThuc}" />
-                <input type="hidden" name="tuNgay" th:value="${tuNgay}" />
-                <input type="hidden" name="denNgay" th:value="${denNgay}" />
-                <input type="hidden" name="page" value="0" />
-                <label class="form-label mb-0">Hiển thị</label>
+                <input type="hidden" name="maCanHo" th:value="${maCanHo}">
+                <input type="hidden" name="phuongThuc" th:value="${phuongThuc}">
+                <input type="hidden" name="tuNgay" th:value="${tuNgay}">
+                <input type="hidden" name="denNgay" th:value="${denNgay}">
+                <input type="hidden" name="page" value="0">
+                <label class="form-label mb-0" th:text="#{pagi.hien_thi}">Hiển thị</label>
                 <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
-                    <option value="5" th:selected="${size == 5}">5 dòng</option>
-                    <option value="10" th:selected="${size == 10}">10 dòng</option>
-                    <option value="20" th:selected="${size == 20}">20 dòng</option>
-                    <option value="50" th:selected="${size == 50}">50 dòng</option>
+                    <option value="5" th:selected="${size == 5}" th:text="#{hd.ds.5_dong}">5 dòng</option>
+                    <option value="10" th:selected="${size == 10}" th:text="#{hd.ds.10_dong}">10 dòng</option>
+                    <option value="20" th:selected="${size == 20}" th:text="#{hd.ds.20_dong}">20 dòng</option>
+                    <option value="50" th:selected="${size == 50}" th:text="#{hd.ds.50_dong}">50 dòng</option>
                 </select>
             </form>
             <div th:if="${totalPages > 1}">
                 <nav>
                     <ul class="pagination pagination-sm mb-0">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/thanh-toan/lich-su(page=0, size=${size}, maCanHo=${maCanHo}, phuongThuc=${phuongThuc}, tuNgay=${tuNgay}, denNgay=${denNgay})}">Đầu</a>
+                            <a class="page-link" th:href="@{/admin/thanh-toan/lich-su(page=0, size=${size}, maCanHo=${maCanHo}, phuongThuc=${phuongThuc}, tuNgay=${tuNgay}, denNgay=${denNgay})}" th:text="#{hd.ds.dau}">Đầu</a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/thanh-toan/lich-su(page=${currentPage - 1}, size=${size}, maCanHo=${maCanHo}, phuongThuc=${phuongThuc}, tuNgay=${tuNgay}, denNgay=${denNgay})}">Trước</a>
+                            <a class="page-link" th:href="@{/admin/thanh-toan/lich-su(page=${currentPage - 1}, size=${size}, maCanHo=${maCanHo}, phuongThuc=${phuongThuc}, tuNgay=${tuNgay}, denNgay=${denNgay})}" th:text="#{pagi.truoc}">Trước</a>
                         </li>
                         <li class="page-item active">
                             <span class="page-link" th:text="${currentPage + 1} + '/' + ${totalPages}"></span>
@@ -110,14 +110,14 @@
                             <a class="page-link" th:href="@{/admin/thanh-toan/lich-su(page=${currentPage + 1}, size=${size}, maCanHo=${maCanHo}, phuongThuc=${phuongThuc}, tuNgay=${tuNgay}, denNgay=${denNgay})}">Sau</a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/thanh-toan/lich-su(page=${totalPages - 1}, size=${size}, maCanHo=${maCanHo}, phuongThuc=${phuongThuc}, tuNgay=${tuNgay}, denNgay=${denNgay})}">Cuối</a>
+                            <a class="page-link" th:href="@{/admin/thanh-toan/lich-su(page=${totalPages - 1}, size=${size}, maCanHo=${maCanHo}, phuongThuc=${phuongThuc}, tuNgay=${tuNgay}, denNgay=${denNgay})}" th:text="#{hd.ds.cuoi}">Cuối</a>
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
     </div>
-</div>
+
 
     <!-- Dùng fragment Datatable chung -->
     <div th:replace="~{fragments/datatable :: scripts}"></div>

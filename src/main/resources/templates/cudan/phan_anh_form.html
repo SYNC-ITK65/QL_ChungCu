@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <title>Gửi phản ánh mới</title>
+    <title th:text="#{pa.form.gui_phan_anh_moi}">Gửi phản ánh mới</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -13,28 +13,26 @@
 
         <div class="container-fluid p-4">
             <div class="mb-4">
-                <h2>Gửi phản ánh / Yêu cầu mới</h2>
-                <p class="text-muted">Gửi phản ánh đến Ban Quản Lý (Vd: hư hỏng điện nước, vệ sinh, v.v.)</p>
+                <h2 th:text="#{pa.form.gui_phan_anh_yeu_cau}">Gửi phản ánh / Yêu cầu mới</h2>
+                <p class="text-muted" th:text="#{pa.form.gui_phan_anh_den_ban}">Gửi phản ánh đến Ban Quản Lý (Vd: hư hỏng điện nước, vệ sinh, v.v.)</p>
             </div>
 
             <div class="card shadow-sm" style="max-width: 700px;">
                 <div class="card-body">
                     <form th:action="@{/cudan/phan-anh/luu}" th:object="${phanAnh}" method="post">
                         <div class="mb-3">
-                            <label for="tieuDe" class="form-label fw-bold">Tiêu đề</label>
-                            <input type="text" class="form-control" id="tieuDe" th:field="*{tieuDe}" required
-                                placeholder="Vd: Sửa chữa vòi nước phòng tắm">
+                            <label for="tieuDe" class="form-label fw-bold" th:text="#{tb.form.tieude}">Tiêu đề</label>
+                            <input type="text" class="form-control" id="tieuDe" th:field="*{tieuDe}" required placeholder="Vd: Sửa chữa vòi nước phòng tắm" th:placeholder="#{pa.form.vd_sua_chua_voi_nuoc}">
                         </div>
 
                         <div class="mb-4">
-                            <label for="noiDung" class="form-label fw-bold">Nội dung chi tiết</label>
-                            <textarea class="form-control" id="noiDung" th:field="*{noiDung}" rows="6" required
-                                placeholder="Mô tả cụ thể vấn đề bạn gặp phải..."></textarea>
+                            <label for="noiDung" class="form-label fw-bold" th:text="#{pa.form.noi_dung_chi_tiet}">Nội dung chi tiết</label>
+                            <textarea class="form-control" id="noiDung" th:field="*{noiDung}" rows="6" required placeholder="Mô tả cụ thể vấn đề bạn gặp phải..." th:placeholder="#{pa.form.mo_ta_cu_the_van_de}"></textarea>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary px-4">🚀 Gửi phản ánh</button>
-                            <a th:href="@{/cudan/phan-anh}" class="btn btn-outline-secondary">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-primary px-4" th:text="#{pa.form.gui_phan_anh}">🚀 Gửi phản ánh</button>
+                            <a th:href="@{/cudan/phan-anh}" class="btn btn-outline-secondary" th:text="#{dv.form.huy_bo}">Hủy bỏ</a>
                         </div>
                     </form>
                 </div>

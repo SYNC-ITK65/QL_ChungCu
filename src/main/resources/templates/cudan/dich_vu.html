@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký Dịch vụ</title>
+    <title th:text="#{dv.ui.dang_ky_dich_vu}">Đăng ký Dịch vụ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="d-flex bg-light">
@@ -10,7 +10,7 @@
 <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
 <div class="container p-5 w-100">
-    <h2 class="mb-4">Đăng Ký Tiện Ích Chung Cư</h2>
+    <h2 class="mb-4" th:text="#{dv.ui.dang_ky_tien_ich_chu}">Đăng Ký Tiện Ích Chung Cư</h2>
 
     <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
         <span th:text="${thongBaoThanhCong}"></span>
@@ -25,28 +25,26 @@
         <div class="col-md-5">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">📝 Tạo đăng ký mới</h5>
+                    <h5 class="mb-0" th:text="#{dv.ui.tao_dang_ky_moi}">📝 Tạo đăng ký mới</h5>
                 </div>
                 <div class="card-body">
                     <form action="/cudan/dich-vu/dat" method="post">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Chọn dịch vụ</label>
+                            <label class="form-label fw-bold" th:text="#{dv.ui.chon_dich_vu}">Chọn dịch vụ</label>
                             <select name="dichVuId" class="form-select" required>
-                                <option value="">-- Vui lòng chọn --</option>
-                                <option th:each="dv : ${danhSachDichVu}"
-                                        th:value="${dv.id}"
-                                        th:text="${dv.ten + ' (' + dv.loai + ')'}"></option>
+                                <option value="" th:text="#{dv.ui.vui_long_chon}">-- Vui lòng chọn --</option>
+                                <option th:each="dv : ${danhSachDichVu}" th:value="${dv.id}" th:text="${dv.ten + ' (' + dv.loai + ')'}"></option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Ngày sử dụng</label>
+                            <label class="form-label fw-bold" th:text="#{dv.ui.ngay_su_dung}">Ngày sử dụng</label>
                             <input type="date" name="ngayDat" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Ghi chú thêm (Nếu có)</label>
-                            <textarea name="ghiChu" class="form-control" rows="2" placeholder="Ví dụ: Đặt nướng BBQ bàn số 1..."></textarea>
+                            <label class="form-label fw-bold" th:text="#{dv.ui.ghi_chu_them_neu_co}">Ghi chú thêm (Nếu có)</label>
+                            <textarea name="ghiChu" class="form-control" rows="2" placeholder="Ví dụ: Đặt nướng BBQ bàn số 1..." th:placeholder="#{dv.ui.vi_du_dat_nuong_bbq}"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-success w-100">Đăng Ký Ngay</button>
+                        <button type="submit" class="btn btn-success w-100" th:text="#{dv.ui.dang_ky_ngay}">Đăng Ký Ngay</button>
                     </form>
                 </div>
             </div>
@@ -55,16 +53,16 @@
         <div class="col-md-7">
             <div class="card shadow-sm border-secondary">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">🕒 Lịch sử đăng ký của bạn</h5>
+                    <h5 class="mb-0" th:text="#{dv.ui.lich_su_dang_ky_cua}">🕒 Lịch sử đăng ký của bạn</h5>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-hover table-striped m-0 no-paging">
                         <thead class="table-light">
                         <tr>
-                            <th>Dịch vụ</th>
-                            <th>Ngày dùng</th>
-                            <th>Trạng thái</th>
-                            <th>Ghi chú</th>
+                            <th th:text="#{dv.ds.dich_vu}">Dịch vụ</th>
+                            <th th:text="#{dv.ds.ngay_dung}">Ngày dùng</th>
+                            <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                            <th th:text="#{dv.ui.ghi_chu}">Ghi chú</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -72,20 +70,18 @@
                             <td class="fw-bold text-primary" th:text="${dat.dichVu.ten}"></td>
                             <td th:text="${#temporals.format(dat.ngayDat, 'dd/MM/yyyy')}"></td>
                             <td>
-                                <span th:if="${dat.trangThai == null || #strings.isEmpty(dat.trangThai) || dat.trangThai == 'Chờ duyệt' || dat.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark">Chờ duyệt</span>
-                                <span th:if="${dat.trangThai == 'Đã duyệt'}" class="badge bg-info">Đã duyệt</span>
-                                <span th:if="${dat.trangThai == 'Đã sử dụng'}" class="badge bg-success">Đã sử dụng</span>
-                                <span th:if="${dat.trangThai == 'Từ chối'}" class="badge bg-danger">Từ chối</span>
-                                <span th:if="${dat.trangThai == 'Hủy duyệt'}" class="badge bg-secondary">Hủy duyệt</span>
-                                <span th:if="${dat.trangThai == 'Đã hủy'}" class="badge bg-danger">Đã hủy</span>
-                                <span th:if="${dat.trangThai != null && dat.trangThai != 'Chờ duyệt' && dat.trangThai != 'Đăng ký mới' && dat.trangThai != 'Đã duyệt' && dat.trangThai != 'Đã sử dụng' && dat.trangThai != 'Từ chối' && dat.trangThai != 'Hủy duyệt' && dat.trangThai != 'Đã hủy'}"
-                                      class="badge bg-dark"
-                                      th:text="${dat.trangThai}">Trạng thái khác</span>
+                                <span th:if="${dat.trangThai == null || #strings.isEmpty(dat.trangThai) || dat.trangThai == 'Chờ duyệt' || dat.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
+                                <span th:if="${dat.trangThai == 'Đã duyệt'}" class="badge bg-info" th:text="#{dv.ds.da_duyet}">Đã duyệt</span>
+                                <span th:if="${dat.trangThai == 'Đã sử dụng'}" class="badge bg-success" th:text="#{dv.ds.da_su_dung}">Đã sử dụng</span>
+                                <span th:if="${dat.trangThai == 'Từ chối'}" class="badge bg-danger" th:text="#{dv.ds.tu_choi}">Từ chối</span>
+                                <span th:if="${dat.trangThai == 'Hủy duyệt'}" class="badge bg-secondary" th:text="#{dv.ds.huy_duyet}">Hủy duyệt</span>
+                                <span th:if="${dat.trangThai == 'Đã hủy'}" class="badge bg-danger" th:text="#{dv.ui.da_huy}">Đã hủy</span>
+                                <span th:if="${dat.trangThai != null &amp;&amp; dat.trangThai != 'Chờ duyệt' &amp;&amp; dat.trangThai != 'Đăng ký mới' &amp;&amp; dat.trangThai != 'Đã duyệt' &amp;&amp; dat.trangThai != 'Đã sử dụng' &amp;&amp; dat.trangThai != 'Từ chối' &amp;&amp; dat.trangThai != 'Hủy duyệt' &amp;&amp; dat.trangThai != 'Đã hủy'}" class="badge bg-dark" th:text="${dat.trangThai}">Trạng thái khác</span>
                             </td>
                             <td th:text="${dat.ghiChu}"></td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(lichSuDat)}">
-                            <td colspan="4" class="text-center text-muted py-3">Bạn chưa đăng ký dịch vụ nào.</td>
+                            <td colspan="4" class="text-center text-muted py-3" th:text="#{dv.ui.ban_chua_dang_ky_dic}">Bạn chưa đăng ký dịch vụ nào.</td>
                         </tr>
                         </tbody>
                     </table>

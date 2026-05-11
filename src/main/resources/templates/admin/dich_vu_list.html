@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Dịch vụ</title>
+    <title th:text="#{dv.ds.quan_ly_dich_vu}">Quản lý Dịch vụ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -20,20 +20,20 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Danh sách Dịch vụ</h2>
-            <a th:href="@{/admin/dich-vu/tao-moi}" class="btn btn-primary">+ Thêm Dịch vụ mới</a>
+            <h2 th:text="#{dv.ds.danh_sach_dich_vu}">Danh sách Dịch vụ</h2>
+            <a th:href="@{/admin/dich-vu/tao-moi}" class="btn btn-primary" th:text="#{dv.ds.them_dich_vu_moi}">+ Thêm Dịch vụ mới</a>
         </div>
 
         <table class="table table-striped table-hover border no-paging">
             <thead class="table-dark">
             <tr>
                 <th>ID</th>
-                <th>Tên Dịch vụ</th>
-                <th>Loại</th>
-                <th>Đơn Giá</th>
-                <th>Đơn Vị Tính</th>
-                <th>Mô Tả</th>
-                <th>Hành Động</th>
+                <th th:text="#{dv.form.ten_dich_vu}">Tên Dịch vụ</th>
+                <th th:text="#{hd.ds.bang_loai}">Loại</th>
+                <th th:text="#{dv.form.don_gia}">Đơn Giá</th>
+                <th th:text="#{dv.form.don_vi_tinh}">Đơn Vị Tính</th>
+                <th th:text="#{dv.ds.mo_ta}">Mô Tả</th>
+                <th th:text="#{hdon.ds.bang_hanh_dong}">Hành Động</th>
             </tr>
             </thead>
             <tbody>
@@ -41,72 +41,58 @@
                 <td th:text="${dv.id}">1</td>
                 <td th:text="${dv.ten}">Tiền Điện</td>
                 <td th:text="${dv.loai}">Điện</td>
-                <td th:text="${#numbers.formatDecimal(dv.donGia, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">3,500 VNĐ</td>
+                <td th:text="|${#numbers.formatDecimal(dv.donGia, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|"></td>
                 <td th:text="${dv.donViTinh}">kWh</td>
                 <td th:text="${dv.moTa}">Điện sinh hoạt bậc 1</td>
                 <td>
-                    <a th:href="@{/admin/dich-vu/sua/{id}(id=${dv.id})}" class="btn btn-sm btn-warning">Sửa</a>
-                    <a th:href="@{/admin/dich-vu/xoa/{id}(id=${dv.id})}"
-                       class="btn btn-sm btn-danger"
-                       onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')">Xóa</a>
+                    <a th:href="@{/admin/dich-vu/sua/{id}(id=${dv.id})}" class="btn btn-sm btn-warning" th:text="#{hdon.ds.nut_sua}">Sửa</a>
+                    <a th:href="@{/admin/dich-vu/xoa/{id}(id=${dv.id})}" class="btn btn-sm btn-danger" th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachDichVu)}">
-                <td colspan="7" class="text-center">Chưa có dịch vụ nào được tạo.</td>
+                <td colspan="7" class="text-center" th:text="#{dv.ds.chua_co_dich_vu_nao}">Chưa có dịch vụ nào được tạo.</td>
             </tr>
             </tbody>
         </table>
 
         <div class="mt-5">
-            <h3>Danh sách yêu cầu đăng ký dịch vụ từ cư dân</h3>
+            <h3 th:text="#{dv.ds.danh_sach_yeu_cau_da}">Danh sách yêu cầu đăng ký dịch vụ từ cư dân</h3>
             <table class="table table-hover border mt-3 no-paging">
                 <thead class="table-secondary">
                 <tr>
-                    <th>ID đơn</th>
-                    <th>Cư dân</th>
-                    <th>Căn hộ</th>
-                    <th>Dịch vụ</th>
-                    <th>Ngày dùng</th>
-                    <th>Trạng thái</th>
-                    <th>Thao tác</th>
+                    <th th:text="#{dv.ds.id_don}">ID đơn</th>
+                    <th th:text="#{hd.form.cu_dan_label}">Cư dân</th>
+                    <th th:text="#{hdon.form.can_ho}">Căn hộ</th>
+                    <th th:text="#{dv.ds.dich_vu}">Dịch vụ</th>
+                    <th th:text="#{dv.ds.ngay_dung}">Ngày dùng</th>
+                    <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                    <th th:text="#{dv.ds.thao_tac}">Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="don : ${danhSachDonDat}">
                     <td th:text="${don.id}"></td>
                     <td th:text="${don.cuDan != null ? don.cuDan.hoTen : 'N/A'}"></td>
-                    <td th:text="${don.cuDan != null && don.cuDan.canHo != null ? don.cuDan.canHo.maCanHo : 'N/A'}"></td>
+                    <td th:text="${don.cuDan != null &amp;&amp; don.cuDan.canHo != null ? don.cuDan.canHo.maCanHo : 'N/A'}"></td>
                     <td th:text="${don.dichVu != null ? don.dichVu.ten : 'N/A'}"></td>
                     <td th:text="${don.ngayDat != null ? #temporals.format(don.ngayDat, 'dd/MM/yyyy') : 'N/A'}"></td>
                     <td>
-                        <span th:if="${don.trangThai == null || #strings.isEmpty(don.trangThai) || don.trangThai == 'Chờ duyệt' || don.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark">Chờ duyệt</span>
-                        <span th:if="${don.trangThai == 'Đã duyệt'}" class="badge bg-success">Đã duyệt</span>
-                        <span th:if="${don.trangThai == 'Từ chối'}" class="badge bg-danger">Từ chối</span>
-                        <span th:if="${don.trangThai == 'Hủy duyệt'}" class="badge bg-secondary">Hủy duyệt</span>
-                        <span th:if="${don.trangThai == 'Đã sử dụng'}" class="badge bg-info">Đã sử dụng</span>
-                        <span th:if="${don.trangThai != null && don.trangThai != 'Chờ duyệt' && don.trangThai != 'Đăng ký mới' && don.trangThai != 'Đã duyệt' && don.trangThai != 'Từ chối' && don.trangThai != 'Hủy duyệt' && don.trangThai != 'Đã sử dụng'}"
-                              class="badge bg-dark"
-                              th:text="${don.trangThai}">Trạng thái khác</span>
+                        <span th:if="${don.trangThai == null || #strings.isEmpty(don.trangThai) || don.trangThai == 'Chờ duyệt' || don.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
+                        <span th:if="${don.trangThai == 'Đã duyệt'}" class="badge bg-success" th:text="#{dv.ds.da_duyet}">Đã duyệt</span>
+                        <span th:if="${don.trangThai == 'Từ chối'}" class="badge bg-danger" th:text="#{dv.ds.tu_choi}">Từ chối</span>
+                        <span th:if="${don.trangThai == 'Hủy duyệt'}" class="badge bg-secondary" th:text="#{dv.ds.huy_duyet}">Hủy duyệt</span>
+                        <span th:if="${don.trangThai == 'Đã sử dụng'}" class="badge bg-info" th:text="#{dv.ds.da_su_dung}">Đã sử dụng</span>
+                        <span th:if="${don.trangThai != null &amp;&amp; don.trangThai != 'Chờ duyệt' &amp;&amp; don.trangThai != 'Đăng ký mới' &amp;&amp; don.trangThai != 'Đã duyệt' &amp;&amp; don.trangThai != 'Từ chối' &amp;&amp; don.trangThai != 'Hủy duyệt' &amp;&amp; don.trangThai != 'Đã sử dụng'}" class="badge bg-dark" th:text="${don.trangThai}">Trạng thái khác</span>
                     </td>
                     <td>
-                        <a th:if="${don.trangThai == null || #strings.isEmpty(don.trangThai) || don.trangThai != 'Đã duyệt'}"
-                           th:href="@{/admin/dich-vu/don-dat/duyet/{id}(id=${don.id})}"
-                           class="btn btn-sm btn-success">Duyệt</a>
-                        <a th:if="${don.trangThai == null || #strings.isEmpty(don.trangThai) || don.trangThai != 'Đã duyệt'}"
-                           th:href="@{/admin/dich-vu/don-dat/tu-choi/{id}(id=${don.id})}"
-                           class="btn btn-sm btn-warning"
-                           onclick="return confirm('Bạn có chắc muốn từ chối đăng ký dịch vụ này?');">Từ chối</a>
-                        <a th:if="${don.trangThai == 'Đã duyệt'}"
-                           th:href="@{/admin/dich-vu/don-dat/huy-duyet/{id}(id=${don.id})}"
-                           class="btn btn-sm btn-secondary"
-                           onclick="return confirm('Bạn có chắc muốn hủy duyệt đơn này?');">Hủy duyệt</a>
-                        <a th:if="${don.trangThai == 'Đã duyệt' || don.trangThai == 'Từ chối' || don.trangThai == 'Hủy duyệt'}"
-                           th:href="@{/admin/dich-vu/don-dat/sua/{id}(id=${don.id})}"
-                           class="btn btn-sm btn-primary">Sửa</a>
+                        <a th:if="${don.trangThai == null || #strings.isEmpty(don.trangThai) || don.trangThai != 'Đã duyệt'}" th:href="@{/admin/dich-vu/don-dat/duyet/{id}(id=${don.id})}" class="btn btn-sm btn-success" th:text="#{dv.ds.duyet}">Duyệt</a>
+                        <a th:if="${don.trangThai == null || #strings.isEmpty(don.trangThai) || don.trangThai != 'Đã duyệt'}" th:href="@{/admin/dich-vu/don-dat/tu-choi/{id}(id=${don.id})}" class="btn btn-sm btn-warning" th:onclick="|return confirm('#{dv.ds.xac_nhan_tu_choi}')|" th:text="#{dv.ds.tu_choi}">Từ chối</a>
+                        <a th:if="${don.trangThai == 'Đã duyệt'}" th:href="@{/admin/dich-vu/don-dat/huy-duyet/{id}(id=${don.id})}" class="btn btn-sm btn-secondary" th:onclick="|return confirm('#{dv.ds.xac_nhan_huy_duyet}')|" th:text="#{dv.ds.huy_duyet}">Hủy duyệt</a>
+                        <a th:if="${don.trangThai == 'Đã duyệt' || don.trangThai == 'Từ chối' || don.trangThai == 'Hủy duyệt'}" th:href="@{/admin/dich-vu/don-dat/sua/{id}(id=${don.id})}" class="btn btn-sm btn-primary" th:text="#{hdon.ds.nut_sua}">Sửa</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(danhSachDonDat)}">
-                    <td colspan="7" class="text-center text-muted">Chưa có đăng ký dịch vụ nào.</td>
+                    <td colspan="7" class="text-center text-muted" th:text="#{dv.ds.chua_co_dang_ky_dich}">Chưa có đăng ký dịch vụ nào.</td>
                 </tr>
                 </tbody>
             </table>

@@ -47,7 +47,7 @@
                 <tbody>
                     <tr th:each="bt : ${listBaoTri}">
                         <td th:text="${bt.ngayBaoTri}">2023-01-01</td>
-                        <td th:text="${#numbers.formatDecimal(bt.chiPhi, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                        <td th:text="${#numbers.formatDecimal(bt.chiPhi, 0, 'COMMA', 0, 'POINT')} + ' ' + #{chung.don_vi_vnd}">0 đ</td>
                         <td th:text="${bt.nguoiThucHien}">Kỹ thuật viên A</td>
                         <td th:text="${bt.noiDung}">Nội dung bảo trì</td>
                     </tr>
