@@ -59,6 +59,6 @@ public class LoginController {
     @GetMapping("/logout")
     public String dangXuat(HttpSession session) {
         session.invalidate(); // Xóa session
-        return "redirect:/";
+        return "redirect:/login";
     }
 }
