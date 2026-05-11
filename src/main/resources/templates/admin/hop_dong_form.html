@@ -2,7 +2,7 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit} ? 'Sửa hợp đồng' : 'Tạo hợp đồng mới'">Tạo hợp đồng mới</title>
+    <title th:text="${isEdit} ? #{hd.form.sua_tieude} : #{hd.form.them_tieude}">Tạo hợp đồng mới</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
@@ -11,9 +11,9 @@
 
     <div class="flex-grow-1 p-4 overflow-auto">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 th:text="${isEdit} ? '✏️ Sửa hợp đồng' : '📝 Tạo Hợp đồng mới'">Tạo Hợp đồng mới</h2>
+            <h2 th:text="${isEdit} ? '✏️ ' + #{hd.form.sua_tieude} : '📝 ' + #{hd.form.them_tieude}">Tạo Hợp đồng mới</h2>
             <a th:href="@{/admin/hop-dong}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Quay lại
+                <i class="bi bi-arrow-left me-1"></i><span th:text="#{hd.form.quay_lai}">Quay lại</span>
             </a>
         </div>
 
@@ -24,7 +24,7 @@
 
         <div class="card shadow border-0">
             <div class="card-header bg-primary text-white py-3">
-                <h5 class="mb-0">Thông tin hợp đồng</h5>
+                <h5 class="mb-0" th:text="#{hd.detail.thong_tin}">Thông tin hợp đồng</h5>
             </div>
             <div class="card-body p-4">
                 <form th:action="${isEdit} ? @{/admin/hop-dong/cap-nhat/{id}(id=${hopDong.id})} : @{/admin/hop-dong/luu}" th:object="${hopDong}" method="post" id="hopDongForm">
@@ -35,15 +35,15 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">
-                                <i class="bi bi-file-text me-1"></i>Loại hợp đồng <span class="text-danger">*</span>
+                                <i class="bi bi-file-text me-1"></i><span th:text="#{hd.form.loai_hop_dong}">Loại hợp đồng</span> <span class="text-danger">*</span>
                             </label>
                             <select class="form-select form-select-lg" th:field="*{loaiHopDong}" id="loaiHopDong" required
-                                    th:disabled="${isEdit}">
-                                <option value="Thue" th:selected="*{loaiHopDong == 'Thue'}">🏠 Hợp đồng Thuê</option>
-                                <option value="Mua" th:selected="*{loaiHopDong == 'Mua'}">🏢 Hợp đồng Mua</option>
+                                    th:disabled="${isEdit}" th:data-hint-thue="#{hd.form.loai_hint_thue}" th:data-hint-mua="#{hd.form.loai_hint_mua}">
+                                <option value="Thue" th:selected="*{loaiHopDong == 'Thue'}" th:text="#{hd.form.loai_thue}">🏠 Hợp đồng Thuê</option>
+                                <option value="Mua" th:selected="*{loaiHopDong == 'Mua'}" th:text="#{hd.form.loai_mua}">🏢 Hợp đồng Mua</option>
                             </select>
                             <input type="hidden" th:field="*{loaiHopDong}" th:if="${isEdit}">
-                            <div class="form-text text-muted" id="loaiHopDongHint">
+                            <div class="form-text text-muted" id="loaiHopDongHint" th:text="#{hd.form.loai_hint_thue}">
                                 Hợp đồng thuê có thời hạn và tiền cọc
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                     <hr class="my-4">
 
                     <!-- Section: Thông tin bên liên quan -->
-                    <h6 class="text-primary mb-3">👥 Thông tin các bên</h6>
+                    <h6 class="text-primary mb-3">👥 <span th:text="#{hd.form.thong_tin_ben}">Thông tin các bên</span></h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold" id="labelBenA">

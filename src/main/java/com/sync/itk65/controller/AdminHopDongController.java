@@ -144,4 +144,15 @@ public class AdminHopDongController {
             return "redirect:/admin/hop-dong/sua/" + id;
         }
     }
+
+    @GetMapping("/xoa/{id}")
+    public String xoaHopDong(@PathVariable("id") Long id, RedirectAttributes ra) {
+        try {
+            hopDongService.xoaHopDong(id);
+            ra.addFlashAttribute("thongBaoThanhCong", "Xóa hợp đồng thành công.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Không thể xóa hợp đồng: " + e.getMessage());
+        }
+        return "redirect:/admin/hop-dong";
+    }
 }

@@ -239,54 +239,54 @@ public class HoaDonService {
         }
 
         // BƯỚC 6: Tính tiền thuê chung cư
-        com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
+        // Tìm hợp đồng THUÊ có hiệu lực trong tháng hóa đơn (không chỉ ACTIVE)
+        LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
+        LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
+        
+        com.sync.itk65.entity.HopDong hopDong = hopDongRepository
+                .findThueByCanHoAndThangNam(canHoId, firstDayOfMonth, lastDayOfMonth)
+                .orElse(null);
+        
         Double tienThueChungCu = 0.0;
-        if (hopDong != null) {
+        
+        System.out.println("DEBUG: Finding rent contract for canHoId=" + canHoId + ", month=" + thang + "/" + nam);
+        if (hopDong == null) {
+            System.out.println("DEBUG: No rent contract found for canHoId=" + canHoId + " in month " + thang + "/" + nam);
+        } else {
+            System.out.println("DEBUG: Found rent contract ID=" + hopDong.getId() 
+                + ", loaiHopDong=" + hopDong.getLoaiHopDong() 
+                + ", trangThai=" + hopDong.getTrangThai()
+                + ", tienThue=" + hopDong.getTienThue()
+                + ", ngayBatDau=" + hopDong.getNgayBatDau()
+                + ", ngayKetThuc=" + hopDong.getNgayKetThuc());
+            
             // VALIDATION: Kiểm tra thông tin hợp đồng
             if (hopDong.getTienThue() == null) {
                 System.out.println("WARNING: Hợp đồng tồn tại nhưng không có tiền thuê. Bỏ qua tính tiền thuê.");
             } else if (hopDong.getNgayBatDau() == null) {
                 System.out.println("WARNING: Hợp đồng tồn tại nhưng không có ngày bắt đầu. Bỏ qua tính tiền thuê.");
             } else {
-                // VALIDATION: Kiểm tra hợp đồng phải là loại "Thue"
-                if (!"Thue".equalsIgnoreCase(hopDong.getLoaiHopDong())) {
-                    System.out.println("INFO: Hợp đồng loại '" + hopDong.getLoaiHopDong() + "' không tính tiền thuê. Bỏ qua.");
-                    tienThueChungCu = 0.0;
-                } else {
-                // VALIDATION: Kiểm tra hợp đồng còn hiệu lực trong tháng phát hành hóa đơn
+                // Tính tiền thuê theo số ngày thực tế trong tháng
                 LocalDate ngayBatDau = hopDong.getNgayBatDau();
                 LocalDate ngayKetThuc = hopDong.getNgayKetThuc();
-
-                // Kiểm tra tháng phát hành hóa đơn có nằm trong thời gian hợp đồng không
-                LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
-                LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
-
-                if (ngayKetThuc != null && ngayKetThuc.isBefore(firstDayOfMonth)) {
-                    // Hợp đồng đã hết hạn trước tháng phát hành hóa đơn
-                    tienThueChungCu = 0.0;
-                } else if (ngayBatDau.isAfter(lastDayOfMonth)) {
-                    // Hợp đồng bắt đầu sau tháng phát hành hóa đơn
-                    tienThueChungCu = 0.0;
-                } else {
-                    // Tính tiền thuê theo số ngày thực tế trong tháng
-                    int ngayTrongThang = ngayPhatHanh.lengthOfMonth();
-                    
-                    // Xác định ngày bắt đầu tính tiền
-                    LocalDate ngayBatDauTinh = ngayBatDau.isAfter(firstDayOfMonth) ? ngayBatDau : firstDayOfMonth;
-                    
-                    // Xác định ngày kết thúc tính tiền
-                    LocalDate ngayKetThucTinh = (ngayKetThuc != null && ngayKetThuc.isBefore(lastDayOfMonth)) ? ngayKetThuc : lastDayOfMonth;
-                    
-                    // Tính số ngày phải trả tiền
-                    int soNgayTinh = (int) java.time.temporal.ChronoUnit.DAYS.between(ngayBatDauTinh, ngayKetThucTinh) + 1;
-                    
-                    // Tính tiền thuê theo số ngày
-                    tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * soNgayTinh;
-                }
-                }
+                int ngayTrongThang = ngayPhatHanh.lengthOfMonth();
+                
+                // Xác định ngày bắt đầu tính tiền (max của ngày bắt đầu hợp đồng và ngày đầu tháng)
+                LocalDate ngayBatDauTinh = ngayBatDau.isAfter(firstDayOfMonth) ? ngayBatDau : firstDayOfMonth;
+                
+                // Xác định ngày kết thúc tính tiền (min của ngày kết thúc hợp đồng và ngày cuối tháng)
+                LocalDate ngayKetThucTinh = (ngayKetThuc != null && ngayKetThuc.isBefore(lastDayOfMonth)) ? ngayKetThuc : lastDayOfMonth;
+                
+                // Tính số ngày phải trả tiền
+                int soNgayTinh = (int) java.time.temporal.ChronoUnit.DAYS.between(ngayBatDauTinh, ngayKetThucTinh) + 1;
+                
+                // Tính tiền thuê theo số ngày
+                tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * soNgayTinh;
+                System.out.println("DEBUG: Rent calculated=" + tienThueChungCu + " for " + soNgayTinh + " days");
             }
         }
         tongTien += tienThueChungCu;
+        System.out.println("DEBUG: Final tienThueChungCu added to invoice: " + tienThueChungCu);
 
         // BƯỚC 7: Lưu hóa đơn vào Database
         // VALIDATION: Kiểm tra tổng tiền trước khi lưu
@@ -437,47 +437,34 @@ public class HoaDonService {
         chiTiet.put("dichVu", dichVu);
 
         // ========== 6. TÍNH TIỀN THUÊ CHUNG CƯ ==========
-        com.sync.itk65.entity.HopDong hopDong = hopDongRepository.findActiveByCanHoId(canHoId).orElse(null);
+        // Tìm hợp đồng THUÊ có hiệu lực trong tháng hóa đơn
+        LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
+        LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
+        LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
+        
+        com.sync.itk65.entity.HopDong hopDong = hopDongRepository
+                .findThueByCanHoAndThangNam(canHoId, firstDayOfMonth, lastDayOfMonth)
+                .orElse(null);
+        
         Double tienThueChungCu = 0.0;
         int soNgayTinh = 0;
+        
         if (hopDong != null && hopDong.getTienThue() != null && hopDong.getNgayBatDau() != null) {
-            // VALIDATION: Kiểm tra hợp đồng phải là loại "Thue"
-            if (!"Thue".equalsIgnoreCase(hopDong.getLoaiHopDong())) {
-                // Hợp đồng mua bán không tính tiền thuê
-                tienThueChungCu = 0.0;
-            } else {
-                // VALIDATION: Kiểm tra hợp đồng còn hiệu lực trong tháng phát hành hóa đơn
-                LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
-                LocalDate ngayBatDau = hopDong.getNgayBatDau();
-                LocalDate ngayKetThuc = hopDong.getNgayKetThuc();
-
-                // Kiểm tra tháng phát hành hóa đơn có nằm trong thời gian hợp đồng không
-                LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
-                LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
-
-                if (ngayKetThuc != null && ngayKetThuc.isBefore(firstDayOfMonth)) {
-                    // Hợp đồng đã hết hạn trước tháng phát hành hóa đơn
-                    tienThueChungCu = 0.0;
-                } else if (ngayBatDau.isAfter(lastDayOfMonth)) {
-                    // Hợp đồng bắt đầu sau tháng phát hành hóa đơn
-                    tienThueChungCu = 0.0;
-                } else {
-                    // Tính tiền thuê theo số ngày thực tế trong tháng
-                    int ngayTrongThang = ngayPhatHanh.lengthOfMonth();
-                    
-                    // Xác định ngày bắt đầu tính tiền
-                    LocalDate ngayBatDauTinh = ngayBatDau.isAfter(firstDayOfMonth) ? ngayBatDau : firstDayOfMonth;
-                    
-                    // Xác định ngày kết thúc tính tiền
-                    LocalDate ngayKetThucTinh = (ngayKetThuc != null && ngayKetThuc.isBefore(lastDayOfMonth)) ? ngayKetThuc : lastDayOfMonth;
-                    
-                    // Tính số ngày phải trả tiền
-                    soNgayTinh = (int) java.time.temporal.ChronoUnit.DAYS.between(ngayBatDauTinh, ngayKetThucTinh) + 1;
-                    
-                    // Tính tiền thuê theo số ngày
-                    tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * soNgayTinh;
-                }
-            }
+            LocalDate ngayBatDau = hopDong.getNgayBatDau();
+            LocalDate ngayKetThuc = hopDong.getNgayKetThuc();
+            int ngayTrongThang = ngayPhatHanh.lengthOfMonth();
+            
+            // Xác định ngày bắt đầu tính tiền
+            LocalDate ngayBatDauTinh = ngayBatDau.isAfter(firstDayOfMonth) ? ngayBatDau : firstDayOfMonth;
+            
+            // Xác định ngày kết thúc tính tiền
+            LocalDate ngayKetThucTinh = (ngayKetThuc != null && ngayKetThuc.isBefore(lastDayOfMonth)) ? ngayKetThuc : lastDayOfMonth;
+            
+            // Tính số ngày phải trả tiền
+            soNgayTinh = (int) java.time.temporal.ChronoUnit.DAYS.between(ngayBatDauTinh, ngayKetThucTinh) + 1;
+            
+            // Tính tiền thuê theo số ngày
+            tienThueChungCu = (hopDong.getTienThue() / ngayTrongThang) * soNgayTinh;
         }
 
         Map<String, Object> thueChungCu = new LinkedHashMap<>();

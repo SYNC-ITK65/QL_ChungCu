@@ -366,4 +366,11 @@ public class HopDongService {
             hopDongRepository.save(hopDong);
         }
     }
+
+    @Transactional
+    public void xoaHopDong(Long id) {
+        HopDong hopDong = hopDongRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hợp đồng có ID: " + id));
+        hopDongRepository.delete(hopDong);
+    }
 }
