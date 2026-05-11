@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Thông tin căn hộ</title>
+    <title th:text="#{side.user.nhom_tt}">Thông tin căn hộ</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body class="bg-light">
@@ -9,27 +9,27 @@
     <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
     <div class="container-fluid p-4">
-        <h2 class="mb-4">🏢 Thông tin căn hộ của tôi</h2>
+        <h2 class="mb-4" th:text="#{ch.chitiet.thong_tin_can_ho_cu}">🏢 Thông tin căn hộ của tôi</h2>
 
         <div class="card shadow" th:if="${canHo != null}">
             <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0" th:text="'Căn hộ ' + ${canHo.maCanHo}">Mã Căn Hộ</h5>
+                <h5 class="card-title mb-0" th:text="#{tb.ui.phong} + ' ' + ${canHo.maCanHo}">Mã Căn Hộ</h5>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-sm-3 fw-bold">Tầng:</div>
+                    <div class="col-sm-3 fw-bold" th:text="#{ch.chitiet.tang}">Tầng:</div>
                     <div class="col-sm-9" th:text="${canHo.tang}">-</div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-3 fw-bold">Diện tích:</div>
-                    <div class="col-sm-9" th:text="${canHo.dienTich} + ' m²'">-</div>
+                    <div class="col-sm-3 fw-bold" th:text="#{ch.chitiet.dien_tich}">Diện tích:</div>
+                    <div class="col-sm-9" th:text="${canHo.dienTich} + ' ' + #{chung.don_vi_m2}">-</div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-3 fw-bold">Loại căn hộ:</div>
+                    <div class="col-sm-3 fw-bold" th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</div>
                     <div class="col-sm-9" th:text="${canHo.loai}">-</div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-3 fw-bold">Trạng thái:</div>
+                    <div class="col-sm-3 fw-bold" th:text="#{hd.detail.trang_thai}">Trạng thái:</div>
                     <div class="col-sm-9">
                         <span class="badge bg-success" th:text="${canHo.trangThai}">-</span>
                     </div>
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="alert alert-warning" th:if="${canHo == null}">
+        <div class="alert alert-warning" th:if="${canHo == null}" th:text="#{ch.chitiet.ban_hien_chua_duoc_d}">
             Bạn hiện chưa được đăng ký vào căn hộ nào. Vui lòng liên hệ Ban Quản Lý.
         </div>
     </div>

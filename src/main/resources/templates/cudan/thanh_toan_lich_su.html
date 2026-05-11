@@ -1,35 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lịch sử thanh toán của tôi</title>
+    <title th:text="#{tt.ui.lich_su_thanh_toan_c}">Lịch sử thanh toán của tôi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="d-flex">
 <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
 <div class="container p-4">
-    <h2 class="mb-4">Lịch sử thanh toán của tôi</h2>
+    <h2 class="mb-4" th:text="#{tt.ui.lich_su_thanh_toan_c}">Lịch sử thanh toán của tôi</h2>
 
     <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-striped table-hover border no-paging">
                 <thead class="table-dark">
                 <tr>
-                    <th>Mã giao dịch</th>
-                    <th>Mã hóa đơn</th>
-                    <th>Ngày thanh toán</th>
-                    <th>Số tiền</th>
-                    <th>Phương thức</th>
+                    <th th:text="#{tt.ui.ma_giao_dich}">Mã giao dịch</th>
+                    <th th:text="#{hdon.ui.ma_hoa_don}">Mã hóa đơn</th>
+                    <th th:text="#{tt.form.ngay_thanh_toan}">Ngày thanh toán</th>
+                    <th th:text="#{tt.ds.so_tien}">Số tiền</th>
+                    <th th:text="#{tt.ds.phuong_thuc}">Phương thức</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="tt : ${danhSachThanhToan}">
                     <td th:text="${tt.id}">1</td>
-                    <td th:text="'HD-' + ${tt.hoaDon != null ? tt.hoaDon.id : ''}">HD-1</td>
+                    <td th:text="|#{hdon.ds.ma_hd}-${tt.hoaDon != null ? tt.hoaDon.id : ''}|"></td>
                     <td th:text="${tt.ngayThanhToan != null ? #temporals.format(tt.ngayThanhToan, 'dd/MM/yyyy') : ''}">13/04/2026</td>
-                    <td class="text-success fw-bold"
-                        th:text="${tt.soTien != null ? #numbers.formatDecimal(tt.soTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">
+                    <td class="text-success fw-bold" th:text="${tt.soTien != null} ? |#{numbers.formatDecimal(tt.soTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></td>
                         1,000,000 VNĐ
                     </td>
                     <td>
@@ -37,7 +36,7 @@
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(danhSachThanhToan)}">
-                    <td colspan="5" class="text-center text-muted">Bạn chưa có giao dịch thanh toán nào.</td>
+                    <td colspan="5" class="text-center text-muted" th:text="#{tt.ui.ban_chua_co_giao_dic}">Bạn chưa có giao dịch thanh toán nào.</td>
                 </tr>
                 </tbody>
             </table>

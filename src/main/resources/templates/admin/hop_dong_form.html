@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
 
     <div class="flex-grow-1 p-4 overflow-auto">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 th:text="${isEdit} ? '✏️ ' + #{hd.form.sua_tieude} : '📝 ' + #{hd.form.them_tieude}">Tạo Hợp đồng mới</h2>
+            <h2 th:text="${isEdit} ? |✏️ #{hd.form.sua_tieude}| : |📝 #{hd.form.them_tieude}|"></h2>
             <a th:href="@{/admin/hop-dong}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left me-1"></i><span th:text="#{hd.form.quay_lai}">Quay lại</span>
             </a>
@@ -37,8 +37,7 @@
                             <label class="form-label fw-bold">
                                 <i class="bi bi-file-text me-1"></i><span th:text="#{hd.form.loai_hop_dong}">Loại hợp đồng</span> <span class="text-danger">*</span>
                             </label>
-                            <select class="form-select form-select-lg" th:field="*{loaiHopDong}" id="loaiHopDong" required
-                                    th:disabled="${isEdit}" th:data-hint-thue="#{hd.form.loai_hint_thue}" th:data-hint-mua="#{hd.form.loai_hint_mua}">
+                            <select class="form-select form-select-lg" th:field="*{loaiHopDong}" id="loaiHopDong" required th:disabled="${isEdit}" th:data-hint-thue="#{hd.form.loai_hint_thue}" th:data-hint-mua="#{hd.form.loai_hint_mua}">
                                 <option value="Thue" th:selected="*{loaiHopDong == 'Thue'}" th:text="#{hd.form.loai_thue}">🏠 Hợp đồng Thuê</option>
                                 <option value="Mua" th:selected="*{loaiHopDong == 'Mua'}" th:text="#{hd.form.loai_mua}">🏢 Hợp đồng Mua</option>
                             </select>
@@ -55,16 +54,14 @@
                     <h6 class="text-primary mb-3">👥 <span th:text="#{hd.form.thong_tin_ben}">Thông tin các bên</span></h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" id="labelBenA">
-                                Bên cho thuê <span class="text-danger">*</span>
+                            <label class="form-label fw-bold" id="labelBenA"><span th:text="#{hd.ds.bang_ben_cho_thue}" th:remove="tag">
+                                Bên cho thuê </span><span class="text-danger">*</span>
                             </label>
-                            <input type="text" class="form-control" th:field="*{benChoThue}" 
-                                   placeholder="Nhập tên bên cho thuê / bán" required>
+                            <input type="text" class="form-control" th:field="*{benChoThue}" placeholder="Nhập tên bên cho thuê / bán" required th:placeholder="#{hd.form.nhap_ten_ben_cho_thu}">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">Bên thuê / Mua</label>
-                            <input type="text" class="form-control" id="benThueDisplay" readonly 
-                                   placeholder="Tự động lấy từ cư dân đã chọn">
+                            <label class="form-label fw-bold" th:text="#{hd.form.ben_thue_label}">Bên thuê / Mua</label>
+                            <input type="text" class="form-control" id="benThueDisplay" readonly placeholder="Tự động lấy từ cư dân đã chọn" th:placeholder="#{hd.form.ben_thue_placeholder}">
                         </div>
                     </div>
 
@@ -72,33 +69,22 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">
-                                <i class="bi bi-building me-1"></i>Căn hộ <span class="text-danger">*</span>
+                                <i class="bi bi-building me-1"></i><span th:text="#{hdon.form.can_ho}" th:remove="tag">Căn hộ </span><span class="text-danger">*</span>
                             </label>
-                            <select class="form-select" name="canHoId" id="canHoId" required
-                                    th:with="currentCanHoId=${hopDong.canHo != null ? hopDong.canHo.id : ''}">
-                                <option value="" disabled>-- Chọn căn hộ --</option>
-                                <option th:each="canHo : ${danhSachCanHo}"
-                                        th:value="${canHo.id}"
-                                        th:data-trangthai="${canHo.trangThai}"
-                                        th:selected="${currentCanHoId == canHo.id}"
-                                        th:text="${canHo.maCanHo} + ' (' + ${canHo.trangThai} + ')'"></option>
+                            <select class="form-select" name="canHoId" id="canHoId" required th:with="currentCanHoId=${hopDong.canHo != null ? hopDong.canHo.id : ''}">
+                                <option value="" disabled th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ --</option>
+                                <option th:each="canHo : ${danhSachCanHo}" th:value="${canHo.id}" th:data-trangthai="${canHo.trangThai}" th:selected="${currentCanHoId == canHo.id}" th:text="${canHo.maCanHo} + ' (' + ${canHo.trangThai} + ')'"></option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">
-                                <i class="bi bi-person me-1"></i>Cư dân <span class="text-danger">*</span>
+                                <i class="bi bi-person me-1"></i><span th:text="#{hd.form.cu_dan_label}" th:remove="tag">Cư dân </span><span class="text-danger">*</span>
                             </label>
-                            <select class="form-select" name="cuDanId" id="cuDanId" required
-                                    th:with="currentCuDanId=${hopDong.cuDan != null ? hopDong.cuDan.id : ''}">
-                                <option value="" disabled>-- Chọn cư dân --</option>
-                                <option th:each="cuDan : ${danhSachCuDan}"
-                                        th:value="${cuDan.id}"
-                                        th:data-canho="${cuDan.canHo != null ? cuDan.canHo.id : ''}"
-                                        th:data-hoten="${cuDan.hoTen}"
-                                        th:selected="${currentCuDanId == cuDan.id}"
-                                        th:text="${cuDan.hoTen} + ' - ' + ${cuDan.soDienThoai} + ' (' + ${cuDan.canHo != null ? cuDan.canHo.maCanHo : 'Chưa có căn hộ'} + ')'"></option>
+                            <select class="form-select" name="cuDanId" id="cuDanId" required th:with="currentCuDanId=${hopDong.cuDan != null ? hopDong.cuDan.id : ''}">
+                                <option value="" disabled th:text="#{hd.form.cu_dan_chon}">-- Chọn cư dân --</option>
+                                <option th:each="cuDan : ${danhSachCuDan}" th:value="${cuDan.id}" th:data-canho="${cuDan.canHo != null ? cuDan.canHo.id : ''}" th:data-hoten="${cuDan.hoTen}" th:selected="${currentCuDanId == cuDan.id}" th:text="${cuDan.hoTen} + ' - ' + ${cuDan.soDienThoai} + ' (' + ${cuDan.canHo != null ? cuDan.canHo.maCanHo : 'Chưa có căn hộ'} + ')'"></option>
                             </select>
-                            <div class="form-text text-danger d-none" id="cuDanWarning">
+                            <div class="form-text text-danger d-none" id="cuDanWarning" th:text="#{hd.form.cu_dan_warning}">
                                 ⚠️ Cư dân này không thuộc căn hộ đã chọn
                             </div>
                         </div>
@@ -107,40 +93,38 @@
                     <hr class="my-4">
 
                     <!-- Section: Thông tin tài chính -->
-                    <h6 class="text-primary mb-3">💰 Thông tin tài chính</h6>
+                    <h6 class="text-primary mb-3" th:text="#{hd.chitiet.thong_tin_tai_chinh}">💰 Thông tin tài chính</h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" id="labelGiaTri">
-                                Tiền thuê (VNĐ) <span class="text-danger">*</span>
+                            <label class="form-label fw-bold" id="labelGiaTri"><span th:text="#{hd.form.tien_thue}" th:remove="tag">
+                                Tiền thuê (VNĐ) </span><span class="text-danger">*</span>
                             </label>
-                            <input type="number" min="1" class="form-control" th:field="*{tienThue}" 
-                                   placeholder="Nhập số tiền" required>
+                            <input type="number" min="1" class="form-control" th:field="*{tienThue}" placeholder="Nhập số tiền" required th:placeholder="#{hd.form.tien_thue_goi_y}">
                         </div>
                         <div class="col-md-6 mb-3" id="tienCocContainer">
-                            <label class="form-label fw-bold">Tiền cọc (VNĐ)</label>
-                            <input type="number" min="0" class="form-control" th:field="*{tienCoc}" 
-                                   placeholder="Mặc định bằng tiền thuê">
-                            <div class="form-text text-muted">Để trống = mặc định bằng tiền thuê</div>
+                            <label class="form-label fw-bold" th:text="#{hd.form.tien_coc}">Tiền cọc (VNĐ)</label>
+                            <input type="number" min="0" class="form-control" th:field="*{tienCoc}" placeholder="Mặc định bằng tiền thuê" th:placeholder="#{hd.form.tien_coc_placeholder}">
+                            <div class="form-text text-muted" th:text="#{hd.form.tien_coc_hint}">Để trống = mặc định bằng tiền thuê</div>
                         </div>
                     </div>
 
                     <hr class="my-4">
 
                     <!-- Section: Thời hạn hợp đồng -->
-                    <h6 class="text-primary mb-3">📅 Thời hạn hợp đồng</h6>
+                    <h6 class="text-primary mb-3" th:text="#{hd.form.thoi_han_hop_dong}">📅 Thời hạn hợp đồng</h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">
-                                Ngày bắt đầu <span class="text-danger">*</span>
+                            <label class="form-label fw-bold"><span th:text="#{hd.form.ngay_bat_dau}" th:remove="tag">
+                                Ngày bắt đầu </span><span class="text-danger">*</span>
                             </label>
                             <input type="date" class="form-control" th:field="*{ngayBatDau}" required>
                         </div>
                         <div class="col-md-6 mb-3" id="ngayKetThucContainer">
-                            <label class="form-label fw-bold">
-                                Ngày kết thúc <span class="text-danger" id="ngayKetThucRequired">*</span>
+                            <label class="form-label fw-bold"><span th:text="#{hd.form.ngay_ket_thuc}" th:remove="tag">
+                                Ngày kết thúc </span><span class="text-danger" id="ngayKetThucRequired">*</span>
                             </label>
                             <input type="date" class="form-control" th:field="*{ngayKetThuc}" id="ngayKetThuc">
-                            <div class="form-text text-muted d-none" id="ngayKetThucHint">
+                            <div class="form-text text-muted d-none" id="ngayKetThucHint" th:text="#{hd.form.ngay_ket_thuc_hint}">
                                 Hợp đồng mua không có ngày kết thúc
                             </div>
                         </div>
@@ -148,17 +132,17 @@
 
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn btn-success btn-lg">
-                            <i class="bi bi-check-circle me-1"></i>Lưu hợp đồng
-                        </button>
+                            <i class="bi bi-check-circle me-1"></i><span th:text="#{hd.form.nut_luu}" th:remove="tag">Lưu hợp đồng
+                        </span></button>
                         <a th:href="@{/admin/hop-dong}" class="btn btn-secondary btn-lg">
-                            <i class="bi bi-x-circle me-1"></i>Hủy
-                        </a>
+                            <i class="bi bi-x-circle me-1"></i><span th:text="#{hdon.form.nut_huy}" th:remove="tag">Hủy
+                        </span></a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

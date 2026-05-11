@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Khảo sát cư dân</title>
+    <title th:text="#{ks.ds.khao_sat_cu_dan}">Khảo sát cư dân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -10,19 +10,18 @@
 <div class="d-flex">
     <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
     <div class="content p-4 w-100">
-        <h2 class="mb-4 fw-bold text-primary"><i class="fas fa-poll"></i> Khảo sát & Thăm dò ý kiến</h2>
+        <h2 class="mb-4 fw-bold text-primary"><i class="fas fa-poll"></i><span th:text="#{ks.ds.khao_sat_tham_do_y_k}" th:remove="tag"> Khảo sát &amp; Thăm dò ý kiến</span></h2>
         <div class="row">
             <div th:each="ks : ${listKhaoSat}" class="col-md-6 mb-4">
-                <div class="card shadow-sm h-100 border-0 border-start border-4"
-                     th:classappend="${ks.trangThaiHienTai == 'ĐANG MỞ' ? 'border-success' : (ks.trangThaiHienTai == 'SẮP MỞ' ? 'border-warning' : 'border-secondary')}">
+                <div class="card shadow-sm h-100 border-0 border-start border-4" th:classappend="${ks.trangThaiHienTai == 'ĐANG MỞ' ? 'border-success' : (ks.trangThaiHienTai == 'SẮP MỞ' ? 'border-warning' : 'border-secondary')}">
                     <div class="card-body">
-                        <span th:if="${ks.trangThaiHienTai == 'ĐANG MỞ'}" class="badge bg-success mb-2">ĐANG MỞ</span>
-                        <span th:if="${ks.trangThaiHienTai == 'SẮP MỞ'}" class="badge bg-warning text-dark mb-2">SẮP MỞ</span>
-                        <span th:if="${ks.trangThaiHienTai == 'ĐÃ ĐÓNG'}" class="badge bg-secondary mb-2">ĐÃ KẾT THÚC</span>
+                        <span th:if="${ks.trangThaiHienTai == 'ĐANG MỞ'}" class="badge bg-success mb-2" th:text="#{ks.ds.dang_mo}">ĐANG MỞ</span>
+                        <span th:if="${ks.trangThaiHienTai == 'SẮP MỞ'}" class="badge bg-warning text-dark mb-2" th:text="#{ks.ds.sap_mo}">SẮP MỞ</span>
+                        <span th:if="${ks.trangThaiHienTai == 'ĐÃ ĐÓNG'}" class="badge bg-secondary mb-2" th:text="#{ks.ds.da_ket_thuc}">ĐÃ KẾT THÚC</span>
 
                         <h5 class="fw-bold" th:text="${ks.tieuDe}"></h5>
-                        <p class="text-muted small mb-3">Kết thúc: <span th:text="${#temporals.format(ks.thoiGianKetThuc, 'dd/MM/yyyy HH:mm')}"></span></p>
-                        <a th:href="@{/cudan/khao-sat/chi-tiet/{id}(id=${ks.id})}" class="btn btn-sm btn-outline-primary w-100">Xem chi tiết</a>
+                        <p class="text-muted small mb-3"><span th:text="#{ks.ds.ket_thuc}" th:remove="tag">Kết thúc: </span><span th:text="${#temporals.format(ks.thoiGianKetThuc, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <a th:href="@{/cudan/khao-sat/chi-tiet/{id}(id=${ks.id})}" class="btn btn-sm btn-outline-primary w-100" th:text="#{hdon.ui.xem_chi_tiet}">Xem chi tiết</a>
                     </div>
                 </div>
             </div>

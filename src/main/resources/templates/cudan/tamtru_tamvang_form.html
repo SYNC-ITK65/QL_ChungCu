@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
 
     <div class="main-content p-4 w-100 bg-light">
         <div class="d-flex align-items-center mb-4">
-            <a th:href="@{/cudan/tamtru-tamvang}" class="btn btn-outline-secondary me-3">⬅ Quay lại</a>
+            <a th:href="@{/cudan/tamtru-tamvang}" class="btn btn-outline-secondary me-3" th:text="#{tttv.form.quay_lai}">⬅ Quay lại</a>
             <h2 class="mb-0" th:text="${title}">Đăng ký</h2>
         </div>
 
@@ -19,7 +19,7 @@
 
         <div class="card shadow-sm mx-auto" style="max-width: 700px;">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Thông tin chi tiết</h5>
+                <h5 class="mb-0" th:text="#{tttv.form.thong_tin_chi_tiet}">Thông tin chi tiết</h5>
             </div>
             <div class="card-body p-4">
                 <form th:action="@{/cudan/tamtru-tamvang/save}" th:object="${don}" method="post">
@@ -27,37 +27,37 @@
 
                     <div class="row mb-3">
                         <div class="col-md-12">
-                            <label class="form-label fw-bold">Loại đăng ký <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold"><span th:text="#{tttv.form.loai_dang_ky}" th:remove="tag">Loại đăng ký </span><span class="text-danger">*</span></label>
                             <select th:field="*{loai}" class="form-select" required>
-                                <option value="Tạm trú">🏠 Tạm trú (Có người đến ở)</option>
-                                <option value="Tạm vắng">🚗 Tạm vắng (Cư dân đi vắng)</option>
+                                <option value="Tạm trú" th:text="#{tttv.form.tam_tru_co_nguoi_de}">🏠 Tạm trú (Có người đến ở)</option>
+                                <option value="Tạm vắng" th:text="#{tttv.form.tam_vang_cu_dan_di}">🚗 Tạm vắng (Cư dân đi vắng)</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Từ ngày <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold"><span th:text="#{tt.ds.tu_ngay}" th:remove="tag">Từ ngày </span><span class="text-danger">*</span></label>
                             <input type="date" th:field="*{ngayBatDau}" class="form-control" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Đến ngày <span class="text-danger">*</span></label>
+                            <label class="form-label fw-bold"><span th:text="#{tt.ds.den_ngay}" th:remove="tag">Đến ngày </span><span class="text-danger">*</span></label>
                             <input type="date" th:field="*{ngayKetThuc}" class="form-control" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Lý do <span class="text-danger">*</span></label>
-                        <textarea th:field="*{lyDo}" class="form-control" rows="3" placeholder="Nhập lý do cụ thể..." required></textarea>
+                        <label class="form-label fw-bold"><span th:text="#{tttv.form.ly_do}" th:remove="tag">Lý do </span><span class="text-danger">*</span></label>
+                        <textarea th:field="*{lyDo}" class="form-control" rows="3" placeholder="Nhập lý do cụ thể..." required th:placeholder="#{tttv.form.nhap_ly_do_cu_the}"></textarea>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Họ tên người tạm trú <small class="text-muted">(Nếu có)</small></label>
-                        <input type="text" th:field="*{hoTenKhach}" class="form-control" placeholder="Để trống nếu là tạm vắng">
+                        <label class="form-label fw-bold"><span th:text="#{tttv.form.ho_ten_nguoi_tam_tru}" th:remove="tag">Họ tên người tạm trú </span><small class="text-muted" th:text="#{tttv.form.neu_co}">(Nếu có)</small></label>
+                        <input type="text" th:field="*{hoTenKhach}" class="form-control" placeholder="Để trống nếu là tạm vắng" th:placeholder="#{tttv.form.de_trong_neu_la_tam}">
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg fw-bold">🚀 Gửi yêu cầu đăng ký</button>
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold" th:text="#{tttv.form.gui_yeu_cau_dang_ky}">🚀 Gửi yêu cầu đăng ký</button>
                     </div>
                 </form>
             </div>

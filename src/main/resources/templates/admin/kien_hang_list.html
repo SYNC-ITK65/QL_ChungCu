@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -37,22 +37,21 @@
             <div class="card-body">
                 <form th:action="@{/admin/kien-hang}" method="GET" class="row g-3">
                     <div class="col-md-5">
-                        <label class="form-label fw-bold">Mã căn hộ</label>
-                        <input type="text" name="maCanHo" class="form-control" th:value="${maCanHo}" 
-                               placeholder="Nhập mã căn hộ (vd: A-101)...">
+                        <label class="form-label fw-bold" th:text="#{hdon.ds.loc_ma_can}">Mã căn hộ</label>
+                        <input type="text" name="maCanHo" class="form-control" th:value="${maCanHo}" placeholder="Nhập mã căn hộ (vd: A-101)..." th:placeholder="#{kh.ds.nhap_ma_can_ho_vd_a}">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Trạng thái</label>
+                        <label class="form-label fw-bold" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</label>
                         <select name="trangThai" class="form-select">
-                            <option value="">-- Tất cả trạng thái --</option>
-                            <option value="Chờ nhận" th:selected="${trangThai == 'Chờ nhận'}">Chờ nhận</option>
-                            <option value="Đã nhận" th:selected="${trangThai == 'Đã nhận'}">Đã nhận</option>
+                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+                            <option value="Chờ nhận" th:selected="${trangThai == 'Chờ nhận'}" th:text="#{kh.ds.cho_nhan}">Chờ nhận</option>
+                            <option value="Đã nhận" th:selected="${trangThai == 'Đã nhận'}" th:text="#{kh.ds.da_nhan}">Đã nhận</option>
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Lọc kiện hàng
-                        </button>
+                            <i class="bi bi-search"></i><span th:text="#{kh.ds.loc_kien_hang}" th:remove="tag"> Lọc kiện hàng
+                        </span></button>
                     </div>
                 </form>
             </div>
@@ -91,29 +90,22 @@
                             <td th:text="${kh.nguoiNhan}">Nguyễn Văn A</td>
                             <td th:text="${kh.ngayNhan}">2024-03-20</td>
                             <td>
-                                <span class="badge status-badge" 
-                                      th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Đã') || kh.trangThai.contains('nhận') && !kh.trangThai.contains('Chờ')) ? 'bg-success' : 'bg-warning text-dark'}"
-                                      th:text="${kh.trangThai}">
+                                <span class="badge status-badge" th:classappend="${kh.trangThai != null &amp;&amp; (kh.trangThai.contains('Đã') || kh.trangThai.contains('nhận') &amp;&amp; !kh.trangThai.contains('Chờ')) ? 'bg-success' : 'bg-warning text-dark'}" th:text="${kh.trangThai}">
                                     Chờ nhận
                                 </span>
                             </td>
                             <td>
                                 <!-- Nút Xác nhận đã lấy: Chỉ hiện khi chưa nhận -->
-                                <a th:if="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã'))}" 
-                                   th:href="@{/admin/kien-hang/xac-nhan/{id}(id=${kh.id})}" 
-                                   class="btn btn-sm btn-outline-success" th:text="#{kh.ds.xac_nhan_lay}">
+                                <a th:if="${kh.trangThai != null &amp;&amp; (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã'))}" th:href="@{/admin/kien-hang/xac-nhan/{id}(id=${kh.id})}" class="btn btn-sm btn-outline-success" th:text="#{kh.ds.xac_nhan_lay}">
                                     Xác nhận đã lấy
                                 </a>
                                 <!-- Nút Sửa/Xóa: Chỉ cho phép khi trạng thái KHÔNG phải "Đã nhận" -->
                                 <th:block th:if="${kh.trangThai == null || !kh.trangThai.contains('Đã')}">
-                                    <a th:href="@{/admin/kien-hang/sua/{id}(id=${kh.id})}" 
-                                       class="btn btn-sm btn-warning">Sửa</a>
-                                    <a th:href="@{/admin/kien-hang/xoa/{id}(id=${kh.id})}" 
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Xóa kiện hàng này? Thao tác không thể hoàn tác!');">Xóa</a>
+                                    <a th:href="@{/admin/kien-hang/sua/{id}(id=${kh.id})}" class="btn btn-sm btn-warning" th:text="#{hdon.ds.nut_sua}">Sửa</a>
+                                    <a th:href="@{/admin/kien-hang/xoa/{id}(id=${kh.id})}" class="btn btn-sm btn-danger" th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>
                                 </th:block>
                                 <!-- Đã nhận: Hiển thị trạng thái kết thúc -->
-                                <span th:if="${kh.trangThai != null && kh.trangThai.contains('Đã')}" class="text-muted small" th:text="#{kh.ds.da_xong}">Quy trình kết thúc</span>
+                                <span th:if="${kh.trangThai != null &amp;&amp; kh.trangThai.contains('Đã')}" class="text-muted small" th:text="#{kh.ds.da_xong}">Quy trình kết thúc</span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(danhSachKienHang)}">
@@ -123,7 +115,7 @@
                 </table>
             </div>
         </div>
-        <div th:replace="~{fragments/pagination :: paging('/admin/kien-hang', 'maCanHo=' + (${maCanHo} ?: '') + '&trangThai=' + (${trangThai} ?: ''))}"></div>
+        <div th:replace="~{fragments/pagination :: paging('/admin/kien-hang', 'maCanHo=' + (${maCanHo} ?: '') + '&amp;trangThai=' + (${trangThai} ?: ''))}"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

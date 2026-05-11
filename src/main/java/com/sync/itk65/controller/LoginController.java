@@ -1,8 +1,5 @@
 package com.sync.itk65.controller;
 
-import com.sync.itk65.entity.NguoiDung;
-import com.sync.itk65.service.NguoiDungService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,14 +7,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.sync.itk65.entity.NguoiDung;
+import com.sync.itk65.service.NguoiDungService;
+
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class LoginController {
 
     @Autowired
     private NguoiDungService nguoiDungService;
 
-    // Hiển thị trang đăng nhập ở trang chủ "/"
+    // Hiển thị trang chủ landing page
     @GetMapping("/")
+    public String hienThiTrangChu() {
+        return "index";
+    }
+
+    // Hiển thị trang đăng nhập
+    @GetMapping("/login")
     public String hienThiTrangDangNhap() {
         return "login";
     }

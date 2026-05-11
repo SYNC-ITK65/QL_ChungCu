@@ -40,21 +40,21 @@
 
                     $(this).DataTable({
                         "language": {
-                            "lengthMenu": "Hiển thị _MENU_ dòng",
-                            "zeroRecords": "Chưa có dữ liệu nào",
-                            "info": "HIển thị _START_ tới _END_ của _TOTAL_ mục",
-                            "infoEmpty": "Không có hiển thị mục nào",
-                            "infoFiltered": "(lọc từ _MAX_ mục)",
-                            "search": "🔍 Lọc nhanh:",
+                            "lengthMenu": [[#{pagi.hien_thi}]] + " _MENU_ " + [[#{pagi.dong}]],
+                            "zeroRecords": [[#{pagi.chua_co_du_lieu}]],
+                            "info": [[#{pagi.hien_thi_info}]],
+                            "infoEmpty": [[#{pagi.khong_co_hien_thi}]],
+                            "infoFiltered": "([[#{pagi.loc_tu}]] _MAX_ [[#{pagi.muc}]])",
+                            "search": [[#{pagi.loc_nhanh}]],
                             "paginate": {
-                                "first": "Đầu",
-                                "last": "Cuối",
-                                "next": "Sau",
-                                "previous": "Trước"
+                                "first": [[#{pagi.dau}]],
+                                "last": [[#{pagi.cuoi}]],
+                                "next": [[#{pagi.sau}]],
+                                "previous": [[#{pagi.truoc}]]
                             }
                         },
                         "pageLength": 10,
-                        "lengthMenu": [lengthValues, lengthLabels],
+                        "lengthMenu": [lengthValues, [5, 10, 20, 50, [[#{pagi.tat_ca}]] ]],
                         "ordering": false
                     });
                 });

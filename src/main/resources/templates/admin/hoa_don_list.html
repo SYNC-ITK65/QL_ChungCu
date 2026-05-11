@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -79,32 +79,24 @@
 
                 <td th:text="${hd.canHo?.maCanHo ?: '---'}">A1-01</td>
 
-                <td th:text="${hd.tongTien != null ? #numbers.formatDecimal(hd.tongTien, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '0 VNĐ'}">500,000 VNĐ</td>
+                <td th:text="${hd.tongTien != null} ? |${#numbers.formatDecimal(hd.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}| : |0 #{chung.don_vi_vnd_symbol}|">500,000 VNĐ</td>
 
                 <td>
                     <span th:if="${hd.trangThaiThanhToan == 'Đã đóng'}" class="badge bg-success" th:text="#{hdon.ds.trang_thai_da_dong}">Đã đóng</span>
 
                     <span th:if="${hd.trangThaiThanhToan == 'Chưa đóng' or hd.trangThaiThanhToan == null}" class="badge bg-danger" th:text="#{hdon.ds.trang_thai_chua_dong}">Chưa đóng</span>
 
-                    <span th:if="${hd.trangThaiThanhToan == 'Chờ duyệt'}" class="badge bg-warning text-dark">Chờ duyệt</span>
+                    <span th:if="${hd.trangThaiThanhToan == 'Chờ duyệt'}" class="badge bg-warning text-dark" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
                 </td>
 
                 <td>
-                    <a th:if="${hd.trangThaiThanhToan == 'Chưa đóng' or hd.trangThaiThanhToan == null}"
-                       th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-success" th:text="#{hdon.ds.nut_thanh_toan}">Thanh toán</a>
+                    <a th:if="${hd.trangThaiThanhToan == 'Chưa đóng' or hd.trangThaiThanhToan == null}" th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${hd.id})}" class="btn btn-sm btn-success" th:text="#{hdon.ds.nut_thanh_toan}">Thanh toán</a>
 
-                    <a th:if="${hd.trangThaiThanhToan == 'Chờ duyệt'}"
-                       th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-warning">Duyệt</a>
+                    <a th:if="${hd.trangThaiThanhToan == 'Chờ duyệt'}" th:href="@{/admin/thanh-toan/xac-nhan/{id}(id=${hd.id})}" class="btn btn-sm btn-warning" th:text="#{dv.ds.duyet}">Duyệt</a>
 
-                    <a th:href="@{/admin/hoa-don/xem/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-info text-white" th:text="#{hdon.ds.nut_xem}">Xem</a>
-                    <a th:href="@{/admin/hoa-don/sua/{id}(id=${hd.id})}"
-                       class="btn btn-sm btn-warning" th:text="#{hdon.ds.nut_sua}">Sửa</a>
-                    <a th:href="@{/admin/hoa-don/xoa/{id}(id=${hd.id})}"
-                       th:onclick="return confirm([[#{chung.xac_nhan_xoa}]])"
-                       class="btn btn-sm btn-danger" th:text="#{chung.xoa}">Xóa</a>
+                    <a th:href="@{/admin/hoa-don/xem/{id}(id=${hd.id})}" class="btn btn-sm btn-info text-white" th:text="#{hdon.ds.nut_xem}">Xem</a>
+                    <a th:href="@{/admin/hoa-don/sua/{id}(id=${hd.id})}" class="btn btn-sm btn-warning" th:text="#{hdon.ds.nut_sua}">Sửa</a>
+                    <a th:href="@{/admin/hoa-don/xoa/{id}(id=${hd.id})}" th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" class="btn btn-sm btn-danger" th:text="#{chung.xoa}">Xóa</a>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(danhSachHoaDon)}">

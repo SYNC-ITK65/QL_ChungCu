@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{index.tieude}">Skyline Residence - Nâng Tầm Cuộc Sống</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(13, 36, 56, 0.7), rgba(13, 36, 56, 0.7)), url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            color: #0d2438;
+        }
+        .section-title::after {
+            content: "";
+            width: 60px;
+            height: 3px;
+            background-color: #0d6efd;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Amenities */
+        .amenity-card {
+            padding: 2rem;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: 100%;
+        }
+        .amenity-icon {
+            font-size: 3rem;
+            color: #0d6efd;
+            margin-bottom: 1rem;
+        }
+
+        /* Portal Cards */
+        .portal-section {
+            background-color: #f8f9fa;
+            padding: 5rem 0;
+        }
+        .portal-card {
+            cursor: pointer;
+            border: none;
+            border-radius: 15px;
+            background: #fff;
+        }
+        .portal-icon-box {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0d2438;
+            color: #adb5bd;
+        }
+    </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="70">
+
+<!-- Navbar -->
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm" style="background-color: rgba(13, 36, 56, 0.95) !important;">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">🏢 Skyline Residence</a>
+        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Offcanvas (Sidebar mobile bên phải) -->
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="background-color: rgba(13, 36, 56, 0.98) !important;">
+            <div class="offcanvas-header border-bottom border-secondary">
+                <h5 class="offcanvas-title fw-bold" id="offcanvasRightLabel">🏢 Danh Mục</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#home" data-bs-dismiss="offcanvas">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about" data-bs-dismiss="offcanvas">Giới thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#amenities" data-bs-dismiss="offcanvas">Tiện ích</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-info" href="/login" onclick="window.location.href='/login'; return false;">Đăng nhập hệ thống</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Không Gian Sống Lý Tưởng</h1>
+        <p class="hero-subtitle">Tận hưởng cuộc sống hiện đại, an toàn và tiện nghi ngay giữa lòng thành phố.</p>
+        <a href="#about" class="btn btn-primary btn-lg rounded-pill px-4 me-2">Khám phá ngay</a>
+        <a href="#portals" class="btn btn-outline-light btn-lg rounded-pill px-4">Truy cập hệ thống</a>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5 mt-4">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="About Skyline" class="img-fluid rounded-4 shadow-lg">
+            </div>
+            <div class="col-lg-6 px-lg-5">
+                <h2 class="fw-bold mb-4">Về Skyline Residence</h2>
+                <p class="text-muted fs-5 mb-4">Chúng tôi kiến tạo một cộng đồng văn minh, nơi mỗi tổ ấm đều được chăm chút tỉ mỉ. Với hệ thống quản lý thông minh và đội ngũ chuyên nghiệp, cuộc sống của bạn sẽ luôn được đảm bảo sự tiện nghi và an tâm tuyệt đối.</p>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Vị trí đắc địa, giao thông thuận tiện</li>
+                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Thiết kế căn hộ đón ánh sáng tự nhiên</li>
+                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Ứng dụng công nghệ vào quản lý vận hành</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Amenities Section -->
+<section id="amenities" class="py-5 bg-light">
+    <div class="container py-5">
+        <h2 class="text-center section-title">Tiện Ích Đẳng Cấp</h2>
+        <div class="row g-4 text-center mt-3">
+            <div class="col-md-6 col-lg-3">
+                <div class="amenity-card">
+                    <i class="bi bi-water amenity-icon"></i>
+                    <h5 class="fw-bold">Hồ bơi vô cực</h5>
+                    <p class="text-muted small">Hồ bơi bốn mùa tiêu chuẩn resort mang lại phút giây thư giãn tuyệt vời.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="amenity-card">
+                    <i class="bi bi-bicycle amenity-icon"></i>
+                    <h5 class="fw-bold">Phòng Gym & Yoga</h5>
+                    <p class="text-muted small">Trang thiết bị hiện đại, giúp bạn duy trì sức khỏe và vóc dáng mỗi ngày.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="amenity-card">
+                    <i class="bi bi-tree amenity-icon"></i>
+                    <h5 class="fw-bold">Công viên xanh</h5>
+                    <p class="text-muted small">Không gian xanh mát, khu vui chơi an toàn cho trẻ em phát triển toàn diện.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="amenity-card">
+                    <i class="bi bi-shield-check amenity-icon"></i>
+                    <h5 class="fw-bold">An ninh 24/7</h5>
+                    <p class="text-muted small">Hệ thống camera giám sát và đội ngũ bảo vệ chuyên nghiệp, an toàn tuyệt đối.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Portals Section (Hệ thống quản lý) -->
+<section id="portals" class="portal-section">
+    <div class="container text-center">
+        <h2 class="section-title">Cổng Thông Tin Điện Tử</h2>
+        <p class="text-muted mb-5">Hệ thống phần mềm quản lý thông minh tích hợp 2 trong 1.</p>
+
+        <div class="row justify-content-center">
+            <!-- Cổng Đăng Nhập Chung -->
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow h-100 portal-card" onclick="window.location.href='/login'">
+                    <div class="card-body p-5">
+                        <div class="portal-icon-box text-primary">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <h3 class="fw-bold">Đăng Nhập Hệ Thống</h3>
+                        <p class="text-muted mt-3 fs-5">Dành cho cả Cư dân và Ban quản lý. Hệ thống sẽ tự động nhận diện tài khoản và chuyển hướng bạn đến bảng điều khiển tương ứng.</p>
+                        <a href="/login" class="btn btn-primary mt-4 px-5 py-3 rounded-pill fw-bold fs-5 shadow-sm">Đăng nhập ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-4">
+    <div class="container text-center text-md-start">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="text-white fw-bold">🏢 Skyline Residence</h5>
+                <p class="mb-1 small"><i class="bi bi-geo-alt me-2"></i> 123 Đường Số 1, Quận Trung Tâm, TP.HCM</p>
+                <p class="mb-1 small"><i class="bi bi-telephone me-2"></i> Hotline: 1900 6868</p>
+                <p class="mb-0 small"><i class="bi bi-envelope me-2"></i> cskh@skylineresidence.com</p>
+            </div>
+            <div class="col-md-6 text-md-end text-center">
+                <div class="mb-3">
+                    <a href="#" class="text-light me-3 fs-5"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-light me-3 fs-5"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="text-light fs-5"><i class="bi bi-twitter-x"></i></a>
+                </div>
+                <p class="mb-0 small">&copy; 2026 Hệ thống Quản lý Chung Cư. Phát triển bởi Đội ngũ kỹ thuật.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
