@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Tạo Hóa Đơn Mới</title>
+    <title th:text="#{hdon.form.them_tieude}">Tạo Hóa Đơn Mới</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -26,12 +26,12 @@
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
     <div class="container-fluid p-4">
-        <h2>Tạo Hóa Đơn Mới</h2>
+        <h2 th:text="#{hdon.form.them_tieude}">Tạo Hóa Đơn Mới</h2>
         <hr>
 
         <!-- Hiển thị lỗi nếu có -->
         <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-            <strong>Lỗi:</strong>
+            <strong th:text="#{chung.loi}">Lỗi:</strong>
             <div th:utext="${#strings.replace(errorMessage, '&#10;', '&lt;br&gt;')}"></div>
         </div>
 
@@ -39,19 +39,19 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Ngày Phát Hành</label>
+                    <label class="form-label" th:text="#{hdon.form.ngay_phat_hanh}">Ngày Phát Hành</label>
                     <input type="date" class="form-control" name="ngayPhatHanh" required readonly>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Ngày Đến Hạn</label>
+                    <label class="form-label" th:text="#{hdon.form.ngay_den_han}">Ngày Đến Hạn</label>
                     <input type="date" class="form-control" name="ngayDenHan" required>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Chọn Căn Hộ</label>
+                <label class="form-label" th:text="#{hdon.form.can_ho}">Chọn Căn Hộ</label>
                 <select class="form-select" name="canHoId" required>
-                    <option value="" disabled selected>-- Chọn căn hộ cần xuất hóa đơn --</option>
+                    <option value="" disabled selected th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ cần xuất hóa đơn --</option>
                     <option th:each="ch : ${danhSachCanHo}"
                             th:value="${ch.id}"
                             th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
@@ -59,8 +59,8 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Tính tiền & Lưu Hóa Đơn</button>
-            <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">Hủy</a>
+            <button type="submit" class="btn btn-success" th:text="#{hdon.form.nut_luu}">Tính tiền & Lưu Hóa Đơn</button>
+            <a th:href="@{/admin/hoa-don}" class="btn btn-secondary" th:text="#{hdon.form.nut_huy}">Hủy</a>
         </form>
     </div>
 </div>
