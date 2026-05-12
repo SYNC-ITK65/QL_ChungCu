@@ -1,7 +1,15 @@
 package com.sync.itk65.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "dang_ky_khach_tham")
@@ -24,20 +32,67 @@ public class DangKyKhachTham {
     private LocalDateTime thoiGianDuyet; // Lưu thời gian Admin bấm duyệt
 
     // --- GETTER & SETTER ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public CuDan getCuDan() { return cuDan; }
-    public void setCuDan(CuDan cuDan) { this.cuDan = cuDan; }
-    public String getTenKhach() { return tenKhach; }
-    public void setTenKhach(String tenKhach) { this.tenKhach = tenKhach; }
-    public String getCmnd() { return cmnd; }
-    public void setCmnd(String cmnd) { this.cmnd = cmnd; }
-    public String getBienSoXe() { return bienSoXe; }
-    public void setBienSoXe(String bienSoXe) { this.bienSoXe = bienSoXe; }
-    public LocalDateTime getThoiGianDuKien() { return thoiGianDuKien; }
-    public void setThoiGianDuKien(LocalDateTime thoiGianDuKien) { this.thoiGianDuKien = thoiGianDuKien; }
-    public String getTrangThai() { return trangThai; }
-    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
-    public LocalDateTime getThoiGianDuyet() { return thoiGianDuyet; }
-    public void setThoiGianDuyet(LocalDateTime thoiGianDuyet) { this.thoiGianDuyet = thoiGianDuyet; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public CuDan getCuDan() {
+        return cuDan;
+    }
+
+    public void setCuDan(CuDan cuDan) {
+        this.cuDan = cuDan;
+    }
+
+    public String getTenKhach() {
+        return tenKhach;
+    }
+
+    public void setTenKhach(String tenKhach) {
+        this.tenKhach = tenKhach;
+    }
+
+    public String getCmnd() {
+        return cmnd;
+    }
+
+    public void setCmnd(String cmnd) {
+        this.cmnd = cmnd;
+    }
+
+    public String getBienSoXe() {
+        return bienSoXe;
+    }
+
+    public void setBienSoXe(String bienSoXe) {
+        this.bienSoXe = bienSoXe;
+    }
+
+    public LocalDateTime getThoiGianDuKien() {
+        return thoiGianDuKien;
+    }
+
+    public void setThoiGianDuKien(LocalDateTime thoiGianDuKien) {
+        this.thoiGianDuKien = thoiGianDuKien;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+
+    public LocalDateTime getThoiGianDuyet() {
+        return thoiGianDuyet;
+    }
+
+    public void setThoiGianDuyet(LocalDateTime thoiGianDuyet) {
+        this.thoiGianDuyet = thoiGianDuyet;
+    }
 }

@@ -1,15 +1,16 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.DatDichVu;
-import com.sync.itk65.repository.DatDichVuRepository;
+import java.text.Normalizer;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.text.Normalizer;
-import java.time.LocalDate;
-import java.util.List;
+import com.sync.itk65.entity.DatDichVu;
+import com.sync.itk65.repository.DatDichVuRepository;
 
 @Service
 public class DatDichVuService {
@@ -76,6 +77,7 @@ public class DatDichVuService {
     public void huyDatDichVu(Long id) {
         datDichVuRepository.deleteById(id);
     }
+
     public List<DatDichVu> layLichSuDatCuaCuDan(Long cuDanId) {
         List<DatDichVu> ds = datDichVuRepository.layLichSuDatDichVu(cuDanId);
         ds.forEach(d -> d.setTrangThai(chuanHoaTrangThai(d.getTrangThai())));
@@ -83,16 +85,24 @@ public class DatDichVuService {
     }
 
     private String chuanHoaTrangThai(String trangThai) {
-        if (trangThai == null || trangThai.isBlank()) return "Chờ duyệt";
+        if (trangThai == null || trangThai.isBlank())
+            return "Chờ duyệt";
         String raw = trangThai.trim();
         String normalized = boDau(raw).toLowerCase();
-        if (normalized.contains("huy") && normalized.contains("duyet")) return "Hủy duyệt";
-        if (normalized.contains("tu choi")) return "Từ chối";
-        if ((normalized.contains("cho") && normalized.contains("duyet")) || normalized.contains("dang ky moi")) return "Chờ duyệt";
-        if (normalized.contains("da") && normalized.contains("duyet")) return "Đã duyệt";
-        if (normalized.contains("da su dung")) return "Đã sử dụng";
-        if (normalized.contains("hoan thanh")) return "Đã hoàn thành";
-        if (normalized.contains("da huy")) return "Đã hủy";
+        if (normalized.contains("huy") && normalized.contains("duyet"))
+            return "Hủy duyệt";
+        if (normalized.contains("tu choi"))
+            return "Từ chối";
+        if ((normalized.contains("cho") && normalized.contains("duyet")) || normalized.contains("dang ky moi"))
+            return "Chờ duyệt";
+        if (normalized.contains("da") && normalized.contains("duyet"))
+            return "Đã duyệt";
+        if (normalized.contains("da su dung"))
+            return "Đã sử dụng";
+        if (normalized.contains("hoan thanh"))
+            return "Đã hoàn thành";
+        if (normalized.contains("da huy"))
+            return "Đã hủy";
         return raw;
     }
 
@@ -101,6 +111,7 @@ public class DatDichVuService {
         normalized = normalized.replaceAll("\\p{M}", "");
         return normalized.replace('đ', 'd').replace('Đ', 'D');
     }
+
     public DatDichVu findById(Long id) {
         return datDichVuRepository.findById(id).orElse(null);
     }

@@ -1,14 +1,15 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.DichVu;
-import com.sync.itk65.repository.DichVuRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.sync.itk65.entity.DichVu;
+import com.sync.itk65.repository.DichVuRepository;
 
 @Service
 public class DichVuService {

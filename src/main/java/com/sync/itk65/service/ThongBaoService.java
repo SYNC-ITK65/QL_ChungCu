@@ -1,8 +1,10 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.ThongBao;
-import org.springframework.data.domain.Page;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+
+import com.sync.itk65.entity.ThongBao;
 
 public interface ThongBaoService {
     List<ThongBao> getAllThongBao();

@@ -1,21 +1,27 @@
 package com.sync.itk65.controller;
 
-import com.sync.itk65.entity.CuDan;
-import com.sync.itk65.entity.HoaDon;
-import com.sync.itk65.entity.NguoiDung;
-import com.sync.itk65.service.HoaDonService;
-import com.sync.itk65.service.CuDanService;
-import com.sync.itk65.repository.HoaDonRepository;
-import jakarta.servlet.http.HttpSession;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import com.sync.itk65.entity.CuDan;
+import com.sync.itk65.entity.HoaDon;
+import com.sync.itk65.entity.NguoiDung;
+import com.sync.itk65.repository.HoaDonRepository;
+import com.sync.itk65.service.CuDanService;
+import com.sync.itk65.service.HoaDonService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/cudan/hoa-don")

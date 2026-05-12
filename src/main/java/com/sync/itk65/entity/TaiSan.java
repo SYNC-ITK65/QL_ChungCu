@@ -1,7 +1,14 @@
 package com.sync.itk65.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tai_san")
@@ -37,27 +44,67 @@ public class TaiSan {
         }
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getTenTaiSan() { return tenTaiSan; }
-    public void setTenTaiSan(String tenTaiSan) { this.tenTaiSan = tenTaiSan; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getMaTaiSan() { return maTaiSan; }
-    public void setMaTaiSan(String maTaiSan) { this.maTaiSan = maTaiSan; }
+    public String getTenTaiSan() {
+        return tenTaiSan;
+    }
 
-    public String getViTri() { return viTri; }
-    public void setViTri(String viTri) { this.viTri = viTri; }
+    public void setTenTaiSan(String tenTaiSan) {
+        this.tenTaiSan = tenTaiSan;
+    }
 
-    public LocalDate getNgayMua() { return ngayMua; }
-    public void setNgayMua(LocalDate ngayMua) { this.ngayMua = ngayMua; }
+    public String getMaTaiSan() {
+        return maTaiSan;
+    }
 
-    public String getTinhTrang() { return tinhTrang; }
-    public void setTinhTrang(String tinhTrang) { this.tinhTrang = tinhTrang; }
+    public void setMaTaiSan(String maTaiSan) {
+        this.maTaiSan = maTaiSan;
+    }
 
-    public Integer getChuKyBaoTri() { return chuKyBaoTri; }
-    public void setChuKyBaoTri(Integer chuKyBaoTri) { this.chuKyBaoTri = chuKyBaoTri; }
+    public String getViTri() {
+        return viTri;
+    }
 
-    public LocalDate getNgayBaoTriTiepTheo() { return ngayBaoTriTiepTheo; }
-    public void setNgayBaoTriTiepTheo(LocalDate ngayBaoTriTiepTheo) { this.ngayBaoTriTiepTheo = ngayBaoTriTiepTheo; }
+    public void setViTri(String viTri) {
+        this.viTri = viTri;
+    }
+
+    public LocalDate getNgayMua() {
+        return ngayMua;
+    }
+
+    public void setNgayMua(LocalDate ngayMua) {
+        this.ngayMua = ngayMua;
+    }
+
+    public String getTinhTrang() {
+        return tinhTrang;
+    }
+
+    public void setTinhTrang(String tinhTrang) {
+        this.tinhTrang = tinhTrang;
+    }
+
+    public Integer getChuKyBaoTri() {
+        return chuKyBaoTri;
+    }
+
+    public void setChuKyBaoTri(Integer chuKyBaoTri) {
+        this.chuKyBaoTri = chuKyBaoTri;
+    }
+
+    public LocalDate getNgayBaoTriTiepTheo() {
+        return ngayBaoTriTiepTheo;
+    }
+
+    public void setNgayBaoTriTiepTheo(LocalDate ngayBaoTriTiepTheo) {
+        this.ngayBaoTriTiepTheo = ngayBaoTriTiepTheo;
+    }
 }

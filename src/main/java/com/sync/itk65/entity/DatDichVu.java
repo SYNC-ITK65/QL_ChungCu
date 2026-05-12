@@ -1,8 +1,16 @@
 package com.sync.itk65.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "dat_dich_vu")
@@ -58,7 +66,9 @@ public class DatDichVu {
         return dichVu;
     }
 
-    public LocalDateTime getThoiGianDuyet() { return thoiGianDuyet; }
+    public LocalDateTime getThoiGianDuyet() {
+        return thoiGianDuyet;
+    }
 
     public void setDichVu(DichVu dichVu) {
         this.dichVu = dichVu;
@@ -88,5 +98,7 @@ public class DatDichVu {
         this.ghiChu = ghiChu;
     }
 
-    public void setThoiGianDuyet(LocalDateTime thoiGianDuyet) { this.thoiGianDuyet = thoiGianDuyet; }
+    public void setThoiGianDuyet(LocalDateTime thoiGianDuyet) {
+        this.thoiGianDuyet = thoiGianDuyet;
+    }
 }

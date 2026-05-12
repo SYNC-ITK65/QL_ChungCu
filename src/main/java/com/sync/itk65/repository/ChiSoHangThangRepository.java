@@ -1,13 +1,14 @@
 package com.sync.itk65.repository;
 
-import com.sync.itk65.entity.ChiSoHangThang;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import java.util.Optional;
-import java.util.List;
+import org.springframework.stereotype.Repository;
+
+import com.sync.itk65.entity.ChiSoHangThang;
 
 @Repository
 public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, Long> {
@@ -32,4 +33,5 @@ public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, 
                                            @Param("canHoId") Long canHoId,
                                            @Param("thang") Integer thang,
                                            @Param("nam") Integer nam);
+                                           // @Param: là đánh dấu tham số trong câu truy vấn SQL
 }

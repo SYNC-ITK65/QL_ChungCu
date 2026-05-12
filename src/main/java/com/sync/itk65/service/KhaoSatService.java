@@ -1,13 +1,20 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.*;
-import com.sync.itk65.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sync.itk65.entity.CuDan;
+import com.sync.itk65.entity.KhaoSat;
+import com.sync.itk65.entity.LichSuVote;
+import com.sync.itk65.entity.LuaChonKhaoSat;
+import com.sync.itk65.repository.KhaoSatRepository;
+import com.sync.itk65.repository.LichSuVoteRepository;
+import com.sync.itk65.repository.LuaChonKhaoSatRepository;
 
 @Service
 public class KhaoSatService {

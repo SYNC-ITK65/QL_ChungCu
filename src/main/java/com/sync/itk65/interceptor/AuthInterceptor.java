@@ -1,11 +1,16 @@
 package com.sync.itk65.interceptor;
 
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
 import com.sync.itk65.entity.NguoiDung;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
+
+
+// Class này sẽ được đăng ký trong WebConfig để kiểm tra quyền truy cập của người dùng trước khi vào controller
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {

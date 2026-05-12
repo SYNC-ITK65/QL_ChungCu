@@ -1,12 +1,18 @@
 package com.sync.itk65.controller;
 
-import com.sync.itk65.entity.PhanAnh;
-import com.sync.itk65.service.PhanAnhService;
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.sync.itk65.entity.PhanAnh;
+import com.sync.itk65.service.PhanAnhService;
 
 @Controller
 @RequestMapping("/admin/phan-anh")

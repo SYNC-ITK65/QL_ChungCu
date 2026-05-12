@@ -1,8 +1,8 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.CuDan;
-import com.sync.itk65.entity.TamTruTamVang;
-import com.sync.itk65.repository.TamTruTamVangRepository;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,8 +11,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.sync.itk65.entity.CuDan;
+import com.sync.itk65.entity.TamTruTamVang;
+import com.sync.itk65.repository.TamTruTamVangRepository;
 
 @Service
 public class TamTruTamVangService {

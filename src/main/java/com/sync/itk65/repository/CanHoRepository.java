@@ -1,12 +1,14 @@
 package com.sync.itk65.repository;
 
-import com.sync.itk65.entity.CanHo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import com.sync.itk65.entity.CanHo;
+import java.util.Optional;
 
 @Repository
 public interface CanHoRepository extends JpaRepository<CanHo, Long> {
@@ -32,4 +34,6 @@ public interface CanHoRepository extends JpaRepository<CanHo, Long> {
                              @Param("dienTich") Double dienTich, 
                              @Param("tang") Integer tang, 
                              Pageable pageable);
+
+    Optional<CanHo> findByMaCanHo(String maCanHo);
 }

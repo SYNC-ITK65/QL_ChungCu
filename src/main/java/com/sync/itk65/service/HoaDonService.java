@@ -1,17 +1,11 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.CanHo;
-import com.sync.itk65.entity.ChiSoHangThang;
-import com.sync.itk65.entity.HoaDon;
-import com.sync.itk65.entity.PhuongTien;
-import com.sync.itk65.entity.DatDichVu;
-import com.sync.itk65.repository.CanHoRepository;
-import com.sync.itk65.repository.ChiSoHangThangRepository;
-import com.sync.itk65.repository.HoaDonRepository;
-import com.sync.itk65.repository.PhuongTienRepository;
-import com.sync.itk65.repository.DatDichVuRepository;
-import com.sync.itk65.repository.ThanhToanRepository;
-import com.sync.itk65.repository.HopDongRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,11 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
-import java.util.List;
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.ArrayList;
-import java.time.LocalDate;
+import com.sync.itk65.entity.CanHo;
+import com.sync.itk65.entity.ChiSoHangThang;
+import com.sync.itk65.entity.DatDichVu;
+import com.sync.itk65.entity.HoaDon;
+import com.sync.itk65.entity.PhuongTien;
+import com.sync.itk65.repository.CanHoRepository;
+import com.sync.itk65.repository.ChiSoHangThangRepository;
+import com.sync.itk65.repository.DatDichVuRepository;
+import com.sync.itk65.repository.HoaDonRepository;
+import com.sync.itk65.repository.HopDongRepository;
+import com.sync.itk65.repository.PhuongTienRepository;
+import com.sync.itk65.repository.ThanhToanRepository;
 
 @Service
 public class HoaDonService {

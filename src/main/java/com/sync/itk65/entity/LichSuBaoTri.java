@@ -1,7 +1,16 @@
 package com.sync.itk65.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "lich_su_bao_tri")
@@ -23,7 +32,7 @@ public class LichSuBaoTri {
     private String nguoiThucHien;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column(columnDefinition = "TEXT")
     private String noiDung;
 
     public Long getId() {

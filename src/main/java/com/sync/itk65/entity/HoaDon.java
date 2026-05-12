@@ -1,7 +1,15 @@
 package com.sync.itk65.entity;
 
-import jakarta.persistence.*;
-import java.time.LocalDate; // Nhớ import cái này
+import java.time.LocalDate;
+
+import jakarta.persistence.Column; // Nhớ import cái này
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "hoa_don")
@@ -29,21 +37,51 @@ public class HoaDon {
 
     // --- GETTERS & SETTERS ---
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDate getNgayPhatHanh() { return ngayPhatHanh; }
-    public void setNgayPhatHanh(LocalDate ngayPhatHanh) { this.ngayPhatHanh = ngayPhatHanh; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalDate getNgayDenHan() { return ngayDenHan; }
-    public void setNgayDenHan(LocalDate ngayDenHan) { this.ngayDenHan = ngayDenHan; }
+    public LocalDate getNgayPhatHanh() {
+        return ngayPhatHanh;
+    }
 
-    public Double getTongTien() { return tongTien; }
-    public void setTongTien(Double tongTien) { this.tongTien = tongTien; }
+    public void setNgayPhatHanh(LocalDate ngayPhatHanh) {
+        this.ngayPhatHanh = ngayPhatHanh;
+    }
 
-    public String getTrangThaiThanhToan() { return trangThaiThanhToan; }
-    public void setTrangThaiThanhToan(String trangThaiThanhToan) { this.trangThaiThanhToan = trangThaiThanhToan; }
+    public LocalDate getNgayDenHan() {
+        return ngayDenHan;
+    }
 
-    public CanHo getCanHo() { return canHo; }
-    public void setCanHo(CanHo canHo) { this.canHo = canHo; }
+    public void setNgayDenHan(LocalDate ngayDenHan) {
+        this.ngayDenHan = ngayDenHan;
+    }
+
+    public Double getTongTien() {
+        return tongTien;
+    }
+
+    public void setTongTien(Double tongTien) {
+        this.tongTien = tongTien;
+    }
+
+    public String getTrangThaiThanhToan() {
+        return trangThaiThanhToan;
+    }
+
+    public void setTrangThaiThanhToan(String trangThaiThanhToan) {
+        this.trangThaiThanhToan = trangThaiThanhToan;
+    }
+
+    public CanHo getCanHo() {
+        return canHo;
+    }
+
+    public void setCanHo(CanHo canHo) {
+        this.canHo = canHo;
+    }
 }

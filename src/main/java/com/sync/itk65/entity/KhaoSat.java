@@ -1,9 +1,18 @@
 package com.sync.itk65.entity;
 
-import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "khao_sat")
@@ -27,6 +36,8 @@ public class KhaoSat {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime thoiGianKetThuc;
 
+
+    // 1 khảo sát có 1 list lựa chọn
     @OneToMany(mappedBy = "khaoSat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LuaChonKhaoSat> danhSachLuaChon;
 

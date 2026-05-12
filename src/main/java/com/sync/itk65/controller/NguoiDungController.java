@@ -1,25 +1,31 @@
 package com.sync.itk65.controller;
 
-import com.sync.itk65.entity.NguoiDung;
-import com.sync.itk65.service.CuDanService;
-import com.sync.itk65.service.NguoiDungService;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.sync.itk65.entity.NguoiDung;
+import com.sync.itk65.service.CuDanService;
+import com.sync.itk65.service.NguoiDungService;
 
 @Controller
 @RequestMapping("/admin/nguoi-dung") // Đường dẫn trên web: localhost:8080/admin/nguoi-dung
 
 public class NguoiDungController {
-
+    // Khi nguoi dùng truy cập vào /admin/nguoi-dung sẽ tự tạo 2 dối tượng Service để gọi hàm lấy dữ liệu từ Database và hiển thị lên giao diện
     @Autowired
     private NguoiDungService nguoiDungService;
 
@@ -34,9 +40,9 @@ public class NguoiDungController {
             @RequestParam(required = false) String tuKhoa,
             @RequestParam(required = false) Integer vaiTro,
             Model model) {
-        
+
         org.springframework.data.domain.Page<NguoiDung> trangDuLieu;
-        
+
         // Nếu có từ khóa tìm kiếm hoặc vai trò, thực hiện tìm kiếm
         if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) || vaiTro != null) {
             trangDuLieu = nguoiDungService.timKiemNguoiDung(tuKhoa, vaiTro, page, size);
@@ -90,7 +96,8 @@ public class NguoiDungController {
         try {
             // Đảm bảo vai trò chỉ là Admin (1) hoặc Nhân viên (2)
             if (nguoiDung.getVaiTro() != 1 && nguoiDung.getVaiTro() != 2) {
-                ra.addFlashAttribute("errorMessage", "Module này chỉ quản lý tài khoản Admin và Nhân viên. Vui lòng sử dụng module Quản lý cư dân.");
+                ra.addFlashAttribute("errorMessage",
+                        "Module này chỉ quản lý tài khoản Admin và Nhân viên. Vui lòng sử dụng module Quản lý cư dân.");
                 return "redirect:/admin/nguoi-dung/tao-moi";
             }
 
@@ -146,7 +153,8 @@ public class NguoiDungController {
 
         // Nếu là Cư dân, chuyển hướng sang module Quản lý cư dân để xóa
         if (nguoiDung.getVaiTro() == 3) {
-            ra.addFlashAttribute("errorMessage", "Không thể xóa Cư dân từ module này. Vui lòng sử dụng trang Quản lý cư dân.");
+            ra.addFlashAttribute("errorMessage",
+                    "Không thể xóa Cư dân từ module này. Vui lòng sử dụng trang Quản lý cư dân.");
             return "redirect:/admin/nguoi-dung";
         }
 

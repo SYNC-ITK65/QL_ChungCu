@@ -1,11 +1,12 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.CanHo;
-import com.sync.itk65.entity.CuDan;
-import com.sync.itk65.entity.HopDong;
-import com.sync.itk65.repository.CanHoRepository;
-import com.sync.itk65.repository.CuDanRepository;
-import com.sync.itk65.repository.HopDongRepository;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -20,12 +21,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
+import com.sync.itk65.entity.CanHo;
+import com.sync.itk65.entity.CuDan;
+import com.sync.itk65.entity.HopDong;
+import com.sync.itk65.repository.CanHoRepository;
+import com.sync.itk65.repository.CuDanRepository;
+import com.sync.itk65.repository.HopDongRepository;
 
 @Service
 public class HopDongService {

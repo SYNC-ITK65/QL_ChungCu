@@ -1,18 +1,19 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.CanHo;
-import com.sync.itk65.entity.KienHang;
-import com.sync.itk65.entity.ThongBao;
-import com.sync.itk65.repository.CanHoRepository;
-import com.sync.itk65.repository.KienHangRepository;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.sync.itk65.entity.CanHo;
+import com.sync.itk65.entity.KienHang;
+import com.sync.itk65.entity.ThongBao;
+import com.sync.itk65.repository.CanHoRepository;
+import com.sync.itk65.repository.KienHangRepository;
 
 @Service
 public class KienHangService {

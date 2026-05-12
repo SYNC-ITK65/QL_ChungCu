@@ -18,11 +18,11 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "cu_dan")
-@PrimaryKeyJoinColumn(name = "id") // THÊM DÒNG NÀY ĐỂ BÁO ĐÂY LÀ KẾT NỐI TỪ BẢNG CHA
-public class CuDan extends NguoiDung {
+@PrimaryKeyJoinColumn(name = "id") // Sử dụng cùng ID với NguoiDung để kế thừa
+public class CuDan extends NguoiDung {  // CuDan kế thừa từ NguoiDung, không cần định nghĩa lại ID
 
     // MÃ CĂN HỘ LÀ KHÓA NGOẠI LIÊN KẾT ĐẾN BẢNG CĂN HỘ
-    @ManyToOne
+    @ManyToOne  // Các cư dân có thể cùng ma_can_ho
     @JoinColumn(name = "ma_can_ho")
     private CanHo canHo;
 

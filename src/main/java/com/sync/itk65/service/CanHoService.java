@@ -1,24 +1,25 @@
 package com.sync.itk65.service;
 
-import com.sync.itk65.entity.CanHo;
-import com.sync.itk65.repository.CanHoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-import jakarta.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
+import com.sync.itk65.entity.CanHo;
+import com.sync.itk65.repository.CanHoRepository;
+
+import jakarta.validation.Valid;
 
 @Service
 @Validated
@@ -44,13 +45,13 @@ public class CanHoService {
     // Hàm lưu căn hộ mới với kiểm tra logic nghiệp vụ Validation
     public void luuCanHo(@Valid CanHo canHo) {
         try {
-            // Lấy danh sách kiểm tra sự tồn tại của Mã căn hộ
-            List<CanHo> tatCaCanHo = layTatCaCanHo();
-            for (CanHo item : tatCaCanHo) {
-                // Kiểm tra mã trùng (Bỏ qua trường hợp đang update chính mã đó)
-                if (item.getMaCanHo() != null && item.getMaCanHo().equals(canHo.getMaCanHo())) {
+            if (canHo.getMaCanHo() != null) {
+                java.util.Optional<CanHo> existingCanHo = canHoRepository.findByMaCanHo(canHo.getMaCanHo());
+                if (existingCanHo.isPresent()) {
+                    CanHo item = existingCanHo.get();
                     if (canHo.getId() == null || !item.getId().equals(canHo.getId())) {
-                        throw new IllegalArgumentException("Mã căn hộ: '" + canHo.getMaCanHo() + "' đã tồn tại! Vui lòng nhập mã khác.");
+                        throw new IllegalArgumentException(
+                                "Mã căn hộ: '" + canHo.getMaCanHo() + "' đã tồn tại! Vui lòng nhập mã khác.");
                     }
                 }
             }

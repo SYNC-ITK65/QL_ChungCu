@@ -39,7 +39,8 @@ public class CuDanService {
             for (CuDan item : tatCaCuDan) {
                 if (item.getCccd() != null && item.getCccd().equals(cuDan.getCccd())) {
                     if (cuDan.getId() == null || !item.getId().equals(cuDan.getId())) {
-                        throw new IllegalArgumentException("Căn cước công dân: '" + cuDan.getCccd() + "' đã được sử dụng!");
+                        throw new IllegalArgumentException(
+                                "Căn cước công dân: '" + cuDan.getCccd() + "' đã được sử dụng!");
                     }
                 }
             }
@@ -64,12 +65,14 @@ public class CuDanService {
 
     // Hàm tìm kiếm cư dân với các tiêu chí và phân trang dữ liệu
     public Page<CuDan> timKiemCuDan(String tuKhoa, String trangThai, int page, int size) {
-        // Cấu hình đối tượng Pageable với trang hiện tại và số lượng phần tử trên mỗi trang
+        // Cấu hình đối tượng Pageable với trang hiện tại và số lượng phần tử trên mỗi
+        // trang
         Pageable pageable = PageRequest.of(page, size);
         return cuDanRepository.timKiemCuDan(tuKhoa, trangThai, pageable);
     }
 
-    // Hàm tìm kiếm cư dân theo ID Căn hộ cụ thể, kết hợp tìm kiếm từ khóa và phân trang
+    // Hàm tìm kiếm cư dân theo ID Căn hộ cụ thể, kết hợp tìm kiếm từ khóa và phân
+    // trang
     public Page<CuDan> timKiemTheoCanHo(Long canHoId, String tuKhoa, String trangThai, int page, int size) {
         // Tạo biến phân trang để hỗ trợ truy vấn cơ sở dữ liệu theo từng phần nhỏ
         Pageable pageable = PageRequest.of(page, size);
@@ -104,7 +107,8 @@ public class CuDanService {
                 row.createCell(1).setCellValue(cuDanItem.getHoTen() == null ? "" : cuDanItem.getHoTen());
                 row.createCell(2).setCellValue(cuDanItem.getSoDienThoai() == null ? "" : cuDanItem.getSoDienThoai());
                 row.createCell(3).setCellValue(
-                        (cuDanItem.getCanHo() != null && cuDanItem.getCanHo().getMaCanHo() != null) ? cuDanItem.getCanHo().getMaCanHo()
+                        (cuDanItem.getCanHo() != null && cuDanItem.getCanHo().getMaCanHo() != null)
+                                ? cuDanItem.getCanHo().getMaCanHo()
                                 : "");
                 row.createCell(4).setCellValue(cuDanItem.getMoiQuanHe() == null ? "" : cuDanItem.getMoiQuanHe());
                 row.createCell(5).setCellValue(cuDanItem.getTrangThai() == null ? "" : cuDanItem.getTrangThai());

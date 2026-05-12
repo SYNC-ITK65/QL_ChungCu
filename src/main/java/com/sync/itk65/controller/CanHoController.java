@@ -85,8 +85,15 @@ public class CanHoController {
 
     // Xóa căn hộ
     @GetMapping("/xoa/{id}")
-    public String xoaCanHo(@PathVariable("id") Long id) {
-        canHoService.xoaCanHo(id);
+    public String xoaCanHo(@PathVariable("id") Long id, RedirectAttributes ra) {
+        try {
+            canHoService.xoaCanHo(id);
+            ra.addFlashAttribute("successMessage", "Xóa căn hộ thành công!");
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            ra.addFlashAttribute("errorMessage", "Không thể xóa căn hộ này vì đang có dữ liệu ràng buộc (Cư dân, Hóa đơn, Hợp đồng...). Vui lòng xóa dữ liệu liên kết trước!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", "Đã xảy ra lỗi hệ thống: " + e.getMessage());
+        }
         return "redirect:/admin/can-ho";
     }
 
