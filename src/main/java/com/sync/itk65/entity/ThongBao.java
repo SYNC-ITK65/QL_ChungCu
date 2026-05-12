@@ -22,7 +22,7 @@ public class ThongBao {
     private String tieuDe;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(name = "noi_dung", columnDefinition = "NVARCHAR(MAX)", nullable = false)
+    @Column(name = "noi_dung", columnDefinition = "TEXT", nullable = false)
     private String noiDung;
 
     @Column(name = "ngay_dang")

@@ -22,10 +22,10 @@ public class KhaoSat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tieu_de", columnDefinition = "NVARCHAR(255)", nullable = false)
+    @Column(name = "tieu_de", columnDefinition = "TEXT", nullable = false)
     private String tieuDe;
 
-    @Column(name = "mo_ta", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "mo_ta", columnDefinition = "TEXT")
     private String moTa;
 
     @Column(name = "thoi_gian_bat_dau", nullable = false)
@@ -35,7 +35,6 @@ public class KhaoSat {
     @Column(name = "thoi_gian_ket_thuc", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime thoiGianKetThuc;
-
 
     // 1 khảo sát có 1 list lựa chọn
     @OneToMany(mappedBy = "khaoSat", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -99,13 +98,16 @@ public class KhaoSat {
 
     public String getTrangThaiHienTai() {
         LocalDateTime now = LocalDateTime.now();
-        if (thoiGianBatDau != null && now.isBefore(thoiGianBatDau)) return "SẮP MỞ";
-        if (thoiGianKetThuc != null && now.isAfter(thoiGianKetThuc)) return "ĐÃ ĐÓNG";
+        if (thoiGianBatDau != null && now.isBefore(thoiGianBatDau))
+            return "SẮP MỞ";
+        if (thoiGianKetThuc != null && now.isAfter(thoiGianKetThuc))
+            return "ĐÃ ĐÓNG";
         return "ĐANG MỞ";
     }
 
     public int getTongSoVote() {
-        if (danhSachLuaChon == null) return 0;
+        if (danhSachLuaChon == null)
+            return 0;
         return danhSachLuaChon.stream()
                 .filter(lc -> lc != null && lc.getSoLuotBinhChon() != null) // Lọc bỏ các phần tử lỗi
                 .mapToInt(LuaChonKhaoSat::getSoLuotBinhChon)
