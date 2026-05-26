@@ -5,6 +5,7 @@ import com.sync.itk65.repository.PhuongTienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
@@ -99,5 +100,10 @@ public class PhuongTienService {
         String normalized = Normalizer.normalize(value, Normalizer.Form.NFD);
         normalized = normalized.replaceAll("\\p{M}", "");
         return normalized.replace('đ', 'd').replace('Đ', 'D');
+    }
+    // Tiếp nhận tham số từ Controller, đóng gói phân trang và gọi Query dưới Database
+    public Page<PhuongTien> timKiemPhuongTien(String tuKhoa, String trangThai, String loaiXe, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return phuongTienRepository.timKiemVaLocPhuongTien(tuKhoa, trangThai, loaiXe, pageable);
     }
 }

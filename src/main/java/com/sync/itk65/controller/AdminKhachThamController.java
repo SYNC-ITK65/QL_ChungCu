@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/admin/duyet-yeu-cau")
-public class AdminLeTanController {
+public class AdminKhachThamController {
 
     @Autowired
     private DangKyKhachThamService khachThamService;
@@ -23,13 +23,32 @@ public class AdminLeTanController {
                                     @RequestParam(defaultValue = "10") int size,
                                     @RequestParam(required = false) String tuKhoa,
                                     @RequestParam(required = false) String trangThai) {
-        Page<DangKyKhachTham> trangDuLieu = khachThamService.searchKhachTham(tuKhoa, trangThai, page, size);
+
+        Page<DangKyKhachTham> trangDuLieu;
+
+        if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) || (trangThai != null && !trangThai.trim().isEmpty())) {
+            trangDuLieu = khachThamService.timKiemKhachTham(tuKhoa, trangThai, page, size);
+        } else {
+            trangDuLieu = khachThamService.layTatCa(page, size);
+        }
+
         model.addAttribute("listKhach", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+
         model.addAttribute("tuKhoa", tuKhoa);
         model.addAttribute("trangThai", trangThai);
+
+        StringBuilder queryString = new StringBuilder();
+        if (tuKhoa != null && !tuKhoa.trim().isEmpty()) queryString.append("tuKhoa=").append(tuKhoa).append("&");
+        if (trangThai != null && !trangThai.trim().isEmpty()) queryString.append("trangThai=").append(trangThai).append("&");
+
+        String finalQuery = queryString.toString();
+        if (finalQuery.endsWith("&")) {
+            finalQuery = finalQuery.substring(0, finalQuery.length() - 1);
+        }
+        model.addAttribute("queryString", finalQuery);
 
         return "admin/duyet_yeu_cau";
     }

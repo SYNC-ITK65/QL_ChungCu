@@ -15,16 +15,40 @@ public class PhanAnhController {
     @Autowired
     private PhanAnhService phanAnhService;
 
-    // 1. Xem danh sách phàn nàn của cư dân
     @GetMapping
     public String listPhanAnh(Model model,
                               @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "10") int size) {
-        Page<PhanAnh> trangDuLieu = phanAnhService.findAll(page, size);
+                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(required = false) String tuKhoa,
+                              @RequestParam(required = false) String trangThai) {
+
+        Page<PhanAnh> trangDuLieu;
+
+        if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) ||
+                (trangThai != null && !trangThai.trim().isEmpty())) {
+            trangDuLieu = phanAnhService.timKiemPhanAnh(tuKhoa, trangThai, page, size);
+        } else {
+            trangDuLieu = phanAnhService.findAll(page, size);
+        }
+
         model.addAttribute("phanAnhs", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("trangThai", trangThai);
+
+        StringBuilder queryString = new StringBuilder();
+        if (tuKhoa != null && !tuKhoa.trim().isEmpty()) queryString.append("tuKhoa=").append(tuKhoa).append("&");
+        if (trangThai != null && !trangThai.trim().isEmpty()) queryString.append("trangThai=").append(trangThai).append("&");
+
+        String finalQuery = queryString.toString();
+        if (finalQuery.endsWith("&")) {
+            finalQuery = finalQuery.substring(0, finalQuery.length() - 1);
+        }
+        model.addAttribute("queryString", finalQuery);
+
         return "admin/phan_anh_list";
     }
 

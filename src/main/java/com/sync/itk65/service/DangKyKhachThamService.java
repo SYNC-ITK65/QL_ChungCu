@@ -13,10 +13,10 @@ public class DangKyKhachThamService {
     @Autowired private DangKyKhachThamRepository repository;
     public void luu(DangKyKhachTham khach) { repository.save(khach); }
     public Page<DangKyKhachTham> layTatCa(int page, int size) { return repository.findAllByOrderByThoiGianDuKienDesc(PageRequest.of(page, size)); }
-    
-    public Page<DangKyKhachTham> searchKhachTham(String tuKhoa, String trangThai, int page, int size) {
+
+    public Page<DangKyKhachTham> timKiemKhachTham(String tuKhoa, String trangThai, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return repository.searchKhachTham(tuKhoa, trangThai, pageable);
+        return repository.timKiemVaLocKhachTham(tuKhoa, trangThai, pageable);
     }
 
     public List<DangKyKhachTham> layTatCa() { return repository.findAll(); }

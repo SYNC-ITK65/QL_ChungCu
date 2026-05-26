@@ -27,6 +27,37 @@
             <div class="row">
                 <div class="col-md-12">
                     <h4 th:text="#{pt.ui.danh_sach_xe_trong_h}">Danh sách xe trong hầm</h4>
+                    <form method="get" action="/admin/phuong-tien" class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}"
+                                   placeholder="Nhập biển số xe hoặc mã phòng (VD: 29A, A1-05)...">
+                        </div>
+
+                        <div class="col-md-3">
+                            <select name="trangThai" class="form-select">
+                                <option value="">-- Tất cả trạng thái --</option>
+                                <option value="Chờ duyệt" th:selected="${trangThai == 'Chờ duyệt'}">Chờ duyệt</option>
+                                <option value="Đã duyệt" th:selected="${trangThai == 'Đã duyệt'}">Đã duyệt</option>
+                                <option value="Từ chối" th:selected="${trangThai == 'Từ chối'}">Từ chối</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <select name="loaiXe" class="form-select">
+                                <option value="">-- Tất cả loại xe --</option>
+                                <option value="Ô tô" th:selected="${loaiXe == 'Ô tô'}">Ô tô</option>
+                                <option value="Xe máy" th:selected="${loaiXe == 'Xe máy'}">Xe máy</option>
+                                <option value="Xe điện" th:selected="${loaiXe == 'Xe điện'}">Xe điện</option>
+                                <option value="Xe đạp" th:selected="${loaiXe == 'Xe đạp'}">Xe đạp</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
                     <table class="table table-hover mt-3 no-paging">
                         <thead class="table-dark">
                         <tr>
@@ -66,7 +97,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div th:replace="~{fragments/pagination :: paging('/admin/phuong-tien', '')}"></div>
+                    <div th:replace="~{fragments/pagination :: paging('/admin/phuong-tien', 'tuKhoa=' + (${tuKhoa} ?: '') + '&trangThai=' + (${trangThai} ?: '') + '&loaiXe=' + (${loaiXe} ?: ''))}"></div>
                 </div>
             </div>
         </div>

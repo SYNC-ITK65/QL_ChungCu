@@ -40,4 +40,8 @@ public class PhanAnhService {
     public void deleteById(Long id) {
         phanAnhRepository.deleteById(id);
     }
+    public Page<PhanAnh> timKiemPhanAnh(String tuKhoa, String trangThai, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return phanAnhRepository.timKiemVaLocPhanAnh(tuKhoa, trangThai, pageable);
+    }
 }
