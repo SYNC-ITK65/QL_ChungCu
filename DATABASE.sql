@@ -196,20 +196,6 @@ CREATE TABLE phuong_tien (
     FOREIGN KEY (can_ho_id) REFERENCES can_ho(id)
 );
 
-CREATE TABLE tam_tru_tam_vang (
-    id BIGINT IDENTITY(1,1) PRIMARY KEY,
-    cu_dan_id BIGINT NOT NULL,
-    ho_ten_khach NVARCHAR(255),
-    cccd_khach NVARCHAR(255),
-    loai NVARCHAR(255) NOT NULL,
-    ngay_bat_dau DATE NOT NULL,
-    ngay_ket_thuc DATE NOT NULL,
-    ly_do NVARCHAR(255),
-    trang_thai_duyet NVARCHAR(255) NOT NULL,
-    ly_do_tu_choi NVARCHAR(255),
-    FOREIGN KEY (cu_dan_id) REFERENCES cu_dan(id)
-);
-
 CREATE TABLE thanh_toan (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
     hoa_don_id BIGINT NOT NULL,

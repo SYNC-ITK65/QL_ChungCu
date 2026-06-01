@@ -180,7 +180,7 @@ public class CuDanController {
         } catch (DataIntegrityViolationException e) {
             // Bắt lỗi ràng buộc khóa ngoại (Foreign Key Constraint)
             ra.addFlashAttribute("errorMessage",
-                    "Không thể xóa cư dân này vì đang tồn tại dữ liệu ràng buộc như Hợp đồng, Dịch vụ, Khách thăm, Tạm trú/Tạm vắng hoặc Lịch sử vote. Vui lòng xóa các dữ liệu liên quan trước!");
+                    "Không thể xóa cư dân này vì đang tồn tại dữ liệu ràng buộc như Hợp đồng, Dịch vụ, Khách thăm hoặc Lịch sử vote. Vui lòng xóa các dữ liệu liên quan trước!");
         } catch (Exception e) {
             // Bắt các lỗi khác
             ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi xóa cư dân: " + e.getMessage());

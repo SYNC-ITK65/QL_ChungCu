@@ -62,10 +62,6 @@ public class CuDan extends NguoiDung {
     @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DatDichVu> datDichVus;
 
-    // Mối quan hệ 1-N với tạm trú tạm vắng - Xóa cư dân sẽ xóa tất cả tạm trú tạm vắng
-    @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TamTruTamVang> tamTruTamVangs;
-
     // Mối quan hệ 1-N với lịch sử vote - Xóa cư dân sẽ xóa tất cả lịch sử vote
     @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LichSuVote> lichSuVotes;
@@ -132,14 +128,6 @@ public class CuDan extends NguoiDung {
 
     public void setDatDichVus(List<DatDichVu> datDichVus) {
         this.datDichVus = datDichVus;
-    }
-
-    public List<TamTruTamVang> getTamTruTamVangs() {
-        return tamTruTamVangs;
-    }
-
-    public void setTamTruTamVangs(List<TamTruTamVang> tamTruTamVangs) {
-        this.tamTruTamVangs = tamTruTamVangs;
     }
 
     public List<LichSuVote> getLichSuVotes() {
