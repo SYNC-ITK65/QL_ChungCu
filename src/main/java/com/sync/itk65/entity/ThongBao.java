@@ -1,6 +1,8 @@
 package com.sync.itk65.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,19 +13,23 @@ public class ThongBao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Tiêu đề không được để trống")
     @Column(name = "tieu_de", nullable = false)
     private String tieuDe;
 
     // Sửa TEXT thành NVARCHAR(MAX)
+    @NotBlank(message = "Nội dung không được để trống")
     @Column(name = "noi_dung", columnDefinition = "NVARCHAR(MAX)", nullable = false)
     private String noiDung;
 
     @Column(name = "ngay_dang")
     private LocalDateTime ngayDang;
 
+    @NotNull(message = "Vui lòng chọn loại thông báo")
     @Column(name = "loai", nullable = false)
     private Integer loai; // 1: Bảng tin chung, 2: Cẩm nang
 
+    @NotBlank(message = "Vui lòng chọn đối tượng nhận thông báo")
     @Column(name = "doi_tuong_gui")
     private String doiTuongGui; // Đối tượng nhận: ALL, HO_GIA_DINH, NHIEU_HO, TANG
 

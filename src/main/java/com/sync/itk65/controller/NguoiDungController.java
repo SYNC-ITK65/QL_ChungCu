@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
@@ -84,53 +86,62 @@ public class NguoiDungController {
         return "admin/nguoi_dung_form";
     }
 
-    // Hàm xử lý lưu dữ liệu từ form (Chỉ lưu Admin/Nhân viên - NguoiDung thuần túy)
+    // Hàm xử lý lưu dữ liệu từ form (Chỉ lưu Admin/Quản lý/Lễ tân/Bảo vệ - NguoiDung thuần túy)
     @PostMapping("/luu")
-    public String luuNguoiDung(@ModelAttribute("nguoiDung") NguoiDung nguoiDung, RedirectAttributes ra) {
-        try {
-            // Đảm bảo vai trò chỉ là Admin (1) hoặc Nhân viên (2)
-            if (nguoiDung.getVaiTro() != 1 && nguoiDung.getVaiTro() != 2) {
-                ra.addFlashAttribute("errorMessage", "Module này chỉ quản lý tài khoản Admin và Nhân viên. Vui lòng sử dụng module Quản lý cư dân.");
-                return "redirect:/admin/nguoi-dung/tao-moi";
-            }
+    public String luuNguoiDung(@Valid @ModelAttribute("nguoiDung") NguoiDung nguoiDung, BindingResult bindingResult, Model model, RedirectAttributes ra) {
+        // Đảm bảo vai trò chỉ là Admin (1), Quản lý (2), Lễ tân (4) hoặc Bảo vệ (5)
+        int vaiTro = nguoiDung.getVaiTro();
+        if (vaiTro != 1 && vaiTro != 2 && vaiTro != 4 && vaiTro != 5) {
+            model.addAttribute("errorMessage", "Module này chỉ quản lý tài khoản Admin, Quản lý, Lễ tân và Bảo vệ. Vui lòng sử dụng module Quản lý cư dân.");
+            return "admin/nguoi_dung_form";
+        }
 
-            // Xử lý mật khẩu: giữ mật khẩu cũ khi sửa, đặt mặc định khi tạo mới
-            if (nguoiDung.getId() != null) {
-                NguoiDung nguoiDungCu = nguoiDungService.layNguoiDungTheoId(nguoiDung.getId());
-                if (nguoiDungCu != null) {
-                    // Nếu mật khẩu rỗng (không sửa), giữ nguyên mật khẩu cũ
-                    if (nguoiDung.getMatKhauMaHoa() == null || nguoiDung.getMatKhauMaHoa().isEmpty()) {
-                        nguoiDung.setMatKhauMaHoa(nguoiDungCu.getMatKhauMaHoa());
-                    }
-                }
-            } else {
-                // Tạo mới: đặt mật khẩu mặc định nếu rỗng
+        // Xử lý mật khẩu: giữ mật khẩu cũ khi sửa, đặt mặc định khi tạo mới
+        if (nguoiDung.getId() != null) {
+            NguoiDung nguoiDungCu = nguoiDungService.layNguoiDungTheoId(nguoiDung.getId());
+            if (nguoiDungCu != null) {
+                // Nếu mật khẩu rỗng (không sửa), giữ nguyên mật khẩu cũ
                 if (nguoiDung.getMatKhauMaHoa() == null || nguoiDung.getMatKhauMaHoa().isEmpty()) {
-                    nguoiDung.setMatKhauMaHoa("1234");
+                    nguoiDung.setMatKhauMaHoa(nguoiDungCu.getMatKhauMaHoa());
                 }
             }
+        } else {
+            // Tạo mới: đặt mật khẩu mặc định nếu rỗng
+            if (nguoiDung.getMatKhauMaHoa() == null || nguoiDung.getMatKhauMaHoa().isEmpty()) {
+                nguoiDung.setMatKhauMaHoa("1234");
+            }
+        }
 
+        // Lọc bỏ lỗi validation trên các trường không có trong form (ví dụ: matKhauMaHoa đã bị ẩn)
+        java.util.List<String> allowedFields = java.util.Arrays.asList(
+            "hoTen", "tenDangNhap", "email", "soDienThoai", "vaiTro"
+        );
+        org.springframework.validation.BindingResult filteredResult = new org.springframework.validation.BeanPropertyBindingResult(
+                nguoiDung, "nguoiDung");
+        for (org.springframework.validation.FieldError error : bindingResult.getFieldErrors()) {
+            if (allowedFields.contains(error.getField())) {
+                filteredResult.addError(error);
+            }
+        }
+        for (org.springframework.validation.ObjectError error : bindingResult.getGlobalErrors()) {
+            filteredResult.addError(error);
+        }
+
+        if (filteredResult.hasErrors()) {
+            // Đẩy lại lỗi vào model để Thymeleaf hiển thị
+            model.addAttribute("org.springframework.validation.BindingResult.nguoiDung", filteredResult);
+            return "admin/nguoi_dung_form";
+        }
+
+        try {
             nguoiDungService.luuNguoiDung(nguoiDung);
             return "redirect:/admin/nguoi-dung";
         } catch (IllegalArgumentException e) {
-            // Ném thông báo lỗi về form thông qua biến flash attribute
-            ra.addFlashAttribute("errorMessage", e.getMessage());
-
-            // Trả người dùng về lại màn hình Cập nhật hoặc Thêm mới tương ứng
-            if (nguoiDung.getId() != null) {
-                return "redirect:/admin/nguoi-dung/sua/" + nguoiDung.getId();
-            } else {
-                return "redirect:/admin/nguoi-dung/tao-moi";
-            }
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/nguoi_dung_form";
         } catch (Exception e) {
-            // Bắt tất cả lỗi khác (bao gồm ConstraintViolationException)
-            ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi lưu người dùng. Vui lòng kiểm tra lại thông tin!");
-
-            if (nguoiDung.getId() != null) {
-                return "redirect:/admin/nguoi-dung/sua/" + nguoiDung.getId();
-            } else {
-                return "redirect:/admin/nguoi-dung/tao-moi";
-            }
+            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu người dùng. Vui lòng kiểm tra lại thông tin!");
+            return "admin/nguoi_dung_form";
         }
     }
 

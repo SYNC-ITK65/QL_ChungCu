@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface CuDanRepository extends JpaRepository<CuDan, Long> {
 
+    java.util.Optional<CuDan> findByCccd(String cccd);
+
     // Truy vấn danh sách cư dân thuộc một căn hộ cụ thể có kết hợp tìm kiếm và phân trang
     // - Lọc chính xác theo id của căn hộ
     // - Tìm kiếm LIKE (từ khóa) trên các trường: hoTen, soDienThoai, cccd

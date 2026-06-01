@@ -39,69 +39,77 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
-        // Kiểm tra quyền Admin hoặc Nhân Viên
+        // Kiểm tra quyền Admin, Quản lý, Lễ tân hoặc Bảo vệ
         NguoiDung nguoiDung = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
-        if (nguoiDung == null || (nguoiDung.getVaiTro() != 1 && nguoiDung.getVaiTro() != 2)) {
-            return "redirect:/"; // Về trang đăng nhập nếu chưa đăng nhập hoặc không phải admin/staff
+        if (nguoiDung == null) {
+            return "redirect:/";
+        }
+        int role = nguoiDung.getVaiTro();
+        if (role != 1 && role != 2 && role != 4 && role != 5) {
+            return "redirect:/"; // Về trang đăng nhập nếu chưa đăng nhập hoặc không phải admin/staff/receptionist/security
         }
 
         // Lấy số liệu từ DB
         long totalCanHo = canHoRepository.countTotalCanHo();
         long vacantCanHo = canHoRepository.countVacantCanHo();
         long residentResiding = cuDanRepository.countResidentResiding();
-        Double sumRevenue = hoaDonRepository.sumRevenueCurrentMonth();
-
-        // Xử lý null cho doanh thu (trường hợp chưa có hóa đơn nào)
-        if (sumRevenue == null) {
-            sumRevenue = 0.0;
-        }
-
-        // CHART: Doanh thu 6 tháng gần nhất
-        java.time.LocalDate sixMonthsAgo = java.time.LocalDate.now().minusMonths(5).withDayOfMonth(1);
-        java.util.List<Object[]> revenueDataRaw = hoaDonRepository.getRevenueLast6Months(sixMonthsAgo);
-        
-        java.util.List<String> labelsRevenue = new java.util.ArrayList<>();
-        java.util.List<Double> dataRevenue = new java.util.ArrayList<>();
-        
-        java.time.LocalDate current = sixMonthsAgo;
-        for (int i = 0; i < 6; i++) {
-            int m = current.getMonthValue();
-            int y = current.getYear();
-            labelsRevenue.add("T" + m + "/" + y);
-            
-            double total = 0.0;
-            for (Object[] row : revenueDataRaw) {
-                int dbMonth = ((Number) row[0]).intValue();
-                int dbYear = ((Number) row[1]).intValue();
-                if (dbMonth == m && dbYear == y) {
-                    total = ((Number) row[2]).doubleValue();
-                    break;
-                }
-            }
-            dataRevenue.add(total);
-            current = current.plusMonths(1);
-        }
-        
         long occupiedCanHo = totalCanHo - vacantCanHo;
-        model.addAttribute("labelsRevenue", labelsRevenue);
-        model.addAttribute("dataRevenue", dataRevenue);
-        model.addAttribute("occupiedCanHo", occupiedCanHo);
 
-        // Phản ánh: Đếm riêng "Chờ xử lý" và "Đang xử lý" (SỬ DỤNG LIKE ĐỂ TRÁNH LỖI ĐÁNH VẦN)
-        long countChoXuLy = phanAnhRepository.countChoXuLy();
-        long countDangXuLy = phanAnhRepository.countDangXuLy();
-
-        // Tài sản cần bảo trì
-        long countAlertTaiSan = taiSanRepository.findAlertAssets(java.time.LocalDate.now().plusDays(7)).size();
-
-        // Đẩy vào Model
+        // Đẩy thông số cơ bản vào Model
         model.addAttribute("totalCanHo", totalCanHo);
         model.addAttribute("vacantCanHo", vacantCanHo);
         model.addAttribute("residentResiding", residentResiding);
-        model.addAttribute("sumRevenue", sumRevenue);
-        model.addAttribute("countChoXuLy", countChoXuLy);
-        model.addAttribute("countDangXuLy", countDangXuLy);
-        model.addAttribute("countAlertTaiSan", countAlertTaiSan);
+        model.addAttribute("occupiedCanHo", occupiedCanHo);
+
+        // Chỉ Admin (1) và Quản lý (2) mới được truy cập dữ liệu nhạy cảm
+        if (role == 1 || role == 2) {
+            Double sumRevenue = hoaDonRepository.sumRevenueCurrentMonth();
+            // Xử lý null cho doanh thu (trường hợp chưa có hóa đơn nào)
+            if (sumRevenue == null) {
+                sumRevenue = 0.0;
+            }
+
+            // CHART: Doanh thu 6 tháng gần nhất
+            java.time.LocalDate sixMonthsAgo = java.time.LocalDate.now().minusMonths(5).withDayOfMonth(1);
+            java.util.List<Object[]> revenueDataRaw = hoaDonRepository.getRevenueLast6Months(sixMonthsAgo);
+            
+            java.util.List<String> labelsRevenue = new java.util.ArrayList<>();
+            java.util.List<Double> dataRevenue = new java.util.ArrayList<>();
+            
+            java.time.LocalDate current = sixMonthsAgo;
+            for (int i = 0; i < 6; i++) {
+                int m = current.getMonthValue();
+                int y = current.getYear();
+                labelsRevenue.add("T" + m + "/" + y);
+                
+                double total = 0.0;
+                for (Object[] row : revenueDataRaw) {
+                    int dbMonth = ((Number) row[0]).intValue();
+                    int dbYear = ((Number) row[1]).intValue();
+                    if (dbMonth == m && dbYear == y) {
+                        total = ((Number) row[2]).doubleValue();
+                        break;
+                    }
+                }
+                dataRevenue.add(total);
+                current = current.plusMonths(1);
+            }
+
+            // Phản ánh: Đếm riêng "Chờ xử lý" và "Đang xử lý"
+            long countChoXuLy = phanAnhRepository.countChoXuLy();
+            long countDangXuLy = phanAnhRepository.countDangXuLy();
+
+            // Tài sản cần bảo trì
+            long countAlertTaiSan = taiSanRepository.findAlertAssets(java.time.LocalDate.now().plusDays(7)).size();
+
+            // Đẩy vào Model
+            model.addAttribute("labelsRevenue", labelsRevenue);
+            model.addAttribute("dataRevenue", dataRevenue);
+            model.addAttribute("sumRevenue", sumRevenue);
+            model.addAttribute("countChoXuLy", countChoXuLy);
+            model.addAttribute("countDangXuLy", countDangXuLy);
+            model.addAttribute("countAlertTaiSan", countAlertTaiSan);
+        }
 
         return "admin/dashboard";
     }

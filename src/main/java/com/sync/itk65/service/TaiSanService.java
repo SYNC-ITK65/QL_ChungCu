@@ -57,17 +57,11 @@ public class TaiSanService {
     }
 
     public TaiSan saveTaiSan(TaiSan taiSan) {
-        // Tạo mới: Tính ngayBaoTriTiepTheo nếu chưa có
-        if (taiSan.getId() == null && taiSan.getNgayBaoTriTiepTheo() == null
-                && taiSan.getNgayMua() != null && taiSan.getChuKyBaoTri() != null) {
+        // Luôn tính toán lại ngayBaoTriTiepTheo để chặn việc lấy giá trị từ form
+        if (taiSan.getNgayMua() != null && taiSan.getChuKyBaoTri() != null) {
             taiSan.setNgayBaoTriTiepTheo(taiSan.getNgayMua().plusMonths(taiSan.getChuKyBaoTri()));
-        }
-
-        // Cập nhật: Nếu ngayBaoTriTiepTheo bị để trống nhưng có ngayMua và chuKyBaoTri,
-        // tự động tính lại để đảm bảo dữ liệu luôn hợp lý
-        if (taiSan.getId() != null && taiSan.getNgayBaoTriTiepTheo() == null
-                && taiSan.getNgayMua() != null && taiSan.getChuKyBaoTri() != null) {
-            taiSan.setNgayBaoTriTiepTheo(taiSan.getNgayMua().plusMonths(taiSan.getChuKyBaoTri()));
+        } else {
+            taiSan.setNgayBaoTriTiepTheo(null);
         }
 
         return taiSanRepository.save(taiSan);

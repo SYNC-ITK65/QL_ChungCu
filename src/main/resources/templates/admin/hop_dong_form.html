@@ -73,7 +73,7 @@
                             </label>
                             <select class="form-select" name="canHoId" id="canHoId" required th:with="currentCanHoId=${hopDong.canHo != null ? hopDong.canHo.id : ''}">
                                 <option value="" disabled th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ --</option>
-                                <option th:each="canHo : ${danhSachCanHo}" th:value="${canHo.id}" th:data-trangthai="${canHo.trangThai}" th:selected="${currentCanHoId == canHo.id}" th:text="${canHo.maCanHo} + ' (' + ${canHo.trangThai} + ')'"></option>
+                                <option th:each="canHo : ${danhSachCanHo}" th:value="${canHo.id}" th:data-trangthai="${canHo.trangThaiHienThi}" th:selected="${currentCanHoId == canHo.id}" th:text="${canHo.maCanHo} + ' (' + ${canHo.trangThaiHienThi} + ')'"></option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">

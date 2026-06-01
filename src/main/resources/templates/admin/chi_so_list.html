@@ -34,7 +34,7 @@
                         <label class="form-label" th:text="#{hdon.form.can_ho}">Căn hộ</label>
                         <select class="form-select" name="canHoId">
                             <option value="" th:text="#{cs.ds.tat_ca_can_ho}">-- Tất cả căn hộ --</option>
-                            <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|${ch.maCanHo} (${ch.trangThai})|" th:selected="${canHoId != null and canHoId == ch.id}">
+                            <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|${ch.maCanHo} (${ch.trangThaiHienThi})|" th:selected="${canHoId != null and canHoId == ch.id}">
                             </option>
                         </select>
                     </div>

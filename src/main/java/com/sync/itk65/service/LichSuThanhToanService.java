@@ -43,7 +43,8 @@ public class LichSuThanhToanService {
 
     // Thêm l ch s thanh toán khi hóa ð n ñã thanh toán
     // synchronized để chống race condition khi admin double-click
-    public synchronized void themLichSuThanhToan(HoaDon hoaDon, String phuongThuc, String nguoiThanhToan, String ghiChu) {
+    public synchronized void themLichSuThanhToan(HoaDon hoaDon, String phuongThuc, String nguoiThanhToan,
+            String ghiChu) {
         // Kiểm tra hóa đơn đã có trong lịch sử chưa (check 1)
         if (kiemTraDaThanhToan(hoaDon.getId())) {
             throw new RuntimeException("Hóa đơn này đã có trong lịch sử thanh toán");

@@ -16,6 +16,10 @@
         <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
         <div class="flex-grow-1 p-4">
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                <span th:text="${errorMessage}"></span>
+            </div>
+
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0" th:text="${thongBao.id == null} ? #{tb.form.them_tieude} : #{tb.form.sua_tieude}"></h4>
@@ -29,6 +33,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold" th:text="#{tb.form.tieude}">Tiêu đề</label>
                                     <input type="text" class="form-control form-control-lg" th:field="*{tieuDe}" required th:placeholder="#{tb.form.tieude_goi_y}">
+                                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('tieuDe')}" th:errors="*{tieuDe}"></div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -38,6 +43,7 @@
                                         <option value="1" th:text="#{tb.loai.tin_tuc}">📢 Bảng tin chung</option>
                                         <option value="2" th:text="#{tb.loai.cam_nang}">📚 Cẩm nang cư dân</option>
                                     </select>
+                                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('loai')}" th:errors="*{loai}"></div>
                                 </div>
                             </div>
                         </div>
@@ -52,6 +58,7 @@
                                         <option value="NHIEU_HO" th:text="#{tb.dt.nhieu_ho}">Gửi theo nhiều hộ</option>
                                         <option value="TANG" th:text="#{tb.dt.tang}">Gửi theo tầng</option>
                                     </select>
+                                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('doiTuongGui')}" th:errors="*{doiTuongGui}"></div>
                                 </div>
                             </div>
                             <div class="col-md-8" id="khungDoiTuong" style="display: none;">
@@ -64,7 +71,7 @@
                                         <select class="form-select" id="chonCanHo" multiple="multiple" style="width: 100%;">
                                             <option th:each="ch : ${danhSachCanHo}" 
                                                     th:value="${ch.maCanHo}" 
-                                                    th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
+                                                    th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
                                             </option>
                                         </select>
                                     </div>
@@ -80,6 +87,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold" th:text="#{tb.form.noi_dung}">Nội dung chi tiết</label>
                             <textarea class="form-control" th:field="*{noiDung}" id="noiDung" rows="15"></textarea>
+                            <div class="text-danger mt-1" th:if="${#fields.hasErrors('noiDung')}" th:errors="*{noiDung}"></div>
                         </div>
 
                         <div class="card bg-light mb-3">
@@ -108,7 +116,7 @@
     <!-- Summernote Lite JS -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 
-    <script>
+    <script th:inline="javascript">
         $(document).ready(function() {
             // Khởi tạo Summernote WYSIWYG trên textarea #noiDung
             $('#noiDung').summernote({
@@ -163,9 +171,6 @@
 
             if (selectObj === "ALL") {
                 inputContainer.style.display = "none";
-                txtInput.removeAttribute("required");
-                $('#chonCanHo').removeAttr("required");
-                $('#nhapTang').removeAttr("required");
                 // Clear state when swapping
                 txtInput.value = "";
                 $('#chonCanHo').val(null).trigger('change');
@@ -177,8 +182,6 @@
                     labelObj.innerText = selectObj === "HO_GIA_DINH" ? [[#{tb.form.chon_1_ho_gia_dinh}]] : [[#{tb.form.chon_nhieu_ho_gia_dinh}]];
                     canHoContainer.style.display = "block";
                     tangContainer.style.display = "none";
-                    $('#chonCanHo').attr("required", "required");
-                    $('#nhapTang').removeAttr("required");
                     
                     if (selectObj === "HO_GIA_DINH") {
                         $('#chonCanHo').select2({ maximumSelectionLength: 1, width: '100%' });
@@ -193,8 +196,6 @@
                     labelObj.innerText = [[#{tb.form.ds_tang_nhan}]];
                     canHoContainer.style.display = "none";
                     tangContainer.style.display = "block";
-                    $('#nhapTang').attr("required", "required");
-                    $('#chonCanHo').removeAttr("required");
                     
                     // Trigger sync
                     txtInput.value = $('#nhapTang').val();
@@ -218,6 +219,23 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(toggleDoiTuongInput, 100);
+            
+            $('form').on('submit', function(e) {
+                var selectObj = $("#doiTuongGui").val();
+                if (selectObj === "HO_GIA_DINH" || selectObj === "NHIEU_HO") {
+                    var vals = $('#chonCanHo').val();
+                    if (!vals || vals.length === 0) {
+                        e.preventDefault();
+                        Swal.fire({ icon: 'warning', title: 'Thiếu thông tin', text: 'Vui lòng chọn ít nhất 1 căn hộ!' });
+                    }
+                } else if (selectObj === "TANG") {
+                    var val = $('#nhapTang').val();
+                    if (!val || val.trim() === '') {
+                        e.preventDefault();
+                        Swal.fire({ icon: 'warning', title: 'Thiếu thông tin', text: 'Vui lòng nhập tầng!' });
+                    }
+                }
+            });
         });
     </script>
 

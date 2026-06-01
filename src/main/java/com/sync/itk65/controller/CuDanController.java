@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sync.itk65.entity.CuDan;
 import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.CuDanService;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 
 @Controller
 @RequestMapping("/admin/cu-dan")
@@ -101,7 +104,8 @@ public class CuDanController {
 
     // Xử lý lưu (Lưu chung cả user info và Resident info nhờ kế thừa)
     @PostMapping("/luu")
-    public String luuCuDan(@ModelAttribute("cuDan") CuDan cuDan, RedirectAttributes ra) {
+    public String luuCuDan(@Valid @ModelAttribute("cuDan") CuDan cuDan, BindingResult bindingResult, Model model,
+            RedirectAttributes ra) {
         // Xử lý lỗi Căn hộ rỗng -> Hibernate không lưu được đối tượng có ID null
         if (cuDan.getCanHo() != null && cuDan.getCanHo().getId() == null) {
             cuDan.setCanHo(null);
@@ -128,27 +132,42 @@ public class CuDanController {
             }
         }
 
+        // Lọc bỏ lỗi validation trên các trường không có trong form
+        // Chỉ giữ lại lỗi của các trường thực sự được hiển thị cho người dùng
+        java.util.List<String> allowedFields = java.util.Arrays.asList(
+            "hoTen", "soDienThoai", "tenDangNhap", "email", "ngaySinh", 
+            "cccd", "canHo", "canHo.id", "moiQuanHe", "trangThai"
+        );
+        org.springframework.validation.BindingResult filteredResult = new org.springframework.validation.BeanPropertyBindingResult(
+                cuDan, "cuDan");
+        for (org.springframework.validation.FieldError error : bindingResult.getFieldErrors()) {
+            if (allowedFields.contains(error.getField())) {
+                filteredResult.addError(error);
+            }
+        }
+        for (org.springframework.validation.ObjectError error : bindingResult.getGlobalErrors()) {
+            filteredResult.addError(error);
+        }
+
+        if (filteredResult.hasErrors()) {
+            // Đẩy lại lỗi vào model để Thymeleaf hiển thị
+            model.addAttribute("org.springframework.validation.BindingResult.cuDan", filteredResult);
+            model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+            return "admin/cu_dan_form";
+        }
+
         try {
             cuDanService.luuCuDan(cuDan);
+            ra.addFlashAttribute("thongBaoThanhCong", "Lưu cư dân thành công!");
             return "redirect:/admin/cu-dan";
         } catch (IllegalArgumentException e) {
-            // Ném lỗi nghiệp vụ về lại file giao diện (form) để người dùng xem
-            ra.addFlashAttribute("errorMessage", e.getMessage());
-
-            if (cuDan.getId() != null) {
-                return "redirect:/admin/cu-dan/sua/" + cuDan.getId();
-            } else {
-                return "redirect:/admin/cu-dan/tao-moi";
-            }
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+            return "admin/cu_dan_form";
         } catch (Exception e) {
-            // Bắt tất cả lỗi khác (bao gồm ConstraintViolationException) tránh lỗi 500
-            ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi lưu cư dân. Vui lòng kiểm tra lại thông tin!");
-
-            if (cuDan.getId() != null) {
-                return "redirect:/admin/cu-dan/sua/" + cuDan.getId();
-            } else {
-                return "redirect:/admin/cu-dan/tao-moi";
-            }
+            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu cư dân. Vui lòng kiểm tra lại thông tin!");
+            model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+            return "admin/cu_dan_form";
         }
     }
 
@@ -160,8 +179,8 @@ public class CuDanController {
             ra.addFlashAttribute("successMessage", "Xóa cư dân thành công!");
         } catch (DataIntegrityViolationException e) {
             // Bắt lỗi ràng buộc khóa ngoại (Foreign Key Constraint)
-            ra.addFlashAttribute("errorMessage", 
-                "Không thể xóa cư dân này vì đang tồn tại dữ liệu ràng buộc như Hợp đồng, Dịch vụ, Khách thăm, Tạm trú/Tạm vắng hoặc Lịch sử vote. Vui lòng xóa các dữ liệu liên quan trước!");
+            ra.addFlashAttribute("errorMessage",
+                    "Không thể xóa cư dân này vì đang tồn tại dữ liệu ràng buộc như Hợp đồng, Dịch vụ, Khách thăm, Tạm trú/Tạm vắng hoặc Lịch sử vote. Vui lòng xóa các dữ liệu liên quan trước!");
         } catch (Exception e) {
             // Bắt các lỗi khác
             ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi xóa cư dân: " + e.getMessage());
@@ -183,5 +202,20 @@ public class CuDanController {
                         MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(bytes);
+    }
+
+    @PostMapping("/import-excel")
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
+        if (file.isEmpty()) {
+            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            return "redirect:/admin/cu-dan";
+        }
+        try {
+            String ketQua = cuDanService.importExcelCuDan(file);
+            ra.addFlashAttribute("thongBaoThanhCong", ketQua);
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+        }
+        return "redirect:/admin/cu-dan";
     }
 }

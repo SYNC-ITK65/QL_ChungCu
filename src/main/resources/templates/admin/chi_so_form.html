@@ -49,7 +49,7 @@
                     <label class="form-label" th:text="#{hdon.form.can_ho}">Căn Hộ</label>
                     <select class="form-select" name="canHoId" required>
                         <option value="" disabled selected th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ --</option>
-                        <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="${ch.maCanHo} + ' (' + ${ch.trangThai} + ')'">
+                        <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="${ch.maCanHo} + ' (' + ${ch.trangThaiHienThi} + ')'">
                         </option>
                     </select>
                 </div>

@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
@@ -22,6 +23,7 @@ import jakarta.validation.constraints.Pattern;
 public class CuDan extends NguoiDung {
 
     // MÃ CĂN HỘ LÀ KHÓA NGOẠI LIÊN KẾT ĐẾN BẢNG CĂN HỘ
+    @NotNull(message = "Vui lòng chọn căn hộ")
     @ManyToOne
     @JoinColumn(name = "ma_can_ho")
     private CanHo canHo;
@@ -32,10 +34,12 @@ public class CuDan extends NguoiDung {
     private String moiQuanHe;
 
     // Trạng thái hiện tại cư dân (Đang ở, Đã chuyển đi, ...)
+    @NotBlank(message = "Trạng thái không được để trống")
     @Column(name = "trang_thai")
     private String trangThai;
 
     // Ngày sinh cư dân
+    @NotNull(message = "Ngày sinh không được để trống")
     @Column(name = "ngay_sinh")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngaySinh;
