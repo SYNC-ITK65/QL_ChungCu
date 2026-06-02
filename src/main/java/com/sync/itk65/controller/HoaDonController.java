@@ -6,10 +6,17 @@ import com.sync.itk65.service.HoaDonService;
 import com.sync.itk65.repository.CanHoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -171,5 +178,32 @@ public class HoaDonController {
         } catch (RuntimeException e) {
             return "redirect:/admin/hoa-don?error=" + e.getMessage();
         }
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel() {
+        byte[] bytes = hoaDonService.xuatExcelDanhSachHoaDon();
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_hoa_don_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
+    }
+
+    @PostMapping("/import-excel")
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
+        if (file.isEmpty()) {
+            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            return "redirect:/admin/hoa-don";
+        }
+        try {
+            String ketQua = hoaDonService.importExcelHoaDon(file);
+            ra.addFlashAttribute("thongBaoThanhCong", ketQua);
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+        }
+        return "redirect:/admin/hoa-don";
     }
 }
