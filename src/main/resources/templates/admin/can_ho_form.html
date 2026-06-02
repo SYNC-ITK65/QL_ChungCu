@@ -97,7 +97,7 @@
                             <div class="col-md-12" th:if="${canHo.hinhAnh != null}">
                                 <label class="form-label fw-semibold">Ảnh hiện tại:</label>
                                 <div>
-                                    <img th:src="@{'/uploads/canho/' + *{hinhAnh}}" alt="Ảnh căn hộ"
+                                    <img th:src="*{hinhAnh}" alt="Ảnh căn hộ"
                                          style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 1px solid #dee2e6; object-fit: cover;">
                                 </div>
                             </div>
