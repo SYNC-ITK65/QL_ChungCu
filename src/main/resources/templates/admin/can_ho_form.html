@@ -30,7 +30,7 @@
                     </h5>
                 </div>
                 <div class="card-body p-4">
-                    <form th:action="@{/admin/can-ho/luu}" th:object="${canHo}" method="POST">
+                    <form th:action="@{/admin/can-ho/luu}" th:object="${canHo}" method="POST" enctype="multipart/form-data">
                         <input type="hidden" th:field="*{id}" />
 
                         <div class="row g-4">
@@ -80,6 +80,25 @@
                                     <label for="loai" th:text="#{ch.form.loai}">Loại</label>
                                     <div class="invalid-feedback" th:if="${#fields.hasErrors('loai')}"
                                         th:errors="*{loai}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upload hình ảnh căn hộ -->
+                        <div class="row g-4 mt-1">
+                            <div class="col-md-12">
+                                <label for="fileImage" class="form-label fw-semibold">
+                                    <i class="bi bi-image"></i> Hình ảnh căn hộ
+                                </label>
+                                <input type="file" class="form-control" name="fileImage" id="fileImage"
+                                       accept="image/png, image/jpeg">
+                                <div class="form-text">Chấp nhận file PNG, JPEG. Để trống nếu không muốn thay đổi ảnh.</div>
+                            </div>
+                            <div class="col-md-12" th:if="${canHo.hinhAnh != null}">
+                                <label class="form-label fw-semibold">Ảnh hiện tại:</label>
+                                <div>
+                                    <img th:src="@{'/uploads/canho/' + *{hinhAnh}}" alt="Ảnh căn hộ"
+                                         style="max-width: 200px; max-height: 150px; border-radius: 8px; border: 1px solid #dee2e6; object-fit: cover;">
                                 </div>
                             </div>
                         </div>
