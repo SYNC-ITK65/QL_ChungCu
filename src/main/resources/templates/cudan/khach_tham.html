@@ -28,22 +28,22 @@
                         <h5 class="mb-0" th:text="#{kt.ui.dang_ky_khach_moi}">Đăng ký khách mới</h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/cudan/khach-tham/luu}" method="post">
+                        <form th:action="@{/cudan/khach-tham/luu}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
                             <div class="mb-3">
                                 <label class="form-label fw-bold"><span th:text="#{kt.ui.ten_khach_tham}" th:remove="tag">Tên khách thăm </span><span class="text-danger">*</span></label>
-                                <input type="text" name="tenKhach" class="form-control" placeholder="Nhập tên khách..." required th:placeholder="#{kt.ui.nhap_ten_khach}">
+                                <input type="text" name="tenKhach" class="form-control" th:value="${oldTenKhach}" placeholder="Vd: Lê A..." required th:placeholder="#{kt.ui.nhap_ten_khach}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold" th:text="|#{chung.cccd} *|">CMND/CCCD *</label>
-                                <input type="text" name="cmnd" class="form-control" placeholder="Nhập số CMND/CCCD..." required th:placeholder="#{kt.ui.nhap_so_cmnd_cccd}">
+                                <input type="text" name="cmnd" class="form-control" th:value="${oldCmnd}" placeholder="Nhập 9 hoặc 12 số..." required th:placeholder="#{kt.ui.nhap_so_cmnd_cccd}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold" th:text="#{kt.ui.bien_so_xe}">Biển số xe</label>
-                                <input type="text" name="bienSoXe" class="form-control" th:placeholder="#{kt.ui.mau_bien_so}">
+                                <input type="text" name="bienSoXe" class="form-control" th:value="${oldBienSo}" placeholder="Vd: 51A-123.45" th:placeholder="#{kt.ui.mau_bien_so}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold"><span th:text="#{kt.ui.thoi_gian_du_kien_de}" th:remove="tag">Thời gian dự kiến đến </span><span class="text-danger">*</span></label>
-                                <input type="datetime-local" name="thoiGianDuKien" class="form-control" required>
+                                <input type="datetime-local" name="thoiGianDuKien" th:value="${oldThoiGian}" class="form-control" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 fw-bold" th:text="#{kt.ui.gui_dang_ky}">Gửi đăng ký</button>
                         </form>
@@ -87,7 +87,7 @@
                                     <!-- Modal sửa khách -->
                                     <div class="modal fade" th:id="'modalSuaKhach' + ${khach.id}" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog">
-                                            <form th:action="@{/cudan/khach-tham/sua}" method="post">
+                                            <form th:action="@{/cudan/khach-tham/sua}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-primary text-white">
                                                         <h5 class="modal-title" th:text="#{kt.ui.sua_thong_tin_khach}">Sửa thông tin khách thăm</h5>

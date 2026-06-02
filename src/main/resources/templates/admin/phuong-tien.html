@@ -82,15 +82,17 @@
                                 <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark" th:text="#{pt.ui.cho_duyet}">⏳ Chờ duyệt</span>
                                 <span th:if="${xe.trangThai == 'Đã duyệt'}" class="badge bg-success" th:text="#{pt.ui.da_duyet}">✅ Đã duyệt</span>
                                 <span th:if="${xe.trangThai == 'Từ chối'}" class="badge bg-danger" th:text="#{pt.ui.tu_choi}">❌ Từ chối</span>
-                                <span th:if="${xe.trangThai == 'Hủy duyệt'}" class="badge bg-secondary" th:text="#{pt.ui.huy_duyet}">🚫 Hủy duyệt</span>
-                                <span th:if="${xe.trangThai != null &amp;&amp; xe.trangThai != 'Chờ duyệt' &amp;&amp; xe.trangThai != 'Đăng ký mới' &amp;&amp; xe.trangThai != 'Đã duyệt' &amp;&amp; xe.trangThai != 'Từ chối' &amp;&amp; xe.trangThai != 'Hủy duyệt'}" class="badge bg-dark" th:text="${xe.trangThai}">Trạng thái khác</span>
                             </td>
 
                             <td>
-                                <a th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai != 'Đã duyệt'}" th:href="@{/admin/phuong-tien/duyet/{id}(id=${xe.id})}" class="btn btn-sm btn-success mb-1" th:text="#{dv.ds.duyet}">Duyệt</a>
-                                <a th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai != 'Đã duyệt'}" th:href="@{/admin/phuong-tien/tu-choi/{id}(id=${xe.id})}" class="btn btn-sm btn-warning mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_tu_choi}')|" th:text="#{dv.ds.tu_choi}">Từ chối</a>
-                                <a th:if="${xe.trangThai == 'Đã duyệt'}" th:href="@{/admin/phuong-tien/huy-duyet/{id}(id=${xe.id})}" class="btn btn-sm btn-secondary mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_huy_duyet}')|" th:text="#{dv.ds.huy_duyet}">Hủy duyệt</a>
-                                <a th:if="${xe.trangThai == 'Đã duyệt' || xe.trangThai == 'Từ chối' || xe.trangThai == 'Hủy duyệt'}" th:href="@{/admin/phuong-tien/sua/{id}(id=${xe.id})}" class="btn btn-sm btn-primary mb-1" th:text="#{hdon.ds.nut_sua}">Sửa</a>
+                                <th:block th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}">
+                                    <a th:href="@{/admin/phuong-tien/duyet/{id}(id=${xe.id})}" class="btn btn-sm btn-success mb-1" th:text="#{dv.ds.duyet}">Duyệt</a>
+                                    <a th:href="@{/admin/phuong-tien/tu-choi/{id}(id=${xe.id})}" class="btn btn-sm btn-warning mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_tu_choi}')|" th:text="#{dv.ds.tu_choi}">Từ chối</a>
+                                </th:block>
+
+                                <th:block th:if="${xe.trangThai == 'Đã duyệt' || xe.trangThai == 'Từ chối'}">
+                                    <a th:href="@{/admin/phuong-tien/sua/{id}(id=${xe.id})}" class="btn btn-sm btn-secondary mb-1" onclick="return confirm('Bạn muốn hoàn tác, đưa xe này về lại trạng thái Chờ duyệt?');">⏳ Hoàn tác</a>
+                                </th:block>
 
                                 <a th:href="@{/admin/phuong-tien/xoa/{id}(id=${xe.id})}" class="btn btn-sm btn-outline-danger mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_xoa_xe}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>
                             </td>
