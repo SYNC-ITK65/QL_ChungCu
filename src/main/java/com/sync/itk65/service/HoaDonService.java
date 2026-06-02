@@ -80,14 +80,38 @@ public class HoaDonService {
     }
     // Cập nhật hóa đơn
     public void capNhatHoaDon(HoaDon hoaDon) {
-        // Nếu tổng tiền là null hoặc 0, tính lại tổng
-        if (hoaDon.getTongTien() == null || hoaDon.getTongTien() == 0) {
-            taoHoaDonTuDong(hoaDon);
-        } else {
-            // VALIDATION: Nếu người dùng muốn tính lại chi tiết, gọi taoHoaDonTuDong
-            // Ngược lại, chỉ cập nhật thông tin cơ bản
-            hoaDonRepository.save(hoaDon);
+        if (hoaDon == null || hoaDon.getId() == null) {
+            throw new RuntimeException("Lỗi: Không tìm thấy hóa đơn cần cập nhật.");
         }
+
+        HoaDon current = layHoaDonById(hoaDon.getId());
+
+        Long newCanHoId = (hoaDon.getCanHo() != null) ? hoaDon.getCanHo().getId() : null;
+        Long oldCanHoId = (current.getCanHo() != null) ? current.getCanHo().getId() : null;
+        boolean changedCanHo = (newCanHoId != null && !newCanHoId.equals(oldCanHoId));
+        boolean changedNgayPhatHanh = (hoaDon.getNgayPhatHanh() != null && !hoaDon.getNgayPhatHanh().equals(current.getNgayPhatHanh()));
+        boolean changedNgayDenHan = (hoaDon.getNgayDenHan() != null && !hoaDon.getNgayDenHan().equals(current.getNgayDenHan()));
+
+        boolean needRecompute = changedCanHo || changedNgayPhatHanh || changedNgayDenHan
+                || hoaDon.getTongTien() == null || hoaDon.getTongTien() == 0;
+
+        // Preserve trạng thái thanh toán nếu form không gửi hoặc gửi null
+        if (hoaDon.getTrangThaiThanhToan() == null) {
+            hoaDon.setTrangThaiThanhToan(current.getTrangThaiThanhToan());
+        }
+
+        if (needRecompute) {
+            // tính lại dựa trên căn hộ/ngày mới
+            taoHoaDonTuDong(hoaDon);
+            return;
+        }
+
+        // Nếu người dùng không bỏ trống/tắt ô tổng tiền,
+        // backend vẫn phải validate tối thiểu để tránh lưu dữ liệu tài chính sai.
+        if (hoaDon.getTongTien().isNaN() || hoaDon.getTongTien().isInfinite() || hoaDon.getTongTien() <= 0) {
+            throw new RuntimeException("Lỗi: Tổng tiền hóa đơn phải > 0 và không được NaN/Infinity.");
+        }
+        hoaDonRepository.save(hoaDon);
     }
 
     // Cập nhật hóa đơn và tính lại toàn bộ chi tiết
@@ -119,6 +143,10 @@ public class HoaDonService {
         LocalDate ngayHienTai = LocalDate.now();
         LocalDate ngayPhatHanh = hoaDon.getNgayPhatHanh();
         LocalDate ngayDenHan = hoaDon.getNgayDenHan();
+
+        if (ngayPhatHanh.isAfter(ngayHienTai)) {
+            throw new RuntimeException("Lỗi: Ngày phát hành không được ở tương lai (" + ngayPhatHanh + ").");
+        }
         
         // Ngày phát hành không được sau ngày hiện tại quá 1 tháng
         if (ngayPhatHanh.isAfter(ngayHienTai.plusMonths(1))) {
@@ -142,7 +170,9 @@ public class HoaDonService {
 
         // VALIDATION: Kiểm tra xem đã có hóa đơn cho căn hộ trong tháng đó chưa (tránh tạo trùng)
         System.out.println("DEBUG: Checking for existing invoices for apartment ID: " + canHoId + ", month: " + thang + ", year: " + nam);
-        Long soLuongHoaDonTrung = hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam);
+        Long soLuongHoaDonTrung = (hoaDon.getId() == null)
+                ? hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam)
+                : hoaDonRepository.countByCanHoAndThangNamExcludingId(canHoId, thang, nam, hoaDon.getId());
         System.out.println("DEBUG: Found " + soLuongHoaDonTrung + " existing invoices");
         
         if (soLuongHoaDonTrung > 0) {
@@ -157,7 +187,11 @@ public class HoaDonService {
 
         // VALIDATION: Kiểm tra xem đã có chỉ số điện nước cho tháng đó chưa
         System.out.println("DEBUG: Looking for chi so for apartment ID: " + canHoId + ", month: " + thang + ", year: " + nam);
-        ChiSoHangThang chiSo = chiSoHangThangRepository.findByCanHoAndThangNam(canHoId, thang, nam)
+        LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
+        LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
+
+        ChiSoHangThang chiSo = chiSoHangThangRepository
+                .findFirstByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanDescIdDesc(canHoId, firstDayOfMonth, lastDayOfMonth)
                 .orElseThrow(() -> {
                     String errorMsg = "Lỗi: Căn hộ chưa được ghi nhận chỉ số điện nước cho tháng " + thang + "/" + nam + ".\n" +
                                    "Hướng dẫn:\n" +
@@ -190,6 +224,9 @@ public class HoaDonService {
         if (chiSo.getDienTieuThu() == null) {
             throw new RuntimeException("Lỗi: Chỉ số điện tiêu thụ không được để trống. Vui lòng kiểm tra lại dữ liệu chỉ số.");
         }
+        if (chiSo.getDienTieuThu().isNaN() || chiSo.getDienTieuThu().isInfinite()) {
+            throw new RuntimeException("Lỗi: Chỉ số điện tiêu thụ không hợp lệ (NaN/Infinity).");
+        }
         if (chiSo.getDienTieuThu() < 0) {
             throw new RuntimeException("Lỗi: Chỉ số điện tiêu thụ không được âm (hiện tại: " + chiSo.getDienTieuThu() + "). Vui lòng kiểm tra lại dữ liệu chỉ số.");
         }
@@ -199,6 +236,9 @@ public class HoaDonService {
         
         if (chiSo.getNuocTieuThu() == null) {
             throw new RuntimeException("Lỗi: Chỉ số nước tiêu thụ không được để trống. Vui lòng kiểm tra lại dữ liệu chỉ số.");
+        }
+        if (chiSo.getNuocTieuThu().isNaN() || chiSo.getNuocTieuThu().isInfinite()) {
+            throw new RuntimeException("Lỗi: Chỉ số nước tiêu thụ không hợp lệ (NaN/Infinity).");
         }
         if (chiSo.getNuocTieuThu() < 0) {
             throw new RuntimeException("Lỗi: Chỉ số nước tiêu thụ không được âm (hiện tại: " + chiSo.getNuocTieuThu() + "). Vui lòng kiểm tra lại dữ liệu chỉ số.");
@@ -249,8 +289,7 @@ public class HoaDonService {
 
         // BƯỚC 6: Tính tiền thuê chung cư
         // Tìm hợp đồng THUÊ có hiệu lực trong tháng hóa đơn (không chỉ ACTIVE)
-        LocalDate firstDayOfMonth = ngayPhatHanh.withDayOfMonth(1);
-        LocalDate lastDayOfMonth = ngayPhatHanh.withDayOfMonth(ngayPhatHanh.lengthOfMonth());
+        // (đã khai báo firstDayOfMonth/lastDayOfMonth ở trên để lấy chỉ số)
         
         com.sync.itk65.entity.HopDong hopDong = hopDongRepository
                 .findThueByCanHoAndThangNam(canHoId, firstDayOfMonth, lastDayOfMonth)
@@ -299,15 +338,19 @@ public class HoaDonService {
 
         // BƯỚC 7: Lưu hóa đơn vào Database
         // VALIDATION: Kiểm tra tổng tiền trước khi lưu
-        if (tongTien < 0) {
-            throw new RuntimeException("Lỗi: Tổng tiền hóa đơn không được âm (hiện tại: " + tongTien + " VNĐ). Vui lòng kiểm tra lại cách tính tiền.");
+        if (tongTien == null || tongTien.isNaN() || tongTien.isInfinite() || tongTien <= 0) {
+            throw new RuntimeException("Lỗi: Tổng tiền hóa đơn không hợp lệ (phải > 0, hiện tại: " + tongTien + " VNĐ). Vui lòng kiểm tra lại dữ liệu/tính tiền.");
         }
         if (tongTien > 100000000) { // 100 triệu
             throw new RuntimeException("Lỗi: Tổng tiền hóa đơn quá cao (hiện tại: " + String.format("%,.0f", tongTien) + " VNĐ). Vui lòng kiểm tra lại dữ liệu.");
         }
         
         hoaDon.setTongTien(tongTien);
-        hoaDon.setTrangThaiThanhToan("Chưa đóng");
+        if (hoaDon.getId() == null) {
+            hoaDon.setTrangThaiThanhToan("Chưa đóng");
+        } else if (hoaDon.getTrangThaiThanhToan() == null || hoaDon.getTrangThaiThanhToan().isBlank()) {
+            hoaDon.setTrangThaiThanhToan("Chưa đóng");
+        }
 
         if (hoaDon.getNgayDenHan() == null) {
             hoaDon.setNgayDenHan(hoaDon.getNgayPhatHanh().plusDays(10));
@@ -642,9 +685,9 @@ public class HoaDonService {
                     continue;
                 }
 
-                String ngayPhatHanhStr = formatter.formatCellValue(row.getCell(0)).trim();
-                String ngayDenHanStr = formatter.formatCellValue(row.getCell(1)).trim();
-                String maCanHo = formatter.formatCellValue(row.getCell(2)).trim();
+                String ngayPhatHanhStr = cellAsString(row, 0, formatter);
+                String ngayDenHanStr = cellAsString(row, 1, formatter);
+                String maCanHo = cellAsString(row, 2, formatter);
 
                 if (maCanHo.isEmpty() || ngayPhatHanhStr.isEmpty() || ngayDenHanStr.isEmpty()) {
                     continue;
@@ -688,5 +731,14 @@ public class HoaDonService {
             ketQua.append(String.join("; ", danhSachBoQua));
         }
         return ketQua.toString();
+    }
+
+    private static String cellAsString(Row row, int cellIdx, DataFormatter formatter) {
+        var cell = row.getCell(cellIdx, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        if (cell == null) {
+            return "";
+        }
+        String val = formatter.formatCellValue(cell);
+        return val == null ? "" : val.trim();
     }
 }
