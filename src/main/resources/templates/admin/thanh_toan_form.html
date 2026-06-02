@@ -18,7 +18,17 @@
             <strong th:text="#{tt.form.thong_tin_hoa_don}">Thông tin Hóa Đơn:</strong><br><span th:text="#{tt.form.can_ho}" th:remove="tag">
             - Căn hộ: </span><span th:text="${hoaDon.canHo?.maCanHo}"></span><br><span th:text="#{tt.form.ngay_phat_hanh}" th:remove="tag">
             - Ngày phát hành: </span><span th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}"></span><br><span th:text="#{tt.form.tong_tien_phai_thu}" th:remove="tag">
-            - Tổng tiền phải thu: </span><strong class="text-danger" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
+            - Tổng tiền hóa đơn: </span><strong class="text-danger" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
+            <div th:if="${daysLate != null and daysLate > 0}" class="mt-2">
+                <div class="alert alert-warning mb-0">
+                    <strong>Quá hạn:</strong>
+                    <span th:text="|${daysLate} ngày|">0 ngày</span><br>
+                    <strong>Phí trễ hạn:</strong>
+                    <span class="text-danger" th:text="|${#numbers.formatDecimal(lateFee, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</span><br>
+                    <strong>Tổng phải thu:</strong>
+                    <span class="text-danger" th:text="|${#numbers.formatDecimal(totalDue, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</span>
+                </div>
+            </div>
         </div>
 
         <!-- Alert khi duyệt thanh toán QR -->
@@ -42,6 +52,9 @@
             <div class="mb-3">
                 <label class="form-label" th:text="#{tt.form.so_tien_thuc_thu_vnd}">Số Tiền Thực Thu (VNĐ)</label>
                 <input type="number" class="form-control" th:field="*{soTien}" required>
+                <small class="text-muted" th:if="${totalDue != null}">
+                    Tổng phải thu (gồm trễ hạn nếu có): <strong th:text="|${#numbers.formatDecimal(totalDue, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</strong>
+                </small>
             </div>
 
             <div class="mb-3">

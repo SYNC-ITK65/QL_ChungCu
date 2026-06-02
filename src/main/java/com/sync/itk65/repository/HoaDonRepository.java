@@ -56,6 +56,18 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.canHo.id = :canHoId AND MONTH(h.ngayPhatHanh) = :thang AND YEAR(h.ngayPhatHanh) = :nam")
     Long countByCanHoAndThangNam(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
 
+    @Query("SELECT COUNT(h) FROM HoaDon h " +
+            "WHERE h.canHo.id = :canHoId " +
+            "AND MONTH(h.ngayPhatHanh) = :thang " +
+            "AND YEAR(h.ngayPhatHanh) = :nam " +
+            "AND h.id <> :excludeId")
+    Long countByCanHoAndThangNamExcludingId(
+            @Param("canHoId") Long canHoId,
+            @Param("thang") int thang,
+            @Param("nam") int nam,
+            @Param("excludeId") Long excludeId
+    );
+
     // Tìm kiếm hóa đơn theo từ khóa (mã căn hộ, trạng thái)
     @Query("SELECT h FROM HoaDon h WHERE " +
            "LOWER(h.canHo.maCanHo) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +

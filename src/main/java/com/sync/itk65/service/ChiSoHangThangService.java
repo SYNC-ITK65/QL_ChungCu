@@ -54,28 +54,54 @@ public class ChiSoHangThangService {
 
     // Lưu chỉ số mới
     public ChiSoHangThang luuChiSo(ChiSoHangThang chiSoMoi) {
+        if (chiSoMoi == null) {
+            throw new IllegalArgumentException("Chỉ số không được null.");
+        }
+        if (chiSoMoi.getCanHo() == null || chiSoMoi.getCanHo().getId() == null) {
+            throw new IllegalArgumentException("Chỉ số phải có căn hộ hợp lệ.");
+        }
         // 1. Tự động gán ngày nếu chưa có
         if (chiSoMoi.getNgayGhiNhan() == null) {
             chiSoMoi.setNgayGhiNhan(LocalDate.now());
         }
 
-        int thang = chiSoMoi.getNgayGhiNhan().getMonthValue();
-        int nam = chiSoMoi.getNgayGhiNhan().getYear();
+        if (chiSoMoi.getDienTieuThu() == null) {
+            throw new IllegalArgumentException("Chỉ số điện tiêu thụ không được null.");
+        }
+        if (chiSoMoi.getNuocTieuThu() == null) {
+            throw new IllegalArgumentException("Chỉ số nước tiêu thụ không được null.");
+        }
+        requireFiniteNonNegative(chiSoMoi.getDienTieuThu(), "Chỉ số điện");
+        requireFiniteNonNegative(chiSoMoi.getNuocTieuThu(), "Chỉ số nước");
 
-        // 2. Kiểm tra xem Căn hộ này trong Tháng/Năm đó đã có chỉ số chưa
-        Optional<ChiSoHangThang> chiSoCu = chiSoHangThangRepository
-                .findByCanHoAndThangNam(chiSoMoi.getCanHo().getId(), thang, nam);
-        if (chiSoCu.isPresent()) {
-            // ĐÃ CÓ DỮ LIỆU -> Ghi đè (Update) số mới lên bản ghi cũ
-            ChiSoHangThang cs = chiSoCu.get();
-            cs.setDienTieuThu(chiSoMoi.getDienTieuThu());
-            cs.setNuocTieuThu(chiSoMoi.getNuocTieuThu());
-            cs.setNgayGhiNhan(chiSoMoi.getNgayGhiNhan());
+        Long canHoId = chiSoMoi.getCanHo().getId();
+        LocalDate ngayGhiNhan = chiSoMoi.getNgayGhiNhan();
+        LocalDate firstDayOfMonth = ngayGhiNhan.withDayOfMonth(1);
+        LocalDate lastDayOfMonth = ngayGhiNhan.withDayOfMonth(ngayGhiNhan.lengthOfMonth());
 
-            return chiSoHangThangRepository.save(cs);
+        // Cho phép nhiều bản ghi trong cùng tháng, nhưng phải chặt chẽ:
+        // - Ngày ghi nhận phải tăng dần so với bản ghi gần nhất trong tháng đó
+        // - Giá trị điện/nước không được giảm so với bản ghi gần nhất
+        Optional<ChiSoHangThang> chiSoGanNhatTrongThang = chiSoHangThangRepository
+                .findFirstByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanDescIdDesc(canHoId, firstDayOfMonth, lastDayOfMonth);
+
+        if (chiSoGanNhatTrongThang.isPresent()) {
+            ChiSoHangThang cs = chiSoGanNhatTrongThang.get();
+
+            if (cs.getNgayGhiNhan() != null) {
+                if (!ngayGhiNhan.isAfter(cs.getNgayGhiNhan())) {
+                    throw new IllegalArgumentException("Ngày ghi nhận phải sau bản ghi gần nhất trong tháng (" + cs.getNgayGhiNhan() + ").");
+                }
+            }
+
+            if (cs.getDienTieuThu() != null && chiSoMoi.getDienTieuThu() < cs.getDienTieuThu()) {
+                throw new IllegalArgumentException("Chỉ số điện mới không được thấp hơn bản ghi gần nhất trong tháng.");
+            }
+            if (cs.getNuocTieuThu() != null && chiSoMoi.getNuocTieuThu() < cs.getNuocTieuThu()) {
+                throw new IllegalArgumentException("Chỉ số nước mới không được thấp hơn bản ghi gần nhất trong tháng.");
+            }
         }
 
-        // CHƯA CÓ DỮ LIỆU -> Lưu mới hoàn toàn (Insert)
         return chiSoHangThangRepository.save(chiSoMoi);
     }
 
@@ -133,10 +159,10 @@ public class ChiSoHangThangService {
                     continue;
                 }
 
-                String ngayGhiNhanStr = formatter.formatCellValue(row.getCell(0)).trim();
-                String maCanHo = formatter.formatCellValue(row.getCell(1)).trim();
-                String dienTieuThuStr = formatter.formatCellValue(row.getCell(2)).trim();
-                String nuocTieuThuStr = formatter.formatCellValue(row.getCell(3)).trim();
+                String ngayGhiNhanStr = cellAsString(row, 0, formatter);
+                String maCanHo = cellAsString(row, 1, formatter);
+                String dienTieuThuStr = cellAsString(row, 2, formatter);
+                String nuocTieuThuStr = cellAsString(row, 3, formatter);
 
                 if (maCanHo.isEmpty()) {
                     continue;
@@ -161,6 +187,8 @@ public class ChiSoHangThangService {
                 try {
                     dienTieuThu = dienTieuThuStr.isEmpty() ? 0.0 : Double.parseDouble(dienTieuThuStr);
                     nuocTieuThu = nuocTieuThuStr.isEmpty() ? 0.0 : Double.parseDouble(nuocTieuThuStr);
+                    requireFiniteNonNegative(dienTieuThu, "Chỉ số điện");
+                    requireFiniteNonNegative(nuocTieuThu, "Chỉ số nước");
                 } catch (Exception ex) {
                     danhSachBoQua.add("Dòng " + (i + 1) + ": Chỉ số điện/nước không hợp lệ");
                     continue;
@@ -171,8 +199,12 @@ public class ChiSoHangThangService {
                 chiSo.setNgayGhiNhan(ngayGhiNhan);
                 chiSo.setDienTieuThu(dienTieuThu);
                 chiSo.setNuocTieuThu(nuocTieuThu);
-                luuChiSo(chiSo);
-                soLuongThanhCong++;
+                try {
+                    luuChiSo(chiSo);
+                    soLuongThanhCong++;
+                } catch (Exception ex) {
+                    danhSachBoQua.add("Dòng " + (i + 1) + ": " + ex.getMessage().replace("\n", " "));
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException("Lỗi đọc file Excel: " + e.getMessage(), e);
@@ -185,5 +217,26 @@ public class ChiSoHangThangService {
             ketQua.append(String.join("; ", danhSachBoQua));
         }
         return ketQua.toString();
+    }
+
+    private static void requireFiniteNonNegative(Double value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " không được null.");
+        }
+        if (value.isNaN() || value.isInfinite()) {
+            throw new IllegalArgumentException(fieldName + " không được NaN/Infinity.");
+        }
+        if (value < 0) {
+            throw new IllegalArgumentException(fieldName + " không được âm.");
+        }
+    }
+
+    private static String cellAsString(Row row, int cellIdx, DataFormatter formatter) {
+        var cell = row.getCell(cellIdx, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+        if (cell == null) {
+            return "";
+        }
+        String val = formatter.formatCellValue(cell);
+        return val == null ? "" : val.trim();
     }
 }

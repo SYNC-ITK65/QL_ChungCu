@@ -54,8 +54,11 @@ public class ThanhToanController {
 
         ThanhToan thanhToan = new ThanhToan();
         thanhToan.setHoaDon(hoaDon);
-        thanhToan.setSoTien(hoaDon.getTongTien());
         thanhToan.setNgayThanhToan(LocalDate.now());
+
+        // Tính phí trễ hạn (nếu có) để hiển thị và set mặc định số tiền phải thu
+        var fee = thanhToanService.tinhPhiTreHan(hoaDon, thanhToan.getNgayThanhToan());
+        thanhToan.setSoTien(fee.totalDue());
 
         // Nếu hóa đơn đang ở trạng thái "Chờ duyệt", mặc định là chuyển khoản QR
         if ("Chờ duyệt".equals(hoaDon.getTrangThaiThanhToan())) {
@@ -64,6 +67,9 @@ public class ThanhToanController {
 
         model.addAttribute("thanhToan", thanhToan);
         model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("daysLate", fee.daysLate());
+        model.addAttribute("lateFee", fee.lateFee());
+        model.addAttribute("totalDue", fee.totalDue());
         return "admin/thanh_toan_form"; // Đã thêm admin/
     }
 

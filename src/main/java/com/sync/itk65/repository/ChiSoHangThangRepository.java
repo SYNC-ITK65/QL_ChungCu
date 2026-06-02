@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.List;
+import java.time.LocalDate;
 
 @Repository
 public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, Long> {
@@ -16,6 +17,24 @@ public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, 
 
     @Query("SELECT c FROM ChiSoHangThang c WHERE c.canHo.id = :canHoId AND MONTH(c.ngayGhiNhan) = :thang AND YEAR(c.ngayGhiNhan) = :nam")
     Optional<ChiSoHangThang> findByCanHoAndThangNam(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
+
+    Optional<ChiSoHangThang> findFirstByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanDescIdDesc(
+            Long canHoId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    Optional<ChiSoHangThang> findFirstByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanAscIdAsc(
+            Long canHoId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    List<ChiSoHangThang> findByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanDescIdDesc(
+            Long canHoId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
 
     // Lấy toàn bộ chỉ số, sắp xếp ngày giảm dần
     @Query("SELECT c FROM ChiSoHangThang c ORDER BY c.ngayGhiNhan DESC")
