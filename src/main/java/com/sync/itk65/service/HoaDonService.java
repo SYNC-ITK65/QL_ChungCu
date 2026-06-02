@@ -19,7 +19,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -581,5 +590,103 @@ public class HoaDonService {
 
     private boolean laXeMay(String loaiXe) {
         return "XeMay".equalsIgnoreCase(loaiXe) || "Xe máy".equalsIgnoreCase(loaiXe);
+    }
+
+    public byte[] xuatExcelDanhSachHoaDon() {
+        List<HoaDon> danhSachHoaDon = layTatCaHoaDon();
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("HoaDon");
+            int rowIdx = 0;
+
+            Row header = sheet.createRow(rowIdx++);
+            String[] headers = new String[] { "ID", "Ngày phát hành", "Ngày đến hạn", "Mã căn hộ", "Tổng tiền", "Trạng thái" };
+            for (int i = 0; i < headers.length; i++) {
+                header.createCell(i).setCellValue(headers[i]);
+            }
+
+            for (HoaDon hoaDon : danhSachHoaDon) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(hoaDon.getId() == null ? "" : String.valueOf(hoaDon.getId()));
+                row.createCell(1).setCellValue(hoaDon.getNgayPhatHanh() == null ? "" : hoaDon.getNgayPhatHanh().toString());
+                row.createCell(2).setCellValue(hoaDon.getNgayDenHan() == null ? "" : hoaDon.getNgayDenHan().toString());
+                row.createCell(3).setCellValue(
+                        (hoaDon.getCanHo() != null && hoaDon.getCanHo().getMaCanHo() != null) ? hoaDon.getCanHo().getMaCanHo()
+                                : "");
+                row.createCell(4).setCellValue(hoaDon.getTongTien() == null ? 0 : hoaDon.getTongTien());
+                row.createCell(5).setCellValue(hoaDon.getTrangThaiThanhToan() == null ? "" : hoaDon.getTrangThaiThanhToan());
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Không thể xuất Excel danh sách hóa đơn", e);
+        }
+    }
+
+    public String importExcelHoaDon(MultipartFile file) {
+        List<String> danhSachBoQua = new ArrayList<>();
+        int soLuongThanhCong = 0;
+
+        try (InputStream is = file.getInputStream(); Workbook workbook = new XSSFWorkbook(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter formatter = new DataFormatter();
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+
+                String ngayPhatHanhStr = formatter.formatCellValue(row.getCell(0)).trim();
+                String ngayDenHanStr = formatter.formatCellValue(row.getCell(1)).trim();
+                String maCanHo = formatter.formatCellValue(row.getCell(2)).trim();
+
+                if (maCanHo.isEmpty() || ngayPhatHanhStr.isEmpty() || ngayDenHanStr.isEmpty()) {
+                    continue;
+                }
+
+                CanHo canHo = canHoRepository.findByMaCanHo(maCanHo).orElse(null);
+                if (canHo == null) {
+                    danhSachBoQua.add("Dòng " + (i + 1) + ": Mã căn hộ '" + maCanHo + "' không tồn tại");
+                    continue;
+                }
+
+                LocalDate ngayPhatHanh;
+                LocalDate ngayDenHan;
+                try {
+                    ngayPhatHanh = LocalDate.parse(ngayPhatHanhStr);
+                    ngayDenHan = LocalDate.parse(ngayDenHanStr);
+                } catch (Exception ex) {
+                    danhSachBoQua.add("Dòng " + (i + 1) + ": Sai định dạng ngày (yyyy-MM-dd)");
+                    continue;
+                }
+
+                try {
+                    HoaDon hoaDon = new HoaDon();
+                    hoaDon.setNgayPhatHanh(ngayPhatHanh);
+                    hoaDon.setNgayDenHan(ngayDenHan);
+                    hoaDon.setCanHo(canHo);
+                    taoHoaDonTuDong(hoaDon);
+                    soLuongThanhCong++;
+                } catch (Exception ex) {
+                    danhSachBoQua.add("Dòng " + (i + 1) + ": " + ex.getMessage().replace("\n", " "));
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Lỗi đọc file Excel: " + e.getMessage(), e);
+        }
+
+        StringBuilder ketQua = new StringBuilder();
+        ketQua.append("Import thành công ").append(soLuongThanhCong).append(" hóa đơn.");
+        if (!danhSachBoQua.isEmpty()) {
+            ketQua.append(" Bỏ qua ").append(danhSachBoQua.size()).append(" dòng: ");
+            ketQua.append(String.join("; ", danhSachBoQua));
+        }
+        return ketQua.toString();
     }
 }
