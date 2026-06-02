@@ -1,6 +1,7 @@
 package com.sync.itk65.controller;
 
 import com.sync.itk65.service.CanHoService;
+import com.sync.itk65.service.CloudinaryService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,8 @@ import com.sync.itk65.entity.CanHo;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -27,6 +25,9 @@ public class CanHoController {
 
     @Autowired
     private CanHoService canHoService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     // Hàm hiển thị danh sách căn hộ (Có phân trang dữ liệu, và các tiêu chí tìm kiếm cơ bản)
     @GetMapping
@@ -81,21 +82,10 @@ public class CanHoController {
             return "admin/can_ho_form";
         }
         try {
-            // Xử lý upload hình ảnh
+            // Xử lý upload hình ảnh lên Cloudinary
             if (!multipartFile.isEmpty()) {
-                String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-                canHo.setHinhAnh(fileName);
-
-                // Lưu file vào thư mục uploads/canho/
-                String uploadDir = System.getProperty("user.dir") + "/uploads/canho";
-                Path uploadPath = Paths.get(uploadDir);
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-                try (InputStream inputStream = multipartFile.getInputStream()) {
-                    Path filePath = uploadPath.resolve(fileName);
-                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-                }
+                String imageUrl = cloudinaryService.uploadFile(multipartFile);
+                canHo.setHinhAnh(imageUrl);
             } else {
                 // Nếu không chọn file mới khi sửa, giữ lại ảnh cũ
                 if (canHo.getId() != null) {

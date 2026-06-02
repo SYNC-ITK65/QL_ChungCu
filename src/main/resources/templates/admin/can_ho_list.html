@@ -108,7 +108,7 @@
                         <td th:text="${ch.id}">1</td>
                         <td th:text="${ch.maCanHo}">A1-01</td>
                         <td>
-                            <img th:if="${ch.hinhAnh != null}" th:src="@{'/uploads/canho/' + ${ch.hinhAnh}}"
+                            <img th:if="${ch.hinhAnh != null}" th:src="${ch.hinhAnh}"
                                  alt="Ảnh căn hộ"
                                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
                             <span th:if="${ch.hinhAnh == null}" class="text-muted"><i class="bi bi-image"></i></span>

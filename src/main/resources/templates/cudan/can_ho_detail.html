@@ -19,7 +19,7 @@
                 <!-- Hiển thị hình ảnh căn hộ -->
                 <div class="row mb-4" th:if="${canHo.hinhAnh != null}">
                     <div class="col-12 text-center">
-                        <img th:src="@{'/uploads/canho/' + ${canHo.hinhAnh}}" alt="Ảnh căn hộ"
+                        <img th:src="${canHo.hinhAnh}" alt="Ảnh căn hộ"
                              style="max-width: 300px; max-height: 220px; border-radius: 10px; border: 1px solid #dee2e6; object-fit: cover;">
                     </div>
                 </div>
