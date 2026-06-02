@@ -40,6 +40,9 @@ public class CanHo {
     @Column(name = "trang_thai")
     private String trangThai;
 
+    @Column(name = "hinh_anh")
+    private String hinhAnh;
+
     @OneToMany(mappedBy = "canHo", cascade = CascadeType.ALL)
     private List<CuDan> danhSachCuDan;
 
@@ -130,6 +133,14 @@ public class CanHo {
 
     public void setMaCanHo(String maCanHo) {
         this.maCanHo = maCanHo;
+    }
+
+    public String getHinhAnh() {
+        return hinhAnh;
+    }
+
+    public void setHinhAnh(String hinhAnh) {
+        this.hinhAnh = hinhAnh;
     }
 
     public List<CuDan> getDanhSachCuDan() {

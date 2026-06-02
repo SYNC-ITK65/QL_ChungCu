@@ -95,6 +95,7 @@
                     <tr>
                         <th th:text="#{chung.id}">ID</th>
                         <th th:text="#{ch.ds.bang_ma}">Mã Căn Hộ</th>
+                        <th>Hình ảnh</th>
                         <th th:text="#{ch.ds.bang_dt}">Diện Tích</th>
                         <th th:text="#{ch.ds.bang_tang}">Tầng</th>
                         <th th:text="#{ch.ds.bang_loai}">Loại</th>
@@ -106,6 +107,12 @@
                     <tr th:each="ch : ${danhSachCanHo}">
                         <td th:text="${ch.id}">1</td>
                         <td th:text="${ch.maCanHo}">A1-01</td>
+                        <td>
+                            <img th:if="${ch.hinhAnh != null}" th:src="${ch.hinhAnh}"
+                                 alt="Ảnh căn hộ"
+                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                            <span th:if="${ch.hinhAnh == null}" class="text-muted"><i class="bi bi-image"></i></span>
+                        </td>
                         <td th:text="|${ch.dienTich} #{chung.don_vi_m2}|">100 m²</td>
                         <td th:text="${ch.tang}">1</td>
                         <td th:text="${ch.loai == 'Căn hộ tiêu chuẩn' ? #messages.msg('ch.loai.tieu_chuan') : (ch.loai == 'Studio' ? #messages.msg('ch.loai.studio') : (ch.loai == 'Penthouse' ? #messages.msg('ch.loai.penthouse') : (ch.loai == 'Duplex' ? #messages.msg('ch.loai.duplex') : ch.loai)))}">1</td>
@@ -120,7 +127,7 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(danhSachCanHo)}">
-                        <td colspan="7" class="text-center text-muted" th:text="#{ch.ds.trong}">Chưa có căn hộ nào trong
+                        <td colspan="8" class="text-center text-muted" th:text="#{ch.ds.trong}">Chưa có căn hộ nào trong
                             hệ thống!</td>
                     </tr>
                 </tbody>

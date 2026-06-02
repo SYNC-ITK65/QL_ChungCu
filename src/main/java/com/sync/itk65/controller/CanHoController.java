@@ -1,6 +1,7 @@
 package com.sync.itk65.controller;
 
 import com.sync.itk65.service.CanHoService;
+import com.sync.itk65.service.CloudinaryService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -23,6 +25,9 @@ public class CanHoController {
 
     @Autowired
     private CanHoService canHoService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     // Hàm hiển thị danh sách căn hộ (Có phân trang dữ liệu, và các tiêu chí tìm kiếm cơ bản)
     @GetMapping
@@ -70,16 +75,35 @@ public class CanHoController {
 
     // Hàm xử lý lưu dữ liệu từ form và bắt lỗi Validation bằng Spring BindingResult
     @PostMapping("/luu")
-    public String luuCanHo(@Valid @ModelAttribute("canHo") CanHo canHo, BindingResult bindingResult, Model model, RedirectAttributes ra) {
+    public String luuCanHo(@Valid @ModelAttribute("canHo") CanHo canHo, BindingResult bindingResult,
+                           @RequestParam("fileImage") MultipartFile multipartFile,
+                           Model model, RedirectAttributes ra) {
         if (bindingResult.hasErrors()) {
             return "admin/can_ho_form";
         }
         try {
+            // Xử lý upload hình ảnh lên Cloudinary
+            if (!multipartFile.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadFile(multipartFile);
+                canHo.setHinhAnh(imageUrl);
+            } else {
+                // Nếu không chọn file mới khi sửa, giữ lại ảnh cũ
+                if (canHo.getId() != null) {
+                    CanHo canHoCu = canHoService.layCanHoTheoId(canHo.getId());
+                    if (canHoCu != null) {
+                        canHo.setHinhAnh(canHoCu.getHinhAnh());
+                    }
+                }
+            }
+
             canHoService.luuCanHo(canHo);
             ra.addFlashAttribute("thongBaoThanhCong", "Lưu căn hộ thành công!");
             return "redirect:/admin/can-ho"; // Quay về trang danh sách sau khi lưu thành công
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "admin/can_ho_form";
+        } catch (IOException e) {
+            model.addAttribute("errorMessage", "Lỗi khi upload hình ảnh: " + e.getMessage());
             return "admin/can_ho_form";
         }
     }
