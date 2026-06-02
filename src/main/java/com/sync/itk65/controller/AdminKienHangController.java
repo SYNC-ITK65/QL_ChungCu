@@ -51,7 +51,7 @@ public class AdminKienHangController {
     public String hienThiFormSua(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
         KienHang kienHang = kienHangService.layTheoId(id);
         if (kienHang == null) {
-            ra.addFlashAttribute("thongBaoLoi", "Không tìm thấy kiện hàng với ID: " + id);
+            ra.addFlashAttribute("thongBaoLoi", "Không tìm thấy đơn thư với ID: " + id);
             return "redirect:/admin/kien-hang";
         }
         if (kienHang.getCanHo() == null) {
@@ -65,7 +65,7 @@ public class AdminKienHangController {
     @PostMapping("/luu")
     public String luuKienHang(@ModelAttribute("kienHang") KienHang kienHang, RedirectAttributes ra) {
         kienHangService.luuKienHang(kienHang);
-        String msg = kienHang.getId() != null ? "Cập nhật kiện hàng thành công!" : "Thêm kiện hàng mới thành công!";
+        String msg = kienHang.getId() != null ? "Cập nhật đơn thư thành công!" : "Thêm đơn thư mới thành công!";
         ra.addFlashAttribute("thongBaoThanhCong", msg);
         return "redirect:/admin/kien-hang";
     }
@@ -75,9 +75,9 @@ public class AdminKienHangController {
     public String xoaKienHang(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             kienHangService.xoaKienHang(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã xóa kiện hàng thành công!");
+            ra.addFlashAttribute("thongBaoThanhCong", "Đã xóa đơn thư thành công!");
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xóa kiện hàng: " + e.getMessage());
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xóa đơn thư: " + e.getMessage());
         }
         return "redirect:/admin/kien-hang";
     }
@@ -86,7 +86,7 @@ public class AdminKienHangController {
     public String xacNhanDaNhan(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             kienHangService.xacNhanDaNhan(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã xác nhận cư dân nhận hàng!");
+            ra.addFlashAttribute("thongBaoThanhCong", "Đã xác nhận cư dân nhận đơn thư!");
         } catch (Exception e) {
             ra.addFlashAttribute("thongBaoLoi", "Lỗi: " + e.getMessage());
         }

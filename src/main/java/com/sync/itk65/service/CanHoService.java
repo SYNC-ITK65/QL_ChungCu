@@ -55,14 +55,16 @@ public class CanHoService {
                 // Kiểm tra mã trùng (Bỏ qua trường hợp đang update chính mã đó)
                 if (item.getMaCanHo() != null && item.getMaCanHo().equals(canHo.getMaCanHo())) {
                     if (canHo.getId() == null || !item.getId().equals(canHo.getId())) {
-                        throw new IllegalArgumentException("Mã căn hộ: '" + canHo.getMaCanHo() + "' đã tồn tại! Vui lòng nhập mã khác.");
+                        throw new IllegalArgumentException(
+                                "Mã căn hộ: '" + canHo.getMaCanHo() + "' đã tồn tại! Vui lòng nhập mã khác.");
                     }
                 }
             }
 
             if (canHo.getId() != null) {
                 List<CuDan> residents = cuDanRepository.layTatCaCuDanTheoCanHo(canHo.getId());
-                boolean hasResident = residents.stream().anyMatch(r -> "Đang Ở".equalsIgnoreCase(r.getTrangThai()) || "Đang ở".equalsIgnoreCase(r.getTrangThai()));
+                boolean hasResident = residents.stream().anyMatch(r -> "Đang Ở".equalsIgnoreCase(r.getTrangThai())
+                        || "Đang ở".equalsIgnoreCase(r.getTrangThai()));
                 canHo.setTrangThai(hasResident ? "Đã có chủ" : "Trống");
             } else {
                 canHo.setTrangThai("Trống");
@@ -134,17 +136,19 @@ public class CanHoService {
         int soLuongThanhCong = 0;
 
         try (InputStream is = file.getInputStream();
-             Workbook workbook = new XSSFWorkbook(is)) {
+                Workbook workbook = new XSSFWorkbook(is)) {
 
             Sheet sheet = workbook.getSheetAt(0);
             DataFormatter formatter = new DataFormatter();
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) { // Bỏ qua dòng header
                 Row row = sheet.getRow(i);
-                if (row == null) continue;
+                if (row == null)
+                    continue;
 
                 String maCanHo = formatter.formatCellValue(row.getCell(0)).trim();
-                if (maCanHo.isEmpty()) continue;
+                if (maCanHo.isEmpty())
+                    continue;
 
                 // Kiểm tra trùng mã căn hộ
                 if (canHoRepository.findByMaCanHo(maCanHo).isPresent()) {
@@ -162,7 +166,8 @@ public class CanHoService {
                         canHo.setDienTich(cellDienTich.getNumericCellValue());
                     } else {
                         String dtStr = formatter.formatCellValue(cellDienTich).trim();
-                        if (!dtStr.isEmpty()) canHo.setDienTich(Double.parseDouble(dtStr));
+                        if (!dtStr.isEmpty())
+                            canHo.setDienTich(Double.parseDouble(dtStr));
                     }
                 } catch (NumberFormatException e) {
                     danhSachBoQua.add("Dòng " + (i + 1) + ": Diện tích không hợp lệ");
@@ -176,7 +181,8 @@ public class CanHoService {
                         canHo.setTang((int) cellTang.getNumericCellValue());
                     } else {
                         String tangStr = formatter.formatCellValue(cellTang).trim();
-                        if (!tangStr.isEmpty()) canHo.setTang(Integer.parseInt(tangStr));
+                        if (!tangStr.isEmpty())
+                            canHo.setTang(Integer.parseInt(tangStr));
                     }
                 } catch (NumberFormatException e) {
                     danhSachBoQua.add("Dòng " + (i + 1) + ": Số tầng không hợp lệ");

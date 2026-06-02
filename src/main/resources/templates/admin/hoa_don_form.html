@@ -54,7 +54,7 @@
                     <option value="" disabled selected th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ cần xuất hóa đơn --</option>
                     <option th:each="ch : ${danhSachCanHo}"
                             th:value="${ch.id}"
-                            th:text="${ch.maCanHo} + ' (' + ${ch.trangThaiHienThi} + ')'">
+                            th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
                     </option>
                 </select>
             </div>

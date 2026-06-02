@@ -61,7 +61,7 @@
                 <a href="/admin/dich-vu" class="nav-link text-white" th:text="#{side.admin.dich_vu}">🛠️ Quản lý Dịch vụ</a>
             </li>
             <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
-                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý Kiện hàng</a>
+                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý đơn thư</a>
             </li>
             <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
                 <a href="/admin/thanh-toan/lich-su" class="nav-link text-white" th:text="#{side.admin.lich_su_tt}">💳 Lịch sử Thanh toán</a>
