@@ -13,7 +13,11 @@ import com.sync.itk65.entity.CanHo;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -70,16 +74,46 @@ public class CanHoController {
 
     // Hàm xử lý lưu dữ liệu từ form và bắt lỗi Validation bằng Spring BindingResult
     @PostMapping("/luu")
-    public String luuCanHo(@Valid @ModelAttribute("canHo") CanHo canHo, BindingResult bindingResult, Model model, RedirectAttributes ra) {
+    public String luuCanHo(@Valid @ModelAttribute("canHo") CanHo canHo, BindingResult bindingResult,
+                           @RequestParam("fileImage") MultipartFile multipartFile,
+                           Model model, RedirectAttributes ra) {
         if (bindingResult.hasErrors()) {
             return "admin/can_ho_form";
         }
         try {
+            // Xử lý upload hình ảnh
+            if (!multipartFile.isEmpty()) {
+                String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                canHo.setHinhAnh(fileName);
+
+                // Lưu file vào thư mục uploads/canho/
+                String uploadDir = System.getProperty("user.dir") + "/uploads/canho";
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                try (InputStream inputStream = multipartFile.getInputStream()) {
+                    Path filePath = uploadPath.resolve(fileName);
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } else {
+                // Nếu không chọn file mới khi sửa, giữ lại ảnh cũ
+                if (canHo.getId() != null) {
+                    CanHo canHoCu = canHoService.layCanHoTheoId(canHo.getId());
+                    if (canHoCu != null) {
+                        canHo.setHinhAnh(canHoCu.getHinhAnh());
+                    }
+                }
+            }
+
             canHoService.luuCanHo(canHo);
             ra.addFlashAttribute("thongBaoThanhCong", "Lưu căn hộ thành công!");
             return "redirect:/admin/can-ho"; // Quay về trang danh sách sau khi lưu thành công
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "admin/can_ho_form";
+        } catch (IOException e) {
+            model.addAttribute("errorMessage", "Lỗi khi upload hình ảnh: " + e.getMessage());
             return "admin/can_ho_form";
         }
     }
