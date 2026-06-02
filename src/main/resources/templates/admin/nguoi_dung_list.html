@@ -42,8 +42,10 @@
                             <select class="form-select" name="vaiTro">
                                 <option value="" th:selected="${vaiTro == null}" th:text="#{hdon.ds.loc_trang_thai_tat_ca}">-- Tất cả --</option>
                                 <option value="1" th:selected="${vaiTro == 1}" th:text="#{nd.form.admin}">Admin</option>
-                                <option value="2" th:selected="${vaiTro == 2}" th:text="#{nd.form.nhan_vien}">Nhân viên</option>
+                                <option value="2" th:selected="${vaiTro == 2}" th:text="#{nd.form.quan_ly}">Quản lý</option>
                                 <option value="3" th:selected="${vaiTro == 3}" th:text="#{hd.form.cu_dan_label}">Cư dân</option>
+                                <option value="4" th:selected="${vaiTro == 4}" th:text="#{nd.form.le_tan}">Lễ tân</option>
+                                <option value="5" th:selected="${vaiTro == 5}" th:text="#{nd.form.bao_ve}">Bảo vệ</option>
                             </select>
                         </div>
                         <div class="col-md-4 d-flex align-items-end">
@@ -73,12 +75,14 @@
                         <td th:text="${nd.soDienThoai}"></td>
                         <td>
                             <span th:if="${nd.vaiTro == 1}" class="badge bg-danger" th:text="#{nd.form.admin}">Admin</span>
-                            <span th:if="${nd.vaiTro == 2}" class="badge bg-success" th:text="#{nd.form.nhan_vien}">Nhân viên</span>
+                            <span th:if="${nd.vaiTro == 2}" class="badge bg-success" th:text="#{nd.form.quan_ly}">Quản lý</span>
                             <span th:if="${nd.vaiTro == 3}" class="badge bg-info text-dark" th:text="#{hd.form.cu_dan_label}">Cư dân</span>
+                            <span th:if="${nd.vaiTro == 4}" class="badge bg-warning text-dark" th:text="#{nd.form.le_tan}">Lễ tân</span>
+                            <span th:if="${nd.vaiTro == 5}" class="badge bg-secondary" th:text="#{nd.form.bao_ve}">Bảo vệ</span>
                         </td>
                         <td>
-                            <!-- Chỉ hiện nút Sửa/Xóa cho Admin (1) và Nhân viên (2) -->
-                            <th:block th:if="${nd.vaiTro == 1 || nd.vaiTro == 2}">
+                            <!-- Chỉ hiện nút Sửa/Xóa cho Admin (1), Quản lý (2), Lễ tân (4), Bảo vệ (5) -->
+                            <th:block th:if="${nd.vaiTro != 3}">
                                 <a th:href="@{/admin/nguoi-dung/sua/{id}(id=${nd.id})}" class="btn btn-sm btn-warning" th:text="#{hdon.ds.nut_sua}">Sửa</a>
                                 <a th:href="@{/admin/nguoi-dung/xoa/{id}(id=${nd.id})}" class="btn btn-sm btn-danger" th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>
                             </th:block>

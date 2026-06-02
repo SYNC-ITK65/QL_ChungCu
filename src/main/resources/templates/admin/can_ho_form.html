@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title th:text="${canHo.id == null} ? #{ch.form.them_tieude} : #{ch.form.sua_tieude}">Thêm Căn Hộ Mới</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -14,57 +16,109 @@
         <div class="flex-grow-1 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 th:text="${canHo.id == null} ? #{ch.form.them_tieude} : #{ch.form.sua_tieude}">Thêm Căn Hộ Mới</h2>
-                <a th:href="@{/admin/can-ho}" class="btn btn-secondary" th:text="#{chung.quay_lai}">Quay Lại</a>
+                <a th:href="@{/admin/can-ho}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> <span th:text="#{chung.quay_lai}">Quay Lại</span>
+                </a>
             </div>
 
-            <div class="card shadow border-0">
-                <div class="card-body">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary bg-gradient text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-house-door"></i>
+                        <span th:text="${canHo.id == null} ? #{ch.form.them_tieude} : #{ch.form.sua_tieude}">Thông tin
+                            căn hộ</span>
+                    </h5>
+                </div>
+                <div class="card-body p-4">
                     <form th:action="@{/admin/can-ho/luu}" th:object="${canHo}" method="POST">
                         <input type="hidden" th:field="*{id}" />
-                        <div class="mb-3">
-                            <label class="form-label" th:text="#{ch.form.ma}">Mã Căn Hộ</label>
-                            <input type="text" class="form-control" th:field="*{maCanHo}" required>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" th:field="*{maCanHo}" id="maCanHo"
+                                        th:classappend="${#fields.hasErrors('maCanHo')} ? 'is-invalid' : ''"
+                                        placeholder="Mã Căn Hộ" required>
+                                    <label for="maCanHo" th:text="#{ch.form.ma}">Mã Căn Hộ</label>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('maCanHo')}"
+                                        th:errors="*{maCanHo}"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" step="0.1" class="form-control" th:field="*{dienTich}"
+                                        id="dienTich"
+                                        th:classappend="${#fields.hasErrors('dienTich')} ? 'is-invalid' : ''"
+                                        placeholder="Diện Tích" required>
+                                    <label for="dienTich" th:text="#{ch.form.dt}">Diện Tích (m²)</label>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('dienTich')}"
+                                        th:errors="*{dienTich}"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" th:field="*{tang}" id="tang"
+                                        th:classappend="${#fields.hasErrors('tang')} ? 'is-invalid' : ''"
+                                        placeholder="Tầng" required>
+                                    <label for="tang" th:text="#{ch.form.tang}">Tầng</label>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('tang')}"
+                                        th:errors="*{tang}"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" th:field="*{loai}" id="loai"
+                                        th:classappend="${#fields.hasErrors('loai')} ? 'is-invalid' : ''" required>
+                                        <option value="Căn hộ tiêu chuẩn">Căn hộ tiêu chuẩn</option>
+                                        <option value="Studio">Studio</option>
+                                        <option value="Penthouse">Penthouse</option>
+                                        <option value="Duplex">Duplex</option>
+                                    </select>
+                                    <label for="loai" th:text="#{ch.form.loai}">Loại</label>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('loai')}"
+                                        th:errors="*{loai}"></div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label" th:text="#{ch.form.dt}">Diện Tích (m²)</label>
-                            <input type="number" step="0.1" class="form-control" th:field="*{dienTich}" required>
+                        <div class="mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-lg"></i> <span th:text="#{ch.form.nut_luu}">Lưu Căn Hộ</span>
+                            </button>
+                            <a th:href="@{/admin/can-ho}" class="btn btn-outline-secondary btn-lg"
+                                th:text="#{chung.quay_lai}">Quay Lại</a>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label" th:text="#{ch.form.tang}">Tầng</label>
-                            <input type="number" class="form-control" th:field="*{tang}" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label" th:text="#{ch.form.loai}">Loại</label>
-                            <input type="text" class="form-control" th:field="*{loai}" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label" th:text="#{ch.form.trang_thai}">Trạng Thái</label>
-                            <select class="form-select" th:field="*{trangThai}">
-                                <option value="Trống" th:text="#{ch.tt.trong}">Trống</option>
-                                <option value="Đã có chủ" th:text="#{ch.tt.da_ban_giao}">Đã có chủ</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" th:text="#{ch.form.nut_luu}">Lưu Căn Hộ</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var thongBaoThanhCong = /*[[${thongBaoThanhCong}]]*/ null;
+            var thongBaoLoi = /*[[${thongBaoLoi}]]*/ null;
+            var successMessage = /*[[${successMessage}]]*/ null;
+            var errorMessage = /*[[${errorMessage}]]*/ null;
+
+            if (thongBaoThanhCong) {
+                Swal.fire({ icon: 'success', title: 'Thành công!', text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+            }
+            if (successMessage) {
+                Swal.fire({ icon: 'success', title: 'Thành công!', text: successMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+            }
+            if (thongBaoLoi) {
+                Swal.fire({ icon: 'error', title: 'Lỗi!', text: thongBaoLoi, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+            }
+            if (errorMessage) {
+                Swal.fire({ icon: 'error', title: 'Lỗi!', text: errorMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+            }
+        });
+    </script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-

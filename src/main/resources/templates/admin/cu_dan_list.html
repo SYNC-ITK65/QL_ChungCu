@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title th:text="#{cd.ds.tieude_tat_ca}">Danh sách Cư Dân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -16,9 +18,41 @@
                     <span th:if="${canHoHienTai == null}" th:text="#{cd.ds.tieude_tat_ca}">Danh sách toàn bộ Cư Dân</span>
                     <span th:if="${canHoHienTai != null}"><span th:text="#{cd.ds.tieude_theo_can}">Cư Dân thuộc căn hộ:</span> <strong th:text="${canHoHienTai.maCanHo}"></strong></span>
                 </h2>
-                <div>
-                    <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/xuat-excel(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/xuat-excel}" class="btn btn-success me-2" th:text="#{chung.xuat_excel}">Xuất Excel</a>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importExcelModal">
+                        <i class="bi bi-file-earmark-arrow-up"></i> Import Excel
+                    </button>
+                    <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/xuat-excel(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/xuat-excel}" class="btn btn-success" th:text="#{chung.xuat_excel}">Xuất Excel</a>
                     <a th:href="${canHoHienTai != null} ? @{/admin/cu-dan/tao-moi(canHoId=${canHoHienTai.id})} : @{/admin/cu-dan/tao-moi}" class="btn btn-primary" th:text="#{cd.ds.nut_them}">+ Thêm Cư Dân Mới</a>
+                </div>
+            </div>
+
+            <!-- Modal Import Excel -->
+            <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title" id="importExcelModalLabel"><i class="bi bi-file-earmark-spreadsheet"></i> Import Excel - Cư Dân</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:action="@{/admin/cu-dan/import-excel}" method="POST" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="alert alert-info small mb-3">
+                                    <i class="bi bi-info-circle"></i> File Excel cần có các cột theo thứ tự:<br>
+                                    <strong>Họ tên | SĐT | Email | Tên đăng nhập | Ngày sinh (yyyy-MM-dd) | CCCD | Mã căn hộ | Mối quan hệ | Trạng thái</strong><br>
+                                    Dòng đầu tiên là header, dữ liệu bắt đầu từ dòng 2.
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fileImportCuDan" class="form-label fw-semibold">Chọn file Excel (.xlsx)</label>
+                                    <input type="file" class="form-control" id="fileImportCuDan" name="file" accept=".xlsx,.xls" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -74,10 +108,15 @@
                         <td th:text="${cd.canHo != null} ? ${cd.canHo.maCanHo} : #{chung.n_a}"></td>
                         <td>
                             <span th:if="${cd.moiQuanHe == 'Chủ Hộ'}" class="badge bg-primary" th:text="#{cd.qh.chu_ho}">Chủ Hộ</span>
-                            <span th:if="${cd.moiQuanHe != 'Chủ Hộ'}" th:text="${cd.moiQuanHe}"></span>
+                            <span th:if="${cd.moiQuanHe == 'Vợ/Chồng'}" th:text="#{cd.qh.vo_chong}"></span>
+                            <span th:if="${cd.moiQuanHe == 'Con cái'}" th:text="#{cd.qh.con}"></span>
+                            <span th:if="${cd.moiQuanHe == 'Người thân'}" th:text="#{cd.qh.nguoi_than}"></span>
+                            <span th:if="${cd.moiQuanHe == 'Người thuê'}" th:text="#{cd.qh.nguoi_thue}"></span>
+                            <span th:if="${cd.moiQuanHe != 'Chủ Hộ' and cd.moiQuanHe != 'Vợ/Chồng' and cd.moiQuanHe != 'Con cái' and cd.moiQuanHe != 'Người thân' and cd.moiQuanHe != 'Người thuê'}" th:text="${cd.moiQuanHe}"></span>
                         </td>
                         <td>
-                            <span th:class="${cd.trangThai == 'Đang Ở' ? 'text-success' : 'text-warning'}" th:text="${cd.trangThai}"></span>
+                            <span th:class="${cd.trangThai == 'Đang Ở' ? 'text-success' : 'text-warning'}" 
+                                  th:text="${cd.trangThai == 'Đang Ở' ? #messages.msg('cd.tt.dang_o') : (cd.trangThai == 'Chưa Đến' ? #messages.msg('cd.tt.chua_den') : cd.trangThai)}"></span>
                         </td>
                         <td>
                             <a th:href="@{/admin/cu-dan/sua/{id}(id=${cd.id})}" class="btn btn-sm btn-outline-primary me-1" th:text="#{chung.sua}">Sửa</a>
@@ -141,16 +180,28 @@
             </nav>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var thongBaoThanhCong = /*[[${thongBaoThanhCong}]]*/ null;
+            var thongBaoLoi = /*[[${thongBaoLoi}]]*/ null;
+            var successMessage = /*[[${successMessage}]]*/ null;
+            var errorMessage = /*[[${errorMessage}]]*/ null;
+
+            if (thongBaoThanhCong) {
+                Swal.fire({ icon: 'success', title: 'Thành công!', text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+            }
+            if (successMessage) {
+                Swal.fire({ icon: 'success', title: 'Thành công!', text: successMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+            }
+            if (thongBaoLoi) {
+                Swal.fire({ icon: 'error', title: 'Lỗi!', text: thongBaoLoi, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+            }
+            if (errorMessage) {
+                Swal.fire({ icon: 'error', title: 'Lỗi!', text: errorMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+            }
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

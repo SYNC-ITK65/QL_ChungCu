@@ -28,76 +28,52 @@
 
         <!-- Menu -->
         <ul class="nav nav-pills flex-column mb-auto" id="main-menu">
-            <li class="nav-item">
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
                 <a href="/admin/can-ho" class="nav-link text-white" th:text="#{side.admin.can_ho}">🏠 Quản lý Căn hộ</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
                 <a href="/admin/cu-dan" class="nav-link text-white" th:text="#{side.admin.cu_dan}">👥 Quản lý Cư dân</a>
             </li>
 
             <li class="nav-item" th:if="${session.nguoiDungDangNhap != null and session.nguoiDungDangNhap.vaiTro == 1}">
-                <a href="/admin/nguoi-dung" class="nav-link text-white" th:text="#{side.admin.nguoi_dung}">👤 Quản lý
-                    Người dùng</a>
+                <a href="/admin/nguoi-dung" class="nav-link text-white" th:text="#{side.admin.nguoi_dung}">👤 Quản lý Người dùng</a>
             </li>
 
-
-            <li class="nav-item">
-                <a href="/admin/chi-so" class="nav-link text-white" th:text="#{side.admin.chi_so}">📊 Quản lý Chỉ
-                    số</a>
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a href="/admin/chi-so" class="nav-link text-white" th:text="#{side.admin.chi_so}">📊 Quản lý Chỉ số</a>
             </li>
-            <li>
-                <a href="/admin/hoa-don" class="nav-link text-white" th:text="#{side.admin.tai_chinh}">💰 Tài chính
-                    &
-                    Hóa đơn</a>
+            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a href="/admin/hoa-don" class="nav-link text-white" th:text="#{side.admin.tai_chinh}">💰 Tài chính & Hóa đơn</a>
             </li>
-            <li>
-                <a href="/admin/hop-dong" class="nav-link text-white" th:text="#{side.admin.hop_dong}">📄 Quản lý
-                    Hợp
-                    đồng</a>
+            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a href="/admin/hop-dong" class="nav-link text-white" th:text="#{side.admin.hop_dong}">📄 Quản lý Hợp đồng</a>
             </li>
-            <li>
-                <a href="/admin/duyet-yeu-cau" class="nav-link text-white" th:text="#{side.admin.van_hanh}">🛠️ Vận
-                    hành
-                    & Tiện ích</a>
+            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4 || session.nguoiDungDangNhap.vaiTro == 5}">
+                <a href="/admin/duyet-yeu-cau" class="nav-link text-white" th:text="#{side.admin.van_hanh}">🛠️ Vận hành & Tiện ích</a>
             </li>
-            <li>
-                <a href="/admin/phuong-tien" class="nav-link text-white" th:text="#{side.admin.phuong_tien}">🚗 Quản
-                    lý
-                    Phương tiện</a>
+            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 5}">
+                <a href="/admin/phuong-tien" class="nav-link text-white" th:text="#{side.admin.phuong_tien}">🚗 Quản lý Phương tiện</a>
             </li>
-            <li>
-                <a href="/admin/khao-sat" class="nav-link text-white" th:text="#{side.admin.khao_sat}">📊 Quản lý
-                    Khảo
-                    sát</a>
+            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a href="/admin/khao-sat" class="nav-link text-white" th:text="#{side.admin.khao_sat}">📊 Quản lý Khảo sát</a>
             </li>
-            <li class="nav-item">
-                <a href="/admin/dich-vu" class="nav-link text-white" th:text="#{side.admin.dich_vu}">🛠️ Quản lý
-                    Dịch
-                    vụ</a>
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a href="/admin/dich-vu" class="nav-link text-white" th:text="#{side.admin.dich_vu}">🛠️ Quản lý Dịch vụ</a>
             </li>
-            <li class="nav-item">
-                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý
-                    Kiện
-                    hàng</a>
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
+                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý đơn thư</a>
             </li>
-            <li class="nav-item">
-                <a href="/admin/thanh-toan/lich-su" class="nav-link text-white" th:text="#{side.admin.lich_su_tt}">💳
-                    Lịch sử Thanh toán</a>
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a href="/admin/thanh-toan/lich-su" class="nav-link text-white" th:text="#{side.admin.lich_su_tt}">💳 Lịch sử Thanh toán</a>
             </li>
-            <li class="nav-item">
-                <a th:href="@{/admin/phan-anh}" class="nav-link text-white" th:text="#{side.admin.phan_anh}">📢 Quản
-                    lý
-                    Phản ánh</a>
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a th:href="@{/admin/phan-anh}" class="nav-link text-white" th:text="#{side.admin.phan_anh}">📢 Quản lý Phản ánh</a>
             </li>
-            <li class="nav-item">
-                <a th:href="@{/admin/tai-san}" class="nav-link text-white" th:text="#{side.admin.tai_san}">🛠️ Quản
-                    lý
-                    Tài Sản</a>
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <a th:href="@{/admin/tai-san}" class="nav-link text-white" th:text="#{side.admin.tai_san}">🛠️ Quản lý Tài Sản</a>
             </li>
-            <li class="nav-item">
-                <a th:href="@{/admin/thong-bao}" class="nav-link text-white" th:text="#{side.admin.thong_bao}">📢
-                    Quản
-                    lý Thông báo</a>
+            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
+                <a th:href="@{/admin/thong-bao}" class="nav-link text-white" th:text="#{side.admin.thong_bao}">📢 Quản lý Thông báo</a>
             </li>
         </ul>
 

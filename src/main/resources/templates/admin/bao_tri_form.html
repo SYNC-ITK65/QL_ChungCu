@@ -12,7 +12,8 @@
     <div class="d-flex">
         <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
         <div class="flex-grow-1 p-4">
-            <h2 class="mb-4"><span th:text="#{bt.form.tieude}">Ghi nhận Bảo Trì cho:</span> <span th:text="${taiSan.tenTaiSan}">Tên tài sản</span></h2>
+            <h2 class="mb-4"><span th:text="#{bt.form.tieude}">Ghi nhận Bảo Trì cho:</span> <span
+                    th:text="${taiSan.tenTaiSan}">Tên tài sản</span></h2>
             <form th:action="@{/admin/tai-san/{id}/bao-tri/save(id=${taiSan.id})}" th:object="${history}" method="post">
 
                 <div class="row mb-3">
@@ -38,8 +39,8 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary px-4" th:text="#{chung.luu}">Lưu</button>
-                    <a th:href="@{/admin/tai-san/{id}/bao-tri(id=${taiSan.id})}"
-                        class="btn btn-secondary px-4 ms-2" th:text="#{chung.huy}">Hủy</a>
+                    <a th:href="@{/admin/tai-san/{id}/bao-tri(id=${taiSan.id})}" class="btn btn-secondary px-4 ms-2"
+                        th:text="#{chung.huy}">Hủy</a>
                 </div>
             </form>
         </div>

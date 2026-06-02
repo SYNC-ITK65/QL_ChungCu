@@ -3,10 +3,12 @@ package com.sync.itk65.controller;
 import com.sync.itk65.entity.ThongBao;
 import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.ThongBaoService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -55,7 +57,7 @@ public class AdminThongBaoController {
     }
 
     @PostMapping("/luu")
-    public String luuThongBao(@ModelAttribute("thongBao") ThongBao thongBao) {
+    public String luuThongBao(@Valid @ModelAttribute("thongBao") ThongBao thongBao, BindingResult bindingResult, Model model) {
         if (thongBao.getId() != null) {
             ThongBao existing = thongBaoService.getThongBaoById(thongBao.getId());
             if (existing != null) {
@@ -64,8 +66,24 @@ public class AdminThongBaoController {
         } else {
             thongBao.setNgayDang(java.time.LocalDateTime.now());
         }
-        thongBaoService.saveThongBao(thongBao);
-        return "redirect:/admin/thong-bao";
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+            return "admin/thong_bao_form";
+        }
+
+        try {
+            thongBaoService.saveThongBao(thongBao);
+            return "redirect:/admin/thong-bao";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+            return "admin/thong_bao_form";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu thông báo!");
+            model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
+            return "admin/thong_bao_form";
+        }
     }
 
     @GetMapping("/xoa/{id}")

@@ -27,13 +27,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 th:text="#{kh.user.tieude}">📦 Tủ đồ của tôi</h2>
         <span class="badge bg-primary px-3 py-2" th:text="#{kh.user.tong_cong(${#lists.size(danhSachKienHang)})}">
-            Tổng số: 0 kiện hàng
+            Tổng số: 0 đơn thư
         </span>
     </div>
 
     <div th:if="${#lists.isEmpty(danhSachKienHang)}" class="text-center py-5">
         <div class="package-icon mb-3">📭</div>
-        <h4 class="text-muted" th:text="#{kh.user.trong}">Hiện tại không có kiện hàng nào dành cho căn hộ của bạn.</h4>
+        <h4 class="text-muted" th:text="#{kh.user.trong}">Hiện tại không có đơn thư nào dành cho căn hộ của bạn.</h4>
         <p class="text-muted" th:text="#{kh.user.trong_mo_ta}">Khi có bưu phẩm gửi đến sảnh, lễ tân sẽ cập nhật tại đây.</p>
     </div>
 

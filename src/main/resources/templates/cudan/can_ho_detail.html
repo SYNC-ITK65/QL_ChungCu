@@ -31,7 +31,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3 fw-bold" th:text="#{hd.detail.trang_thai}">Trạng thái:</div>
                     <div class="col-sm-9">
-                        <span class="badge bg-success" th:text="${canHo.trangThai}">-</span>
+                        <span class="badge bg-success" th:text="${canHo.trangThaiHienThi != null ? #messages.msg(canHo.trangThaiHienThi) : canHo.trangThai}">-</span>
                     </div>
                 </div>
             </div>

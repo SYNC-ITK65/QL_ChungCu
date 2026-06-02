@@ -32,6 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 
+### Codegraph ###
+.codegraph/
+
+### application-local.properties ###
 src/main/resources/application-local.properties
 
+### bin ###
 bin/

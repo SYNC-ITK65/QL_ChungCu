@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import com.sync.itk65.entity.CanHo;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -65,28 +68,27 @@ public class CanHoController {
         return "admin/can_ho_form";
     }
 
-    // Hàm xử lý lưu dữ liệu từ form và bắt lỗi Validation bằng try-catch
+    // Hàm xử lý lưu dữ liệu từ form và bắt lỗi Validation bằng Spring BindingResult
     @PostMapping("/luu")
-    public String luuCanHo(@ModelAttribute("canHo") CanHo canHo, RedirectAttributes ra) {
+    public String luuCanHo(@Valid @ModelAttribute("canHo") CanHo canHo, BindingResult bindingResult, Model model, RedirectAttributes ra) {
+        if (bindingResult.hasErrors()) {
+            return "admin/can_ho_form";
+        }
         try {
             canHoService.luuCanHo(canHo);
+            ra.addFlashAttribute("thongBaoThanhCong", "Lưu căn hộ thành công!");
             return "redirect:/admin/can-ho"; // Quay về trang danh sách sau khi lưu thành công
         } catch (IllegalArgumentException e) {
-            // Ném lỗi Validation về giao diện
-            ra.addFlashAttribute("errorMessage", e.getMessage());
-            // Quay lại trang Cập nhật hoặc Thêm mới
-            if (canHo.getId() != null) {
-                return "redirect:/admin/can-ho/sua/" + canHo.getId();
-            } else {
-                return "redirect:/admin/can-ho/tao-moi";
-            }
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/can_ho_form";
         }
     }
 
     // Xóa căn hộ
     @GetMapping("/xoa/{id}")
-    public String xoaCanHo(@PathVariable("id") Long id) {
+    public String xoaCanHo(@PathVariable("id") Long id, RedirectAttributes ra) {
         canHoService.xoaCanHo(id);
+        ra.addFlashAttribute("thongBaoThanhCong", "Xóa căn hộ thành công!");
         return "redirect:/admin/can-ho";
     }
 
@@ -101,6 +103,21 @@ public class CanHoController {
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(bytes);
+    }
+
+    @PostMapping("/import-excel")
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
+        if (file.isEmpty()) {
+            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            return "redirect:/admin/can-ho";
+        }
+        try {
+            String ketQua = canHoService.importExcelCanHo(file);
+            ra.addFlashAttribute("thongBaoThanhCong", ketQua);
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+        }
+        return "redirect:/admin/can-ho";
     }
 
 }

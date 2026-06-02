@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "can_ho")
@@ -20,16 +21,19 @@ public class CanHo {
     private String maCanHo;
 
     // Giới hạn giá trị nhỏ nhất cho diện tích để đảm bảo dữ liệu hợp lý
+    @NotNull(message = "Diện tích không được để trống")
     @Min(value = 1, message = "Diện tích căn hộ phải lớn hơn 0 m2")
     @Column(name = "dien_tich")
     private Double dienTich;
 
     // Đảm bảo tầng nằm ở trong giới hạn (từ 1 đến 100) của chung cư
+    @NotNull(message = "Số tầng không được để trống")
     @Min(value = 1, message = "Số tầng tối thiểu phải từ tầng 1 trở lên")
     @Max(value = 100, message = "Số tầng vượt quá mức tối đa của chung cư (100 tầng)")
     @Column(name = "tang")
     private Integer tang;
 
+    @NotBlank(message = "Loại căn hộ không được để trống")
     @Column(name = "loai")
     private String loai;
 
@@ -88,11 +92,40 @@ public class CanHo {
     }
 
     public String getTrangThai() {
-        return trangThai;
+        if ("Đang sửa chữa".equals(this.trangThai)) {
+            return this.trangThai;
+        }
+        boolean hasResident = false;
+        if (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty()) {
+            for (CuDan cd : this.danhSachCuDan) {
+                if ("Đang Ở".equalsIgnoreCase(cd.getTrangThai()) || "Đang ở".equalsIgnoreCase(cd.getTrangThai())) {
+                    hasResident = true;
+                    break;
+                }
+            }
+        }
+        return hasResident ? "Đã có chủ" : "Trống";
     }
 
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
+    }
+
+    @Transient
+    public String getTrangThaiHienThi() {
+        if ("Đang sửa chữa".equals(this.trangThai)) {
+            return "ch.tt.sua_chua";
+        }
+        boolean hasResident = false;
+        if (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty()) {
+            for (CuDan cd : this.danhSachCuDan) {
+                if ("Đang Ở".equalsIgnoreCase(cd.getTrangThai()) || "Đang ở".equalsIgnoreCase(cd.getTrangThai())) {
+                    hasResident = true;
+                    break;
+                }
+            }
+        }
+        return hasResident ? "ch.tt.da_ban_giao" : "ch.tt.trong";
     }
 
     public void setMaCanHo(String maCanHo) {
