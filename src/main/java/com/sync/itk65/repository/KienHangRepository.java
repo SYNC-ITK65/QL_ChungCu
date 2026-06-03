@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface KienHangRepository extends JpaRepository<KienHang, Long> {
-    List<KienHang> findByCanHoId(Long canHoId);
+    Page<KienHang> findByCanHoId(Long canHoId, Pageable pageable);
 
     List<KienHang> findByTrangThai(String trangThai);
 

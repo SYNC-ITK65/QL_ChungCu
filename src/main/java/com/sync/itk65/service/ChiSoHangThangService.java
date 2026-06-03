@@ -34,7 +34,7 @@ public class ChiSoHangThangService {
 
     // Lấy danh sách toàn bộ chỉ số, sắp xếp ngày mới nhất lên đầu
     public List<ChiSoHangThang> layTatCaChiSo() {
-        return chiSoHangThangRepository.findAllOrderByNgayGhiNhanDesc();
+        return chiSoHangThangRepository.findAllOrderByNgayGhiNhanDesc(Pageable.unpaged()).getContent();
     }
 
     public Page<ChiSoHangThang> layTatCaChiSo(int page, int size) {
@@ -43,8 +43,9 @@ public class ChiSoHangThangService {
     }
 
     // Tìm kiếm chỉ số theo nhiều điều kiện
-    public List<ChiSoHangThang> timKiemChiSo(String maCanHo, Long canHoId, Integer thang, Integer nam) {
-        return chiSoHangThangRepository.searchWithFilters(maCanHo, canHoId, thang, nam);
+    public Page<ChiSoHangThang> timKiemChiSo(String maCanHo, Long canHoId, Integer thang, Integer nam, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return chiSoHangThangRepository.searchWithFilters(maCanHo, canHoId, thang, nam, pageable);
     }
 
     // Lấy chỉ số theo ID căn hộ

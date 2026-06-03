@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 
 @Controller
@@ -20,8 +21,14 @@ public class AdminKhaoSatController {
     @Autowired private LichSuVoteRepository lichSuVoteRepo;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("listKhaoSat", khaoSatService.layTatCa());
+    public String list(Model model,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size) {
+        Page<KhaoSat> trangKhaoSat = khaoSatService.layTatCa(page, size);
+        model.addAttribute("listKhaoSat", trangKhaoSat.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangKhaoSat.getTotalPages());
+        model.addAttribute("size", size);
         return "admin/khao_sat_list";
     }
 

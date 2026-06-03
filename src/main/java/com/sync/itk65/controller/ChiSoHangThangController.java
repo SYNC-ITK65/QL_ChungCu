@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -34,19 +35,24 @@ public class ChiSoHangThangController {
                                   @RequestParam(required = false) String maCanHo,
                                   @RequestParam(required = false) Long canHoId,
                                   @RequestParam(required = false) Integer thang,
-                                  @RequestParam(required = false) Integer nam) {
-        List<ChiSoHangThang> danhSachChiSo;
+                                  @RequestParam(required = false) Integer nam,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        Page<ChiSoHangThang> trangDuLieuChiSo;
 
         String maCanHoFilter = (maCanHo != null && !maCanHo.trim().isEmpty()) ? maCanHo.trim() : null;
         boolean coBoLoc = maCanHoFilter != null || canHoId != null || thang != null || nam != null;
 
         if (coBoLoc) {
-            danhSachChiSo = chiSoHangThangService.timKiemChiSo(maCanHoFilter, canHoId, thang, nam);
+            trangDuLieuChiSo = chiSoHangThangService.timKiemChiSo(maCanHoFilter, canHoId, thang, nam, page, size);
         } else {
-            danhSachChiSo = chiSoHangThangService.layTatCaChiSo();
+            trangDuLieuChiSo = chiSoHangThangService.layTatCaChiSo(page, size);
         }
 
-        model.addAttribute("danhSachChiSo", danhSachChiSo);
+        model.addAttribute("danhSachChiSo", trangDuLieuChiSo.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieuChiSo.getTotalPages());
+        model.addAttribute("size", size);
         model.addAttribute("maCanHo", maCanHo != null ? maCanHo : "");
         model.addAttribute("canHoId", canHoId);
         model.addAttribute("thang", thang);

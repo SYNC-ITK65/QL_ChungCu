@@ -60,8 +60,9 @@ public class HoaDonService {
     private HopDongRepository hopDongRepository;
 
     // Tìm kiếm hóa đơn theo nhiều điều kiện
-    public List<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam) {
-        return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam);
+    public Page<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return hoaDonRepository.searchWithFilters(maCanHo, trangThai, thang, nam, pageable);
     }
 
     public Page<HoaDon> layTatCaHoaDon(int page, int size) {

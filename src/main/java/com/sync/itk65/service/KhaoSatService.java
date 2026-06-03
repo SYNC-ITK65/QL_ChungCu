@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class KhaoSatService {
@@ -16,7 +19,12 @@ public class KhaoSatService {
     @Autowired private LuaChonKhaoSatRepository luaChonRepo;
     @Autowired private LichSuVoteRepository lichSuVoteRepo;
 
-    public List<KhaoSat> layTatCa() { return khaoSatRepo.findAllByOrderByThoiGianBatDauDesc(); }
+    public List<KhaoSat> layTatCa() { return khaoSatRepo.findAllByOrderByThoiGianBatDauDesc(Pageable.unpaged()).getContent(); } // Keep for backward compatibility if needed
+
+    public Page<KhaoSat> layTatCa(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return khaoSatRepo.findAllByOrderByThoiGianBatDauDesc(pageable);
+    }
     public KhaoSat findById(Long id) { return khaoSatRepo.findById(id).orElse(null); }
 
     @Transactional
