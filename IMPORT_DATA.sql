@@ -18,25 +18,26 @@ INSERT INTO nguoi_dung (email, ho_ten, mat_khau_ma_hoa, so_dien_thoai, ten_dang_
 
 -- 2. CAN_HO
 INSERT INTO can_ho (ma_can_ho, dien_tich, tang, loai, trang_thai, hinh_anh) VALUES
-('A1-01', 75.5, 1, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'a101.jpg'),
-('A1-02', 45.0, 1, N'Studio', N'Đã có chủ', 'a102.jpg'),
-('A2-05', 90.0, 2, N'Duplex', N'Đã có chủ', 'a205.jpg'),
-('B3-10', 60.0, 3, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'b310.jpg'),
-('C5-02', 120.0, 5, N'Penthouse', N'Trống', 'c502.jpg'),
-('D1-01', 75.5, 1, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'd101.jpg'),
-('A1-03', 75.5, 1, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'a103.jpg'),
-('B2-04', 65.0, 2, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'b204.jpg');
+('A1-01', 75.5, 1, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('A1-02', 45.0, 1, N'Studio', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('A2-05', 90.0, 2, N'Duplex', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('B3-10', 60.0, 3, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('C5-02', 120.0, 5, N'Penthouse', N'Trống', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('D1-01', 75.5, 1, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('A1-03', 75.5, 1, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('B2-04', 65.0, 2, N'Căn hộ tiêu chuẩn', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg'),
+('C3-07', 80.0, 3, N'Duplex', N'Đã có chủ', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780401430/canho/pkg2fhdqqqcy6oqn7ebm.jpg');
 
 
 INSERT INTO cu_dan (id, cccd, moi_quan_he, ngay_sinh, trang_thai, ma_can_ho) VALUES
-(4, '001095001234', N'Chủ hộ', '1985-05-15', N'Thường trú', 1),
-(5, '001095001235', N'Vợ/Chồng', '1988-08-20', N'Thường trú', 1),
-(6, '001090005678', N'Chủ hộ', '1990-10-20', N'Thường trú', 2),
-(7, '001088009988', N'Chủ hộ', '1988-03-12', N'Tạm trú', 3),
-(8, '001092001122', N'Chủ hộ', '1992-07-08', N'Thường trú', 4),
-(9, '001098003344', N'Chủ hộ', '1998-12-25', N'Thường trú', 6),
-(10, '001093004455', N'Chủ hộ', '1993-02-14', N'Thường trú', 7),
-(11, '001094006677', N'Chủ hộ', '1994-06-30', N'Thường trú', 8);
+(4, '001095001234', N'Chủ hộ', '1985-05-15', N'Đang Ở', 1),
+(5, '001095001235', N'Vợ/Chồng', '1988-08-20', N'Đang Ở', 1),
+(6, '001090005678', N'Chủ hộ', '1990-10-20', N'Chưa Đến', 2),
+(7, '001088009988', N'Chủ hộ', '1988-03-12', N'Đang Ở', 3),
+(8, '001092001122', N'Chủ hộ', '1992-07-08', N'Đang Ở', 4),
+(9, '001098003344', N'Con cái', '1998-12-25', N'Chưa Đến', 6),
+(10, '001093004455', N'Chủ hộ', '1993-02-14', N'Đang Ở', 7),
+(11, '001094006677', N'Chủ hộ', '1994-06-30', N'Đang Ở', 8);
 
 -- 4. DICH_VU
 INSERT INTO dich_vu (ten, don_gia, don_vi_tinh, loai, mo_ta) VALUES
@@ -63,10 +64,30 @@ INSERT INTO khao_sat (tieu_de, mo_ta, thoi_gian_bat_dau, thoi_gian_ket_thuc) VAL
 (N'Khảo sát nhu cầu lắp thêm trạm sạc xe điện', N'Thu thập ý kiến về việc lắp đặt trạm sạc tại hầm B2.', '2024-05-10 08:00:00', '2024-06-10 17:00:00');
 
 -- 7. THONG_BAO
-INSERT INTO thong_bao (tieu_de, noi_dung, loai, ngay_dang, doi_tuong_gui, gia_tri_doi_tuong) VALUES
-(N'Thông báo cắt nước định kỳ', N'Tòa nhà sẽ cắt nước để bảo trì bồn chứa vào ngày 10/05/2024 từ 8h đến 11h.', 1, '2024-05-01 09:00:00', N'Toàn bộ', 'ALL'),
-(N'Nhắc nhở đóng phí quản lý tháng 4', N'Vui lòng thanh toán phí quản lý trước ngày 05/05/2024.', 2, '2024-04-25 14:00:00', N'Căn hộ', 'A1-01'),
-(N'Thông báo phun thuốc muỗi', N'Ban quản lý sẽ phun thuốc muỗi khu vực hành lang vào tối thứ 7.', 1, '2024-05-12 10:00:00', N'Toàn bộ', 'ALL');
+insert into dbo.thong_bao 
+(id, tieu_de, noi_dung, loai, ngay_dang, doi_tuong_gui, gia_tri_doi_tuong) values
+
+(7, N'Thông báo bảo trì hệ thống nước',
+ N'<p>Ban quản lý thông báo sẽ tiến hành bảo trì hệ thống cấp nước toàn tòa nhà từ 08:00 đến 12:00 ngày 05/06/2026. Kính đề nghị cư dân chủ động dự trữ nước sinh hoạt trong thời gian trên.</p>',
+ 1, N'2026-06-02T22:01:08.17', N'ALL', N''),
+(8, N'Nhắc nhở hoàn thành phí quản lý tháng 6',
+ N'<p>Quý cư dân căn hộ A1-01 vui lòng hoàn thành phí quản lý tháng 06/2026 trước ngày 10/06/2026 để tránh phát sinh nhắc nhở từ hệ thống.</p>',
+ 1, N'2026-06-02T22:01:30.543', N'HO_GIA_DINH', N'A1-01'),
+(9, N'Kiểm tra đồng hồ điện định kỳ',
+ N'<p>Ban quản lý sẽ thực hiện kiểm tra đồng hồ điện tại các căn hộ A1-01 và A1-02 vào ngày 06/06/2026. Vui lòng bố trí thời gian để hỗ trợ nhân viên kỹ thuật.</p>',
+ 1, N'2026-06-02T22:01:54.553', N'NHIEU_HO', N'A1-01, A1-02'),
+(10, N'Vệ sinh hành lang tầng 1',
+ N'<p>Công tác vệ sinh và bảo dưỡng hành lang tầng 1 sẽ được thực hiện từ 09:00 đến 11:00 ngày 04/06/2026. Mong cư dân hạn chế để vật dụng cá nhân tại khu vực hành lang trong thời gian này.</p>',
+ 1, N'2026-06-02T22:02:15.473', N'TANG', N'1'),
+(11, N'Hướng dẫn sử dụng thẻ cư dân',
+ N'<p>Cư dân vui lòng mang theo thẻ cư dân khi sử dụng các tiện ích chung như bãi đỗ xe, phòng gym và hồ bơi. Thẻ cần được bảo quản cẩn thận để tránh mất mát.</p>',
+ 2, N'2026-06-02T22:02:34.19', N'ALL', N''),
+(12, N'Hướng dẫn đăng ký tạm trú',
+ N'<p>Cư dân căn hộ A1-01 có thể thực hiện đăng ký tạm trú trực tuyến hoặc tại văn phòng Ban quản lý. Vui lòng chuẩn bị đầy đủ giấy tờ tùy thân theo quy định.</p>',
+ 2, N'2026-06-02T22:02:57.377', N'HO_GIA_DINH', N'A1-01'),
+(13, N'Hướng dẫn phân loại rác sinh hoạt',
+ N'<p>Các căn hộ A1-01 và A2-05 vui lòng thực hiện phân loại rác hữu cơ, rác tái chế và rác thải khác theo hướng dẫn của Ban quản lý nhằm góp phần xây dựng môi trường sống xanh - sạch - đẹp.</p>',
+ 2, N'2026-06-02T22:03:25.593', N'NHIEU_HO', N'A1-01, A2-05');
 
 -- 8. CHI_SO_HANG_THANG (Lịch sử 2 tháng cho căn A1-01 và các căn khác)
 INSERT INTO chi_so_hang_thang (can_ho_id, dien_tieu_thu, nuoc_tieu_thu, ngay_ghi_nhan) VALUES
@@ -160,7 +181,9 @@ INSERT INTO lich_su_vote (cu_dan_id, khao_sat_id, lua_chon_id, thoi_gian_vote) V
 (7, 3, 6, '2024-05-12 08:00:00');
 
 -- 19. LICH_SU_BAO_TRI
-INSERT INTO lich_su_bao_tri (tai_san_id, ngay_bao_tri, noi_dung, chi_phi, nguoi_thuc_hien) VALUES
-(1, '2024-01-10', N'Thay cáp thang máy số 1', 5000000, N'Công ty Thang máy Otis'),
-(4, '2024-05-10', N'Kiểm tra định kỳ hệ thống cảm biến khói', 1200000, N'Đội kỹ thuật nội bộ'),
-(5, '2024-02-15', N'Lắp mới máy bơm nước tăng áp', 8500000, N'Công ty CP Nước sạch');
+insert into dbo.tai_san (id, ma_tai_san, ten_tai_san, vi_tri, tinh_trang, ngay_mua, chu_ky_bao_tri, ngay_bao_tri_tiep_theo) values
+(1, N'TS-TL01', N'Thang máy Block A', N'Hành lang Block A', N'Hoạt động tốt', N'2026-06-28', 6, N'2026-12-28'),
+(2, N'TS-TL02', N'Thang máy Block B', N'Hành lang Block B', N'Hoạt động tốt', N'2026-06-13', 6, N'2026-12-13'),
+(3, N'TS-MF01', N'Máy phát điện dự phòng', N'Tầng hầm B1', N'Hoạt động tốt', N'2026-07-01', 12, N'2027-07-01'),
+(4, N'TS-CC01', N'Hệ thống Camera PCCC', N'Toàn bộ tòa nhà', N'Đang hỏng', N'2026-06-20', 3, N'2026-09-20'),
+(5, N'TS-BP01', N'Bơm nước sinh hoạt', N'Phòng kỹ thuật', N'Chờ thanh lý', N'2026-06-27', 12, N'2027-06-27');

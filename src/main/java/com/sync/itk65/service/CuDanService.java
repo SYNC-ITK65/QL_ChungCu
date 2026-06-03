@@ -48,8 +48,24 @@ public class CuDanService {
         if (existingCanHo == null) return;
         
         List<CuDan> residents = cuDanRepository.layTatCaCuDanTheoCanHo(existingCanHo.getId());
-        boolean hasResident = residents.stream().anyMatch(r -> "Đang Ở".equalsIgnoreCase(r.getTrangThai()) || "Đang ở".equalsIgnoreCase(r.getTrangThai()));
-        existingCanHo.setTrangThai(hasResident ? "Đã có chủ" : "Trống");
+        boolean hasOwner = false;
+        boolean hasResident = false;
+        for (CuDan r : residents) {
+            if ("Chủ Hộ".equalsIgnoreCase(r.getMoiQuanHe()) || "Chủ hộ".equalsIgnoreCase(r.getMoiQuanHe())) {
+                hasOwner = true;
+            }
+            if ("Đang Ở".equalsIgnoreCase(r.getTrangThai()) || "Đang ở".equalsIgnoreCase(r.getTrangThai())) {
+                hasResident = true;
+            }
+        }
+        
+        if (hasResident) {
+            existingCanHo.setTrangThai("Đã có chủ");
+        } else if (hasOwner || !residents.isEmpty()) {
+            existingCanHo.setTrangThai("Chủ chưa đến");
+        } else {
+            existingCanHo.setTrangThai("Trống");
+        }
         canHoRepository.save(existingCanHo);
     }
 
@@ -84,6 +100,28 @@ public class CuDanService {
                 CuDan oldCuDan = cuDanRepository.findById(cuDan.getId()).orElse(null);
                 if (oldCuDan != null) {
                     oldCanHo = oldCuDan.getCanHo();
+                }
+            }
+
+            if (cuDan.getCanHo() != null && cuDan.getCanHo().getId() != null) {
+                List<CuDan> residents = cuDanRepository.layTatCaCuDanTheoCanHo(cuDan.getCanHo().getId());
+                // Remove this current cuDan from residents to evaluate other residents
+                residents.removeIf(r -> r.getId() != null && r.getId().equals(cuDan.getId()));
+
+                boolean isOwner = "Chủ Hộ".equalsIgnoreCase(cuDan.getMoiQuanHe()) || "Chủ hộ".equalsIgnoreCase(cuDan.getMoiQuanHe());
+
+                if (residents.isEmpty()) {
+                    // Rule 2: If apartment is empty, first person must be owner
+                    if (!isOwner) {
+                        throw new IllegalArgumentException("cd.msg.loi_trong_phai_chu_ho");
+                    }
+                } else {
+                    // There are other residents. Rule 1: Check if there's already an owner
+                    boolean hasOtherOwner = residents.stream().anyMatch(r -> "Chủ Hộ".equalsIgnoreCase(r.getMoiQuanHe()) || "Chủ hộ".equalsIgnoreCase(r.getMoiQuanHe()));
+                    
+                    if (isOwner && hasOtherOwner) {
+                        throw new IllegalArgumentException("cd.msg.loi_da_co_chu_ho");
+                    }
                 }
             }
 
@@ -224,6 +262,25 @@ public class CuDanService {
                     if (canHo == null) {
                         danhSachBoQua.add("Dòng " + (i + 1) + ": Mã căn hộ '" + maCanHo + "' không tồn tại");
                         continue;
+                    }
+                }
+
+                String finalMoiQuanHe = moiQuanHe.isEmpty() ? "Chủ Hộ" : moiQuanHe;
+                boolean isOwner = "Chủ Hộ".equalsIgnoreCase(finalMoiQuanHe) || "Chủ hộ".equalsIgnoreCase(finalMoiQuanHe);
+
+                if (canHo != null) {
+                    List<CuDan> residents = cuDanRepository.layTatCaCuDanTheoCanHo(canHo.getId());
+                    if (residents.isEmpty()) {
+                        if (!isOwner) {
+                            danhSachBoQua.add("Dòng " + (i + 1) + ": Căn hộ trống, cư dân đầu tiên phải là Chủ hộ");
+                            continue;
+                        }
+                    } else {
+                        boolean hasOtherOwner = residents.stream().anyMatch(r -> "Chủ Hộ".equalsIgnoreCase(r.getMoiQuanHe()) || "Chủ hộ".equalsIgnoreCase(r.getMoiQuanHe()));
+                        if (isOwner && hasOtherOwner) {
+                            danhSachBoQua.add("Dòng " + (i + 1) + ": Căn hộ đã có Chủ hộ");
+                            continue;
+                        }
                     }
                 }
 
