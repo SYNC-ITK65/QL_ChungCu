@@ -7,6 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/admin/phuong-tien") // Dùng chung 1 đường dẫn như CanHoController
@@ -14,24 +19,6 @@ public class PhuongTienController {
 
     @Autowired
     private PhuongTienService phuongTienService;
-
-    // 1. Hàm hiển thị giao diện và danh sách xe
-    @GetMapping
-    public String hienThiTrang(Model model,
-                               @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "10") int size) {
-        // Đẩy danh sách xe xuống bảng
-        Page<PhuongTien> trangDuLieu = phuongTienService.danhSachXe(page, size);
-        model.addAttribute("danhSachXe", trangDuLieu.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
-        model.addAttribute("size", size);
-
-        // Tạo một object rỗng đẩy xuống form để hứng dữ liệu người dùng nhập
-        model.addAttribute("xeMoi", new PhuongTien());
-
-        return "admin/phuong-tien";
-    }
 
     // 2. Hàm lưu dữ liệu từ form gửi lên (Không dùng JS)
     @PostMapping("/luu")
@@ -76,25 +63,61 @@ public class PhuongTienController {
         return "redirect:/admin/phuong-tien";
     }
 
-    @GetMapping("/huy-duyet/{id}")
-    public String huyDuyetXe(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
-        try {
-            phuongTienService.huyDuyetXe(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã hủy duyệt phương tiện.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi hủy duyệt xe: " + e.getMessage());
-        }
-        return "redirect:/admin/phuong-tien";
-    }
-
     @GetMapping("/sua/{id}")
     public String suaLaiTrangThaiChoDuyet(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
             phuongTienService.suaLaiTrangThaiChoDuyet(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã chuyển lại trạng thái Chờ duyệt.");
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã hoàn tác: Chuyển xe về lại trạng thái Chờ duyệt."); // Đổi chữ ở đây
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi sửa trạng thái xe: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi: " + e.getMessage());
         }
         return "redirect:/admin/phuong-tien";
+    }
+    // Tiếp nhận tham số tìm kiếm, gọi Service tương ứng và trả dữ liệu kèm từ khóa về giao diện
+    @GetMapping
+    public String hienThiTrang(Model model,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "10") int size,
+                               @RequestParam(required = false) String tuKhoa,
+                               @RequestParam(required = false) String trangThai,
+                               @RequestParam(required = false) String loaiXe) {
+
+        Page<PhuongTien> trangDuLieu;
+
+        if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) ||
+                (trangThai != null && !trangThai.trim().isEmpty()) ||
+                (loaiXe != null && !loaiXe.trim().isEmpty())) {
+            trangDuLieu = phuongTienService.timKiemPhuongTien(tuKhoa, trangThai, loaiXe, page, size);
+        } else {
+            trangDuLieu = phuongTienService.danhSachXe(page, size);
+        }
+
+        model.addAttribute("danhSachXe", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
+
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("loaiXe", loaiXe);
+
+        model.addAttribute("xeMoi", new PhuongTien());
+
+        return "admin/phuong-tien";
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel(@RequestParam(required = false) String tuKhoa,
+                                            @RequestParam(required = false) String trangThai,
+                                            @RequestParam(required = false) String loaiXe) {
+        byte[] bytes = phuongTienService.xuatExcelDanhSachPhuongTien(tuKhoa, trangThai, loaiXe);
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_phuong_tien_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
     }
 }

@@ -14,8 +14,8 @@ public interface DangKyKhachThamRepository extends JpaRepository<DangKyKhachTham
     Page<DangKyKhachTham> findByCuDanIdOrderByThoiGianDuKienDesc(Long cuDanId, Pageable pageable);
 
     @Query("SELECT k FROM DangKyKhachTham k WHERE " +
-            "(:tuKhoa IS NULL OR LOWER(k.tenKhach) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) OR LOWER(k.cmnd) LIKE LOWER(CONCAT('%', :tuKhoa, '%'))) AND " +
+            "(:tuKhoa IS NULL OR :tuKhoa = '' OR LOWER(k.tenKhach) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) OR LOWER(k.cmnd) LIKE LOWER(CONCAT('%', :tuKhoa, '%'))) AND " +
             "(:trangThai IS NULL OR :trangThai = '' OR k.trangThai = :trangThai) " +
             "ORDER BY k.thoiGianDuKien DESC")
-    Page<DangKyKhachTham> searchKhachTham(@Param("tuKhoa") String tuKhoa, @Param("trangThai") String trangThai, Pageable pageable);
+    Page<DangKyKhachTham> timKiemVaLocKhachTham(@Param("tuKhoa") String tuKhoa, @Param("trangThai") String trangThai, Pageable pageable);
 }

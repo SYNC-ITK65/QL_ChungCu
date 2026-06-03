@@ -12,7 +12,31 @@
         <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
         <div class="container-fluid p-4">
-            <h2 th:text="#{pa.ds.danh_sach_cu_dan_pha}">Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</h2>
+            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                <h2 th:text="#{pa.ds.danh_sach_cu_dan_pha}" class="mb-0">Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</h2>
+                <a th:href="@{/admin/phan-anh/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success fw-bold">
+                    <i class="fas fa-file-excel"></i> Xuất Excel
+                </a>
+            </div>
+            <form method="get" action="/admin/phan-anh" class="row g-3 mb-4">
+                <div class="col-md-5">
+                    <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}"
+                           placeholder="Nhập tiêu đề hoặc mã căn hộ (VD: A1-05)...">
+                </div>
+                <div class="col-md-4">
+                    <select name="trangThai" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="Chờ xử lý" th:selected="${trangThai == 'Chờ xử lý'}">Chờ xử lý</option>
+                        <option value="Đang xử lý" th:selected="${trangThai == 'Đang xử lý'}">Đang xử lý</option>
+                        <option value="Đã xong" th:selected="${trangThai == 'Đã xong'}">Đã xong</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
             <table class="table table-bordered table-striped mt-3 no-paging">
                 <thead class="table-dark">
                     <tr>
@@ -44,7 +68,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div th:replace="~{fragments/pagination :: paging('/admin/phan-anh', '')}"></div>
+            <div th:replace="~{fragments/pagination :: paging('/admin/phan-anh', ${queryString})}"></div>
         </div>
     </div>
 

@@ -10,6 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/admin/dich-vu")
@@ -25,13 +30,25 @@ public class DichVuController {
     @GetMapping
     public String danhSachDichVu(Model model,
                                  @RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size) {
+                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(required = false) String tuKhoa,
+                                 @RequestParam(required = false) String trangThai) {
         model.addAttribute("danhSachDichVu", dichVuService.layTatCaDichVu());
-        Page<DatDichVu> trangDuLieu = datDichVuService.layTatCaDonDatDichVu(page, size);
+        
+        Page<DatDichVu> trangDuLieu;
+        if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) || (trangThai != null && !trangThai.trim().isEmpty())) {
+            trangDuLieu = datDichVuService.timKiemDonDatDichVu(tuKhoa, trangThai, page, size);
+        } else {
+            trangDuLieu = datDichVuService.layTatCaDonDatDichVu(page, size);
+        }
+        
         model.addAttribute("danhSachDonDat", trangDuLieu.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("trangThai", trangThai);
+        
         return "admin/dich_vu_list"; // File view: templates/admin/dich_vu_list.html
     }
 
@@ -110,5 +127,19 @@ public class DichVuController {
     public String xoaDichVu(@PathVariable("id") Long id) {
         dichVuService.xoaDichVu(id);
         return "redirect:/admin/dich-vu";
+    }
+
+    @GetMapping("/don-dat/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcelDonDat(@RequestParam(required = false) String tuKhoa,
+                                                  @RequestParam(required = false) String trangThai) {
+        byte[] bytes = datDichVuService.xuatExcelDonDatDichVu(tuKhoa, trangThai);
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_dang_ky_dich_vu_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
     }
 }

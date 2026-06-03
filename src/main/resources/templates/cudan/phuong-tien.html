@@ -30,22 +30,32 @@
                     <form th:action="@{/cudan/phuong-tien/luu}" th:object="${xeMoi}" method="post">
 
                         <div class="mb-3">
-                            <label class="form-label" th:text="#{pt.ui.bien_so_xe}">Biển số xe:</label>
-                            <input type="text" th:field="*{bienSoXe}" class="form-control" required placeholder="VD: 59A-123.45" th:placeholder="#{pt.ui.vd_59a_123_45}">
+                            <label class="form-label fw-bold" th:text="#{pt.ui.bien_so_xe}">Biển số xe:</label>
+                            <input type="text" th:field="*{bienSoXe}" class="form-control"
+                                   th:placeholder="#{pt.ui.vd_59a_123_45}"
+                                   th:classappend="${#fields.hasErrors('bienSoXe')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('bienSoXe')}" th:errors="*{bienSoXe}"></div>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label" th:text="#{pt.ui.loai_xe}">Loại xe:</label>
-                            <select th:field="*{loaiXe}" class="form-select">
+                            <label class="form-label fw-bold" th:text="#{pt.ui.loai_xe}">Loại xe:</label>
+                            <select th:field="*{loaiXe}" class="form-select" th:classappend="${#fields.hasErrors('loaiXe')} ? 'is-invalid' : ''">
+                                <option value="">-- Chọn loại xe --</option>
                                 <option value="Xe máy" th:text="#{pt.ui.xe_may}">Xe máy</option>
                                 <option value="Ô tô" th:text="#{pt.ui.o_to}">Ô tô</option>
                                 <option value="Xe đạp" th:text="#{pt.ui.xe_dap}">Xe đạp</option>
                             </select>
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('loaiXe')}" th:errors="*{loaiXe}"></div>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label" th:text="#{pt.ui.mau_sac}">Màu sắc:</label>
-                            <input type="text" th:field="*{mauXe}" class="form-control" required>
+                            <label class="form-label fw-bold" th:text="#{pt.ui.mau_sac}">Màu sắc:</label>
+                            <input type="text" th:field="*{mauXe}" class="form-control" placeholder="VD: Đen nhám..."
+                                   th:classappend="${#fields.hasErrors('mauXe')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('mauXe')}" th:errors="*{mauXe}"></div>
                         </div>
-                        <button type="submit" class="btn btn-success w-100" th:text="#{pt.ui.gui_yeu_cau_dang_ky1}">Gửi yêu cầu đăng ký</button>
+
+                        <button type="submit" class="btn btn-success w-100 fw-bold" th:text="#{pt.ui.gui_yeu_cau_dang_ky1}">Gửi yêu cầu đăng ký</button>
                         <small class="text-muted mt-2 d-block" th:text="#{pt.ui.xe_sau_khi_dang_ky}">* Xe sau khi đăng ký cần chờ BQL duyệt mới được tính hợp lệ.</small>
                     </form>
                 </div>

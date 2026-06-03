@@ -19,15 +19,24 @@
 
             <div class="card shadow-sm" style="max-width: 700px;">
                 <div class="card-body">
-                    <form th:action="@{/cudan/phan-anh/luu}" th:object="${phanAnh}" method="post">
+                    <form th:action="@{/cudan/phan-anh/luu}" th:object="${phanAnh}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
+
+                        <div th:if="${error}" class="alert alert-danger mb-3" role="alert" th:text="${error}"></div>
+
                         <div class="mb-3">
                             <label for="tieuDe" class="form-label fw-bold" th:text="#{tb.form.tieude}">Tiêu đề</label>
-                            <input type="text" class="form-control" id="tieuDe" th:field="*{tieuDe}" required placeholder="Vd: Sửa chữa vòi nước phòng tắm" th:placeholder="#{pa.form.vd_sua_chua_voi_nuoc}">
+                            <input type="text" class="form-control" id="tieuDe" th:field="*{tieuDe}"
+                                   th:placeholder="#{pa.form.vd_sua_chua_voi_nuoc}"
+                                   th:classappend="${#fields.hasErrors('tieuDe')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('tieuDe')}" th:errors="*{tieuDe}"></div>
                         </div>
 
                         <div class="mb-4">
                             <label for="noiDung" class="form-label fw-bold" th:text="#{pa.form.noi_dung_chi_tiet}">Nội dung chi tiết</label>
-                            <textarea class="form-control" id="noiDung" th:field="*{noiDung}" rows="6" required placeholder="Mô tả cụ thể vấn đề bạn gặp phải..." th:placeholder="#{pa.form.mo_ta_cu_the_van_de}"></textarea>
+                            <textarea class="form-control" id="noiDung" th:field="*{noiDung}" rows="6"
+                                      th:placeholder="#{pa.form.mo_ta_cu_the_van_de}"
+                                      th:classappend="${#fields.hasErrors('noiDung')} ? 'is-invalid' : ''"></textarea>
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('noiDung')}" th:errors="*{noiDung}"></div>
                         </div>
 
                         <div class="d-flex gap-2">

@@ -5,10 +5,18 @@ import com.sync.itk65.repository.PhuongTienRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class PhuongTienService {
@@ -99,5 +107,58 @@ public class PhuongTienService {
         String normalized = Normalizer.normalize(value, Normalizer.Form.NFD);
         normalized = normalized.replaceAll("\\p{M}", "");
         return normalized.replace('đ', 'd').replace('Đ', 'D');
+    }
+    public Page<PhuongTien> timKiemPhuongTien(String tuKhoa, String trangThai, String loaiXe, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        String tuKhoaFilter = (tuKhoa != null && !tuKhoa.trim().isEmpty()) ? "%" + tuKhoa.trim() + "%" : null;
+        String trangThaiFilter = (trangThai != null && !trangThai.trim().isEmpty()) ? trangThai.trim() : null;
+        String loaiXeFilter = (loaiXe != null && !loaiXe.trim().isEmpty()) ? loaiXe.trim() : null;
+        return phuongTienRepository.timKiemVaLocPhuongTien(tuKhoaFilter, trangThaiFilter, loaiXeFilter, pageable);
+    }
+
+    public byte[] xuatExcelDanhSachPhuongTien(String tuKhoa, String trangThai, String loaiXe) {
+        Page<PhuongTien> trangDuLieu;
+        if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) ||
+                (trangThai != null && !trangThai.trim().isEmpty()) ||
+                (loaiXe != null && !loaiXe.trim().isEmpty())) {
+            trangDuLieu = timKiemPhuongTien(tuKhoa, trangThai, loaiXe, 0, Integer.MAX_VALUE);
+        } else {
+            trangDuLieu = danhSachXe(0, Integer.MAX_VALUE);
+        }
+
+        List<PhuongTien> ds = trangDuLieu.getContent();
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("DanhSachPhuongTien");
+
+            int rowIdx = 0;
+            var header = sheet.createRow(rowIdx++);
+            String[] headers = {"ID Xe", "Mã Căn Hộ", "Biển Số", "Loại Xe", "Màu Xe", "Trạng Thái"};
+            for (int i = 0; i < headers.length; i++) {
+                header.createCell(i).setCellValue(headers[i]);
+            }
+
+            for (PhuongTien xe : ds) {
+                var row = sheet.createRow(rowIdx++);
+                String maCanHo = xe.getCanHo() != null ? String.valueOf(xe.getCanHo().getId()) : "Trống";
+                
+                row.createCell(0).setCellValue(xe.getId());
+                row.createCell(1).setCellValue(maCanHo);
+                row.createCell(2).setCellValue(xe.getBienSoXe() != null ? xe.getBienSoXe() : "");
+                row.createCell(3).setCellValue(xe.getLoaiXe() != null ? xe.getLoaiXe() : "");
+                row.createCell(4).setCellValue(xe.getMauXe() != null ? xe.getMauXe() : "");
+                
+                String tt = xe.getTrangThai() == null || xe.getTrangThai().isEmpty() ? "Chờ duyệt" : xe.getTrangThai();
+                row.createCell(5).setCellValue(tt);
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Lỗi khi tạo file Excel danh sách phương tiện", e);
+        }
     }
 }

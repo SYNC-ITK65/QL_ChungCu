@@ -17,32 +17,37 @@
       </div>
 
       <div class="card-body p-4">
+        <div th:if="${globalError}" class="alert alert-danger fw-bold" th:text="${globalError}"></div>
         <div th:if="${khaoSat.id != null and khaoSat.tongSoVote > 0}" class="alert alert-warning">
           <i class="fas fa-exclamation-triangle"></i><span th:text="#{ks.form.khao_sat_nay_da_co}" th:remove="tag">
           Khảo sát này đã có </span><strong><span th:text="${khaoSat.tongSoVote}" th:remove="tag"></span> <span th:text="#{ks.chitiet.luot}" th:remove="tag">lượt</span></strong><span th:text="#{ks.form.he_thong_da_khoa_ch}" th:remove="tag">. Hệ thống đã khóa chức năng chỉnh sửa các phương án để bảo vệ dữ liệu!
         </span></div>
 
-        <form th:action="@{/admin/khao-sat/save}" th:object="${khaoSat}" method="POST">
+        <form th:action="@{/admin/khao-sat/save}" th:object="${khaoSat}" method="POST" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
           <input type="hidden" th:field="*{id}">
 
           <div class="mb-3">
             <label class="form-label fw-bold" th:text="#{ks.form.tieu_de_khao_sat}">Tiêu đề khảo sát *</label>
-            <input type="text" class="form-control" th:field="*{tieuDe}" required>
+            <input type="text" class="form-control" th:field="*{tieuDe}" th:classappend="${#fields.hasErrors('tieuDe')} ? 'is-invalid' : ''">
+            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('tieuDe')}" th:errors="*{tieuDe}"></div>
           </div>
 
           <div class="mb-3">
             <label class="form-label fw-bold" th:text="#{dv.ds.mo_ta}">Mô tả</label>
-            <textarea class="form-control" th:field="*{moTa}" rows="3"></textarea>
+            <textarea class="form-control" th:field="*{moTa}" rows="3" th:classappend="${#fields.hasErrors('moTa')} ? 'is-invalid' : ''"></textarea>
+            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('moTa')}" th:errors="*{moTa}"></div>
           </div>
 
           <div class="row mb-4">
             <div class="col-md-6">
               <label class="form-label fw-bold" th:text="#{ks.form.thoi_gian_bat_dau}">Thời gian bắt đầu *</label>
-              <input type="datetime-local" class="form-control" th:field="*{thoiGianBatDau}" th:readonly="${khaoSat.id != null}" required>
+              <input type="datetime-local" class="form-control" th:field="*{thoiGianBatDau}" th:readonly="${khaoSat.id != null}" th:classappend="${#fields.hasErrors('thoiGianBatDau')} ? 'is-invalid' : ''">
+              <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('thoiGianBatDau')}" th:errors="*{thoiGianBatDau}"></div>
             </div>
             <div class="col-md-6">
               <label class="form-label fw-bold" th:text="#{ks.form.thoi_gian_ket_thuc}">Thời gian kết thúc *</label>
-              <input type="datetime-local" class="form-control" th:field="*{thoiGianKetThuc}" required>
+              <input type="datetime-local" class="form-control" th:field="*{thoiGianKetThuc}" th:classappend="${#fields.hasErrors('thoiGianKetThuc')} ? 'is-invalid' : ''">
+              <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('thoiGianKetThuc')}" th:errors="*{thoiGianKetThuc}"></div>
             </div>
           </div>
 
@@ -50,13 +55,21 @@
           <h5 class="fw-bold mb-3" th:text="#{ks.form.cac_phuong_an_binh_c}">Các phương án bình chọn</h5>
 
           <div id="phuongAnContainer">
-            <div th:each="lc, stat : *{danhSachLuaChon}" class="input-group mb-2 phuong-an-item">
-              <input type="hidden" th:field="*{danhSachLuaChon[__${stat.index}__].id}">
-              <input type="hidden" th:field="*{danhSachLuaChon[__${stat.index}__].soLuotBinhChon}">
+            <div th:each="lc, stat : *{danhSachLuaChon}" class="mb-2 phuong-an-item">
+              <div class="input-group">
+                <input type="hidden" th:field="*{danhSachLuaChon[__${stat.index}__].id}">
+                <input type="hidden" th:field="*{danhSachLuaChon[__${stat.index}__].soLuotBinhChon}">
 
-              <input type="text" class="form-control" placeholder="Nhập tên phương án..." th:field="*{danhSachLuaChon[__${stat.index}__].noiDungLuaChon}" th:readonly="${khaoSat.id != null and khaoSat.tongSoVote > 0}" required th:placeholder="#{ks.form.nhap_ten_phuong_an}">
+                <input type="text" class="form-control"
+                       th:field="*{danhSachLuaChon[__${stat.index}__].noiDungLuaChon}"
+                       th:readonly="${khaoSat.id != null and khaoSat.tongSoVote > 0}"
+                       th:classappend="${#fields.hasErrors('danhSachLuaChon[__${stat.index}__].noiDungLuaChon')} ? 'is-invalid' : ''"
+                       th:placeholder="#{ks.form.nhap_ten_phuong_an}">
 
-              <button th:if="${khaoSat.tongSoVote == 0}" type="button" class="btn btn-outline-danger btn-xoa" onclick="xoaPhuongAn(this)" th:text="#{hd.ds.nut_xoa}">Xóa</button>
+                <button th:if="${khaoSat.tongSoVote == 0}" type="button" class="btn btn-outline-danger btn-xoa" onclick="xoaPhuongAn(this)" th:text="#{hd.ds.nut_xoa}">Xóa</button>
+
+                <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('danhSachLuaChon[__${stat.index}__].noiDungLuaChon')}" th:errors="*{danhSachLuaChon[__${stat.index}__].noiDungLuaChon}"></div>
+              </div>
             </div>
           </div>
 
@@ -80,8 +93,8 @@
 
   function themPhuongAn() {
       const container = document.getElementById('phuongAnContainer');
-      const placeholderText = '[[#{ks.form.nhap_ten_phuong_an}]]';
-      const deleteText = '[[#{hd.ds.nut_xoa}]]';
+      const placeholderText = /*[[#{ks.form.nhap_ten_phuong_an}]]*/ 'Nhập tên phương án';
+      const deleteText = /*[[#{hd.ds.nut_xoa}]]*/ 'Xóa';
       const html = `
           <div class="input-group mb-2 phuong-an-item">
               <input type="hidden" name="danhSachLuaChon[${luaChonIndex}].soLuotBinhChon" value="0">
@@ -98,7 +111,7 @@
       if (document.querySelectorAll('.phuong-an-item').length > 2) {
           btn.parentElement.remove();
       } else {
-          alert("[[#{ks.form.it_nhat_2_phuong_an}]]");
+          alert(/*[[#{ks.form.it_nhat_2_phuong_an}]]*/ "Khảo sát phải có ít nhất 2 phương án");
       }
   }
 </script>

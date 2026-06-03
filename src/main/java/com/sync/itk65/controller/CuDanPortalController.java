@@ -16,7 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.validation.BindingResult;
+import org.springframework.dao.DataIntegrityViolationException;
 import java.time.LocalDate;
 
 @Controller
@@ -117,26 +118,73 @@ public class CuDanPortalController {
     @PostMapping("/phuong-tien/luu")
     public String dangKyXeCuDan(HttpSession session,
                                 @ModelAttribute("xeMoi") PhuongTien xe,
+                                BindingResult result,
+                                Model model,
                                 RedirectAttributes ra) {
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
 
         try {
-            // Ràng buộc: Xe này tự động thuộc về Căn hộ của cư dân đang đăng nhập
             if (cuDan.getCanHo() == null) {
                 throw new RuntimeException("Tài khoản của bạn chưa được liên kết với Căn hộ nào!");
             }
-            xe.setCanHo(cuDan.getCanHo());
 
-            // Trạng thái mặc định khi cư dân đăng ký là "Chờ duyệt"
+            xe.setCanHo(cuDan.getCanHo());
             xe.setTrangThai("Chờ duyệt");
+
+            kiemTraLogicDangKyXe(xe, result);
+
+            if (result.hasErrors()) {
+                model.addAttribute("danhSachXe", phuongTienService.layXeTheoCanHoId(cuDan.getCanHo().getId()));
+                model.addAttribute("thongBaoLoi", "Dữ liệu đăng ký không hợp lệ, vui lòng kiểm tra lại form!");
+                return "cudan/phuong-tien";
+            }
 
             phuongTienService.dangKyXe(xe);
             ra.addFlashAttribute("thongBaoThanhCong", "Đã gửi yêu cầu đăng ký xe! Vui lòng chờ BQL duyệt.");
+
+        } catch (DataIntegrityViolationException e) {
+            ra.addFlashAttribute("thongBaoLoi", "Từ chối: Biển số xe này đã tồn tại trong hệ thống bãi đỗ!");
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi: " + e.getMessage());
         }
         return "redirect:/cudan/phuong-tien";
+    }
+
+    private void kiemTraLogicDangKyXe(PhuongTien xe, BindingResult result) {
+
+        // Kiểm tra Loại xe
+        if (xe.getLoaiXe() == null || xe.getLoaiXe().trim().isEmpty()) {
+            result.rejectValue("loaiXe", "error.xe", "Vui lòng chọn loại xe");
+        }
+
+        // Kiểm tra Màu xe
+        if (xe.getMauXe() == null || xe.getMauXe().trim().isEmpty()) {
+            result.rejectValue("mauXe", "error.xe", "Vui lòng nhập màu xe.");
+        } else if (!xe.getMauXe().matches("^[\\p{L}\\s]+$")) {
+            result.rejectValue("mauXe", "error.xe", "Màu xe chỉ được dùng chữ cái, không chứa số hay ký tự đặc biệt.");
+        }
+
+        // Kiểm tra Biển số xe (Tách riêng Ô tô và Xe máy)
+        if ("Ô tô".equals(xe.getLoaiXe())) {
+            if (xe.getBienSoXe() == null || xe.getBienSoXe().trim().isEmpty()) {
+                result.rejectValue("bienSoXe", "error.xe", "Ô tô bắt buộc phải nhập biển số!");
+            } else if (!xe.getBienSoXe().matches("^[0-9]{2}[A-Z]\\s*-\\s*[0-9]{3}\\.[0-9]{2}$")) {
+                result.rejectValue("bienSoXe", "error.xe", "Biển số Ô tô sai định dạng (VD: 51A-123.45 hoặc 51A - 123.45)");
+            }
+        }
+        else if ("Xe máy".equals(xe.getLoaiXe())) {
+            if (xe.getBienSoXe() == null || xe.getBienSoXe().trim().isEmpty()) {
+                result.rejectValue("bienSoXe", "error.xe", "Xe máy bắt buộc phải nhập biển số!");
+            } else if (!xe.getBienSoXe().matches("^[0-9]{2}-[A-Z][A-Z0-9]\\s*[0-9]{3}\\.[0-9]{2}$")) {
+                result.rejectValue("bienSoXe", "error.xe", "Biển số Xe máy sai định dạng (VD: 51-AA 123.45 hoặc 51-A1 123.45)");
+            }
+        }
+        else if ("Xe điện".equals(xe.getLoaiXe())) {
+            if (xe.getBienSoXe() == null || xe.getBienSoXe().trim().isEmpty()) {
+                result.rejectValue("bienSoXe", "error.xe", "Xe điện bắt buộc phải nhập biển số (hoặc số khung)!");
+            }
+        }
     }
 
     // 3.3 Xử lý khi cư dân muốn hủy/xóa xe (Chỉ cho xóa nếu không muốn đăng ký nữa)

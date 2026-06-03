@@ -18,6 +18,10 @@ public class DangKyKhachTham {
     private String cmnd;
     private String bienSoXe;
     private LocalDateTime thoiGianDuKien;
+    
+    @Column(name = "ngay_di")
+    private LocalDateTime ngayDi;
+
     private String trangThai; // "Chờ duyệt", "Đã duyệt", "Không duyệt"
 
     @Column(name = "thoi_gian_duyet")
@@ -36,6 +40,8 @@ public class DangKyKhachTham {
     public void setBienSoXe(String bienSoXe) { this.bienSoXe = bienSoXe; }
     public LocalDateTime getThoiGianDuKien() { return thoiGianDuKien; }
     public void setThoiGianDuKien(LocalDateTime thoiGianDuKien) { this.thoiGianDuKien = thoiGianDuKien; }
+    public LocalDateTime getNgayDi() { return ngayDi; }
+    public void setNgayDi(LocalDateTime ngayDi) { this.ngayDi = ngayDi; }
     public String getTrangThai() { return trangThai; }
     public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
     public LocalDateTime getThoiGianDuyet() { return thoiGianDuyet; }
