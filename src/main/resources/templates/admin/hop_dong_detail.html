@@ -42,10 +42,11 @@
                             <div class="col-md-6">
                                 <label class="text-muted small" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</label>
                                 <p>
-                                    <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success fs-6">ACTIVE</span>
-                                    <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-secondary fs-6">EXPIRED</span>
-                                    <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="badge bg-danger fs-6">TERMINATED</span>
-                                    <span th:if="${hopDong.trangThai == 'DRAFT'}" class="badge bg-warning fs-6">DRAFT</span>
+                                    <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success fs-6">Còn hạn</span>
+                                    <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-danger fs-6">Hết hạn</span>
+                                    <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="badge bg-secondary fs-6">Thanh lý</span>
+                                    <span th:if="${hopDong.trangThai == 'DRAFT'}" class="badge bg-warning fs-6">Nháp</span>
+                                    <span th:if="${hopDong.trangThai != 'ACTIVE' and hopDong.trangThai != 'EXPIRED' and hopDong.trangThai != 'TERMINATED' and hopDong.trangThai != 'DRAFT'}" th:text="${hopDong.trangThai}" class="badge bg-info fs-6"></span>
                                 </p>
                             </div>
                         </div>

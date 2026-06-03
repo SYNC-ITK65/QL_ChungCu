@@ -40,8 +40,7 @@ public class CuDanHopDongController {
 
         List<HopDong> hopDongs = hopDongService.layHopDongCuaCuDan(cuDan.getId());
         if (hopDongs.isEmpty()) {
-            ra.addFlashAttribute("thongBaoLoi", "Hiện tại bạn chưa có hợp đồng nào.");
-            return "redirect:/cudan/thong-tin";
+            return "cudan/hop_dong_chi_tiet";
         }
 
         return "redirect:/cudan/hop-dong/chi-tiet/" + hopDongs.get(0).getId();
@@ -61,7 +60,7 @@ public class CuDanHopDongController {
 
         HopDong hopDong = hopDongService.layHopDongTheoIdVaCuDan(id, cuDan.getId()).orElse(null);
         if (hopDong == null) {
-            return "redirect:/cudan/thong-tin";
+            return "cudan/hop_dong_chi_tiet";
         }
 
         model.addAttribute("hopDong", hopDong);

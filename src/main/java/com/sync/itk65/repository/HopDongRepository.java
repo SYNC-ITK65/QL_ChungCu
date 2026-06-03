@@ -28,7 +28,7 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
     @Query("""
             SELECT COUNT(h) > 0 FROM HopDong h
             WHERE h.canHo.id = :canHoId
-              AND h.trangThai = 'ACTIVE'
+              AND h.trangThai = 'Còn hạn'
               AND h.ngayBatDau <= :ngayKetThuc
               AND (h.ngayKetThuc IS NULL OR h.ngayKetThuc >= :ngayBatDau)
             """)
@@ -39,7 +39,7 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
     @Query("""
             SELECT COUNT(h) > 0 FROM HopDong h
             WHERE h.canHo.id = :canHoId
-              AND h.trangThai = 'ACTIVE'
+              AND h.trangThai = 'Còn hạn'
               AND (h.ngayKetThuc IS NULL OR h.ngayKetThuc >= :ngayBatDau)
             """)
     boolean existsActiveOverlapOpenEnded(@Param("canHoId") Long canHoId,
@@ -49,7 +49,7 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
             SELECT COUNT(h) > 0 FROM HopDong h
             WHERE h.canHo.id = :canHoId
               AND h.id != :excludeId
-              AND h.trangThai = 'ACTIVE'
+              AND h.trangThai = 'Còn hạn'
               AND h.ngayBatDau <= :ngayKetThuc
               AND (h.ngayKetThuc IS NULL OR h.ngayKetThuc >= :ngayBatDau)
             """)
@@ -62,17 +62,17 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
             SELECT COUNT(h) > 0 FROM HopDong h
             WHERE h.canHo.id = :canHoId
               AND h.id != :excludeId
-              AND h.trangThai = 'ACTIVE'
+              AND h.trangThai = 'Còn hạn'
               AND (h.ngayKetThuc IS NULL OR h.ngayKetThuc >= :ngayBatDau)
             """)
     boolean existsActiveOverlapOpenEndedExcludeId(@Param("canHoId") Long canHoId,
                                                   @Param("ngayBatDau") java.time.LocalDate ngayBatDau,
                                                   @Param("excludeId") Long excludeId);
 
-    @Query("SELECT h FROM HopDong h WHERE h.trangThai = 'ACTIVE' AND h.ngayKetThuc IS NOT NULL AND h.ngayKetThuc < :today")
+    @Query("SELECT h FROM HopDong h WHERE h.trangThai = 'Còn hạn' AND h.ngayKetThuc IS NOT NULL AND h.ngayKetThuc < :today")
     List<HopDong> findExpiredActiveContracts(@Param("today") java.time.LocalDate today);
 
-    @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.trangThai = 'ACTIVE'")
+    @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.trangThai = 'Còn hạn'")
     Optional<HopDong> findActiveByCanHoId(@Param("canHoId") Long canHoId);
 
     /**

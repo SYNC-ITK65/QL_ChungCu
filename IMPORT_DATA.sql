@@ -250,22 +250,20 @@ INSERT INTO chi_so_hang_thang (can_ho_id, dien_tieu_thu, nuoc_tieu_thu, ngay_ghi
 --     cu_dan_id phải tồn tại trong bảng cu_dan (IDs: 8-20)
 -- ============================================================
 INSERT INTO hop_dong (can_ho_id, cu_dan_id, loai_hop_dong, gia_tri_hop_dong, tien_coc, tien_thue, ngay_bat_dau, ngay_ket_thuc, ben_cho_thue, ben_thue, trang_thai) VALUES
-(1,  8,  N'Mua bán', 2500000000, 500000000, 0,        '2022-06-01', '2072-06-01', N'Chủ đầu tư Sunrise',  N'Lê Văn Thắng',       N'Hiệu lực'),
-(2,  10, N'Thuê',    8000000,    16000000,  8000000,  '2024-01-01', '2025-01-01', N'Ban quản lý chung cư',N'Phạm Minh Hoàng',   N'Hiệu lực'),
-(3,  11, N'Mua bán', 3200000000, 1000000000,0,        '2022-08-15', '2072-08-15', N'Chủ đầu tư Sunrise',  N'Trần Bích Thủy',     N'Hiệu lực'),
-(4,  12, N'Mua bán', 2800000000, 600000000, 0,        '2023-01-10', '2073-01-10', N'Chủ đầu tư Sunrise',  N'Đặng Văn Hùng',     N'Hiệu lực'),
-(5,  13, N'Thuê',    9000000,    18000000,  9000000,  '2023-06-01', '2024-06-01', N'Ban quản lý chung cư',N'Hoàng Lan Anh',     N'Hiệu lực'),
-(6,  14, N'Mua bán', 3500000000, 700000000, 0,        '2022-10-01', '2072-10-01', N'Chủ đầu tư Sunrise',  N'Vũ Quốc Anh',       N'Hiệu lực'),
-(7,  15, N'Mua bán', 2600000000, 500000000, 0,        '2023-03-15', '2073-03-15', N'Chủ đầu tư Sunrise',  N'Ngô Thanh Vân',     N'Hiệu lực'),
-(8,  16, N'Thuê',    7500000,    15000000,  7500000,  '2024-02-01', '2025-02-01', N'Ban quản lý chung cư',N'Đỗ Minh Tuấn',      N'Hiệu lực'),
-(9,  17, N'Thuê',    8500000,    17000000,  8500000,  '2023-09-01', '2024-09-01', N'Ban quản lý chung cư',N'Bùi Thu Hà',        N'Hiệu lực'),
-(10, 18, N'Mua bán', 4200000000, 800000000, 0,        '2021-05-01', '2071-05-01', N'Chủ đầu tư Sunrise',  N'Cao Ngọc Phương',   N'Hiệu lực'),
-(11, 19, N'Mua bán', 2900000000, 550000000, 0,        '2022-12-01', '2072-12-01', N'Chủ đầu tư Sunrise',  N'Lý Kim Phi',         N'Hiệu lực'),
-(12, 20, N'Thuê',    12000000,   24000000,  12000000, '2024-03-01', '2025-03-01', N'Ban quản lý chung cư',N'Trịnh Văn Sơn',     N'Hiệu lực'),
+(1,  8,  N'Mua bán', 2500000000, 500000000, 0,        '2022-06-01', '2072-06-01', N'Chủ đầu tư Sunrise',  N'Lê Văn Thắng',       N'Còn hạn'),
+(2,  10, N'Thuê',    8000000,    16000000,  8000000,  '2024-01-01', '2025-01-01', N'Ban quản lý chung cư',N'Phạm Minh Hoàng',   N'Hết hạn'),
+(3,  11, N'Mua bán', 3200000000, 1000000000,0,        '2022-08-15', '2072-08-15', N'Chủ đầu tư Sunrise',  N'Trần Bích Thủy',     N'Còn hạn'),
+(4,  12, N'Mua bán', 2800000000, 600000000, 0,        '2023-01-10', '2073-01-10', N'Chủ đầu tư Sunrise',  N'Đặng Văn Hùng',     N'Còn hạn'),
+(5,  13, N'Thuê',    9000000,    18000000,  9000000,  '2023-06-01', '2024-06-01', N'Ban quản lý chung cư',N'Hoàng Lan Anh',     N'Hết hạn'),
+(6,  14, N'Mua bán', 3500000000, 700000000, 0,        '2022-10-01', '2072-10-01', N'Chủ đầu tư Sunrise',  N'Vũ Quốc Anh',       N'Còn hạn'),
+(7,  15, N'Mua bán', 2600000000, 500000000, 0,        '2023-03-15', '2073-03-15', N'Chủ đầu tư Sunrise',  N'Ngô Thanh Vân',     N'Còn hạn'),
+(8,  16, N'Thuê',    7500000,    15000000,  7500000,  '2024-02-01', '2025-02-01', N'Ban quản lý chung cư',N'Đỗ Minh Tuấn',      N'Hết hạn'),
+(9,  17, N'Thuê',    8500000,    17000000,  8500000,  '2023-09-01', '2024-09-01', N'Ban quản lý chung cư',N'Bùi Thu Hà',        N'Còn hạn'),
+(10, 18, N'Mua bán', 4200000000, 800000000, 0,        '2021-05-01', '2071-05-01', N'Chủ đầu tư Sunrise',  N'Cao Ngọc Phương',   N'Còn hạn'),
+(11, 19, N'Mua bán', 2900000000, 550000000, 0,        '2022-12-01', '2072-12-01', N'Chủ đầu tư Sunrise',  N'Lý Kim Phi',         N'Còn hạn'),
+(12, 20, N'Thuê',    12000000,   24000000,  12000000, '2024-03-01', '2025-03-01', N'Ban quản lý chung cư',N'Trịnh Văn Sơn',     N'Còn hạn'),
 -- Hợp đồng đã hết hiệu lực (lịch sử)
-(5,  13, N'Thuê',    8000000,    16000000,  8000000,  '2023-01-01', '2023-06-01', N'Ban quản lý chung cư',N'Hoàng Lan Anh',     N'Hết hiệu lực');
--- Tổng: 13 hợp đồng | IDs: 1-13
-
+(5,  13, N'Thuê',    8000000,    16000000,  8000000,  '2023-01-01', '2023-06-01', N'Ban quản lý chung cư',N'Hoàng Lan Anh',     N'Hết hạn');
 -- ============================================================
 -- 11. PHUONG_TIEN (20 bản ghi)
 -- can_ho_id phải tồn tại (1-20), chỉ nhập cho căn có cư dân
