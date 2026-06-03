@@ -82,8 +82,9 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
            "(:thang IS NULL OR MONTH(h.ngayPhatHanh) = :thang) AND " +
            "(:nam IS NULL OR YEAR(h.ngayPhatHanh) = :nam) " +
            "ORDER BY h.ngayPhatHanh DESC")
-    List<HoaDon> searchWithFilters(@Param("maCanHo") String maCanHo,
+    Page<HoaDon> searchWithFilters(@Param("maCanHo") String maCanHo,
                                     @Param("trangThai") String trangThai,
                                     @Param("thang") Integer thang,
-                                    @Param("nam") Integer nam);
+                                    @Param("nam") Integer nam,
+                                    Pageable pageable);
 }

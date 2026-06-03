@@ -40,8 +40,9 @@ public class KienHangService {
         return kienHangRepository.searchKienHang(maCanHo, trangThai, pageable);
     }
 
-    public List<KienHang> layKienHangTheoCanHo(Long canHoId) {
-        return kienHangRepository.findByCanHoId(canHoId);
+    public Page<KienHang> layKienHangTheoCanHo(Long canHoId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return kienHangRepository.findByCanHoId(canHoId, pageable);
     }
 
     public KienHang luuKienHang(KienHang kienHang) {

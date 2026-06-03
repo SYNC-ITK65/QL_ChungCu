@@ -38,8 +38,10 @@ public class HoaDonController {
                                   @RequestParam(required = false) String maCanHo,
                                   @RequestParam(required = false) String trangThai,
                                   @RequestParam(required = false) Integer thang,
-                                  @RequestParam(required = false) Integer nam) {
-        List<HoaDon> danhSachHoaDon;
+                                  @RequestParam(required = false) Integer nam,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        Page<HoaDon> trangDuLieuHoaDon;
 
         // Xử lý empty string thành null để query hoạt động đúng
         String maCanHoFilter = (maCanHo != null && !maCanHo.trim().isEmpty()) ? maCanHo.trim() : null;
@@ -47,12 +49,15 @@ public class HoaDonController {
 
         // Nếu có tham số tìm kiếm, sử dụng filter
         if (maCanHoFilter != null || trangThaiFilter != null || thang != null || nam != null) {
-            danhSachHoaDon = hoaDonService.timKiemHoaDon(maCanHoFilter, trangThaiFilter, thang, nam);
+            trangDuLieuHoaDon = hoaDonService.timKiemHoaDon(maCanHoFilter, trangThaiFilter, thang, nam, page, size);
         } else {
-            danhSachHoaDon = hoaDonService.layTatCaHoaDon();
+            trangDuLieuHoaDon = hoaDonService.layTatCaHoaDon(page, size);
         }
 
-        model.addAttribute("danhSachHoaDon", danhSachHoaDon);
+        model.addAttribute("danhSachHoaDon", trangDuLieuHoaDon.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieuHoaDon.getTotalPages());
+        model.addAttribute("size", size);
         model.addAttribute("maCanHo", maCanHo != null ? maCanHo : "");
         model.addAttribute("trangThai", trangThai != null ? trangThai : "");
         model.addAttribute("thang", thang);

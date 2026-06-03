@@ -137,6 +137,15 @@
                     </tr>
                 </tbody>
             </table>
+            
+            <!-- Fragment Phân trang -->
+            <div th:replace="~{fragments/pagination :: paging('/admin/chi-so', 
+                'maCanHo=' + ${maCanHo != null ? maCanHo : ''} + 
+                '&canHoId=' + ${canHoId != null ? canHoId : ''} + 
+                '&thang=' + ${thang != null ? thang : ''} + 
+                '&nam=' + ${nam != null ? nam : ''})}">
+            </div>
+
         </div>
     </div>
 

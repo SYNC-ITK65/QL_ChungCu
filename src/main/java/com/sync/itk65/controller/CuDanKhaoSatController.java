@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
 
 @Controller
 @RequestMapping("/cudan/khao-sat")
@@ -26,9 +27,15 @@ public class CuDanKhaoSatController {
     }
 
     @GetMapping
-    public String list(Model model, HttpSession session) {
+    public String list(Model model, HttpSession session,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "5") int size) {
         if(layCuDanSession(session) == null) return "redirect:/";
-        model.addAttribute("listKhaoSat", khaoSatService.layTatCa());
+        Page<KhaoSat> trangKhaoSat = khaoSatService.layTatCa(page, size);
+        model.addAttribute("listKhaoSat", trangKhaoSat.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangKhaoSat.getTotalPages());
+        model.addAttribute("size", size);
         return "cudan/khao_sat_list";
     }
 

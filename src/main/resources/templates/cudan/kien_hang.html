@@ -64,6 +64,9 @@
             </div>
         </div>
     </div>
+    
+    <!-- Fragment Phân trang -->
+    <div th:replace="~{fragments/pagination :: paging('/cudan/kien-hang', '')}"></div>
 
     <div class="mt-4 p-3 bg-white rounded shadow-sm border">
         <h5 th:text="#{kh.user.luu_y}">💡 Lưu ý:</h5>
