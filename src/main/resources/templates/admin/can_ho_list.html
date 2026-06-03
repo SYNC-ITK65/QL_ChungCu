@@ -17,7 +17,7 @@
                 <h2 th:text="#{ch.ds.tieude}">Danh sách căn hộ</h2>
                 <div class="d-flex gap-2">
                     <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importExcelModal">
-                        <i class="bi bi-file-earmark-arrow-up"></i> Import Excel
+                        <i class="bi bi-file-earmark-arrow-up"></i> <span th:text="#{chung.import_excel}">Import Excel</span>
                     </button>
                     <a th:href="@{/admin/can-ho/xuat-excel}" class="btn btn-success" th:text="#{chung.xuat_excel}">Xuất
                         Excel</a>
@@ -31,24 +31,24 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title" id="importExcelModalLabel"><i class="bi bi-file-earmark-spreadsheet"></i> Import Excel - Căn Hộ</h5>
+                            <h5 class="modal-title" id="importExcelModalLabel"><i class="bi bi-file-earmark-spreadsheet"></i> <span th:text="#{ch.import.tieude}">Import Excel - Căn Hộ</span></h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form th:action="@{/admin/can-ho/import-excel}" method="POST" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="alert alert-info small mb-3">
-                                    <i class="bi bi-info-circle"></i> File Excel cần có các cột theo thứ tự:<br>
-                                    <strong>Mã căn hộ | Diện tích (m2) | Tầng | Loại</strong><br>
-                                    Dòng đầu tiên là header, dữ liệu bắt đầu từ dòng 2.
+                                    <i class="bi bi-info-circle"></i> <span th:text="#{ch.import.huong_dan}">File Excel cần có các cột theo thứ tự:</span><br>
+                                    <strong th:text="#{ch.import.cot}">Mã căn hộ | Diện tích (m2) | Tầng | Loại</strong><br>
+                                    <span th:text="#{chung.dong_dau_header}">Dòng đầu tiên là header, dữ liệu bắt đầu từ dòng 2.</span>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="fileImportCanHo" class="form-label fw-semibold">Chọn file Excel (.xlsx)</label>
+                                    <label for="fileImportCanHo" class="form-label fw-semibold" th:text="#{chung.chon_file_excel}">Chọn file Excel (.xlsx)</label>
                                     <input type="file" class="form-control" id="fileImportCanHo" name="file" accept=".xlsx,.xls" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{chung.huy}">Hủy</button>
+                                <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> <span th:text="#{chung.import_excel}">Import</span></button>
                             </div>
                         </form>
                     </div>
@@ -65,8 +65,10 @@
                                 <option value="" th:text="#{chung.tat_ca}">-- Tất cả --</option>
                                 <option value="Trống" th:selected="${trangThai == 'Trống'}" th:text="#{ch.tt.trong}">
                                     Trống</option>
-                                <option value="Đã bàn giao" th:selected="${trangThai == 'Đã bàn giao'}"
+                                <option value="Đã có chủ" th:selected="${trangThai == 'Đã có chủ'}"
                                     th:text="#{ch.tt.da_ban_giao}">Đã bàn giao</option>
+                                <option value="Chủ chưa đến" th:selected="${trangThai == 'Chủ chưa đến'}"
+                                    th:text="#{ch.tt.chu_chua_den}">Chủ chưa đến</option>
                                 <option value="Đang sửa chữa" th:selected="${trangThai == 'Đang sửa chữa'}"
                                     th:text="#{ch.tt.sua_chua}">Đang sửa chữa</option>
                             </select>
@@ -206,22 +208,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
-            var thongBaoThanhCong = /*[[${thongBaoThanhCong}]]*/ null;
-            var thongBaoLoi = /*[[${thongBaoLoi}]]*/ null;
-            var successMessage = /*[[${successMessage}]]*/ null;
-            var errorMessage = /*[[${errorMessage}]]*/ null;
+            var thongBaoThanhCong = /*[[${thongBaoThanhCong != null ? (#messages.msgOrNull(thongBaoThanhCong) != null ? #messages.msg(thongBaoThanhCong) : thongBaoThanhCong) : null}]]*/ null;
+            var thongBaoLoi = /*[[${thongBaoLoi != null ? (#messages.msgOrNull(thongBaoLoi) != null ? #messages.msg(thongBaoLoi) : thongBaoLoi) : null}]]*/ null;
+            var successMessage = /*[[${successMessage != null ? (#messages.msgOrNull(successMessage) != null ? #messages.msg(successMessage) : successMessage) : null}]]*/ null;
+            var errorMessage = /*[[${errorMessage != null ? (#messages.msgOrNull(errorMessage) != null ? #messages.msg(errorMessage) : errorMessage) : null}]]*/ null;
+
+            var titleSuccess = /*[[#{chung.thanh_cong}]]*/ 'Thành công!';
+            var titleError = /*[[#{chung.loi}]]*/ 'Lỗi!';
 
             if (thongBaoThanhCong) {
-                Swal.fire({ icon: 'success', title: 'Thành công!', text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+                Swal.fire({ icon: 'success', title: titleSuccess, text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
             }
             if (successMessage) {
-                Swal.fire({ icon: 'success', title: 'Thành công!', text: successMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+                Swal.fire({ icon: 'success', title: titleSuccess, text: successMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
             }
             if (thongBaoLoi) {
-                Swal.fire({ icon: 'error', title: 'Lỗi!', text: thongBaoLoi, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+                Swal.fire({ icon: 'error', title: titleError, text: thongBaoLoi, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
             }
             if (errorMessage) {
-                Swal.fire({ icon: 'error', title: 'Lỗi!', text: errorMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+                Swal.fire({ icon: 'error', title: titleError, text: errorMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
             }
         });
     </script>
