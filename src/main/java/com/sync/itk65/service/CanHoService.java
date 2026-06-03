@@ -63,9 +63,23 @@ public class CanHoService {
 
             if (canHo.getId() != null) {
                 List<CuDan> residents = cuDanRepository.layTatCaCuDanTheoCanHo(canHo.getId());
-                boolean hasResident = residents.stream().anyMatch(r -> "Đang Ở".equalsIgnoreCase(r.getTrangThai())
-                        || "Đang ở".equalsIgnoreCase(r.getTrangThai()));
-                canHo.setTrangThai(hasResident ? "Đã có chủ" : "Trống");
+                boolean hasOwner = false;
+                boolean hasResident = false;
+                for (CuDan r : residents) {
+                    if ("Chủ Hộ".equalsIgnoreCase(r.getMoiQuanHe()) || "Chủ hộ".equalsIgnoreCase(r.getMoiQuanHe())) {
+                        hasOwner = true;
+                    }
+                    if ("Đang Ở".equalsIgnoreCase(r.getTrangThai()) || "Đang ở".equalsIgnoreCase(r.getTrangThai())) {
+                        hasResident = true;
+                    }
+                }
+                if (hasResident) {
+                    canHo.setTrangThai("Đã có chủ");
+                } else if (hasOwner || !residents.isEmpty()) {
+                    canHo.setTrangThai("Chủ chưa đến");
+                } else {
+                    canHo.setTrangThai("Trống");
+                }
             } else {
                 canHo.setTrangThai("Trống");
             }
@@ -87,6 +101,10 @@ public class CanHoService {
 
     // Hàm xóa căn hộ
     public void xoaCanHo(Long id) {
+        List<CuDan> residents = cuDanRepository.layTatCaCuDanTheoCanHo(id);
+        if (residents != null && !residents.isEmpty()) {
+            throw new IllegalArgumentException("ch.msg.loi_co_cu_dan");
+        }
         canHoRepository.deleteById(id);
     }
 

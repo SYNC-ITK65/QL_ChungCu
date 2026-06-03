@@ -98,16 +98,24 @@ public class CanHo {
         if ("Đang sửa chữa".equals(this.trangThai)) {
             return this.trangThai;
         }
+        boolean hasOwner = false;
         boolean hasResident = false;
         if (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty()) {
             for (CuDan cd : this.danhSachCuDan) {
+                if ("Chủ Hộ".equalsIgnoreCase(cd.getMoiQuanHe()) || "Chủ hộ".equalsIgnoreCase(cd.getMoiQuanHe())) {
+                    hasOwner = true;
+                }
                 if ("Đang Ở".equalsIgnoreCase(cd.getTrangThai()) || "Đang ở".equalsIgnoreCase(cd.getTrangThai())) {
                     hasResident = true;
-                    break;
                 }
             }
         }
-        return hasResident ? "Đã có chủ" : "Trống";
+        if (hasResident) {
+            return "Đã có chủ";
+        } else if (hasOwner || (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty())) {
+            return "Chủ chưa đến";
+        }
+        return "Trống";
     }
 
     public void setTrangThai(String trangThai) {
@@ -119,16 +127,24 @@ public class CanHo {
         if ("Đang sửa chữa".equals(this.trangThai)) {
             return "ch.tt.sua_chua";
         }
+        boolean hasOwner = false;
         boolean hasResident = false;
         if (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty()) {
             for (CuDan cd : this.danhSachCuDan) {
+                if ("Chủ Hộ".equalsIgnoreCase(cd.getMoiQuanHe()) || "Chủ hộ".equalsIgnoreCase(cd.getMoiQuanHe())) {
+                    hasOwner = true;
+                }
                 if ("Đang Ở".equalsIgnoreCase(cd.getTrangThai()) || "Đang ở".equalsIgnoreCase(cd.getTrangThai())) {
                     hasResident = true;
-                    break;
                 }
             }
         }
-        return hasResident ? "ch.tt.da_ban_giao" : "ch.tt.trong";
+        if (hasResident) {
+            return "ch.tt.da_ban_giao";
+        } else if (hasOwner || (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty())) {
+            return "ch.tt.chu_chua_den";
+        }
+        return "ch.tt.trong";
     }
 
     public void setMaCanHo(String maCanHo) {

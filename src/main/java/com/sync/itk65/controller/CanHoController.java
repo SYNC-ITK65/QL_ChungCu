@@ -29,7 +29,8 @@ public class CanHoController {
     @Autowired
     private CloudinaryService cloudinaryService;
 
-    // Hàm hiển thị danh sách căn hộ (Có phân trang dữ liệu, và các tiêu chí tìm kiếm cơ bản)
+    // Hàm hiển thị danh sách căn hộ (Có phân trang dữ liệu, và các tiêu chí tìm
+    // kiếm cơ bản)
     @GetMapping
     public String hienThiDanhSach(
             @RequestParam(required = false) String trangThai,
@@ -38,17 +39,21 @@ public class CanHoController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             Model model) {
-        
-        // Gọi service xử lý tìm kiếm và phân trang, nhận về đối tượng Page chứa dữ liệu căn hộ
-        org.springframework.data.domain.Page<CanHo> trangDuLieuCanHo = canHoService.timKiemCanHo(trangThai, dienTich, tang, page, size);
-        
+
+        // Gọi service xử lý tìm kiếm và phân trang, nhận về đối tượng Page chứa dữ liệu
+        // căn hộ
+        org.springframework.data.domain.Page<CanHo> trangDuLieuCanHo = canHoService.timKiemCanHo(trangThai, dienTich,
+                tang, page, size);
+
         // Đưa danh sách căn hộ của trang hiện tại lên giao diện
         model.addAttribute("danhSachCanHo", trangDuLieuCanHo.getContent());
-        // Truyền thông tin phân trang (trang hiện tại và tổng số trang) xuống view xử lý nút bấm
+        // Truyền thông tin phân trang (trang hiện tại và tổng số trang) xuống view xử
+        // lý nút bấm
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieuCanHo.getTotalPages());
-        
-        // Giữ lại tham số tìm kiếm cũ trên giao diện phân trang (ngăn chặn mất tham số khi qua trang khác)
+
+        // Giữ lại tham số tìm kiếm cũ trên giao diện phân trang (ngăn chặn mất tham số
+        // khi qua trang khác)
         model.addAttribute("trangThai", trangThai);
         model.addAttribute("dienTich", dienTich);
         model.addAttribute("tang", tang);
@@ -76,8 +81,8 @@ public class CanHoController {
     // Hàm xử lý lưu dữ liệu từ form và bắt lỗi Validation bằng Spring BindingResult
     @PostMapping("/luu")
     public String luuCanHo(@Valid @ModelAttribute("canHo") CanHo canHo, BindingResult bindingResult,
-                           @RequestParam("fileImage") MultipartFile multipartFile,
-                           Model model, RedirectAttributes ra) {
+            @RequestParam("fileImage") MultipartFile multipartFile,
+            Model model, RedirectAttributes ra) {
         if (bindingResult.hasErrors()) {
             return "admin/can_ho_form";
         }
@@ -97,7 +102,7 @@ public class CanHoController {
             }
 
             canHoService.luuCanHo(canHo);
-            ra.addFlashAttribute("thongBaoThanhCong", "Lưu căn hộ thành công!");
+            ra.addFlashAttribute("thongBaoThanhCong", "ch.msg.luu_thanh_cong");
             return "redirect:/admin/can-ho"; // Quay về trang danh sách sau khi lưu thành công
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -111,8 +116,16 @@ public class CanHoController {
     // Xóa căn hộ
     @GetMapping("/xoa/{id}")
     public String xoaCanHo(@PathVariable("id") Long id, RedirectAttributes ra) {
-        canHoService.xoaCanHo(id);
-        ra.addFlashAttribute("thongBaoThanhCong", "Xóa căn hộ thành công!");
+        try {
+            canHoService.xoaCanHo(id);
+            ra.addFlashAttribute("thongBaoThanhCong", "ch.msg.xoa_thanh_cong");
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            ra.addFlashAttribute("thongBaoLoi", "ch.msg.loi_rang_buoc");
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "ch.msg.loi_xoa");
+        }
         return "redirect:/admin/can-ho";
     }
 
@@ -124,7 +137,8 @@ public class CanHoController {
         String filename = "danh_sach_can_ho_" + ts + ".xlsx";
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .contentType(
+                        MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(bytes);
     }

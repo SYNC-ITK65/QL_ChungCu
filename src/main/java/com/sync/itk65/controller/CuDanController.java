@@ -158,7 +158,7 @@ public class CuDanController {
 
         try {
             cuDanService.luuCuDan(cuDan);
-            ra.addFlashAttribute("thongBaoThanhCong", "Lưu cư dân thành công!");
+            ra.addFlashAttribute("thongBaoThanhCong", "cd.msg.luu_thanh_cong");
             return "redirect:/admin/cu-dan";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -176,14 +176,13 @@ public class CuDanController {
     public String xoaCuDan(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             cuDanService.xoaCuDan(id);
-            ra.addFlashAttribute("successMessage", "Xóa cư dân thành công!");
+            ra.addFlashAttribute("successMessage", "cd.msg.xoa_thanh_cong");
         } catch (DataIntegrityViolationException e) {
             // Bắt lỗi ràng buộc khóa ngoại (Foreign Key Constraint)
-            ra.addFlashAttribute("errorMessage",
-                    "Không thể xóa cư dân này vì đang tồn tại dữ liệu ràng buộc như Hợp đồng, Dịch vụ, Khách thăm hoặc Lịch sử vote. Vui lòng xóa các dữ liệu liên quan trước!");
+            ra.addFlashAttribute("errorMessage", "cd.msg.loi_rang_buoc");
         } catch (Exception e) {
             // Bắt các lỗi khác
-            ra.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi xóa cư dân: " + e.getMessage());
+            ra.addFlashAttribute("errorMessage", "cd.msg.loi_xoa");
         }
         return "redirect:/admin/cu-dan";
     }
