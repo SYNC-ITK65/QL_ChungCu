@@ -21,6 +21,9 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 th:text="#{hdon.ds.tieude}">Danh sách Hóa Đơn</h2>
             <div class="d-flex gap-2 flex-wrap">
+                <a th:href="@{/admin/thanh-toan/lich-su}" class="btn btn-outline-primary fw-semibold" title="Xem lịch sử các giao dịch thanh toán">
+                    <i class="bi bi-clock-history me-1"></i> Lịch Sử Thanh Toán
+                </a>
                 <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importExcelModal">
                     <i class="bi bi-file-earmark-arrow-up"></i> Import Excel
                 </button>

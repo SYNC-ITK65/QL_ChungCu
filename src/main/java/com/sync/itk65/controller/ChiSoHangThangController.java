@@ -118,4 +118,43 @@ public class ChiSoHangThangController {
         }
         return "redirect:/admin/chi-so";
     }
-}
+
+    // ============================================================
+    //  TẠO CHỈ SỐ HÀNG LOẠT
+    // ============================================================
+
+    /** Hiển thị form tạo chỉ số hàng loạt */
+    @GetMapping("/tao-hang-loat")
+    public String hienThiFormTaoHangLoat(Model model) {
+        java.time.LocalDate now = java.time.LocalDate.now();
+        model.addAttribute("thangHienTai", now.getMonthValue());
+        model.addAttribute("namHienTai",   now.getYear());
+        return "admin/chi_so_hang_loat";
+    }
+
+    /** Xử lý POST – tạo chỉ số hàng loạt */
+    @PostMapping("/tao-hang-loat")
+    public String xuLyTaoHangLoat(
+            @RequestParam("thang") int thang,
+            @RequestParam("nam")   int nam,
+            Model model) {
+
+        java.time.LocalDate now = java.time.LocalDate.now();
+        model.addAttribute("thangHienTai", now.getMonthValue());
+        model.addAttribute("namHienTai",   now.getYear());
+
+        try {
+            com.sync.itk65.service.ChiSoHangThangService.KetQuaTaoHangLoat ketQua =
+                    chiSoHangThangService.taoChiSoHangLoat(thang, nam);
+
+            model.addAttribute("ketQua", ketQua);
+            model.addAttribute("thang",  thang);
+            model.addAttribute("nam",    nam);
+
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+
+        return "admin/chi_so_hang_loat";
+    }
+}

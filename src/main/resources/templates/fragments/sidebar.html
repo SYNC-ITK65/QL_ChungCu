@@ -64,9 +64,6 @@
                 <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý đơn thư</a>
             </li>
             <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a href="/admin/thanh-toan/lich-su" class="nav-link text-white" th:text="#{side.admin.lich_su_tt}">💳 Lịch sử Thanh toán</a>
-            </li>
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
                 <a th:href="@{/admin/phan-anh}" class="nav-link text-white" th:text="#{side.admin.phan_anh}">📢 Quản lý Phản ánh</a>
             </li>
             <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
