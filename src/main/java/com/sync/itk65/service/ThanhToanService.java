@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -26,6 +27,42 @@ public class ThanhToanService {
 
     @Autowired
     private LichSuThanhToanService lichSuThanhToanService;
+
+    // Phí phạt trễ hạn (mặc định): 0.05%/ngày, cap tối đa 10% tổng tiền hóa đơn
+    private static final double LATE_FEE_RATE_PER_DAY = 0.0005;
+    private static final double LATE_FEE_CAP_RATE = 0.10;
+
+    public record LateFeeResult(long daysLate, double lateFee, double totalDue) {}
+
+    public LateFeeResult tinhPhiTreHan(HoaDon hoaDon, LocalDate ngayThanhToan) {
+        if (hoaDon == null) {
+            throw new RuntimeException("Thiếu thông tin hóa đơn.");
+        }
+        if (hoaDon.getTongTien() == null || hoaDon.getTongTien().isNaN() || hoaDon.getTongTien().isInfinite() || hoaDon.getTongTien() <= 0) {
+            throw new RuntimeException("Tổng tiền hóa đơn không hợp lệ.");
+        }
+        if (hoaDon.getNgayDenHan() == null) {
+            return new LateFeeResult(0, 0.0, hoaDon.getTongTien());
+        }
+        if (ngayThanhToan == null) {
+            ngayThanhToan = LocalDate.now();
+        }
+
+        long daysLate = ChronoUnit.DAYS.between(hoaDon.getNgayDenHan(), ngayThanhToan);
+        if (daysLate <= 0) {
+            return new LateFeeResult(0, 0.0, hoaDon.getTongTien());
+        }
+
+        double base = hoaDon.getTongTien();
+        double lateFeeRaw = base * LATE_FEE_RATE_PER_DAY * daysLate;
+        double cap = base * LATE_FEE_CAP_RATE;
+        double lateFee = Math.min(lateFeeRaw, cap);
+
+        // làm tròn VNĐ
+        lateFee = Math.round(lateFee);
+        double totalDue = base + lateFee;
+        return new LateFeeResult(daysLate, lateFee, totalDue);
+    }
 
     // Lấy tất cả lịch sử thanh toán
     public List<ThanhToan> layTatCaThanhToan() {
@@ -78,10 +115,17 @@ public class ThanhToanService {
         if (thanhToan.getSoTien() == null || thanhToan.getSoTien() <= 0) {
             throw new RuntimeException("Số tiền thanh toán không hợp lệ: " + thanhToan.getSoTien());
         }
-        
-        if (hoaDon.getTongTien() != null && Math.abs(thanhToan.getSoTien() - hoaDon.getTongTien()) > 0.01) {
-            throw new RuntimeException(String.format("Số tiền thanh toán (%.2f) phải đúng bằng tổng tiền hóa đơn (%.2f).", 
-                    thanhToan.getSoTien(), hoaDon.getTongTien()));
+
+        // VALIDATION: tính phí trễ hạn (nếu có) và bắt buộc số tiền thực thu phải đúng
+        LateFeeResult fee = tinhPhiTreHan(hoaDon, thanhToan.getNgayThanhToan());
+        if (Math.abs(thanhToan.getSoTien() - fee.totalDue()) > 0.01) {
+            throw new RuntimeException(String.format(
+                    "Số tiền thanh toán (%.0f) phải đúng bằng tổng phải thu (%.0f = hóa đơn %.0f + trễ hạn %.0f).",
+                    thanhToan.getSoTien(),
+                    fee.totalDue(),
+                    hoaDon.getTongTien(),
+                    fee.lateFee()
+            ));
         }
         
         // VALIDATION: Kiểm tra phương thức thanh toán

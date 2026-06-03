@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface DangKyKhachThamRepository extends JpaRepository<DangKyKhachTham, Long> {
     Page<DangKyKhachTham> findAllByOrderByThoiGianDuKienDesc(Pageable pageable);
-    List<DangKyKhachTham> findByCuDanIdOrderByThoiGianDuKienDesc(Long cuDanId);
+    Page<DangKyKhachTham> findByCuDanIdOrderByThoiGianDuKienDesc(Long cuDanId, Pageable pageable);
 
     @Query("SELECT k FROM DangKyKhachTham k WHERE " +
             "(:tuKhoa IS NULL OR :tuKhoa = '' OR LOWER(k.tenKhach) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) OR LOWER(k.cmnd) LIKE LOWER(CONCAT('%', :tuKhoa, '%'))) AND " +

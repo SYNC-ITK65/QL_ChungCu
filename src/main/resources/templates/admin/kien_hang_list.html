@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{kh.ds.tieude}">Quản lý Kiện hàng</title>
+    <title th:text="#{kh.ds.tieude}">Quản lý đơn thư</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -28,8 +28,8 @@
 
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-primary"><i class="bi bi-box-seam"></i> <span th:text="#{kh.ds.tieude}">Quản lý Kiện hàng / Bưu phẩm</span></h2>
-            <a th:href="@{/admin/kien-hang/them}" class="btn btn-primary shadow-sm" th:text="#{kh.ds.nut_them}">+ Ghi nhận kiện hàng mới</a>
+            <h2 class="text-primary"><i class="bi bi-box-seam"></i> <span th:text="#{kh.ds.tieude}">Quản lý đơn thư</span></h2>
+            <a th:href="@{/admin/kien-hang/them}" class="btn btn-primary shadow-sm" th:text="#{kh.ds.nut_them}">+ Ghi nhận đơn thư mới</a>
         </div>
 
         <!-- Form Tìm kiếm & Lọc -->
@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i><span th:text="#{kh.ds.loc_kien_hang}" th:remove="tag"> Lọc kiện hàng
+                            <i class="bi bi-search"></i><span th:text="#{kh.ds.loc_kien_hang}" th:remove="tag"> Lọc đơn thư
                         </span></button>
                     </div>
                 </form>
@@ -109,7 +109,7 @@
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(danhSachKienHang)}">
-                             <td colspan="7" class="text-center py-4 text-muted" th:text="#{kh.ds.trong}">Không có kiện hàng nào trong kho.</td>
+                             <td colspan="7" class="text-center py-4 text-muted" th:text="#{kh.ds.trong}">Không có đơn thư nào trong kho.</td>
                         </tr>
                     </tbody>
                 </table>

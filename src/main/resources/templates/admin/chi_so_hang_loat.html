@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Tạo Chỉ Số Hàng Loạt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6fb; }
+
+        .hero-card {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            border-radius: 18px;
+            color: #fff;
+            padding: 2rem 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(46,204,113,.25);
+        }
+        .hero-card h2 { font-weight: 700; font-size: 1.6rem; margin-bottom: .3rem; }
+        .hero-card p  { opacity: .85; margin: 0; font-size: .93rem; }
+
+        .form-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(0,0,0,.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-card .section-title {
+            font-size: .8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: .55rem 1rem;
+        }
+        .form-label { font-weight: 600; font-size: .9rem; color: #344054; }
+        .input-hint { font-size: .78rem; color: #6c757d; margin-top: .25rem; }
+
+        /* STAT BOXES */
+        .stat-boxes { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .stat-box {
+            flex: 1; min-width: 140px;
+            border-radius: 14px;
+            padding: 1.2rem 1.5rem;
+            color: #fff;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,.12);
+        }
+        .stat-box .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
+        .stat-box .stat-lbl { font-size: .78rem; opacity: .9; margin-top: .2rem; }
+        .stat-box.success { background: linear-gradient(135deg,#2ecc71,#27ae60); }
+        .stat-box.warning { background: linear-gradient(135deg,#f39c12,#e67e22); }
+        .stat-box.danger  { background: linear-gradient(135deg,#e74c3c,#c0392b); }
+        .stat-box.total   { background: linear-gradient(135deg,#667eea,#764ba2); }
+
+        .result-table-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(0,0,0,.08);
+            overflow: hidden;
+        }
+        .result-table-card .card-header {
+            background: linear-gradient(135deg,#f8f9fa,#e9ecef);
+            font-weight: 700;
+            padding: .9rem 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .table-result th  { background: #f1f3f5; font-size: .83rem; font-weight: 700;
+                             text-transform: uppercase; letter-spacing: .05em; color:#495057; }
+        .table-result td  { font-size: .88rem; vertical-align: middle; }
+        .badge-skip       { background: #fff3cd; color:#856404; border: 1px solid #ffc107;
+                             border-radius: 20px; padding: .25rem .7rem; font-size: .8rem; font-weight:600; }
+        .badge-err        { background: #fde8e8; color:#b02a37; border: 1px solid #f5c6cb;
+                             border-radius: 20px; padding: .25rem .7rem; font-size: .8rem; font-weight:600; }
+        .badge-ok         { background: #d1e7dd; color:#0a3622; border: 1px solid #a3cfbb;
+                             border-radius: 20px; padding: .25rem .7rem; font-size: .8rem; font-weight:600; }
+
+        .detail-toggle { cursor: pointer; color: #27ae60; text-decoration: underline;
+                         font-size: .8rem; user-select: none; }
+
+        .alert-info-custom {
+            background: #e8f8f0; border-left: 4px solid #2ecc71;
+            border-radius: 10px; padding: 1rem 1.25rem;
+            font-size: .88rem; color: #1c6c3c;
+        }
+        .alert-info-custom ul { margin: .5rem 0 0; padding-left: 1.2rem; }
+
+        .btn-submit-main {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff; border: none; border-radius: 10px;
+            padding: .65rem 2rem; font-weight: 700; font-size: 1rem;
+            transition: all .2s;
+            box-shadow: 0 4px 12px rgba(46,204,113,.3);
+        }
+        .btn-submit-main:hover {
+            background: linear-gradient(135deg, #27ae60, #1e8449);
+            color: #fff; transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(46,204,113,.4);
+        }
+
+        #loadingOverlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(255,255,255,.7); backdrop-filter: blur(3px);
+            z-index: 9999; align-items: center; justify-content: center;
+        }
+        #loadingOverlay.show { display: flex; }
+    </style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay">
+    <div class="text-center">
+        <div class="spinner-border text-success" style="width:3rem;height:3rem;" role="status"></div>
+        <div class="mt-3 fw-semibold text-success">Đang tạo chỉ số, vui lòng chờ…</div>
+    </div>
+</div>
+
+<div class="d-flex">
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <div class="container-fluid p-4" style="max-width: 1100px;">
+
+        <!-- HERO -->
+        <div class="hero-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h2><i class="bi bi-speedometer2 me-2"></i>Tạo Chỉ Số Hàng Loạt</h2>
+                    <p>Hệ thống sẽ tự động sinh chỉ số điện/nước ngẫu nhiên hợp lý cho <strong>tất cả căn hộ</strong> chưa có chỉ số trong tháng được chọn.</p>
+                </div>
+                <a th:href="@{/admin/chi-so}" class="btn btn-outline-light btn-sm align-self-start">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại
+                </a>
+            </div>
+        </div>
+
+        <!-- LỖI -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            <strong>Lỗi:</strong> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- FORM -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-calendar3 me-1"></i> Chọn tháng cần tạo chỉ số</div>
+
+            <div class="alert-info-custom mb-4">
+                <strong><i class="bi bi-info-circle me-1"></i> Lưu ý:</strong>
+                <ul>
+                    <li>Chỉ số được sinh <strong>ngẫu nhiên hợp lý</strong>: Điện <strong>80–350 kWh</strong>, Nước <strong>8–45 m³</strong>.</li>
+                    <li>Căn hộ <strong>đã có chỉ số</strong> trong tháng sẽ được <strong>bỏ qua</strong> (không ghi đè).</li>
+                    <li>Ngày ghi nhận: <strong>ngày cuối tháng</strong> (nếu tháng hiện tại thì dùng hôm nay).</li>
+                    <li>Sau khi tạo chỉ số, vào <a href="/admin/hoa-don/tao-hang-loat" class="alert-link">Tạo hóa đơn hàng loạt</a> để tạo hóa đơn.</li>
+                </ul>
+            </div>
+
+            <form th:action="@{/admin/chi-so/tao-hang-loat}" method="post" id="batchForm">
+                <div class="row g-4 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Tháng muốn tạo <span class="text-danger">*</span></label>
+                        <select name="thang" id="selectThang" class="form-select">
+                            <option th:each="t : ${#numbers.sequence(1,12)}"
+                                    th:value="${t}"
+                                    th:text="${'Tháng ' + t}"
+                                    th:selected="${t == thangHienTai}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Năm <span class="text-danger">*</span></label>
+                        <input type="number" name="nam" id="selectNam" class="form-control"
+                               th:value="${namHienTai}" min="2020" max="2100">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-3" style="background:#f0fff4; border:1px solid #a3cfbb;">
+                            <div class="small text-muted mb-1"><i class="bi bi-shuffle me-1"></i>Phạm vi sinh ngẫu nhiên</div>
+                            <div class="d-flex gap-3">
+                                <span class="badge bg-warning text-dark fs-6">⚡ 80–350 kWh</span>
+                                <span class="badge bg-info text-dark fs-6">💧 8–45 m³</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <button type="submit" class="btn-submit-main" id="btnSubmit"
+                            onclick="document.getElementById('loadingOverlay').classList.add('show')">
+                        <i class="bi bi-magic me-2"></i>Tạo Chỉ Số Hàng Loạt
+                    </button>
+                    <a th:href="@{/admin/chi-so}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i>Hủy
+                    </a>
+                    <div class="text-muted small ms-auto">
+                        <i class="bi bi-shield-check me-1 text-success"></i>
+                        Căn hộ đã có chỉ số sẽ <strong>không bị ghi đè</strong>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- KẾT QUẢ -->
+        <div th:if="${ketQua != null}">
+
+            <!-- THỐNG KÊ -->
+            <div class="stat-boxes">
+                <div class="stat-box total">
+                    <div class="stat-num" th:text="${ketQua.tongCanHo}">0</div>
+                    <div class="stat-lbl">Tổng căn hộ</div>
+                </div>
+                <div class="stat-box success">
+                    <div class="stat-num" th:text="${ketQua.soThanhCong}">0</div>
+                    <div class="stat-lbl">Tạo thành công</div>
+                </div>
+                <div class="stat-box warning">
+                    <div class="stat-num" th:text="${ketQua.soBoQua}">0</div>
+                    <div class="stat-lbl">Bỏ qua (đã có)</div>
+                </div>
+                <div class="stat-box danger">
+                    <div class="stat-num" th:text="${ketQua.soLoi}">0</div>
+                    <div class="stat-lbl">Lỗi</div>
+                </div>
+            </div>
+
+            <div class="result-table-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span>
+                        <i class="bi bi-clipboard-data me-2 text-success"></i>
+                        Kết quả tạo chỉ số tháng
+                        <span class="text-success fw-bold" th:text="${thang + '/' + nam}">6/2026</span>
+                    </span>
+                    <a th:href="@{/admin/chi-so(thang=${thang}, nam=${nam})}"
+                       class="btn btn-sm btn-success">
+                        <i class="bi bi-eye me-1"></i>Xem chỉ số tháng này
+                    </a>
+                </div>
+
+                <!-- THÀNH CÔNG -->
+                <div th:if="${ketQua.soThanhCong > 0}" class="p-3 border-bottom">
+                    <div class="alert alert-success py-2 px-3 rounded-3 mb-0 small">
+                        <i class="bi bi-check-circle-fill me-1"></i>
+                        Hệ thống đã tạo thành công <strong th:text="${ketQua.soThanhCong}">0</strong>
+                        chỉ số ngẫu nhiên hợp lý cho tháng <strong th:text="${thang + '/' + nam}"></strong>.
+                    </div>
+                </div>
+
+                <!-- BỎ QUA -->
+                <div th:if="${!#lists.isEmpty(ketQua.danhSachBoQua)}" class="p-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-semibold text-warning">
+                            <i class="bi bi-skip-forward-fill me-1"></i>
+                            Bỏ qua – đã có chỉ số (<span th:text="${ketQua.soBoQua}">0</span> căn hộ)
+                        </span>
+                        <span class="detail-toggle" onclick="toggleDetail('detailBoQua')">
+                            <i class="bi bi-chevron-down" id="iconBoQua"></i> Chi tiết
+                        </span>
+                    </div>
+                    <div id="detailBoQua" style="display:none;">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-result mb-0">
+                                <thead><tr><th style="width:50px">#</th><th>Mã căn hộ</th><th>Lý do</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="item, stat : ${ketQua.danhSachBoQua}">
+                                        <td class="text-muted" th:text="${stat.count}"></td>
+                                        <td><span class="badge-skip" th:text="${item}"></span></td>
+                                        <td class="text-muted small">Đã có chỉ số trong tháng – bỏ qua</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LỖI -->
+                <div th:if="${!#lists.isEmpty(ketQua.danhSachLoi)}" class="p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-semibold text-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            Không tạo được (<span th:text="${ketQua.soLoi}">0</span> căn hộ)
+                        </span>
+                        <span class="detail-toggle" onclick="toggleDetail('detailLoi')">
+                            <i class="bi bi-chevron-down" id="iconLoi"></i> Chi tiết
+                        </span>
+                    </div>
+                    <div id="detailLoi">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-result mb-0">
+                                <thead><tr><th style="width:50px">#</th><th style="width:130px">Mã căn hộ</th><th>Nguyên nhân</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="item, stat : ${ketQua.danhSachLoi}">
+                                        <td class="text-muted" th:text="${stat.count}"></td>
+                                        <td><span class="badge-err" th:text="${#strings.substringBefore(item, ':')}"></span></td>
+                                        <td class="text-danger small"
+                                            th:text="${#strings.length(item) > #strings.indexOf(item,':') + 1 ?
+                                                       #strings.substringAfter(item, ': ') : item}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KHÔNG CÓ GÌ -->
+                <div th:if="${ketQua.tongCanHo == 0}" class="p-4 text-center text-muted">
+                    <i class="bi bi-inbox fs-1"></i>
+                    <p class="mt-2">Không có căn hộ nào trong hệ thống.</p>
+                </div>
+            </div>
+
+            <!-- GỢI Ý TIẾP THEO -->
+            <div th:if="${ketQua.soThanhCong > 0}" class="alert alert-info rounded-3">
+                <i class="bi bi-lightbulb me-2"></i>
+                <strong>Bước tiếp theo:</strong> Chỉ số đã được tạo. Bạn có thể
+                <a th:href="@{/admin/hoa-don/tao-hang-loat}" class="alert-link fw-bold">Tạo hóa đơn hàng loạt</a>
+                cho tháng <span th:text="${thang + '/' + nam}"></span>.
+            </div>
+
+        </div><!-- /ketQua -->
+    </div><!-- /container -->
+</div><!-- /d-flex -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    const thangHienTai = /*[[${thangHienTai}]]*/ new Date().getMonth() + 1;
+    const namHienTai   = /*[[${namHienTai}]]*/ new Date().getFullYear();
+
+    window.addEventListener('load', function () {
+        document.getElementById('loadingOverlay').classList.remove('show');
+    });
+
+    document.getElementById('batchForm').addEventListener('submit', function (e) {
+        const thang = parseInt(document.getElementById('selectThang').value);
+        const nam   = parseInt(document.getElementById('selectNam').value);
+        const today = new Date();
+        const thangChon = new Date(nam, thang - 1, 1);
+        const thangHienTaiDate = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        if (thangChon > thangHienTaiDate) {
+            e.preventDefault();
+            document.getElementById('loadingOverlay').classList.remove('show');
+            Swal.fire({
+                icon: 'warning', title: 'Tháng tương lai',
+                text: 'Không thể tạo chỉ số cho tháng ' + thang + '/' + nam + ' vì chưa đến!',
+                confirmButtonColor: '#27ae60'
+            });
+            return;
+        }
+    });
+
+    function toggleDetail(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const visible = el.style.display !== 'none';
+        el.style.display = visible ? 'none' : 'block';
+        const iconMap = { detailBoQua: 'iconBoQua', detailLoi: 'iconLoi' };
+        const icon = document.getElementById(iconMap[id]);
+        if (icon) icon.className = visible ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const detailLoi = document.getElementById('detailLoi');
+        if (detailLoi) {
+            detailLoi.style.display = 'block';
+            const icon = document.getElementById('iconLoi');
+            if (icon) icon.className = 'bi bi-chevron-up';
+        }
+    });
+</script>
+</body>
+</html>

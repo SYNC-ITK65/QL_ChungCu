@@ -6,10 +6,17 @@ import com.sync.itk65.service.HoaDonService;
 import com.sync.itk65.repository.CanHoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -31,8 +38,10 @@ public class HoaDonController {
                                   @RequestParam(required = false) String maCanHo,
                                   @RequestParam(required = false) String trangThai,
                                   @RequestParam(required = false) Integer thang,
-                                  @RequestParam(required = false) Integer nam) {
-        List<HoaDon> danhSachHoaDon;
+                                  @RequestParam(required = false) Integer nam,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        Page<HoaDon> trangDuLieuHoaDon;
 
         // Xử lý empty string thành null để query hoạt động đúng
         String maCanHoFilter = (maCanHo != null && !maCanHo.trim().isEmpty()) ? maCanHo.trim() : null;
@@ -40,12 +49,15 @@ public class HoaDonController {
 
         // Nếu có tham số tìm kiếm, sử dụng filter
         if (maCanHoFilter != null || trangThaiFilter != null || thang != null || nam != null) {
-            danhSachHoaDon = hoaDonService.timKiemHoaDon(maCanHoFilter, trangThaiFilter, thang, nam);
+            trangDuLieuHoaDon = hoaDonService.timKiemHoaDon(maCanHoFilter, trangThaiFilter, thang, nam, page, size);
         } else {
-            danhSachHoaDon = hoaDonService.layTatCaHoaDon();
+            trangDuLieuHoaDon = hoaDonService.layTatCaHoaDon(page, size);
         }
 
-        model.addAttribute("danhSachHoaDon", danhSachHoaDon);
+        model.addAttribute("danhSachHoaDon", trangDuLieuHoaDon.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieuHoaDon.getTotalPages());
+        model.addAttribute("size", size);
         model.addAttribute("maCanHo", maCanHo != null ? maCanHo : "");
         model.addAttribute("trangThai", trangThai != null ? trangThai : "");
         model.addAttribute("thang", thang);
@@ -171,5 +183,81 @@ public class HoaDonController {
         } catch (RuntimeException e) {
             return "redirect:/admin/hoa-don?error=" + e.getMessage();
         }
+    }
+
+    // ============================================================
+    //  TẠO HÓA ĐƠN HÀNG LOẠT
+    // ============================================================
+
+    /** Hiển thị form tạo hóa đơn hàng loạt */
+    @GetMapping("/tao-hang-loat")
+    public String hienThiFormTaoHangLoat(Model model) {
+        LocalDate now = LocalDate.now();
+        model.addAttribute("thangHienTai", now.getMonthValue());
+        model.addAttribute("namHienTai",   now.getYear());
+        // Thông tin ngày tự động để hiển thị cho user
+        model.addAttribute("ngayPhatHanhAuto", now.toString());
+        model.addAttribute("ngayDenHanAuto",   now.plusDays(7).toString());
+        return "admin/hoa_don_hang_loat";
+    }
+
+    /** Xử lý POST – thực hiện tạo hóa đơn hàng loạt */
+    @PostMapping("/tao-hang-loat")
+    public String xuLyTaoHangLoat(
+            @RequestParam("thang") int thang,
+            @RequestParam("nam")   int nam,
+            Model model) {
+
+        LocalDate now = LocalDate.now();
+        model.addAttribute("thangHienTai", now.getMonthValue());
+        model.addAttribute("namHienTai",   now.getYear());
+        model.addAttribute("ngayPhatHanhAuto", now.toString());
+        model.addAttribute("ngayDenHanAuto",   now.plusDays(7).toString());
+
+        // ── Gọi service ────────────────────────────────────────────
+        try {
+            com.sync.itk65.service.HoaDonService.KetQuaTaoHangLoat ketQua =
+                    hoaDonService.taoHoaDonHangLoat(thang, nam);
+
+            model.addAttribute("ketQua",   ketQua);
+            model.addAttribute("thang",    thang);
+            model.addAttribute("nam",      nam);
+            model.addAttribute("ngayPhatHanh", now);
+            model.addAttribute("ngayDenHan",   now.plusDays(7));
+
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+        }
+
+        return "admin/hoa_don_hang_loat";
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel() {
+        byte[] bytes = hoaDonService.xuatExcelDanhSachHoaDon();
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_hoa_don_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
+    }
+
+    @PostMapping("/import-excel")
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
+        if (file.isEmpty()) {
+            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            return "redirect:/admin/hoa-don";
+        }
+        try {
+            String ketQua = hoaDonService.importExcelHoaDon(file);
+            ra.addFlashAttribute("thongBaoThanhCong", ketQua);
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+        }
+        return "redirect:/admin/hoa-don";
     }
 }

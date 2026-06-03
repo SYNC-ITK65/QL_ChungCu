@@ -56,6 +56,18 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
     @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.canHo.id = :canHoId AND MONTH(h.ngayPhatHanh) = :thang AND YEAR(h.ngayPhatHanh) = :nam")
     Long countByCanHoAndThangNam(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
 
+    @Query("SELECT COUNT(h) FROM HoaDon h " +
+            "WHERE h.canHo.id = :canHoId " +
+            "AND MONTH(h.ngayPhatHanh) = :thang " +
+            "AND YEAR(h.ngayPhatHanh) = :nam " +
+            "AND h.id <> :excludeId")
+    Long countByCanHoAndThangNamExcludingId(
+            @Param("canHoId") Long canHoId,
+            @Param("thang") int thang,
+            @Param("nam") int nam,
+            @Param("excludeId") Long excludeId
+    );
+
     // Tìm kiếm hóa đơn theo từ khóa (mã căn hộ, trạng thái)
     @Query("SELECT h FROM HoaDon h WHERE " +
            "LOWER(h.canHo.maCanHo) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
@@ -70,8 +82,9 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
            "(:thang IS NULL OR MONTH(h.ngayPhatHanh) = :thang) AND " +
            "(:nam IS NULL OR YEAR(h.ngayPhatHanh) = :nam) " +
            "ORDER BY h.ngayPhatHanh DESC")
-    List<HoaDon> searchWithFilters(@Param("maCanHo") String maCanHo,
+    Page<HoaDon> searchWithFilters(@Param("maCanHo") String maCanHo,
                                     @Param("trangThai") String trangThai,
                                     @Param("thang") Integer thang,
-                                    @Param("nam") Integer nam);
+                                    @Param("nam") Integer nam,
+                                    Pageable pageable);
 }

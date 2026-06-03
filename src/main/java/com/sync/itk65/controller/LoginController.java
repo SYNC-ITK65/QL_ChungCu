@@ -43,11 +43,11 @@ public class LoginController {
             session.setAttribute("nguoiDungDangNhap", user);
             session.setAttribute("vaiTro", user.getVaiTro());
 
-            // Phân luồng: Admin/Staff vào trang quản lý, Cư dân vào trang cá nhân
-            if (user.getVaiTro() == 1 || user.getVaiTro() == 2) {
-                return "redirect:/admin/dashboard"; // Admin, Staff về Dashboard
-            } else {
+            // Phân luồng: Admin/Staff/Lễ tân/Bảo vệ vào trang quản lý, Cư dân vào trang cá nhân
+            if (user.getVaiTro() == 3) {
                 return "redirect:/cudan/thong-tin"; // Cư dân (Chủ hộ hoặc Người thuê)
+            } else {
+                return "redirect:/admin/dashboard"; // Admin (1), Quản lý (2), Lễ tân (4), Bảo vệ (5)
             }
         } else {
             model.addAttribute("error", "Sai tên đăng nhập hoặc mật khẩu!");

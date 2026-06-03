@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
@@ -22,6 +23,7 @@ import jakarta.validation.constraints.Pattern;
 public class CuDan extends NguoiDung {
 
     // MÃ CĂN HỘ LÀ KHÓA NGOẠI LIÊN KẾT ĐẾN BẢNG CĂN HỘ
+    @NotNull(message = "Vui lòng chọn căn hộ")
     @ManyToOne
     @JoinColumn(name = "ma_can_ho")
     private CanHo canHo;
@@ -32,10 +34,12 @@ public class CuDan extends NguoiDung {
     private String moiQuanHe;
 
     // Trạng thái hiện tại cư dân (Đang ở, Đã chuyển đi, ...)
+    @NotBlank(message = "Trạng thái không được để trống")
     @Column(name = "trang_thai")
     private String trangThai;
 
     // Ngày sinh cư dân
+    @NotNull(message = "Ngày sinh không được để trống")
     @Column(name = "ngay_sinh")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngaySinh;
@@ -57,10 +61,6 @@ public class CuDan extends NguoiDung {
     // Mối quan hệ 1-N với đặt dịch vụ - Xóa cư dân sẽ xóa tất cả đặt dịch vụ
     @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DatDichVu> datDichVus;
-
-    // Mối quan hệ 1-N với tạm trú tạm vắng - Xóa cư dân sẽ xóa tất cả tạm trú tạm vắng
-    @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TamTruTamVang> tamTruTamVangs;
 
     // Mối quan hệ 1-N với lịch sử vote - Xóa cư dân sẽ xóa tất cả lịch sử vote
     @OneToMany(mappedBy = "cuDan", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -128,14 +128,6 @@ public class CuDan extends NguoiDung {
 
     public void setDatDichVus(List<DatDichVu> datDichVus) {
         this.datDichVus = datDichVus;
-    }
-
-    public List<TamTruTamVang> getTamTruTamVangs() {
-        return tamTruTamVangs;
-    }
-
-    public void setTamTruTamVangs(List<TamTruTamVang> tamTruTamVangs) {
-        this.tamTruTamVangs = tamTruTamVangs;
     }
 
     public List<LichSuVote> getLichSuVotes() {

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +28,29 @@ public class CuDanKienHangController {
     private CuDanService cuDanService;
 
     @GetMapping("")
-    public String danhSach(HttpSession session, Model model) {
+    public String danhSach(HttpSession session, Model model,
+                           @RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "5") int size) {
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         if (user == null) {
             return "redirect:/login";
         }
 
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
-        List<KienHang> danhSach = new ArrayList<>();
 
         if (cuDan != null && cuDan.getCanHo() != null) {
-            danhSach = kienHangService.layKienHangTheoCanHo(cuDan.getCanHo().getId());
+            Page<KienHang> trangDuLieu = kienHangService.layKienHangTheoCanHo(cuDan.getCanHo().getId(), page, size);
+            model.addAttribute("danhSachKienHang", trangDuLieu.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+            model.addAttribute("size", size);
+        } else {
+            model.addAttribute("danhSachKienHang", new ArrayList<>());
+            model.addAttribute("currentPage", 0);
+            model.addAttribute("totalPages", 0);
+            model.addAttribute("size", size);
         }
 
-        model.addAttribute("danhSachKienHang", danhSach);
         return "cudan/kien_hang";
     }
 }

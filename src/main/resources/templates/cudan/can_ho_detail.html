@@ -16,6 +16,13 @@
                 <h5 class="card-title mb-0" th:text="#{tb.ui.phong} + ' ' + ${canHo.maCanHo}">Mã Căn Hộ</h5>
             </div>
             <div class="card-body">
+                <!-- Hiển thị hình ảnh căn hộ -->
+                <div class="row mb-4" th:if="${canHo.hinhAnh != null}">
+                    <div class="col-12 text-center">
+                        <img th:src="${canHo.hinhAnh}" alt="Ảnh căn hộ"
+                             style="max-width: 300px; max-height: 220px; border-radius: 10px; border: 1px solid #dee2e6; object-fit: cover;">
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <div class="col-sm-3 fw-bold" th:text="#{ch.chitiet.tang}">Tầng:</div>
                     <div class="col-sm-9" th:text="${canHo.tang}">-</div>
@@ -31,7 +38,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-3 fw-bold" th:text="#{hd.detail.trang_thai}">Trạng thái:</div>
                     <div class="col-sm-9">
-                        <span class="badge bg-success" th:text="${canHo.trangThai}">-</span>
+                        <span class="badge bg-success" th:text="${canHo.trangThaiHienThi != null ? #messages.msg(canHo.trangThaiHienThi) : canHo.trangThai}">-</span>
                     </div>
                 </div>
             </div>

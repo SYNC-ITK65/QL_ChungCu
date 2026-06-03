@@ -43,8 +43,7 @@ public class CuDanThanhToanController {
 
         model.addAttribute(
                 "danhSachThanhToan",
-                thanhToanService.layLichSuTheoCanHo(cuDan.getCanHo().getId())
-        );
+                thanhToanService.layLichSuTheoCanHo(cuDan.getCanHo().getId()));
         return "cudan/thanh_toan_lich_su";
     }
 
@@ -54,9 +53,9 @@ public class CuDanThanhToanController {
      */
     @GetMapping("/qr/{hoaDonId}")
     public String hienThiTrangThanhToanQR(@PathVariable("hoaDonId") Long hoaDonId,
-                                         HttpSession session,
-                                         Model model,
-                                         RedirectAttributes ra) {
+            HttpSession session,
+            Model model,
+            RedirectAttributes ra) {
         // Kiểm tra đăng nhập
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         if (user == null) {
@@ -90,8 +89,8 @@ public class CuDanThanhToanController {
      */
     @PostMapping("/xac-nhan-qr")
     public String xacNhanThanhToanQR(@RequestParam("hoaDonId") Long hoaDonId,
-                                     HttpSession session,
-                                     RedirectAttributes ra) {
+            HttpSession session,
+            RedirectAttributes ra) {
         // Kiểm tra đăng nhập
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         if (user == null) {

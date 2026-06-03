@@ -6,8 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.List;
+import java.time.LocalDate;
 
 @Repository
 public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, Long> {
@@ -17,9 +20,27 @@ public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, 
     @Query("SELECT c FROM ChiSoHangThang c WHERE c.canHo.id = :canHoId AND MONTH(c.ngayGhiNhan) = :thang AND YEAR(c.ngayGhiNhan) = :nam")
     Optional<ChiSoHangThang> findByCanHoAndThangNam(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
 
+    Optional<ChiSoHangThang> findFirstByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanDescIdDesc(
+            Long canHoId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    Optional<ChiSoHangThang> findFirstByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanAscIdAsc(
+            Long canHoId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    List<ChiSoHangThang> findByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanDescIdDesc(
+            Long canHoId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
     // Lấy toàn bộ chỉ số, sắp xếp ngày giảm dần
     @Query("SELECT c FROM ChiSoHangThang c ORDER BY c.ngayGhiNhan DESC")
-    List<ChiSoHangThang> findAllOrderByNgayGhiNhanDesc();
+    Page<ChiSoHangThang> findAllOrderByNgayGhiNhanDesc(Pageable pageable);
 
     // Tìm kiếm theo nhiều điều kiện, sắp xếp ngày giảm dần
     @Query("SELECT c FROM ChiSoHangThang c WHERE " +
@@ -28,8 +49,9 @@ public interface ChiSoHangThangRepository extends JpaRepository<ChiSoHangThang, 
             "(:thang IS NULL OR MONTH(c.ngayGhiNhan) = :thang) AND " +
             "(:nam IS NULL OR YEAR(c.ngayGhiNhan) = :nam) " +
             "ORDER BY c.ngayGhiNhan DESC")
-    List<ChiSoHangThang> searchWithFilters(@Param("maCanHo") String maCanHo,
+    Page<ChiSoHangThang> searchWithFilters(@Param("maCanHo") String maCanHo,
                                            @Param("canHoId") Long canHoId,
                                            @Param("thang") Integer thang,
-                                           @Param("nam") Integer nam);
+                                           @Param("nam") Integer nam,
+                                           Pageable pageable);
 }

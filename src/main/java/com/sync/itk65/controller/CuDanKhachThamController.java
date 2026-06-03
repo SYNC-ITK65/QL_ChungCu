@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
 
 @Controller
@@ -16,11 +17,20 @@ public class CuDanKhachThamController {
     @Autowired private DangKyKhachThamService khachThamService;
 
     @GetMapping
-    public String trangKhachTham(HttpSession session, Model model) {
+    public String trangKhachTham(HttpSession session, Model model,
+                                 @RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "5") int size) {
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         if (user == null) return "redirect:/login";
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
-        model.addAttribute("lichSuKhach", khachThamService.layLichSuCuaCuDan(cuDan.getId()));
+        
+        Page<DangKyKhachTham> trangDuLieu = khachThamService.layLichSuCuaCuDan(cuDan.getId(), page, size);
+        
+        model.addAttribute("lichSuKhach", trangDuLieu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
+        model.addAttribute("size", size);
+        
         return "cudan/khach_tham";
     }
 

@@ -26,7 +26,10 @@ public class DangKyKhachThamService {
     }
 
     public List<DangKyKhachTham> layTatCa() { return repository.findAll(); }
-    public List<DangKyKhachTham> layLichSuCuaCuDan(Long cuDanId) { return repository.findByCuDanIdOrderByThoiGianDuKienDesc(cuDanId); }
+    public Page<DangKyKhachTham> layLichSuCuaCuDan(Long cuDanId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findByCuDanIdOrderByThoiGianDuKienDesc(cuDanId, pageable);
+    }
     public DangKyKhachTham timTheoId(Long id) { return repository.findById(id).orElse(null); }
     public void xoa(Long id) {
         repository.deleteById(id);

@@ -4,6 +4,7 @@ import com.sync.itk65.entity.LichSuBaoTri;
 import com.sync.itk65.entity.TaiSan;
 import com.sync.itk65.service.LichSuBaoTriService;
 import com.sync.itk65.service.TaiSanService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -68,9 +70,20 @@ public class AdminTaiSanController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute TaiSan taiSan) {
-        taiSanService.saveTaiSan(taiSan);
-        return "redirect:/admin/tai-san";
+    public String save(@Valid @ModelAttribute("taiSan") TaiSan taiSan, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "admin/tai_san_form";
+        }
+        try {
+            taiSanService.saveTaiSan(taiSan);
+            return "redirect:/admin/tai-san";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/tai_san_form";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu tài sản!");
+            return "admin/tai_san_form";
+        }
     }
 
     @GetMapping("/delete/{id}")

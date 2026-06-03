@@ -12,7 +12,13 @@
     <div class="d-flex">
         <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
         <div class="flex-grow-1 p-4">
-            <h2 class="mb-4" th:text="${taiSan.id == null} ? #{ts.form.them_tieude} : #{ts.form.sua_tieude}">Thông tin Tài Sản</h2>
+            <h2 class="mb-4" th:text="${taiSan.id == null} ? #{ts.form.them_tieude} : #{ts.form.sua_tieude}">Thông tin
+                Tài Sản</h2>
+
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                <span th:text="${errorMessage}"></span>
+            </div>
+
             <form th:action="@{/admin/tai-san/save}" th:object="${taiSan}" method="post">
                 <input type="hidden" th:field="*{id}">
 
@@ -20,10 +26,14 @@
                     <div class="col-md-6">
                         <label class="form-label" th:text="#{ts.form.ten}">Tên Tài Sản</label>
                         <input type="text" class="form-control" th:field="*{tenTaiSan}" required>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('tenTaiSan')}"
+                            th:errors="*{tenTaiSan}"></div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label" th:text="#{ts.form.ma}">Mã Tài Sản</label>
                         <input type="text" class="form-control" th:field="*{maTaiSan}" required>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('maTaiSan')}" th:errors="*{maTaiSan}">
+                        </div>
                     </div>
                 </div>
 
@@ -31,10 +41,13 @@
                     <div class="col-md-6">
                         <label class="form-label" th:text="#{ts.form.vt}">Vị Trí</label>
                         <input type="text" class="form-control" th:field="*{viTri}">
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('viTri')}" th:errors="*{viTri}"></div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label" th:text="#{ts.form.ngay_mua}">Ngày Mua</label>
                         <input type="date" class="form-control" th:field="*{ngayMua}">
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('ngayMua')}" th:errors="*{ngayMua}">
+                        </div>
                     </div>
                 </div>
 
@@ -46,15 +59,14 @@
                             <option value="Đang hỏng" th:text="#{ts.tt.hong}">Đang hỏng</option>
                             <option value="Chờ thanh lý" th:text="#{ts.tt.thanh_ly}">Chờ thanh lý</option>
                         </select>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('tinhTrang')}"
+                            th:errors="*{tinhTrang}"></div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label" th:text="#{ts.form.chu_ky}">Chu Kỳ Bảo Trì (Tháng)</label>
                         <input type="number" class="form-control" th:field="*{chuKyBaoTri}">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label" th:text="#{ts.form.bao_tri_toi}">Bảo Trì Tiếp Theo</label>
-                        <input type="date" class="form-control" th:field="*{ngayBaoTriTiepTheo}">
-                        <small class="text-muted" th:text="#{ts.form.bao_tri_toi_hint}">Để trống nếu muốn tự động tính.</small>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('chuKyBaoTri')}"
+                            th:errors="*{chuKyBaoTri}"></div>
                     </div>
                 </div>
 
@@ -69,13 +81,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-

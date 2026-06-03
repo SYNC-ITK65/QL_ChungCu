@@ -40,8 +40,9 @@ public class KienHangService {
         return kienHangRepository.searchKienHang(maCanHo, trangThai, pageable);
     }
 
-    public List<KienHang> layKienHangTheoCanHo(Long canHoId) {
-        return kienHangRepository.findByCanHoId(canHoId);
+    public Page<KienHang> layKienHangTheoCanHo(Long canHoId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return kienHangRepository.findByCanHoId(canHoId, pageable);
     }
 
     public KienHang luuKienHang(KienHang kienHang) {
@@ -67,7 +68,7 @@ public class KienHangService {
 
     public void xacNhanDaNhan(Long id) {
         KienHang kienHang = kienHangRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy kiện hàng!"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn thư!"));
         kienHang.setTrangThai("Đã nhận");
         kienHangRepository.save(kienHang);
     }
@@ -81,17 +82,17 @@ public class KienHangService {
     }
 
     /**
-     * Tự động tạo thông báo cho cư dân khi có kiện hàng mới tại lễ tân.
+     * Tự động tạo thông báo cho cư dân khi có đơn thư mới tại lễ tân.
      * Thông báo sẽ được gửi đến hộ gia đình liên quan.
      */
     private void taoThongBaoKienHangMoi(KienHang kienHang) {
         try {
             ThongBao thongBao = new ThongBao();
-            thongBao.setTieuDe("📦 Bạn có bưu phẩm/kiện hàng mới tại Quầy Lễ Tân");
+            thongBao.setTieuDe("📦 Bạn có đơn thư mới tại Quầy Lễ Tân");
 
-            String noiDung = "Có một kiện hàng từ " + (kienHang.getNguoiGui() != null ? kienHang.getNguoiGui() : "N/A")
+            String noiDung = "Có một đơn thư từ " + (kienHang.getNguoiGui() != null ? kienHang.getNguoiGui() : "N/A")
                     + " gửi cho " + (kienHang.getNguoiNhan() != null ? kienHang.getNguoiNhan() : "N/A")
-                    + ". Vui lòng mang theo giấy tờ xuống sảnh nhận hàng.";
+                    + ". Vui lòng mang theo giấy tờ xuống sảnh nhận đơn thư.";
 
             thongBao.setNoiDung(noiDung);
             thongBao.setLoai(1); // Bảng tin
@@ -108,7 +109,7 @@ public class KienHangService {
             thongBaoService.saveThongBao(thongBao);
         } catch (Exception e) {
             // Không throw exception để không ảnh hưởng đến việc lưu kiện hàng
-            System.err.println("Lỗi khi tạo thông báo kiện hàng: " + e.getMessage());
+            System.err.println("Lỗi khi tạo thông báo đơn thư: " + e.getMessage());
         }
     }
 }

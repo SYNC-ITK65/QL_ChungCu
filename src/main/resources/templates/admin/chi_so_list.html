@@ -1,92 +1,173 @@
 <!doctype html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title th:text="#{cs.ds.quan_ly_chi_so_hang}">Quản lý Chỉ Số Hàng Tháng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
-<div class="d-flex">
-    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+    <div class="d-flex">
+        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="container-fluid p-4">
-        <!-- Nút tạo mới -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0" th:text="#{cs.ds.quan_ly_chi_so_dien}">📊 Quản lý Chỉ số Điện Nước</h4>
-            <a th:href="@{/admin/chi-so/tao-moi}" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i><span th:text="#{cs.form.ghi_nhan_chi_so_moi}" th:remove="tag"> Ghi nhận Chỉ số mới
-            </span></a>
-        </div>
-
-        <!-- Form tìm kiếm -->
-        <div class="card mb-4">
-            <div class="card-header bg-light">
-                <h6 class="mb-0" th:text="#{cs.ds.tim_kiem_chi_so}">🔍 Tìm kiếm chỉ số</h6>
-            </div>
-            <div class="card-body">
-                <form th:action="@{/admin/chi-so}" method="get" class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label" th:text="#{hdon.ds.loc_ma_can}">Mã căn hộ</label>
-                        <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}" placeholder="Nhập mã căn hộ..." th:placeholder="#{hdon.ds.loc_ma_can_goi_y}">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label" th:text="#{hdon.form.can_ho}">Căn hộ</label>
-                        <select class="form-select" name="canHoId">
-                            <option value="" th:text="#{cs.ds.tat_ca_can_ho}">-- Tất cả căn hộ --</option>
-                            <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|${ch.maCanHo} (${ch.trangThai})|" th:selected="${canHoId != null and canHoId == ch.id}">
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label" th:text="#{hdon.ds.loc_thang}">Tháng</label>
-                        <input type="number" class="form-control" name="thang" th:value="${thang}" min="1" max="12" placeholder="1-12" th:placeholder="#{hdon.ds.loc_thang_goi_y}">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label" th:text="#{hdon.ds.loc_nam}">Năm</label>
-                        <input type="number" class="form-control" name="nam" th:value="${nam}" placeholder="2024" th:placeholder="#{hdon.ds.loc_nam_goi_y}">
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100" th:text="#{hdon.ds.nut_tim_kiem}">Tìm kiếm</button>
-                    </div>
-                </form>
-                <div class="mt-2">
-                    <a th:href="@{/admin/chi-so}" class="btn btn-sm btn-secondary" th:text="#{hd.ds.nut_xoa_loc}">↻ Xóa bộ lọc</a>
+        <div class="container-fluid p-4">
+            <!-- Nút tạo mới -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0" th:text="#{cs.ds.quan_ly_chi_so_dien}">📊 Quản lý Chỉ số Điện Nước</h4>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importExcelModal">
+                        <i class="bi bi-file-earmark-arrow-up"></i> Import Excel
+                    </button>
+                    <a th:href="@{/admin/chi-so/xuat-excel}" class="btn btn-success">
+                        <i class="bi bi-file-earmark-arrow-down"></i> Xuất Excel
+                    </a>
+                    <a th:href="@{/admin/chi-so/tao-hang-loat}" class="btn btn-warning text-dark fw-semibold">
+                        <i class="bi bi-magic me-1"></i> Tạo Hàng Loạt
+                    </a>
+                    <a th:href="@{/admin/chi-so/tao-moi}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i><span th:text="#{cs.form.ghi_nhan_chi_so_moi}" th:remove="tag"> Ghi
+                            nhận Chỉ số mới
+                        </span>
+                    </a>
                 </div>
             </div>
+
+
+            <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title" id="importExcelModalLabel">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> Import Excel - Chỉ số
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:action="@{/admin/chi-so/import-excel}" method="post" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="alert alert-info small mb-3">
+                                    <i class="bi bi-info-circle"></i> File Excel cần có các cột theo thứ tự:<br>
+                                    <strong>Ngày ghi nhận (yyyy-MM-dd) | Mã căn hộ | Điện tiêu thụ | Nước tiêu thụ</strong><br>
+                                    Dòng đầu tiên là header, dữ liệu bắt đầu từ dòng 2.
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fileImportChiSo" class="form-label fw-semibold">Chọn file Excel (.xlsx)</label>
+                                    <input type="file" class="form-control" id="fileImportChiSo" name="file" accept=".xlsx,.xls" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form tìm kiếm -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0" th:text="#{cs.ds.tim_kiem_chi_so}">🔍 Tìm kiếm chỉ số</h6>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/chi-so}" method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" th:text="#{hdon.ds.loc_ma_can}">Mã căn hộ</label>
+                            <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}"
+                                placeholder="Nhập mã căn hộ..." th:placeholder="#{hdon.ds.loc_ma_can_goi_y}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" th:text="#{hdon.form.can_ho}">Căn hộ</label>
+                            <select class="form-select" name="canHoId">
+                                <option value="" th:text="#{cs.ds.tat_ca_can_ho}">-- Tất cả căn hộ --</option>
+                                <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}"
+                                    th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'"
+                                    th:selected="${canHoId != null and canHoId == ch.id}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" th:text="#{hdon.ds.loc_thang}">Tháng</label>
+                            <input type="number" class="form-control" name="thang" th:value="${thang}" min="1" max="12"
+                                placeholder="1-12" th:placeholder="#{hdon.ds.loc_thang_goi_y}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" th:text="#{hdon.ds.loc_nam}">Năm</label>
+                            <input type="number" class="form-control" name="nam" th:value="${nam}" placeholder="2024"
+                                th:placeholder="#{hdon.ds.loc_nam_goi_y}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100" th:text="#{hdon.ds.nut_tim_kiem}">Tìm
+                                kiếm</button>
+                        </div>
+                    </form>
+                    <div class="mt-2">
+                        <a th:href="@{/admin/chi-so}" class="btn btn-sm btn-secondary" th:text="#{hd.ds.nut_xoa_loc}">↻
+                            Xóa bộ lọc</a>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover border no-paging">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th th:text="#{cs.ds.ngay_ghi_nhan}">Ngày Ghi Nhận</th>
+                        <th th:text="#{hdon.form.can_ho}">Căn Hộ</th>
+                        <th th:text="#{cs.form.so_dien_kwh}">Số Điện (kWh)</th>
+                        <th th:text="#{cs.form.so_nuoc_m3}">Số Nước (m3)</th>
+                        <th th:text="#{hdon.ds.bang_hanh_dong}">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cs : ${danhSachChiSo}">
+                        <td th:text="${cs.id}">1</td>
+                        <td th:text="${cs.ngayGhiNhan != null ? #temporals.format(cs.ngayGhiNhan, 'dd/MM/yyyy') : ''}">
+                            01/10/2026</td>
+                        <td th:text="${cs.canHo != null} ? ${cs.canHo.maCanHo} : #{chung.chua_gan}"></td>
+                        <td th:text="${cs.dienTieuThu}">100</td>
+                        <td th:text="${cs.nuocTieuThu}">10</td>
+                        <td>
+                            <a th:href="@{/admin/chi-so/xoa/{id}(id=${cs.id})}"
+                                th:onclick="|return confirm('#{cs.ds.xac_nhan_xoa}')|" class="btn btn-sm btn-danger"
+                                th:text="#{hd.ds.nut_xoa}">Xóa</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(danhSachChiSo)}">
+                        <td colspan="6" class="text-center text-muted" th:text="#{cs.ds.chua_co_chi_so_nao_d}">Chưa có
+                            chỉ số nào được ghi nhận!</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- Fragment Phân trang -->
+            <div th:replace="~{fragments/pagination :: paging('/admin/chi-so', 
+                'maCanHo=' + ${maCanHo != null ? maCanHo : ''} + 
+                '&canHoId=' + ${canHoId != null ? canHoId : ''} + 
+                '&thang=' + ${thang != null ? thang : ''} + 
+                '&nam=' + ${nam != null ? nam : ''})}">
+            </div>
+
         </div>
-
-        <table class="table table-striped table-hover border no-paging">
-            <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th th:text="#{cs.ds.ngay_ghi_nhan}">Ngày Ghi Nhận</th>
-                <th th:text="#{hdon.form.can_ho}">Căn Hộ</th>
-                <th th:text="#{cs.form.so_dien_kwh}">Số Điện (kWh)</th>
-                <th th:text="#{cs.form.so_nuoc_m3}">Số Nước (m3)</th>
-                <th th:text="#{hdon.ds.bang_hanh_dong}">Hành Động</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="cs : ${danhSachChiSo}">
-                <td th:text="${cs.id}">1</td>
-                <td th:text="${cs.ngayGhiNhan != null ? #temporals.format(cs.ngayGhiNhan, 'dd/MM/yyyy') : ''}">01/10/2026</td>
-                <td th:text="${cs.canHo != null} ? ${cs.canHo.maCanHo} : #{chung.chua_gan}"></td>
-                <td th:text="${cs.dienTieuThu}">100</td>
-                <td th:text="${cs.nuocTieuThu}">10</td>
-                <td>
-                    <a th:href="@{/admin/chi-so/xoa/{id}(id=${cs.id})}" th:onclick="|return confirm('#{cs.ds.xac_nhan_xoa}')|" class="btn btn-sm btn-danger" th:text="#{hd.ds.nut_xoa}">Xóa</a>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(danhSachChiSo)}">
-                <td colspan="6" class="text-center text-muted" th:text="#{cs.ds.chua_co_chi_so_nao_d}">Chưa có chỉ số nào được ghi nhận!</td>
-            </tr>
-            </tbody>
-        </table>
     </div>
-</div>
 
-<!-- Dùng fragment Datatable chung -->
-<div th:replace="~{fragments/datatable :: scripts}"></div>
+    <!-- Dùng fragment Datatable chung -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var thongBaoThanhCong = /*[[${thongBaoThanhCong}]]*/ null;
+            var thongBaoLoi = /*[[${thongBaoLoi}]]*/ null;
+            if (thongBaoThanhCong) {
+                Swal.fire({ icon: 'success', title: 'Thành công!', text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+            }
+            if (thongBaoLoi) {
+                Swal.fire({ icon: 'error', title: 'Lỗi!', text: thongBaoLoi, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+            }
+        });
+    </script>
 </body>
+
 </html>
