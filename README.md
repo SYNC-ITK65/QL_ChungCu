@@ -19,7 +19,7 @@
 
 Dự án **QL_ChungCu** là phần mềm quản lý chung cư toàn diện, được phát triển nhằm mục đích số hóa và tối ưu hóa quy trình quản lý cũng như tăng cường tính tiện lợi trong tương tác giữa Ban quản lý tòa nhà và Cư dân.
 
----
+## 🌟 Tính năng nổi bật
 
 ## 🌟 Tính năng nổi bật
 

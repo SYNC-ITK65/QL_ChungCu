@@ -3,8 +3,10 @@
 -- Phiên bản đồng bộ với các Entity Java (JPA/Hibernate)
 -- Thứ tự tạo bảng theo phụ thuộc khóa ngoại
 -- ============================================================
-
-USE QL_ChungCu;
+Create database QL_ChungCu
+go
+USE QL_ChungCu
+go
 
 -- 1. NGUOI_DUNG (Bảng cha - kế thừa JOINED với cu_dan)
 --    @Entity @Table(name="nguoi_dung") @Inheritance(JOINED)
