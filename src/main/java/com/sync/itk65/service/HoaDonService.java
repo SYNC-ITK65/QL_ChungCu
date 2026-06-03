@@ -741,4 +741,120 @@ public class HoaDonService {
         String val = formatter.formatCellValue(cell);
         return val == null ? "" : val.trim();
     }
+
+    // ============================================================
+    //  TẠO HÓA ĐƠN HÀNG LOẠT
+    // ============================================================
+
+    /**
+     * Kết quả sau khi chạy tạo hóa đơn hàng loạt.
+     */
+    public static class KetQuaTaoHangLoat {
+        private int soThanhCong = 0;
+        /** Căn hộ đã có hóa đơn trong tháng → bỏ qua */
+        private final List<String> danhSachBoQua = new ArrayList<>();
+        /** Căn hộ không tạo được (thiếu chỉ số, lỗi dữ liệu…) */
+        private final List<String> danhSachLoi  = new ArrayList<>();
+
+        public int getSoThanhCong()              { return soThanhCong; }
+        public void taoThanhCong()               { soThanhCong++; }
+        public List<String> getDanhSachBoQua()   { return danhSachBoQua; }
+        public List<String> getDanhSachLoi()     { return danhSachLoi; }
+        public int getSoBoQua()                  { return danhSachBoQua.size(); }
+        public int getSoLoi()                    { return danhSachLoi.size(); }
+        public int getTongCanHo()                { return soThanhCong + danhSachBoQua.size() + danhSachLoi.size(); }
+        public boolean coKetQua()                { return getTongCanHo() > 0; }
+    }
+
+    /**
+     * Tạo hóa đơn hàng loạt cho tất cả căn hộ trong tháng.
+     * Căn hộ đã có hóa đơn tháng đó sẽ được bỏ qua (không lỗi).
+     * Mỗi căn hộ được xử lý độc lập – lỗi một căn không ảnh hưởng căn khác.
+     *
+     * @param ngayPhatHanh Ngày phát hành chung cho tất cả hóa đơn
+     * @param ngayDenHan   Ngày đến hạn chung
+     * @return KetQuaTaoHangLoat chứa thống kê kết quả
+     */
+    public KetQuaTaoHangLoat taoHoaDonHangLoat(LocalDate ngayPhatHanh, LocalDate ngayDenHan) {
+        // ── Validate tham số đầu vào ──────────────────────────────────
+        if (ngayPhatHanh == null) {
+            throw new RuntimeException("Vui lòng chọn ngày phát hành.");
+        }
+        if (ngayDenHan == null) {
+            throw new RuntimeException("Vui lòng chọn ngày đến hạn.");
+        }
+        if (ngayDenHan.isBefore(ngayPhatHanh)) {
+            throw new RuntimeException("Ngày đến hạn phải sau hoặc bằng ngày phát hành.");
+        }
+        if (ngayDenHan.isAfter(ngayPhatHanh.plusDays(60))) {
+            throw new RuntimeException("Ngày đến hạn không được sau ngày phát hành quá 60 ngày.");
+        }
+        LocalDate ngayHienTai = LocalDate.now();
+        if (ngayPhatHanh.isAfter(ngayHienTai)) {
+            throw new RuntimeException("Ngày phát hành không được ở tương lai (" + ngayPhatHanh + ").");
+        }
+        if (ngayPhatHanh.isBefore(ngayHienTai.minusMonths(3))) {
+            throw new RuntimeException("Ngày phát hành không được trước ngày hiện tại quá 3 tháng.");
+        }
+
+        int thang = ngayPhatHanh.getMonthValue();
+        int nam   = ngayPhatHanh.getYear();
+
+        // ── Lấy tất cả căn hộ ────────────────────────────────────────
+        List<CanHo> tatCaCanHo = canHoRepository.findAll();
+        if (tatCaCanHo == null || tatCaCanHo.isEmpty()) {
+            throw new RuntimeException("Không có căn hộ nào trong hệ thống.");
+        }
+
+        KetQuaTaoHangLoat ketQua = new KetQuaTaoHangLoat();
+
+        for (CanHo canHo : tatCaCanHo) {
+            String maCanHo = canHo.getMaCanHo() != null ? canHo.getMaCanHo() : "ID:" + canHo.getId();
+
+            // ── Kiểm tra hóa đơn đã tồn tại → bỏ qua ────────────────
+            try {
+                Long soLuongHieuTai = hoaDonRepository.countByCanHoAndThangNam(canHo.getId(), thang, nam);
+                if (soLuongHieuTai != null && soLuongHieuTai > 0) {
+                    ketQua.getDanhSachBoQua().add(maCanHo);
+                    continue;
+                }
+            } catch (Exception e) {
+                // Nếu không kiểm tra được, cứ thử tạo và để taoHoaDonTuDong xử lý
+                System.out.println("WARN: Không kiểm tra được hóa đơn hiện tại cho " + maCanHo + ": " + e.getMessage());
+            }
+
+            // ── Tạo hóa đơn cho căn hộ này ───────────────────────────
+            try {
+                HoaDon hoaDon = new HoaDon();
+                hoaDon.setNgayPhatHanh(ngayPhatHanh);
+                hoaDon.setNgayDenHan(ngayDenHan);
+                hoaDon.setCanHo(canHo);
+                taoHoaDonTuDong(hoaDon); // hàm này tự lưu DB
+                ketQua.taoThanhCong();
+                System.out.println("INFO [HangLoat] Tạo thành công hóa đơn cho căn hộ " + maCanHo
+                        + ", tháng " + thang + "/" + nam);
+            } catch (RuntimeException e) {
+                // Ghi nhận lỗi nhưng tiếp tục xử lý căn hộ tiếp theo
+                String noiDungLoi = e.getMessage() != null
+                        ? e.getMessage().replaceAll("\\r?\\n", " ").replaceAll("\\s{2,}", " ").trim()
+                        : "Lỗi không xác định";
+                // Rút gọn thông báo lỗi dài (giữ 200 ký tự đầu)
+                if (noiDungLoi.length() > 200) {
+                    noiDungLoi = noiDungLoi.substring(0, 197) + "...";
+                }
+                ketQua.getDanhSachLoi().add(maCanHo + ": " + noiDungLoi);
+                System.out.println("WARN [HangLoat] Không tạo được hóa đơn cho " + maCanHo + ": " + noiDungLoi);
+            } catch (Exception e) {
+                ketQua.getDanhSachLoi().add(maCanHo + ": Lỗi hệ thống – " + e.getClass().getSimpleName());
+                System.out.println("ERROR [HangLoat] " + maCanHo + ": " + e.getMessage());
+            }
+        }
+
+        System.out.println("INFO [HangLoat] Kết quả tháng " + thang + "/" + nam
+                + " | Thành công: " + ketQua.getSoThanhCong()
+                + " | Bỏ qua (đã có): " + ketQua.getSoBoQua()
+                + " | Lỗi: " + ketQua.getSoLoi());
+
+        return ketQua;
+    }
 }

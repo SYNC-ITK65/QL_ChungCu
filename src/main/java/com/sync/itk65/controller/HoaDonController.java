@@ -180,6 +180,76 @@ public class HoaDonController {
         }
     }
 
+    // ============================================================
+    //  TẠO HÓA ĐƠN HÀNG LOẠT
+    // ============================================================
+
+    /** Hiển thị form tạo hóa đơn hàng loạt */
+    @GetMapping("/tao-hang-loat")
+    public String hienThiFormTaoHangLoat(Model model) {
+        LocalDate now = LocalDate.now();
+        // Mặc định ngày phát hành = hôm nay, ngày đến hạn = +15 ngày
+        model.addAttribute("defaultNgayPhatHanh", now.toString());
+        model.addAttribute("defaultNgayDenHan",  now.plusDays(15).toString());
+        model.addAttribute("thangHienTai", now.getMonthValue());
+        model.addAttribute("namHienTai",   now.getYear());
+        return "admin/hoa_don_hang_loat";
+    }
+
+    /** Xử lý POST – thực hiện tạo hóa đơn hàng loạt */
+    @PostMapping("/tao-hang-loat")
+    public String xuLyTaoHangLoat(
+            @RequestParam("ngayPhatHanh") String ngayPhatHanhStr,
+            @RequestParam("ngayDenHan")   String ngayDenHanStr,
+            Model model,
+            RedirectAttributes ra) {
+
+        LocalDate now = LocalDate.now();
+        model.addAttribute("defaultNgayPhatHanh", ngayPhatHanhStr);
+        model.addAttribute("defaultNgayDenHan",   ngayDenHanStr);
+        model.addAttribute("thangHienTai", now.getMonthValue());
+        model.addAttribute("namHienTai",   now.getYear());
+
+        // ── Parse ngày ────────────────────────────────────────────
+        LocalDate ngayPhatHanh;
+        LocalDate ngayDenHan;
+        try {
+            if (ngayPhatHanhStr == null || ngayPhatHanhStr.trim().isEmpty()) {
+                throw new RuntimeException("Vui lòng chọn ngày phát hành.");
+            }
+            if (ngayDenHanStr == null || ngayDenHanStr.trim().isEmpty()) {
+                throw new RuntimeException("Vui lòng chọn ngày đến hạn.");
+            }
+            ngayPhatHanh = LocalDate.parse(ngayPhatHanhStr.trim());
+            ngayDenHan   = LocalDate.parse(ngayDenHanStr.trim());
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/hoa_don_hang_loat";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Sai định dạng ngày. Vui lòng kiểm tra lại.");
+            return "admin/hoa_don_hang_loat";
+        }
+
+        // ── Gọi service ────────────────────────────────────────────
+        try {
+            com.sync.itk65.service.HoaDonService.KetQuaTaoHangLoat ketQua =
+                    hoaDonService.taoHoaDonHangLoat(ngayPhatHanh, ngayDenHan);
+
+            model.addAttribute("ketQua",        ketQua);
+            model.addAttribute("ngayPhatHanh",  ngayPhatHanh);
+            model.addAttribute("ngayDenHan",    ngayDenHan);
+            model.addAttribute("thang", ngayPhatHanh.getMonthValue());
+            model.addAttribute("nam",   ngayPhatHanh.getYear());
+
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+        }
+
+        return "admin/hoa_don_hang_loat";
+    }
+
     @GetMapping("/xuat-excel")
     public ResponseEntity<byte[]> xuatExcel() {
         byte[] bytes = hoaDonService.xuatExcelDanhSachHoaDon();

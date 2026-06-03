@@ -20,12 +20,15 @@
     <div class="container-fluid p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 th:text="#{hdon.ds.tieude}">Danh sách Hóa Đơn</h2>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 flex-wrap">
                 <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#importExcelModal">
                     <i class="bi bi-file-earmark-arrow-up"></i> Import Excel
                 </button>
                 <a th:href="@{/admin/hoa-don/xuat-excel}" class="btn btn-success">
                     <i class="bi bi-file-earmark-arrow-down"></i> Xuất Excel
+                </a>
+                <a th:href="@{/admin/hoa-don/tao-hang-loat}" class="btn btn-warning text-dark fw-semibold">
+                    <i class="bi bi-lightning-fill me-1"></i> Tạo Hàng Loạt
                 </a>
                 <a th:href="@{/admin/hoa-don/tao-moi}" class="btn btn-primary" th:text="#{hdon.ds.nut_them}">+ Tạo Hóa Đơn Mới</a>
             </div>
