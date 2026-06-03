@@ -7,6 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/admin/phuong-tien") // Dùng chung 1 đường dẫn như CanHoController
@@ -99,5 +104,20 @@ public class PhuongTienController {
         model.addAttribute("xeMoi", new PhuongTien());
 
         return "admin/phuong-tien";
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel(@RequestParam(required = false) String tuKhoa,
+                                            @RequestParam(required = false) String trangThai,
+                                            @RequestParam(required = false) String loaiXe) {
+        byte[] bytes = phuongTienService.xuatExcelDanhSachPhuongTien(tuKhoa, trangThai, loaiXe);
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_phuong_tien_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
     }
 }

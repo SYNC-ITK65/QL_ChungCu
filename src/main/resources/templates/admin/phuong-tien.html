@@ -13,7 +13,12 @@
 
     <div class="flex-grow-1 p-4">
         <div class="bg-white p-4 shadow rounded">
-            <h2 class="text-primary border-bottom pb-3 mb-4" th:text="#{pt.ui.quan_ly_bai_xe_admi}">🚗 Quản Lý Bãi Xe (Admin)</h2>
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                <h2 class="text-primary mb-0" th:text="#{pt.ui.quan_ly_bai_xe_admi}">🚗 Quản Lý Bãi Xe (Admin)</h2>
+                <a th:href="@{/admin/phuong-tien/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai}, loaiXe=${loaiXe})}" class="btn btn-success fw-bold">
+                    <i class="fas fa-file-excel"></i> Xuất Excel
+                </a>
+            </div>
             <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong th:text="${thongBaoThanhCong}"></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>

@@ -93,8 +93,8 @@
 
   function themPhuongAn() {
       const container = document.getElementById('phuongAnContainer');
-      const placeholderText = '[[#{ks.form.nhap_ten_phuong_an}]]';
-      const deleteText = '[[#{hd.ds.nut_xoa}]]';
+      const placeholderText = /*[[#{ks.form.nhap_ten_phuong_an}]]*/ 'Nhập tên phương án';
+      const deleteText = /*[[#{hd.ds.nut_xoa}]]*/ 'Xóa';
       const html = `
           <div class="input-group mb-2 phuong-an-item">
               <input type="hidden" name="danhSachLuaChon[${luaChonIndex}].soLuotBinhChon" value="0">
@@ -111,7 +111,7 @@
       if (document.querySelectorAll('.phuong-an-item').length > 2) {
           btn.parentElement.remove();
       } else {
-          alert("[[#{ks.form.it_nhat_2_phuong_an}]]");
+          alert(/*[[#{ks.form.it_nhat_2_phuong_an}]]*/ "Khảo sát phải có ít nhất 2 phương án");
       }
   }
 </script>

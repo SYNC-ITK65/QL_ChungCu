@@ -9,6 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/admin/duyet-yeu-cau")
@@ -69,5 +73,19 @@ public class AdminKhachThamController {
             khachThamService.luu(khach);
         }
         return "redirect:/admin/duyet-yeu-cau";
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel(@RequestParam(required = false) String tuKhoa,
+                                            @RequestParam(required = false) String trangThai) {
+        byte[] bytes = khachThamService.xuatExcelKhachTham(tuKhoa, trangThai);
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_khach_tham_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
     }
 }

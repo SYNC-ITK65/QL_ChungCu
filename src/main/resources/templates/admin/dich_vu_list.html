@@ -56,7 +56,33 @@
         </table>
 
         <div class="mt-5">
-            <h3 th:text="#{dv.ds.danh_sach_yeu_cau_da}">Danh sách yêu cầu đăng ký dịch vụ từ cư dân</h3>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 th:text="#{dv.ds.danh_sach_yeu_cau_da}" class="mb-0">Danh sách yêu cầu đăng ký dịch vụ từ cư dân</h3>
+                <a th:href="@{/admin/dich-vu/don-dat/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success fw-bold">
+                    <i class="fas fa-file-excel"></i> Xuất Excel
+                </a>
+            </div>
+            <form method="get" action="/admin/dich-vu" class="row g-3 mb-4 mt-2">
+                <div class="col-md-5">
+                    <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}"
+                           placeholder="Nhập tên cư dân, mã căn hộ, hoặc tên dịch vụ...">
+                </div>
+                <div class="col-md-4">
+                    <select name="trangThai" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="Chờ duyệt" th:selected="${trangThai == 'Chờ duyệt'}">Chờ duyệt</option>
+                        <option value="Đã duyệt" th:selected="${trangThai == 'Đã duyệt'}">Đã duyệt</option>
+                        <option value="Từ chối" th:selected="${trangThai == 'Từ chối'}">Từ chối</option>
+                        <option value="Hủy duyệt" th:selected="${trangThai == 'Hủy duyệt'}">Hủy duyệt</option>
+                        <option value="Đã sử dụng" th:selected="${trangThai == 'Đã sử dụng'}">Đã sử dụng</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
             <table class="table table-hover border mt-3 no-paging">
                 <thead class="table-secondary">
                 <tr>
@@ -97,7 +123,7 @@
                 </tbody>
             </table>
         </div>
-        <div th:replace="~{fragments/pagination :: paging('/admin/dich-vu', '')}"></div>
+        <div th:replace="~{fragments/pagination :: paging('/admin/dich-vu', 'tuKhoa=' + (${tuKhoa} ?: '') + '&trangThai=' + (${trangThai} ?: ''))}"></div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

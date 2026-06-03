@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/admin/khao-sat")
@@ -23,8 +27,25 @@ public class AdminKhaoSatController {
     @Autowired private LichSuVoteRepository lichSuVoteRepo;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("listKhaoSat", khaoSatService.layTatCa());
+    public String index(@RequestParam(required = false) String tuKhoa,
+                        @RequestParam(required = false) Integer trangThai,
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size,
+                        Model model) {
+
+        // Gọi Service lọc danh sách
+        org.springframework.data.domain.Page<KhaoSat> trangKhaoSat = khaoSatService.timKiemKhaoSat(tuKhoa, trangThai, page, size);
+
+        // Đẩy dữ liệu lên giao diện
+        model.addAttribute("listKhaoSat", trangKhaoSat.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangKhaoSat.getTotalPages());
+
+        // Giữ lại tham số bộ lọc trên giao diện
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("size", size);
+
         return "admin/khao_sat_list";
     }
 
@@ -60,7 +81,10 @@ public class AdminKhaoSatController {
         validateChuoi(khaoSat.getMoTa(), 10, 500, "moTa", "Nội dung/Mô tả", result);
 
         // 2. KIỂM TRA CÁC PHƯƠNG ÁN (Lựa chọn)
-        if (khaoSat.getDanhSachLuaChon() != null) {
+        if (khaoSat.getDanhSachLuaChon() == null || khaoSat.getDanhSachLuaChon().isEmpty()) {
+            model.addAttribute("globalError", "Khảo sát phải có ít nhất 2 phương án bình chọn hợp lệ.");
+            result.reject("globalError");
+        } else {
             khaoSat.getDanhSachLuaChon().removeIf(lc -> lc == null || lc.getNoiDungLuaChon() == null || lc.getNoiDungLuaChon().trim().isEmpty());
 
             if (khaoSat.getDanhSachLuaChon().size() < 2) {
@@ -140,10 +164,57 @@ public class AdminKhaoSatController {
     }
 
     @GetMapping("/chi-tiet/{id}")
-    public String detailAdmin(@PathVariable("id") Long id, Model model) {
+    public String detailAdmin(@PathVariable("id") Long id,
+                              @RequestParam(required = false) String tuKhoa,
+                              @RequestParam(required = false) Long luaChonId,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size,
+                              Model model) {
+
         model.addAttribute("khaoSat", khaoSatService.findById(id));
-        model.addAttribute("tatCaCuDan", cuDanRepo.findAll());
-        model.addAttribute("lichSuList", lichSuVoteRepo.findByKhaoSatIdOrderByThoiGianVoteDesc(id));
+
+        // Gọi Service tìm kiếm, lọc và phân trang
+        org.springframework.data.domain.Page<LichSuVote> trangLichSu = khaoSatService.timKiemLichSuVote(id, luaChonId, tuKhoa, page, size);
+
+        // Đẩy dữ liệu đã lọc lên giao diện
+        model.addAttribute("lichSuList", trangLichSu.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangLichSu.getTotalPages());
+
+        // Giữ lại tham số trên form sau khi load lại trang
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("luaChonId", luaChonId);
+        model.addAttribute("size", size);
+
         return "admin/khao_sat_detail";
+    }
+
+    @GetMapping("/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcel(@RequestParam(required = false) String tuKhoa,
+                                            @RequestParam(required = false) Integer trangThai) {
+        byte[] bytes = khaoSatService.xuatExcelDanhSachKhaoSat(tuKhoa, trangThai);
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "danh_sach_khao_sat_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
+    }
+
+    @GetMapping("/chi-tiet/{id}/xuat-excel")
+    public ResponseEntity<byte[]> xuatExcelChiTiet(@PathVariable("id") Long id,
+                                                   @RequestParam(required = false) String tuKhoa,
+                                                   @RequestParam(required = false) Long luaChonId) {
+        byte[] bytes = khaoSatService.xuatExcelLichSuVote(id, luaChonId, tuKhoa);
+
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String filename = "chi_tiet_khao_sat_" + id + "_" + ts + ".xlsx";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(bytes);
     }
 }

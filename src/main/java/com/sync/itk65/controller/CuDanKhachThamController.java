@@ -30,15 +30,17 @@ public class CuDanKhachThamController {
                                @RequestParam String cmnd,
                                @RequestParam(required = false, defaultValue = "") String bienSoXe,
                                @RequestParam LocalDateTime thoiGianDuKien,
+                               @RequestParam LocalDateTime ngayDi,
                                RedirectAttributes ra) {
 
-        String thongBaoLoi = kiemTraLoiKhachTham(tenKhach, cmnd, bienSoXe, thoiGianDuKien);
+        String thongBaoLoi = kiemTraLoiKhachTham(tenKhach, cmnd, bienSoXe, thoiGianDuKien, ngayDi);
         if (thongBaoLoi != null) {
             ra.addFlashAttribute("thongBaoLoi", thongBaoLoi);
             ra.addFlashAttribute("oldTenKhach", tenKhach);
             ra.addFlashAttribute("oldCmnd", cmnd);
             ra.addFlashAttribute("oldBienSo", bienSoXe);
             ra.addFlashAttribute("oldThoiGian", thoiGianDuKien);
+            ra.addFlashAttribute("oldNgayDi", ngayDi);
             return "redirect:/cudan/khach-tham";
         }
 
@@ -49,6 +51,7 @@ public class CuDanKhachThamController {
         khach.setCmnd(cmnd.trim());
         khach.setBienSoXe(bienSoXe.trim());
         khach.setThoiGianDuKien(thoiGianDuKien);
+        khach.setNgayDi(ngayDi);
         khach.setTrangThai("Chờ duyệt");
 
         khachThamService.luu(khach);
@@ -56,7 +59,7 @@ public class CuDanKhachThamController {
         return "redirect:/cudan/khach-tham";
     }
     // --- HÀM KIỂM TRA LỖI DÙNG CHUNG THÊM VÀO ĐÂY ---
-    private String kiemTraLoiKhachTham(String tenKhach, String cmnd, String bienSoXe, LocalDateTime thoiGianDuKien) {
+    private String kiemTraLoiKhachTham(String tenKhach, String cmnd, String bienSoXe, LocalDateTime thoiGianDuKien, LocalDateTime ngayDi) {
         // Regex Tên: Chỉ chữ cái và khoảng trắng, 2-50 ký tự
         if (tenKhach == null || !tenKhach.trim().matches("^[a-zA-ZÀ-ỹ][a-zA-ZÀ-ỹ\\s]{1,49}$")) {
             return "Lỗi: Tên khách chỉ được chứa chữ cái, tối thiểu 2 ký tự (Vd: Lê A).";
@@ -68,6 +71,13 @@ public class CuDanKhachThamController {
         // Thời gian >= hiện tại (Trễ 5 phút)
         if (thoiGianDuKien == null || thoiGianDuKien.isBefore(LocalDateTime.now().minusMinutes(5))) {
             return "Lỗi: Thời gian dự kiến đến không được là thời gian trong quá khứ.";
+        }
+        // Kiểm tra ngày đi
+        if (ngayDi == null) {
+            return "Lỗi: Vui lòng chọn ngày dự kiến đi.";
+        }
+        if (ngayDi.isBefore(thoiGianDuKien)) {
+            return "Lỗi: Ngày dự kiến đi phải diễn ra sau thời gian dự kiến đến.";
         }
         // Regex Biển số xe (Nếu có nhập)
         if (bienSoXe != null && !bienSoXe.trim().isEmpty()) {
@@ -100,14 +110,23 @@ public class CuDanKhachThamController {
                                @RequestParam String cmnd,
                                @RequestParam String bienSoXe,
                                @RequestParam LocalDateTime thoiGianDuKien,
+                               @RequestParam LocalDateTime ngayDi,
                                RedirectAttributes ra) {
         DangKyKhachTham khach = khachThamService.timTheoId(id);
+        
+        String thongBaoLoi = kiemTraLoiKhachTham(tenKhach, cmnd, bienSoXe, thoiGianDuKien, ngayDi);
+        if (thongBaoLoi != null) {
+            ra.addFlashAttribute("thongBaoLoi", thongBaoLoi);
+            return "redirect:/cudan/khach-tham";
+        }
+        
         // Chỉ cho phép sửa khi còn ở trạng thái "Chờ duyệt"
         if (khach != null && "Chờ duyệt".equals(khach.getTrangThai())) {
             khach.setTenKhach(tenKhach);
             khach.setCmnd(cmnd);
             khach.setBienSoXe(bienSoXe);
             khach.setThoiGianDuKien(thoiGianDuKien);
+            khach.setNgayDi(ngayDi);
             khachThamService.luu(khach); // Lưu lại thông tin mới
             ra.addFlashAttribute("thongBaoThanhCong", "Đã cập nhật thông tin khách thăm thành công.");
         } else {

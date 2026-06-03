@@ -23,6 +23,14 @@ public interface DatDichVuRepository extends JpaRepository<DatDichVu, Long> {
     @Query("SELECT d FROM DatDichVu d WHERE d.cuDan.id = :cuDanId ORDER BY d.ngayDat DESC")
     List<DatDichVu> layLichSuDatDichVu(@Param("cuDanId") Long cuDanId);
 
+    @Query("SELECT d FROM DatDichVu d WHERE " +
+           "(:tuKhoa IS NULL OR LOWER(d.cuDan.hoTen) LIKE LOWER(CONCAT('%', :tuKhoa, '%')) " +
+           "OR CAST(d.cuDan.canHo.id AS string) LIKE CONCAT('%', :tuKhoa, '%') " +
+           "OR LOWER(d.dichVu.ten) LIKE LOWER(CONCAT('%', :tuKhoa, '%'))) " +
+           "AND (:trangThai IS NULL OR LOWER(d.trangThai) = LOWER(:trangThai)) " +
+           "ORDER BY d.ngayDat DESC")
+    Page<DatDichVu> timKiemVaLocDonDatDichVu(@Param("tuKhoa") String tuKhoa, @Param("trangThai") String trangThai, Pageable pageable);
+
     @Modifying
     @Transactional
     @Query("UPDATE DatDichVu d SET d.trangThai = 'Chờ duyệt' WHERE d.trangThai IS NULL OR TRIM(d.trangThai) = '' OR d.trangThai = 'Đăng ký mới'")

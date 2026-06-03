@@ -26,9 +26,27 @@ public class CuDanKhaoSatController {
     }
 
     @GetMapping
-    public String list(Model model, HttpSession session) {
+    public String list(@RequestParam(required = false) String tuKhoa,
+                       @RequestParam(required = false) Integer trangThai,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       Model model, HttpSession session) {
+
         if(layCuDanSession(session) == null) return "redirect:/";
-        model.addAttribute("listKhaoSat", khaoSatService.layTatCa());
+
+        // Sử dụng hàm phân trang mới thay cho layTatCa() cũ
+        org.springframework.data.domain.Page<KhaoSat> trangKhaoSat = khaoSatService.timKiemKhaoSat(tuKhoa, trangThai, page, size);
+
+        // Đẩy dữ liệu lên giao diện
+        model.addAttribute("listKhaoSat", trangKhaoSat.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", trangKhaoSat.getTotalPages());
+
+        // Giữ lại tham số bộ lọc
+        model.addAttribute("tuKhoa", tuKhoa);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("size", size);
+
         return "cudan/khao_sat_list";
     }
 

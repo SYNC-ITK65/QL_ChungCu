@@ -47,33 +47,62 @@
     </div>
 
     <div class="card shadow-sm border-0">
-      <div class="card-header bg-white py-3">
-        <h5 class="fw-bold mb-0"><i class="fas fa-history"></i><span th:text="#{ks.chitiet.lich_su_binh_chon}" th:remove="tag"> LỊCH SỬ BÌNH CHỌN</span></h5>
+      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0"><i class="fas fa-history"></i> LỊCH SỬ BÌNH CHỌN</h5>
+        <a th:href="@{/admin/khao-sat/chi-tiet/{id}/xuat-excel(id=${khaoSat.id}, tuKhoa=${tuKhoa}, luaChonId=${luaChonId})}" class="btn btn-success btn-sm fw-bold">
+          <i class="fas fa-file-excel"></i> Xuất Excel
+        </a>
       </div>
-      <div class="card-body p-0">
-        <table class="table table-striped mb-0">
-          <thead>
-          <tr>
-            <th class="ps-4" th:text="#{ks.chitiet.ho_ten_cu_dan}">Họ tên Cư dân</th>
-            <th th:text="#{ks.chitiet.ma_cu_dan}">Mã Cư Dân</th>
-            <th th:text="#{ks.chitiet.phuong_an_da_chon}">Phương án đã chọn</th>
-            <th th:text="#{ks.chitiet.thoi_gian_vote}">Thời gian Vote</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:if="${#lists.isEmpty(lichSuList)}">
-            <td colspan="4" class="text-center text-muted py-3" th:text="#{ks.chitiet.chua_co_ai_tham_gia}">Chưa có ai tham gia bình chọn.</td>
-          </tr>
-          <tr th:each="ls : ${lichSuList}">
-            <td class="ps-4 fw-bold" th:text="${ls.cuDan?.hoTen}"></td>
-            <td th:text="${ls.cuDan?.id}"></td>
-            <td class="text-success fw-bold">
-              <i class="fas fa-check-circle"></i> [[${ls.luaChonDaNgan?.noiDungLuaChon}]]
-            </td>
-            <td th:text="${ls.thoiGianVote != null ? #temporals.format(ls.thoiGianVote, 'dd/MM/yyyy HH:mm:ss') : #{ks.chitiet.khong_xac_dinh}}"></td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="card-body">
+
+        <form th:action="@{/admin/khao-sat/chi-tiet/{id}(id=${khaoSat.id})}" method="get" class="row g-2 mb-3 bg-light p-3 rounded">
+          <div class="col-md-5">
+            <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="form-control" placeholder="🔍 Nhập Tên cư dân hoặc Mã Căn Hộ...">
+          </div>
+          <div class="col-md-4">
+            <select name="luaChonId" class="form-select">
+              <option value="">-- Tất cả phương án đã chọn --</option>
+              <option th:each="lc : ${khaoSat.danhSachLuaChon}"
+                      th:value="${lc.id}"
+                      th:text="${lc.noiDungLuaChon}"
+                      th:selected="${lc.id == luaChonId}"></option>
+            </select>
+          </div>
+          <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary fw-bold w-100"><i class="fas fa-filter"></i> Lọc</button>
+            <a th:href="@{/admin/khao-sat/chi-tiet/{id}(id=${khaoSat.id})}" class="btn btn-secondary text-nowrap"><i class="fas fa-sync"></i> Bỏ lọc</a>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle mb-0 no-paging">
+            <thead class="table-dark">
+            <tr>
+              <th class="ps-4">Họ tên Cư dân</th>
+              <th>Mã Căn Hộ (Phòng)</th>
+              <th>Phương án đã chọn</th>
+              <th>Thời gian Vote</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(lichSuList)}">
+              <td colspan="4" class="text-center text-danger fw-bold py-4">Không tìm thấy dữ liệu phù hợp.</td>
+            </tr>
+            <tr th:each="ls : ${lichSuList}">
+              <td class="ps-4 fw-bold text-primary" th:text="${ls.cuDan?.hoTen}"></td>
+              <td class="fw-bold" th:text="${ls.cuDan?.canHo != null ? ls.cuDan.canHo.id : 'Trống'}"></td>
+              <td>
+                <span class="badge bg-success fs-6"><i class="fas fa-check-circle"></i> [[${ls.luaChonDaNgan?.noiDungLuaChon}]]</span>
+              </td>
+              <td th:text="${ls.thoiGianVote != null ? #temporals.format(ls.thoiGianVote, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-3">
+          <div th:replace="~{fragments/pagination :: paging('/admin/khao-sat/chi-tiet/' + ${khaoSat.id}, '')}"></div>
+        </div>
       </div>
     </div>
   </div>

@@ -28,7 +28,7 @@ public class KhaoSat {
     private LocalDateTime thoiGianKetThuc;
 
     @OneToMany(mappedBy = "khaoSat", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LuaChonKhaoSat> danhSachLuaChon;
+    private List<LuaChonKhaoSat> danhSachLuaChon = new java.util.ArrayList<>();
 
     // Default Constructor
     public KhaoSat() {

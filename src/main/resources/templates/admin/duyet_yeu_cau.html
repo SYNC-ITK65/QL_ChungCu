@@ -10,7 +10,12 @@
   <div th:replace="fragments/sidebar :: menu-trai"></div>
 
   <div class="main-content p-4 w-100 bg-light">
-    <h2 class="mb-4" th:text="#{duyet.ui.quan_ly_yeu_cau_le}">📋 Quản Lý Yêu Cầu Lễ Tân</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0" th:text="#{duyet.ui.quan_ly_yeu_cau_le}">📋 Quản Lý Yêu Cầu Lễ Tân</h2>
+        <a th:href="@{/admin/duyet-yeu-cau/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success fw-bold">
+            <i class="fas fa-file-excel"></i> Xuất Excel
+        </a>
+    </div>
 
     <!-- Form Tìm kiếm & Lọc -->
     <div class="card mb-4 shadow-sm">
@@ -41,31 +46,14 @@
     <div class="card shadow-sm mb-4">
       <div class="card-header bg-primary text-white"><h5 class="mb-0" th:text="#{duyet.ui.danh_sach_khach_tham}">Danh Sách Khách Thăm</h5></div>
       <div class="card-body p-0">
-          <form method="get" action="/admin/duyet-yeu-cau" class="row g-3 mb-4 mt-2">
-              <div class="col-md-5">
-                  <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}"
-                         placeholder="Nhập tên khách hoặc số CMND/CCCD...">
-              </div>
-              <div class="col-md-4">
-                  <select name="trangThai" class="form-select">
-                      <option value="">-- Tất cả trạng thái --</option>
-                      <option value="Chờ duyệt" th:selected="${trangThai == 'Chờ duyệt'}">Chờ duyệt</option>
-                      <option value="Đã duyệt" th:selected="${trangThai == 'Đã duyệt'}">Đã duyệt</option>
-                      <option value="Không duyệt" th:selected="${trangThai == 'Không duyệt'}">Không duyệt</option>
-                  </select>
-              </div>
-              <div class="col-md-3">
-                  <button type="submit" class="btn btn-primary w-100">
-                      <i class="fas fa-search"></i> Tìm kiếm
-                  </button>
-              </div>
-          </form>
+
         <table class="table table-hover table-bordered mb-0 text-center align-middle no-paging">
           <thead class="table-light">
           <tr>
             <th th:text="#{hd.form.cu_dan_label}">Cư dân</th>
             <th th:text="#{duyet.ui.khach}">Khách</th>
             <th th:text="#{duyet.ui.tg_den}">TG Đến</th>
+            <th>TG Đi</th>
             <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
             <th th:text="#{duyet.ui.tg_duyet}">TG Duyệt</th>
             <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
@@ -76,6 +64,7 @@
             <td th:text="${k.cuDan.hoTen}"></td>
             <td th:text="${k.tenKhach}"></td>
             <td th:text="${#temporals.format(k.thoiGianDuKien, 'dd-MM HH:mm')}"></td>
+            <td th:text="${k.ngayDi != null ? #temporals.format(k.ngayDi, 'dd-MM HH:mm') : '-'}"></td>
 
             <td>
               <span class="badge" th:classappend="${k.trangThai == 'Đã duyệt' ? 'bg-success' : (k.trangThai == 'Không duyệt' ? 'bg-danger' : 'bg-warning text-dark')}" th:text="${k.trangThai}"></span>
@@ -95,7 +84,7 @@
             </td>
           </tr>
           <tr th:if="${#lists.isEmpty(listKhach)}">
-             <td colspan="6" class="text-center py-4 text-muted" th:text="#{duyet.ui.khong_tim_thay_yeu_c}">Không tìm thấy yêu cầu nào phù hợp.</td>
+             <td colspan="7" class="text-center py-4 text-muted" th:text="#{duyet.ui.khong_tim_thay_yeu_c}">Không tìm thấy yêu cầu nào phù hợp.</td>
           </tr>
           </tbody>
         </table>

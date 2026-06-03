@@ -45,6 +45,10 @@
                                 <label class="form-label fw-bold"><span th:text="#{kt.ui.thoi_gian_du_kien_de}" th:remove="tag">Thời gian dự kiến đến </span><span class="text-danger">*</span></label>
                                 <input type="datetime-local" name="thoiGianDuKien" th:value="${oldThoiGian}" class="form-control" required>
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Thời gian dự kiến đi <span class="text-danger">*</span></label>
+                                <input type="datetime-local" name="ngayDi" th:value="${oldNgayDi}" class="form-control" required>
+                            </div>
                             <button type="submit" class="btn btn-primary w-100 fw-bold" th:text="#{kt.ui.gui_dang_ky}">Gửi đăng ký</button>
                         </form>
                     </div>
@@ -64,6 +68,7 @@
                                 <th th:text="#{chung.cccd}">CMND/CCCD</th>
                                 <th th:text="#{kt.ui.bien_so_xe}">Biển số xe</th>
                                 <th th:text="#{kt.ui.tg_du_kien_den}">TG Dự kiến đến</th>
+                                <th>TG Dự kiến đi</th>
                                 <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
                                 <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
                             </tr>
@@ -74,6 +79,7 @@
                                 <td th:text="${khach.cmnd}"></td>
                                 <td th:text="${khach.bienSoXe}"></td>
                                 <td th:text="${#temporals.format(khach.thoiGianDuKien, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td th:text="${khach.ngayDi != null ? #temporals.format(khach.ngayDi, 'dd-MM-yyyy HH:mm') : '-'}"></td>
 
                                 <td>
 <span class="badge" th:class="'badge ' + ${khach.trangThai == 'Đã duyệt' ? 'bg-success' : (khach.trangThai == 'Không duyệt' ? 'bg-danger' : 'bg-warning text-dark')}" th:text="${khach.trangThai}"></span>
@@ -110,6 +116,10 @@
                                                         <div class="mb-3">
                                                             <label class="form-label fw-bold" th:text="#{kt.ui.thoi_gian_du_kien_de}">Thời gian dự kiến đến</label>
                                                             <input type="datetime-local" name="thoiGianDuKien" class="form-control" th:value="${khach.thoiGianDuKien}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold">Thời gian dự kiến đi</label>
+                                                            <input type="datetime-local" name="ngayDi" class="form-control" th:value="${khach.ngayDi}" required>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
