@@ -35,31 +35,31 @@
                     <form method="get" action="/admin/phuong-tien" class="row g-3 mb-4">
                         <div class="col-md-4">
                             <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}"
-                                   placeholder="Nhập biển số xe hoặc mã phòng (VD: 29A, A1-05)...">
+                                   th:placeholder="#{pt.ui.tim_kiem_goi_y}" placeholder="Nhập biển số xe hoặc mã phòng (VD: 29A, A1-05)...">
                         </div>
 
                         <div class="col-md-3">
                             <select name="trangThai" class="form-select">
-                                <option value="">-- Tất cả trạng thái --</option>
-                                <option value="Chờ duyệt" th:selected="${trangThai == 'Chờ duyệt'}">Chờ duyệt</option>
-                                <option value="Đã duyệt" th:selected="${trangThai == 'Đã duyệt'}">Đã duyệt</option>
-                                <option value="Từ chối" th:selected="${trangThai == 'Từ chối'}">Từ chối</option>
+                                <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+                                <option value="Chờ duyệt" th:selected="${trangThai == 'Chờ duyệt'}" th:text="#{pt.ui.cho_duyet}">Chờ duyệt</option>
+                                <option value="Đã duyệt" th:selected="${trangThai == 'Đã duyệt'}" th:text="#{pt.ui.da_duyet}">Đã duyệt</option>
+                                <option value="Từ chối" th:selected="${trangThai == 'Từ chối'}" th:text="#{pt.ui.tu_choi}">Từ chối</option>
                             </select>
                         </div>
 
                         <div class="col-md-3">
                             <select name="loaiXe" class="form-select">
-                                <option value="">-- Tất cả loại xe --</option>
-                                <option value="Ô tô" th:selected="${loaiXe == 'Ô tô'}">Ô tô</option>
-                                <option value="Xe máy" th:selected="${loaiXe == 'Xe máy'}">Xe máy</option>
-                                <option value="Xe điện" th:selected="${loaiXe == 'Xe điện'}">Xe điện</option>
-                                <option value="Xe đạp" th:selected="${loaiXe == 'Xe đạp'}">Xe đạp</option>
+                                <option value="" th:text="#{pt.ui.tat_ca_loai_xe}">-- Tất cả loại xe --</option>
+                                <option value="Ô tô" th:selected="${loaiXe == 'Ô tô'}" th:text="#{pt.ui.o_to}">Ô tô</option>
+                                <option value="Xe máy" th:selected="${loaiXe == 'Xe máy'}" th:text="#{pt.ui.xe_may}">Xe máy</option>
+                                <option value="Xe điện" th:selected="${loaiXe == 'Xe điện'}" th:text="#{pt.ui.xe_dien}">Xe điện</option>
+                                <option value="Xe đạp" th:selected="${loaiXe == 'Xe đạp'}" th:text="#{pt.ui.xe_dap}">Xe đạp</option>
                             </select>
                         </div>
 
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-search"></i> Tìm kiếm
+                                <i class="fas fa-search"></i> <span th:text="#{hdon.ds.nut_tim_kiem}" th:remove="tag">Tìm kiếm</span>
                             </button>
                         </div>
                     </form>
@@ -91,12 +91,12 @@
 
                             <td>
                                 <th:block th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}">
-                                    <a th:href="@{/admin/phuong-tien/duyet/{id}(id=${xe.id})}" class="btn btn-sm btn-success mb-1" th:text="#{dv.ds.duyet}">Duyệt</a>
-                                    <a th:href="@{/admin/phuong-tien/tu-choi/{id}(id=${xe.id})}" class="btn btn-sm btn-warning mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_tu_choi}')|" th:text="#{dv.ds.tu_choi}">Từ chối</a>
+                                    <a th:href="@{/admin/phuong-tien/duyet/{id}(id=${xe.id})}" class="btn btn-sm btn-success mb-1" th:text="#{pt.ui.nut_duyet}">Duyệt</a>
+                                    <a th:href="@{/admin/phuong-tien/tu-choi/{id}(id=${xe.id})}" class="btn btn-sm btn-warning mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_tu_choi}')|" th:text="#{pt.ui.nut_tu_choi}">Từ chối</a>
                                 </th:block>
 
                                 <th:block th:if="${xe.trangThai == 'Đã duyệt' || xe.trangThai == 'Từ chối'}">
-                                    <a th:href="@{/admin/phuong-tien/sua/{id}(id=${xe.id})}" class="btn btn-sm btn-secondary mb-1" onclick="return confirm('Bạn muốn hoàn tác, đưa xe này về lại trạng thái Chờ duyệt?');">⏳ Hoàn tác</a>
+                                    <a th:href="@{/admin/phuong-tien/sua/{id}(id=${xe.id})}" class="btn btn-sm btn-secondary mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_hoan_tac}')|" th:text="#{pt.ui.nut_hoan_tac}">⏳ Hoàn tác</a>
                                 </th:block>
 
                                 <a th:href="@{/admin/phuong-tien/xoa/{id}(id=${xe.id})}" class="btn btn-sm btn-outline-danger mb-1" th:onclick="|return confirm('#{pt.ui.xac_nhan_xoa_xe}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>

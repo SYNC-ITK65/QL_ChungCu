@@ -21,19 +21,19 @@
             <form method="get" action="/admin/phan-anh" class="row g-3 mb-4">
                 <div class="col-md-5">
                     <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}"
-                           placeholder="Nhập tiêu đề hoặc mã căn hộ (VD: A1-05)...">
+                           th:placeholder="#{pa.ds.tim_kiem_goi_y}" placeholder="Nhập tiêu đề hoặc mã căn hộ (VD: A1-05)...">
                 </div>
                 <div class="col-md-4">
                     <select name="trangThai" class="form-select">
-                        <option value="">-- Tất cả trạng thái --</option>
-                        <option value="Chờ xử lý" th:selected="${trangThai == 'Chờ xử lý'}">Chờ xử lý</option>
-                        <option value="Đang xử lý" th:selected="${trangThai == 'Đang xử lý'}">Đang xử lý</option>
-                        <option value="Đã xong" th:selected="${trangThai == 'Đã xong'}">Đã xong</option>
+                        <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+                        <option value="Chờ xử lý" th:selected="${trangThai == 'Chờ xử lý'}" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</option>
+                        <option value="Đang xử lý" th:selected="${trangThai == 'Đang xử lý'}" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</option>
+                        <option value="Đã xong" th:selected="${trangThai == 'Đã xong'}" th:text="#{pa.form.da_xong}">Đã xong</option>
                     </select>
                 </div>
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search"></i> Tìm kiếm
+                        <i class="fas fa-search"></i> <span th:text="#{hdon.ds.nut_tim_kiem}" th:remove="tag">Tìm kiếm</span>
                     </button>
                 </div>
             </form>
@@ -55,7 +55,10 @@
                         <td th:text="${pa.tieuDe}"></td>
                         <td th:text="${#temporals.format(pa.ngayGui, 'dd/MM/yyyy HH:mm')}"></td>
                         <td>
-                            <span th:text="${pa.trangThai}" th:class="'badge ' + ${pa.trangThai == 'Đã xong' ? 'bg-success' : (pa.trangThai == 'Đang xử lý' ? 'bg-warning text-dark' : 'bg-secondary')}">
+                            <span th:class="'badge ' + ${pa.trangThai == 'Đã xong' ? 'bg-success' : (pa.trangThai == 'Đang xử lý' ? 'bg-warning text-dark' : 'bg-secondary')}">
+                                <th:block th:if="${pa.trangThai == 'Chờ xử lý'}" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</th:block>
+                                <th:block th:if="${pa.trangThai == 'Đang xử lý'}" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</th:block>
+                                <th:block th:if="${pa.trangThai == 'Đã xong'}" th:text="#{pa.form.da_xong}">Đã xong</th:block>
                             </span>
                         </td>
                         <td>

@@ -31,19 +31,19 @@
         <!-- BỘ LỌC TÌM KIẾM KHẢO SÁT -->
         <form th:action="@{/admin/khao-sat}" method="get" class="row g-2 mb-3 bg-light p-3 rounded border">
           <div class="col-md-5">
-            <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="form-control" placeholder="🔍 Nhập tiêu đề bài khảo sát cần tìm...">
+            <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="form-control" th:placeholder="#{ks.ds.tim_kiem_goi_y}" placeholder="🔍 Nhập tiêu đề bài khảo sát cần tìm...">
           </div>
           <div class="col-md-4">
             <select name="trangThai" class="form-select">
-              <option value="">-- Tất cả trạng thái --</option>
-              <option value="1" th:selected="${trangThai == 1}">Chưa bắt đầu</option>
-              <option value="2" th:selected="${trangThai == 2}">Đang mở (Đang Vote)</option>
-              <option value="3" th:selected="${trangThai == 3}">Đã đóng</option>
+              <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+              <option value="1" th:selected="${trangThai == 1}" th:text="#{ks.ds.chua_bat_dau}">Chưa bắt đầu</option>
+              <option value="2" th:selected="${trangThai == 2}" th:text="#{ks.ds.dang_vote}">Đang mở (Đang Vote)</option>
+              <option value="3" th:selected="${trangThai == 3}" th:text="#{ks.ds.da_dong}">Đã đóng</option>
             </select>
           </div>
           <div class="col-md-3 d-flex gap-2">
-            <button type="submit" class="btn btn-primary fw-bold w-100"><i class="fas fa-search"></i> Tìm kiếm</button>
-            <a th:href="@{/admin/khao-sat}" class="btn btn-secondary text-nowrap" title="Bỏ lọc"><i class="fas fa-sync"></i></a>
+            <button type="submit" class="btn btn-primary fw-bold w-100"><i class="fas fa-search"></i> <span th:text="#{hdon.ds.nut_tim_kiem}" th:remove="tag">Tìm kiếm</span></button>
+            <a th:href="@{/admin/khao-sat}" class="btn btn-secondary text-nowrap" th:title="#{ks.ds.bo_loc}"><i class="fas fa-sync"></i></a>
           </div>
         </form>
         <table class="table table-hover align-middle mb-0">
