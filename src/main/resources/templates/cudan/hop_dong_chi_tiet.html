@@ -32,7 +32,11 @@
             <p><strong th:text="#{hd.detail.tien_coc}">Tiền cọc:</strong>
                 <span th:text="${hopDong.tienCoc != null} ? |#{numbers.formatDecimal(hopDong.tienCoc, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></span>
             </p>
-            <p><strong th:text="#{hd.detail.trang_thai}">Trạng thái:</strong> <span th:text="${hopDong.trangThai}"></span></p>
+            <p><strong th:text="#{hd.detail.trang_thai}">Trạng thái:</strong> 
+                <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success">Còn hạn</span>
+                <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-danger">Hết hạn</span>
+                <span th:if="${hopDong.trangThai != 'ACTIVE' and hopDong.trangThai != 'EXPIRED'}" th:text="${hopDong.trangThai}"></span>
+            </p>
         </div>
     </div>
 
