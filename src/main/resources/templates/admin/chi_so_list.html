@@ -24,6 +24,9 @@
                     <a th:href="@{/admin/chi-so/xuat-excel}" class="btn btn-success">
                         <i class="bi bi-file-earmark-arrow-down"></i> Xuất Excel
                     </a>
+                    <a th:href="@{/admin/chi-so/tao-hang-loat}" class="btn btn-warning text-dark fw-semibold">
+                        <i class="bi bi-magic me-1"></i> Tạo Hàng Loạt
+                    </a>
                     <a th:href="@{/admin/chi-so/tao-moi}" class="btn btn-success">
                         <i class="bi bi-plus-circle"></i><span th:text="#{cs.form.ghi_nhan_chi_so_moi}" th:remove="tag"> Ghi
                             nhận Chỉ số mới
@@ -31,6 +34,7 @@
                     </a>
                 </div>
             </div>
+
 
             <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">

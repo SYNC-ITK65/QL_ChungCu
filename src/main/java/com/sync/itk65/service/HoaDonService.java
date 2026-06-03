@@ -12,6 +12,8 @@ import com.sync.itk65.repository.PhuongTienRepository;
 import com.sync.itk65.repository.DatDichVuRepository;
 import com.sync.itk65.repository.ThanhToanRepository;
 import com.sync.itk65.repository.HopDongRepository;
+import com.sync.itk65.repository.LichSuThanhToanRepository;
+import com.sync.itk65.entity.LichSuThanhToan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -58,6 +60,9 @@ public class HoaDonService {
 
     @Autowired
     private HopDongRepository hopDongRepository;
+
+    @Autowired
+    private LichSuThanhToanRepository lichSuThanhToanRepository;
 
     // Tìm kiếm hóa đơn theo nhiều điều kiện
     public Page<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam, int page, int size) {
@@ -547,7 +552,24 @@ public class HoaDonService {
         thongTinHD.put("ngayPhatHanh", hoaDon.getNgayPhatHanh());
         thongTinHD.put("ngayDenHan", hoaDon.getNgayDenHan());
         thongTinHD.put("trangThai", hoaDon.getTrangThaiThanhToan());
+        // Tính tiền phạt nếu quá hạn và chưa đóng
+        boolean isQuaHan = hoaDon.getNgayDenHan() != null && LocalDate.now().isAfter(hoaDon.getNgayDenHan())
+                && !"Đã đóng".equalsIgnoreCase(hoaDon.getTrangThaiThanhToan());
+        int soNgayQuaHan = 0;
+        double tienPhat = 0.0;
+        if (isQuaHan) {
+            soNgayQuaHan = (int) java.time.temporal.ChronoUnit.DAYS.between(hoaDon.getNgayDenHan(), LocalDate.now());
+            tienPhat = Math.round(tongCong * 0.005 * soNgayQuaHan * 100.0) / 100.0; // 0.5%/ngày
+        }
+        thongTinHD.put("isQuaHan", isQuaHan);
+        thongTinHD.put("soNgayQuaHan", soNgayQuaHan);
+        thongTinHD.put("tienPhat", tienPhat);
+        thongTinHD.put("tongCongSauPhat", Math.round((tongCong + tienPhat) * 100.0) / 100.0);
         chiTiet.put("thongTinHoaDon", thongTinHD);
+
+        // ========== 9. LỊCH SỬ THANH TOÁN ==========
+        LichSuThanhToan lichSuThanhToan = lichSuThanhToanRepository.findByHoaDonId(hoaDonId).orElse(null);
+        chiTiet.put("lichSuThanhToan", lichSuThanhToan);
 
         return chiTiet;
     }
@@ -567,6 +589,7 @@ public class HoaDonService {
             model.addAttribute("chiTietThueChungCu", chiTiet.get("thueChungCu"));
             model.addAttribute("tongHop", chiTiet.get("tongHop"));
             model.addAttribute("thongTinHoaDon", chiTiet.get("thongTinHoaDon"));
+            model.addAttribute("lichSuThanhToan", chiTiet.get("lichSuThanhToan"));
             model.addAttribute("chiTietDayDu", chiTiet);
 
         } catch (Exception e) {
@@ -768,38 +791,30 @@ public class HoaDonService {
     }
 
     /**
-     * Tạo hóa đơn hàng loạt cho tất cả căn hộ trong tháng.
-     * Căn hộ đã có hóa đơn tháng đó sẽ được bỏ qua (không lỗi).
-     * Mỗi căn hộ được xử lý độc lập – lỗi một căn không ảnh hưởng căn khác.
-     *
-     * @param ngayPhatHanh Ngày phát hành chung cho tất cả hóa đơn
-     * @param ngayDenHan   Ngày đến hạn chung
-     * @return KetQuaTaoHangLoat chứa thống kê kết quả
+     * Tạo hóa đơn hàng loạt cho tất cả căn hộ trong tháng/năm.
+     * Ngày phát hành = hôm nay, ngày đến hạn = hôm nay + 7 ngày.
+     * Sau 7 ngày không nộp thì tính tiền phạt 0.5%/ngày.
      */
-    public KetQuaTaoHangLoat taoHoaDonHangLoat(LocalDate ngayPhatHanh, LocalDate ngayDenHan) {
-        // ── Validate tham số đầu vào ──────────────────────────────────
-        if (ngayPhatHanh == null) {
-            throw new RuntimeException("Vui lòng chọn ngày phát hành.");
-        }
-        if (ngayDenHan == null) {
-            throw new RuntimeException("Vui lòng chọn ngày đến hạn.");
-        }
-        if (ngayDenHan.isBefore(ngayPhatHanh)) {
-            throw new RuntimeException("Ngày đến hạn phải sau hoặc bằng ngày phát hành.");
-        }
-        if (ngayDenHan.isAfter(ngayPhatHanh.plusDays(60))) {
-            throw new RuntimeException("Ngày đến hạn không được sau ngày phát hành quá 60 ngày.");
+    public KetQuaTaoHangLoat taoHoaDonHangLoat(int thang, int nam) {
+        // ── Validate tháng/năm ────────────────────────────────────────
+        if (thang < 1 || thang > 12) {
+            throw new RuntimeException("Tháng không hợp lệ (phải từ 1 đến 12).");
         }
         LocalDate ngayHienTai = LocalDate.now();
-        if (ngayPhatHanh.isAfter(ngayHienTai)) {
-            throw new RuntimeException("Ngày phát hành không được ở tương lai (" + ngayPhatHanh + ").");
-        }
-        if (ngayPhatHanh.isBefore(ngayHienTai.minusMonths(3))) {
-            throw new RuntimeException("Ngày phát hành không được trước ngày hiện tại quá 3 tháng.");
-        }
+        // Ngày phát hành = hôm nay
+        LocalDate ngayPhatHanh = ngayHienTai;
+        // Ngày đến hạn = hôm nay + 7 ngày
+        LocalDate ngayDenHan = ngayHienTai.plusDays(7);
 
-        int thang = ngayPhatHanh.getMonthValue();
-        int nam   = ngayPhatHanh.getYear();
+        // Không cho tạo hóa đơn cho tháng tương lai
+        LocalDate thangDuoc = LocalDate.of(nam, thang, 1);
+        LocalDate thangHienTai = LocalDate.of(ngayHienTai.getYear(), ngayHienTai.getMonthValue(), 1);
+        if (thangDuoc.isAfter(thangHienTai)) {
+            throw new RuntimeException("Không thể tạo hóa đơn cho tháng tương lai (" + thang + "/" + nam + ").");
+        }
+        if (thangDuoc.isBefore(thangHienTai.minusMonths(3))) {
+            throw new RuntimeException("Không thể tạo hóa đơn cho tháng quá 3 tháng trước (" + thang + "/" + nam + ").");
+        }
 
         // ── Lấy tất cả căn hộ ────────────────────────────────────────
         List<CanHo> tatCaCanHo = canHoRepository.findAll();
@@ -827,8 +842,17 @@ public class HoaDonService {
             // ── Tạo hóa đơn cho căn hộ này ───────────────────────────
             try {
                 HoaDon hoaDon = new HoaDon();
-                hoaDon.setNgayPhatHanh(ngayPhatHanh);
-                hoaDon.setNgayDenHan(ngayDenHan);
+                // Ngày phát hành dùng ngày cuối tháng được chọn (nếu là tháng hiện tại dùng hôm nay)
+                LocalDate ngayPH;
+                if (thang == ngayHienTai.getMonthValue() && nam == ngayHienTai.getYear()) {
+                    ngayPH = ngayHienTai;
+                } else {
+                    // Tháng quá khứ: dùng ngày cuối tháng
+                    ngayPH = LocalDate.of(nam, thang, 1).withDayOfMonth(
+                        LocalDate.of(nam, thang, 1).lengthOfMonth());
+                }
+                hoaDon.setNgayPhatHanh(ngayPH);
+                hoaDon.setNgayDenHan(ngayPH.plusDays(7));
                 hoaDon.setCanHo(canHo);
                 taoHoaDonTuDong(hoaDon); // hàm này tự lưu DB
                 ketQua.taoThanhCong();
@@ -854,7 +878,8 @@ public class HoaDonService {
         System.out.println("INFO [HangLoat] Kết quả tháng " + thang + "/" + nam
                 + " | Thành công: " + ketQua.getSoThanhCong()
                 + " | Bỏ qua (đã có): " + ketQua.getSoBoQua()
-                + " | Lỗi: " + ketQua.getSoLoi());
+                + " | Lỗi: " + ketQua.getSoLoi()
+                + " | ngayPhatHanh=" + ngayPhatHanh + " | ngayDenHan=" + ngayDenHan);
 
         return ketQua;
     }

@@ -240,4 +240,120 @@ public class ChiSoHangThangService {
         String val = formatter.formatCellValue(cell);
         return val == null ? "" : val.trim();
     }
-}
+
+    // ============================================================
+    //  TẠO CHỈ SỐ HÀNG LOẠT (sinh ngẫu nhiên hợp lý)
+    // ============================================================
+
+    /**
+     * Kết quả sau khi tạo chỉ số hàng loạt.
+     */
+    public static class KetQuaTaoHangLoat {
+        private int soThanhCong = 0;
+        private final List<String> danhSachBoQua = new ArrayList<>();
+        private final List<String> danhSachLoi   = new ArrayList<>();
+
+        public int getSoThanhCong()             { return soThanhCong; }
+        public void taoThanhCong()              { soThanhCong++; }
+        public List<String> getDanhSachBoQua()  { return danhSachBoQua; }
+        public List<String> getDanhSachLoi()    { return danhSachLoi; }
+        public int getSoBoQua()                 { return danhSachBoQua.size(); }
+        public int getSoLoi()                   { return danhSachLoi.size(); }
+        public int getTongCanHo()               { return soThanhCong + danhSachBoQua.size() + danhSachLoi.size(); }
+        public boolean coKetQua()               { return getTongCanHo() > 0; }
+    }
+
+    /**
+     * Tạo chỉ số hàng loạt cho tất cả căn hộ trong tháng/năm.
+     * Bỏ qua căn hộ đã có chỉ số trong tháng đó.
+     * Sinh ngẫu nhiên hợp lý: điện 80-350 kWh, nước 8-45 m³.
+     */
+    public KetQuaTaoHangLoat taoChiSoHangLoat(int thang, int nam) {
+        if (thang < 1 || thang > 12) {
+            throw new IllegalArgumentException("Tháng không hợp lệ (phải từ 1 đến 12).");
+        }
+        LocalDate ngayHienTai = LocalDate.now();
+        LocalDate thangDuoc = LocalDate.of(nam, thang, 1);
+        LocalDate thangHienTai = LocalDate.of(ngayHienTai.getYear(), ngayHienTai.getMonthValue(), 1);
+
+        if (thangDuoc.isAfter(thangHienTai)) {
+            throw new IllegalArgumentException("Không thể tạo chỉ số cho tháng tương lai (" + thang + "/" + nam + ").");
+        }
+        if (thangDuoc.isBefore(thangHienTai.minusMonths(12))) {
+            throw new IllegalArgumentException("Không thể tạo chỉ số cho tháng quá 12 tháng trước (" + thang + "/" + nam + ").");
+        }
+
+        // Ngày ghi nhận: ngày cuối tháng (hoặc hôm nay nếu là tháng hiện tại)
+        LocalDate ngayGhiNhan;
+        if (thang == ngayHienTai.getMonthValue() && nam == ngayHienTai.getYear()) {
+            ngayGhiNhan = ngayHienTai;
+        } else {
+            ngayGhiNhan = LocalDate.of(nam, thang, 1)
+                .withDayOfMonth(LocalDate.of(nam, thang, 1).lengthOfMonth());
+        }
+
+        LocalDate firstDayOfMonth = LocalDate.of(nam, thang, 1);
+        LocalDate lastDayOfMonth  = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth());
+
+        java.util.Random rng = new java.util.Random();
+        List<com.sync.itk65.entity.CanHo> tatCaCanHo = canHoRepository.findAll();
+        if (tatCaCanHo == null || tatCaCanHo.isEmpty()) {
+            throw new IllegalArgumentException("Không có căn hộ nào trong hệ thống.");
+        }
+
+        KetQuaTaoHangLoat ketQua = new KetQuaTaoHangLoat();
+
+        for (com.sync.itk65.entity.CanHo canHo : tatCaCanHo) {
+            String maCanHo = canHo.getMaCanHo() != null ? canHo.getMaCanHo() : "ID:" + canHo.getId();
+
+            // Kiểm tra đã có chỉ số chưa → bỏ qua
+            try {
+                boolean daCoChiSo = chiSoHangThangRepository
+                    .findFirstByCanHoIdAndNgayGhiNhanBetweenOrderByNgayGhiNhanDescIdDesc(
+                        canHo.getId(), firstDayOfMonth, lastDayOfMonth)
+                    .isPresent();
+                if (daCoChiSo) {
+                    ketQua.getDanhSachBoQua().add(maCanHo);
+                    continue;
+                }
+            } catch (Exception e) {
+                System.out.println("WARN: Không kiểm tra được chỉ số cho " + maCanHo + ": " + e.getMessage());
+            }
+
+            // Sinh chỉ số ngẫu nhiên hợp lý
+            try {
+                // Điện: 80–350 kWh (thực tế hộ gia đình)
+                double dienTieuThu = Math.round((80 + rng.nextDouble() * 270) * 10.0) / 10.0;
+                // Nước: 8–45 m³
+                double nuocTieuThu = Math.round((8 + rng.nextDouble() * 37) * 10.0) / 10.0;
+
+                ChiSoHangThang chiSo = new ChiSoHangThang();
+                chiSo.setCanHo(canHo);
+                chiSo.setDienTieuThu(dienTieuThu);
+                chiSo.setNuocTieuThu(nuocTieuThu);
+                chiSo.setNgayGhiNhan(ngayGhiNhan);
+
+                // Lưu trực tiếp (bypass validation ngày phức tạp khi tạo hàng loạt)
+                chiSoHangThangRepository.save(chiSo);
+                ketQua.taoThanhCong();
+                System.out.println("INFO [ChiSoHangLoat] " + maCanHo
+                    + " | Điện=" + dienTieuThu + " kWh | Nước=" + nuocTieuThu + " m³"
+                    + " | Ngày=" + ngayGhiNhan);
+            } catch (Exception e) {
+                String msg = e.getMessage() != null
+                    ? e.getMessage().replaceAll("\\r?\\n", " ").trim()
+                    : "Lỗi không xác định";
+                if (msg.length() > 200) msg = msg.substring(0, 197) + "...";
+                ketQua.getDanhSachLoi().add(maCanHo + ": " + msg);
+                System.out.println("WARN [ChiSoHangLoat] Không tạo được chỉ số cho " + maCanHo + ": " + msg);
+            }
+        }
+
+        System.out.println("INFO [ChiSoHangLoat] Kết quả tháng " + thang + "/" + nam
+            + " | Thành công: " + ketQua.getSoThanhCong()
+            + " | Bỏ qua: " + ketQua.getSoBoQua()
+            + " | Lỗi: " + ketQua.getSoLoi());
+
+        return ketQua;
+    }
+}

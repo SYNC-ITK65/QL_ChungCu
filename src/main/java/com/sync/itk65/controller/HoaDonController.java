@@ -193,58 +193,37 @@ public class HoaDonController {
     @GetMapping("/tao-hang-loat")
     public String hienThiFormTaoHangLoat(Model model) {
         LocalDate now = LocalDate.now();
-        // Mặc định ngày phát hành = hôm nay, ngày đến hạn = +15 ngày
-        model.addAttribute("defaultNgayPhatHanh", now.toString());
-        model.addAttribute("defaultNgayDenHan",  now.plusDays(15).toString());
         model.addAttribute("thangHienTai", now.getMonthValue());
         model.addAttribute("namHienTai",   now.getYear());
+        // Thông tin ngày tự động để hiển thị cho user
+        model.addAttribute("ngayPhatHanhAuto", now.toString());
+        model.addAttribute("ngayDenHanAuto",   now.plusDays(7).toString());
         return "admin/hoa_don_hang_loat";
     }
 
     /** Xử lý POST – thực hiện tạo hóa đơn hàng loạt */
     @PostMapping("/tao-hang-loat")
     public String xuLyTaoHangLoat(
-            @RequestParam("ngayPhatHanh") String ngayPhatHanhStr,
-            @RequestParam("ngayDenHan")   String ngayDenHanStr,
-            Model model,
-            RedirectAttributes ra) {
+            @RequestParam("thang") int thang,
+            @RequestParam("nam")   int nam,
+            Model model) {
 
         LocalDate now = LocalDate.now();
-        model.addAttribute("defaultNgayPhatHanh", ngayPhatHanhStr);
-        model.addAttribute("defaultNgayDenHan",   ngayDenHanStr);
         model.addAttribute("thangHienTai", now.getMonthValue());
         model.addAttribute("namHienTai",   now.getYear());
-
-        // ── Parse ngày ────────────────────────────────────────────
-        LocalDate ngayPhatHanh;
-        LocalDate ngayDenHan;
-        try {
-            if (ngayPhatHanhStr == null || ngayPhatHanhStr.trim().isEmpty()) {
-                throw new RuntimeException("Vui lòng chọn ngày phát hành.");
-            }
-            if (ngayDenHanStr == null || ngayDenHanStr.trim().isEmpty()) {
-                throw new RuntimeException("Vui lòng chọn ngày đến hạn.");
-            }
-            ngayPhatHanh = LocalDate.parse(ngayPhatHanhStr.trim());
-            ngayDenHan   = LocalDate.parse(ngayDenHanStr.trim());
-        } catch (RuntimeException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "admin/hoa_don_hang_loat";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Sai định dạng ngày. Vui lòng kiểm tra lại.");
-            return "admin/hoa_don_hang_loat";
-        }
+        model.addAttribute("ngayPhatHanhAuto", now.toString());
+        model.addAttribute("ngayDenHanAuto",   now.plusDays(7).toString());
 
         // ── Gọi service ────────────────────────────────────────────
         try {
             com.sync.itk65.service.HoaDonService.KetQuaTaoHangLoat ketQua =
-                    hoaDonService.taoHoaDonHangLoat(ngayPhatHanh, ngayDenHan);
+                    hoaDonService.taoHoaDonHangLoat(thang, nam);
 
-            model.addAttribute("ketQua",        ketQua);
-            model.addAttribute("ngayPhatHanh",  ngayPhatHanh);
-            model.addAttribute("ngayDenHan",    ngayDenHan);
-            model.addAttribute("thang", ngayPhatHanh.getMonthValue());
-            model.addAttribute("nam",   ngayPhatHanh.getYear());
+            model.addAttribute("ketQua",   ketQua);
+            model.addAttribute("thang",    thang);
+            model.addAttribute("nam",      nam);
+            model.addAttribute("ngayPhatHanh", now);
+            model.addAttribute("ngayDenHan",   now.plusDays(7));
 
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
