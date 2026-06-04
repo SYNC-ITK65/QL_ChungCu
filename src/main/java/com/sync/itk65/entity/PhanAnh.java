@@ -35,6 +35,9 @@ public class PhanAnh {
 
     private LocalDateTime ngayPhanHoi;
 
+    @Column(name = "hinh_anh")
+    private String hinhAnh;
+
     // Tự động set ngày giờ hiện tại và trạng thái mặc định khi thêm mới
     @PrePersist
     protected void onCreate() {
@@ -108,5 +111,13 @@ public class PhanAnh {
 
     public void setCanHo(CanHo canHo) {
         this.canHo = canHo;
+    }
+
+    public String getHinhAnh() {
+        return hinhAnh;
+    }
+
+    public void setHinhAnh(String hinhAnh) {
+        this.hinhAnh = hinhAnh;
     }
 }

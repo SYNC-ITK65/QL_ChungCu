@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import com.sync.itk65.service.CloudinaryService;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
@@ -28,6 +30,9 @@ public class CuDanPhanAnhController {
 
     @Autowired
     private CuDanService cuDanService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Autowired
     private MessageSource messageSource;
@@ -73,6 +78,7 @@ public class CuDanPhanAnhController {
     @PostMapping("/luu")
     public String savePhanAnh(@ModelAttribute("phanAnh") PhanAnh phanAnh,
                               BindingResult result,
+                              @RequestParam("fileImage") MultipartFile multipartFile,
                               HttpSession session,
                               RedirectAttributes ra) {
 
@@ -100,6 +106,17 @@ public class CuDanPhanAnhController {
         // 3. Gọi hàm Check lỗi
         validatePhanAnh(phanAnh, result);
         if (result.hasErrors()) return "cudan/phan_anh_form";
+
+        // Upload ảnh lên Cloudinary
+        try {
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadFile(multipartFile);
+                phanAnh.setHinhAnh(imageUrl);
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Lỗi upload hình ảnh: " + e.getMessage());
+            return "redirect:/cudan/phan-anh/gui-moi";
+        }
 
         // 4. Lưu
         phanAnh.setCanHo(cuDan.getCanHo());

@@ -19,7 +19,7 @@
 
             <div class="card shadow-sm" style="max-width: 700px;">
                 <div class="card-body">
-                    <form th:action="@{/cudan/phan-anh/luu}" th:object="${phanAnh}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
+                    <form th:action="@{/cudan/phan-anh/luu}" th:object="${phanAnh}" method="post" enctype="multipart/form-data" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
 
                         <div th:if="${error}" class="alert alert-danger mb-3" role="alert" th:text="${error}"></div>
 
@@ -37,6 +37,12 @@
                                       th:placeholder="#{pa.form.mo_ta_cu_the_van_de}"
                                       th:classappend="${#fields.hasErrors('noiDung')} ? 'is-invalid' : ''"></textarea>
                             <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('noiDung')}" th:errors="*{noiDung}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="fileImage" class="form-label fw-bold">Hình ảnh đính kèm (nếu có)</label>
+                            <input type="file" class="form-control" id="fileImage" name="fileImage" accept="image/*">
+                            <div class="form-text">Chọn ảnh mô tả chi tiết vấn đề phản ánh.</div>
                         </div>
 
                         <div class="d-flex gap-2">

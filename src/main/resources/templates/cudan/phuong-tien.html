@@ -27,7 +27,7 @@
             <div class="row">
                 <div class="col-md-4 border-end">
                     <h4 th:text="#{pt.ui.gui_yeu_cau_dang_ky}">Gửi yêu cầu đăng ký xe</h4>
-                    <form th:action="@{/cudan/phuong-tien/luu}" th:object="${xeMoi}" method="post">
+                    <form th:action="@{/cudan/phuong-tien/luu}" th:object="${xeMoi}" method="post" enctype="multipart/form-data">
 
                         <div class="mb-3">
                             <label class="form-label fw-bold" th:text="#{pt.ui.bien_so_xe}">Biển số xe:</label>
@@ -55,6 +55,12 @@
                             <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('mauXe')}" th:errors="*{mauXe}"></div>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Hình ảnh xe:</label>
+                            <input type="file" name="fileImage" class="form-control" accept="image/*">
+                            <div class="form-text">Tải lên ảnh của phương tiện để làm căn cứ duyệt.</div>
+                        </div>
+
                         <button type="submit" class="btn btn-success w-100 fw-bold" th:text="#{pt.ui.gui_yeu_cau_dang_ky1}">Gửi yêu cầu đăng ký</button>
                         <small class="text-muted mt-2 d-block" th:text="#{pt.ui.xe_sau_khi_dang_ky}">* Xe sau khi đăng ký cần chờ BQL duyệt mới được tính hợp lệ.</small>
                     </form>
@@ -68,6 +74,7 @@
                             <th th:text="#{hdon.chitiet.bien_so}">Biển Số</th>
                             <th th:text="#{hdon.chitiet.loai_xe}">Loại Xe</th>
                             <th th:text="#{pt.ui.mau_xe}">Màu Xe</th>
+                            <th>Hình ảnh</th>
                             <th th:text="#{hdon.ds.bang_trang_thai}">Trạng Thái</th>
                             <th th:text="#{dv.ds.thao_tac}">Thao tác</th>
                         </tr>
@@ -77,6 +84,12 @@
                             <td class="fw-bold" th:text="${xe.bienSoXe}"></td>
                             <td th:text="${xe.loaiXe}"></td>
                             <td th:text="${xe.mauXe}"></td>
+                            <td>
+                                <a th:if="${xe.hinhAnh != null}" th:href="${xe.hinhAnh}" target="_blank">
+                                    <img th:src="${xe.hinhAnh}" alt="Ảnh xe" style="max-height: 40px; max-width: 80px; border-radius: 4px; object-fit: cover; border: 1px solid #dee2e6;"/>
+                                </a>
+                                <span th:if="${xe.hinhAnh == null}" class="text-muted small">Không có ảnh</span>
+                            </td>
                             <td>
                                 <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark" th:text="#{pt.ui.dang_cho_bql_duyet}">⏳ Đang chờ BQL duyệt</span>
                                 <span th:if="${xe.trangThai == 'Đã duyệt'}" class="badge bg-success" th:text="#{pt.ui.da_duyet}">✅ Đã duyệt</span>

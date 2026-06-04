@@ -32,6 +32,15 @@
           <textarea class="form-control bg-light" rows="4" th:text="${phanAnh.noiDung}" readonly></textarea>
         </div>
 
+        <div class="mb-3" th:if="${phanAnh.hinhAnh != null}">
+          <label class="form-label">Hình ảnh đính kèm</label>
+          <div>
+            <a th:href="${phanAnh.hinhAnh}" target="_blank">
+              <img th:src="${phanAnh.hinhAnh}" alt="Ảnh đính kèm" class="img-thumbnail" style="max-height: 250px; border: 1px solid #dee2e6; border-radius: 4px;"/>
+            </a>
+          </div>
+        </div>
+
         <div class="mb-3">
           <label class="form-label text-danger fw-bold" th:text="#{pa.form.cap_nhat_trang_thai}">Cập nhật Trạng thái xử lý</label>
           <select th:field="*{trangThai}" class="form-select border-danger">

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.validation.BindingResult;
 import org.springframework.dao.DataIntegrityViolationException;
+import com.sync.itk65.service.CloudinaryService;
+import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 
 @Controller
@@ -35,6 +37,9 @@ public class CuDanPortalController {
 
     @Autowired
     private PhuongTienService phuongTienService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     // =======================================================
     // CHỨC NĂNG 1: THÔNG TIN CÁ NHÂN & CĂN HỘ
@@ -119,6 +124,7 @@ public class CuDanPortalController {
     public String dangKyXeCuDan(HttpSession session,
                                 @ModelAttribute("xeMoi") PhuongTien xe,
                                 BindingResult result,
+                                @RequestParam("fileImage") MultipartFile multipartFile,
                                 Model model,
                                 RedirectAttributes ra) {
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
@@ -138,6 +144,12 @@ public class CuDanPortalController {
                 model.addAttribute("danhSachXe", phuongTienService.layXeTheoCanHoId(cuDan.getCanHo().getId()));
                 model.addAttribute("thongBaoLoi", "Dữ liệu đăng ký không hợp lệ, vui lòng kiểm tra lại form!");
                 return "cudan/phuong-tien";
+            }
+
+            // Upload hình ảnh lên Cloudinary
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadFile(multipartFile);
+                xe.setHinhAnh(imageUrl);
             }
 
             phuongTienService.dangKyXe(xe);
