@@ -82,7 +82,11 @@
                                 <td th:text="${khach.ngayDi != null ? #temporals.format(khach.ngayDi, 'dd-MM-yyyy HH:mm') : '-'}"></td>
 
                                 <td>
-<span class="badge" th:class="'badge ' + ${khach.trangThai == 'Đã duyệt' ? 'bg-success' : (khach.trangThai == 'Không duyệt' ? 'bg-danger' : 'bg-warning text-dark')}" th:text="${khach.trangThai}"></span>
+                                    <span class="badge" th:classappend="${khach.trangThai == 'Đã duyệt' ? 'bg-success' : (khach.trangThai == 'Không duyệt' ? 'bg-danger' : 'bg-warning text-dark')}">
+                                        <th:block th:if="${khach.trangThai == 'Chờ duyệt'}" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</th:block>
+                                        <th:block th:if="${khach.trangThai == 'Đã duyệt'}" th:text="#{dv.ds.da_duyet}">Đã duyệt</th:block>
+                                        <th:block th:if="${khach.trangThai == 'Không duyệt'}" th:text="#{duyet.ui.khong_duyet}">Không duyệt</th:block>
+                                    </span>
                                 </td>
 
                                 <td>

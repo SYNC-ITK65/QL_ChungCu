@@ -155,10 +155,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
-            var thongBaoThanhCong = /*[[${thongBaoThanhCong}]]*/ null;
-            var thongBaoLoi = /*[[${thongBaoLoi}]]*/ null;
-            var successMessage = /*[[${successMessage}]]*/ null;
-            var errorMessage = /*[[${errorMessage}]]*/ null;
+            var thongBaoThanhCong = /*[[${thongBaoThanhCong != null ? (#messages.msgOrNull(thongBaoThanhCong) != null ? #messages.msg(thongBaoThanhCong) : thongBaoThanhCong) : null}]]*/ null;
+            var thongBaoLoi = /*[[${thongBaoLoi != null ? (#messages.msgOrNull(thongBaoLoi) != null ? #messages.msg(thongBaoLoi) : thongBaoLoi) : null}]]*/ null;
+            var successMessage = /*[[${successMessage != null ? (#messages.msgOrNull(successMessage) != null ? #messages.msg(successMessage) : successMessage) : null}]]*/ null;
+            var errorMessage = /*[[${errorMessage != null ? (#messages.msgOrNull(errorMessage) != null ? #messages.msg(errorMessage) : errorMessage) : null}]]*/ null;
 
             if (thongBaoThanhCong) {
                 Swal.fire({ icon: 'success', title: 'Thành công!', text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });

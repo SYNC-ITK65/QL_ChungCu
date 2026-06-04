@@ -22,13 +22,15 @@
                         <i class="bi bi-file-earmark-arrow-up"></i> Import Excel
                     </button>
                     <a th:href="@{/admin/chi-so/xuat-excel}" class="btn btn-success">
-                        <i class="bi bi-file-earmark-arrow-down"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
+                        <i class="bi bi-file-earmark-arrow-down"></i> <span th:text="#{chung.xuat_excel}">Xuất
+                            Excel</span>
                     </a>
                     <a th:href="@{/admin/chi-so/tao-hang-loat}" class="btn btn-warning text-dark fw-semibold">
-                        <i class="bi bi-magic me-1"></i> Tạo Hàng Loạt
+                        <i class="bi bi-magic me-1"></i> <span th:text="#{chung.tao_hang_loat}">Tạo Hàng Loạt</span>
                     </a>
                     <a th:href="@{/admin/chi-so/tao-moi}" class="btn btn-success">
-                        <i class="bi bi-plus-circle"></i><span th:text="#{cs.form.ghi_nhan_chi_so_moi}" th:remove="tag"> Ghi
+                        <i class="bi bi-plus-circle"></i><span th:text="#{cs.form.ghi_nhan_chi_so_moi}" th:remove="tag">
+                            Ghi
                             nhận Chỉ số mới
                         </span>
                     </a>
@@ -36,30 +38,36 @@
             </div>
 
 
-            <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+            <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
                             <h5 class="modal-title" id="importExcelModalLabel">
                                 <i class="bi bi-file-earmark-spreadsheet"></i> Import Excel - Chỉ số
                             </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <form th:action="@{/admin/chi-so/import-excel}" method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="alert alert-info small mb-3">
                                     <i class="bi bi-info-circle"></i> File Excel cần có các cột theo thứ tự:<br>
-                                    <strong>Ngày ghi nhận (yyyy-MM-dd) | Mã căn hộ | Điện tiêu thụ | Nước tiêu thụ</strong><br>
+                                    <strong>Ngày ghi nhận (yyyy-MM-dd) | Mã căn hộ | Điện tiêu thụ | Nước tiêu
+                                        thụ</strong><br>
                                     Dòng đầu tiên là header, dữ liệu bắt đầu từ dòng 2.
                                 </div>
                                 <div class="mb-3">
-                                    <label for="fileImportChiSo" class="form-label fw-semibold">Chọn file Excel (.xlsx)</label>
-                                    <input type="file" class="form-control" id="fileImportChiSo" name="file" accept=".xlsx,.xls" required>
+                                    <label for="fileImportChiSo" class="form-label fw-semibold">Chọn file Excel
+                                        (.xlsx)</label>
+                                    <input type="file" class="form-control" id="fileImportChiSo" name="file"
+                                        accept=".xlsx,.xls" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Import</button>
+                                <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i>
+                                    Import</button>
                             </div>
                         </form>
                     </div>
@@ -141,7 +149,7 @@
                     </tr>
                 </tbody>
             </table>
-            
+
             <!-- Fragment Phân trang -->
             <div th:replace="~{fragments/pagination :: paging('/admin/chi-so', 
                 'maCanHo=' + ${maCanHo != null ? maCanHo : ''} + 

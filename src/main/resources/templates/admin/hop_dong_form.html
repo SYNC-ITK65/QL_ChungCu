@@ -31,18 +31,15 @@
                     <!-- Hidden ID for edit -->
                     <input type="hidden" th:field="*{id}" th:if="${isEdit}">
                     
-                    <!-- Section: Loại hợp đồng -->
+                    <!-- Section: Loại hợp đồng (cố định Thuê) -->
+                    <input type="hidden" th:field="*{loaiHopDong}" value="Thue">
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">
-                                <i class="bi bi-file-text me-1"></i><span th:text="#{hd.form.loai_hop_dong}">Loại hợp đồng</span> <span class="text-danger">*</span>
+                                <i class="bi bi-file-text me-1"></i><span th:text="#{hd.form.loai_hop_dong}">Loại hợp đồng</span>
                             </label>
-                            <select class="form-select form-select-lg" th:field="*{loaiHopDong}" id="loaiHopDong" required th:disabled="${isEdit}" th:data-hint-thue="#{hd.form.loai_hint_thue}" th:data-hint-mua="#{hd.form.loai_hint_mua}">
-                                <option value="Thue" th:selected="*{loaiHopDong == 'Thue'}" th:text="#{hd.form.loai_thue}">🏠 Hợp đồng Thuê</option>
-                                <option value="Mua" th:selected="*{loaiHopDong == 'Mua'}" th:text="#{hd.form.loai_mua}">🏢 Hợp đồng Mua</option>
-                            </select>
-                            <input type="hidden" th:field="*{loaiHopDong}" th:if="${isEdit}">
-                            <div class="form-text text-muted" id="loaiHopDongHint" th:text="#{hd.form.loai_hint_thue}">
+                            <input type="text" class="form-control form-control-lg" value="🏠 Hợp đồng Thuê" readonly disabled>
+                            <div class="form-text text-muted" th:text="#{hd.form.loai_hint_thue}">
                                 Hợp đồng thuê có thời hạn và tiền cọc
                             </div>
                         </div>
@@ -60,7 +57,7 @@
                             <input type="text" class="form-control" th:field="*{benChoThue}" placeholder="Nhập tên bên cho thuê / bán" required th:placeholder="#{hd.form.nhap_ten_ben_cho_thu}">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" th:text="#{hd.form.ben_thue_label}">Bên thuê / Mua</label>
+                            <label class="form-label fw-bold">Người thuê</label>
                             <input type="text" class="form-control" id="benThueDisplay" readonly placeholder="Tự động lấy từ cư dân đã chọn" th:placeholder="#{hd.form.ben_thue_placeholder}">
                         </div>
                     </div>
@@ -119,14 +116,14 @@
                             </label>
                             <input type="date" class="form-control" th:field="*{ngayBatDau}" required>
                         </div>
-                        <div class="col-md-6 mb-3" id="ngayKetThucContainer">
-                            <label class="form-label fw-bold"><span th:text="#{hd.form.ngay_ket_thuc}" th:remove="tag">
-                                Ngày kết thúc </span><span class="text-danger" id="ngayKetThucRequired">*</span>
-                            </label>
-                            <input type="date" class="form-control" th:field="*{ngayKetThuc}" id="ngayKetThuc">
-                            <div class="form-text text-muted d-none" id="ngayKetThucHint" th:text="#{hd.form.ngay_ket_thuc_hint}">
-                                Hợp đồng mua không có ngày kết thúc
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Thời hạn hợp đồng <span class="text-danger">*</span></label>
+                            <select class="form-select" name="thoiHan" id="thoiHan" required>
+                                <option value="1">1 tháng</option>
+                                <option value="6">6 tháng</option>
+                                <option value="12" selected>12 tháng</option>
+                            </select>
+                            <div class="form-text text-muted">Ngày kết thúc sẽ được tính tự động từ ngày bắt đầu + thời hạn</div>
                         </div>
                     </div>
 
@@ -146,57 +143,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const loaiHopDong = document.getElementById('loaiHopDong');
-        const labelBenA = document.getElementById('labelBenA');
-        const labelGiaTri = document.getElementById('labelGiaTri');
-        const tienCocContainer = document.getElementById('tienCocContainer');
-        const ngayKetThucContainer = document.getElementById('ngayKetThucContainer');
-        const ngayKetThuc = document.getElementById('ngayKetThuc');
-        const ngayKetThucRequired = document.getElementById('ngayKetThucRequired');
-        const ngayKetThucHint = document.getElementById('ngayKetThucHint');
-        const loaiHopDongHint = document.getElementById('loaiHopDongHint');
         const cuDanId = document.getElementById('cuDanId');
         const benThueDisplay = document.getElementById('benThueDisplay');
         const canHoId = document.getElementById('canHoId');
         const cuDanWarning = document.getElementById('cuDanWarning');
-
-        // Xử lý khi đổi loại hợp đồng
-        function updateFormByLoaiHopDong() {
-            const isMua = loaiHopDong.value === 'Mua';
-            
-            // Cập nhật label
-            labelBenA.innerHTML = (isMua ? 'Bên bán' : 'Bên cho thuê') + ' <span class="text-danger">*</span>';
-            labelGiaTri.innerHTML = (isMua ? 'Giá trị hợp đồng' : 'Tiền thuê') + ' (VNĐ) <span class="text-danger">*</span>';
-            
-            // Cập nhật hint
-            loaiHopDongHint.textContent = isMua 
-                ? 'Hợp đồng mua: vĩnh viễn, không tiền cọc' 
-                : 'Hợp đồng thuê: có thời hạn và tiền cọc';
-            
-            // Hiển thị/ẩn tiền cọc
-            if (isMua) {
-                tienCocContainer.classList.add('d-none');
-                tienCocContainer.querySelector('input').value = '0';
-            } else {
-                tienCocContainer.classList.remove('d-none');
-            }
-            
-            // Hiển thị/ẩn ngày kết thúc
-            if (isMua) {
-                ngayKetThuc.value = '';
-                ngayKetThuc.removeAttribute('required');
-                ngayKetThucRequired.classList.add('d-none');
-                ngayKetThucHint.classList.remove('d-none');
-                ngayKetThuc.disabled = true;
-                ngayKetThucContainer.querySelector('label').innerHTML = 'Ngày kết thúc <span class="text-muted">(Không áp dụng)</span>';
-            } else {
-                ngayKetThuc.setAttribute('required', 'required');
-                ngayKetThucRequired.classList.remove('d-none');
-                ngayKetThucHint.classList.add('d-none');
-                ngayKetThuc.disabled = false;
-                ngayKetThucContainer.querySelector('label').innerHTML = 'Ngày kết thúc <span class="text-danger">*</span>';
-            }
-        }
 
         // Xử lý khi chọn cư dân -> cập nhật bên thuê và validate
         function updateCuDanInfo() {
@@ -234,15 +184,11 @@
         }
 
         // Event listeners
-        if (!loaiHopDong.disabled) {
-            loaiHopDong.addEventListener('change', updateFormByLoaiHopDong);
-        }
         cuDanId.addEventListener('change', updateCuDanInfo);
         canHoId.addEventListener('change', validateCanHoCuDan);
 
-        // Init
-        updateFormByLoaiHopDong();
-        updateCuDanInfo(); // Load tên bên thuê nếu đang edit
+        // Init - Load tên bên thuê nếu đang edit
+        updateCuDanInfo();
     });
 </script>
 </body>

@@ -32,6 +32,8 @@ public class CuDanController {
     private CuDanService cuDanService;
     @Autowired
     private CanHoService canHoService;
+    @Autowired
+    private org.springframework.context.MessageSource messageSource;
 
     // Xem danh sách cư dân (Hỗ trợ phân trang, và áp dụng các tiêu chí tìm kiếm bao
     // gồm Lọc theo ID Căn hộ)
@@ -102,6 +104,12 @@ public class CuDanController {
         return "admin/cu_dan_form";
     }
 
+    // Xử lý GET /luu khi đổi ngôn ngữ trên trang lỗi validation
+    @GetMapping("/luu")
+    public String handleGetLuu() {
+        return "redirect:/admin/cu-dan/tao-moi";
+    }
+
     // Xử lý lưu (Lưu chung cả user info và Resident info nhờ kế thừa)
     @PostMapping("/luu")
     public String luuCuDan(@Valid @ModelAttribute("cuDan") CuDan cuDan, BindingResult bindingResult, Model model,
@@ -161,7 +169,8 @@ public class CuDanController {
             ra.addFlashAttribute("thongBaoThanhCong", "cd.msg.luu_thanh_cong");
             return "redirect:/admin/cu-dan";
         } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            String errorMsg = messageSource.getMessage(e.getMessage(), null, e.getMessage(), org.springframework.context.i18n.LocaleContextHolder.getLocale());
+            model.addAttribute("errorMessage", errorMsg);
             model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
             return "admin/cu_dan_form";
         } catch (Exception e) {

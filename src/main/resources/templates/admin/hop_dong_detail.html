@@ -42,10 +42,10 @@
                             <div class="col-md-6">
                                 <label class="text-muted small" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</label>
                                 <p>
-                                    <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success fs-6">Còn hạn</span>
-                                    <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-danger fs-6">Hết hạn</span>
-                                    <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="badge bg-secondary fs-6">Thanh lý</span>
-                                    <span th:if="${hopDong.trangThai == 'DRAFT'}" class="badge bg-warning fs-6">Nháp</span>
+                                    <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success fs-6" th:text="#{hd.trang_thai.active}">Còn hạn</span>
+                                    <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-danger fs-6" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
+                                    <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="badge bg-secondary fs-6" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
+                                    <span th:if="${hopDong.trangThai == 'DRAFT'}" class="badge bg-warning fs-6" th:text="#{hd.trang_thai.draft}">Nháp</span>
                                     <span th:if="${hopDong.trangThai != 'ACTIVE' and hopDong.trangThai != 'EXPIRED' and hopDong.trangThai != 'TERMINATED' and hopDong.trangThai != 'DRAFT'}" th:text="${hopDong.trangThai}" class="badge bg-info fs-6"></span>
                                 </p>
                             </div>
@@ -56,11 +56,17 @@
                         <h6 class="text-primary mb-3" th:text="#{hd.chitiet.thong_tin_cac_ben}">👥 Thông tin các bên</h6>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="text-muted small" th:text="${hopDong.loaiHopDong == 'Mua'} ? #{hd.chitiet.ben_ban} : #{hd.chitiet.ben_cho_thue}">Bên cho thuê</label>
+                                <label class="text-muted small">
+                                    <span th:if="${hopDong.loaiHopDong == 'Mua'}" th:text="#{hd.chitiet.ben_ban}">Bên bán</span>
+                                    <span th:unless="${hopDong.loaiHopDong == 'Mua'}" th:text="#{hd.chitiet.ben_cho_thue}">Bên cho thuê</span>
+                                </label>
                                 <p class="fw-bold" th:text="${hopDong.benChoThue}">-</p>
                             </div>
                             <div class="col-md-6">
-                                <label class="text-muted small" th:text="${hopDong.loaiHopDong == 'Mua'} ? #{hd.chitiet.ben_mua} : #{hd.chitiet.ben_thue}">Bên thuê</label>
+                                <label class="text-muted small">
+                                    <span th:if="${hopDong.loaiHopDong == 'Mua'}" th:text="#{hd.chitiet.ben_mua}">Bên mua</span>
+                                    <span th:unless="${hopDong.loaiHopDong == 'Mua'}" th:text="#{hd.chitiet.ben_thue}">Bên thuê</span>
+                                </label>
                                 <p class="fw-bold" th:text="${hopDong.benThue}">-</p>
                             </div>
                         </div>
@@ -80,7 +86,10 @@
                         <h6 class="text-primary mb-3" th:text="#{hd.chitiet.thong_tin_tai_chinh}">💰 Thông tin tài chính</h6>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="text-muted small" th:text="${hopDong.loaiHopDong == 'Mua'} ? #{hd.chitiet.gia_tri_hop_dong} : #{hd.chitiet.tien_thue}">Tiền thuê</label>
+                                <label class="text-muted small">
+                                    <span th:if="${hopDong.loaiHopDong == 'Mua'}" th:text="#{hd.chitiet.gia_tri_hop_dong}">Giá trị hợp đồng</span>
+                                    <span th:unless="${hopDong.loaiHopDong == 'Mua'}" th:text="#{hd.chitiet.tien_thue}">Tiền thuê</span>
+                                </label>
                                 <p class="fw-bold text-success fs-5" th:text="${hopDong.tienThue != null} ? |${#numbers.formatDecimal(hopDong.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}| : |0 #{chung.don_vi_vnd_symbol}|">0 VNĐ</p>
                             </div>
                             <div class="col-md-6" th:if="${hopDong.loaiHopDong != 'Mua'}">
@@ -97,7 +106,10 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="text-muted small" th:text="#{hd.form.ngay_ket_thuc}">Ngày kết thúc</label>
-                                <p class="fw-bold" th:text="${hopDong.ngayKetThuc != null ? #temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy') : #{hd.chitiet.khong_co_hop_dong_mua}}">-</p>
+                                <p class="fw-bold">
+                                    <span th:if="${hopDong.ngayKetThuc != null}" th:text="${#temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy')}"></span>
+                                    <span th:unless="${hopDong.ngayKetThuc != null}" th:text="#{hd.chitiet.khong_co_hop_dong_mua}"></span>
+                                </p>
                             </div>
                         </div>
                     </div>

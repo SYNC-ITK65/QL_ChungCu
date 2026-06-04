@@ -22,78 +22,13 @@ public class DichVuController {
 
     @Autowired
     private DichVuService dichVuService;
-    @Autowired
-    private DatDichVuService datDichVuService;
 
     // 1. Hiển thị danh sách dịch vụ
     // Phục vụ cho menu: <a href="/admin/dich-vu" class="nav-link text-white">🛠️ Quản lý Dịch vụ</a>
     @GetMapping
-    public String danhSachDichVu(Model model,
-                                 @RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
-                                 @RequestParam(required = false) String tuKhoa,
-                                 @RequestParam(required = false) String trangThai) {
+    public String danhSachDichVu(Model model) {
         model.addAttribute("danhSachDichVu", dichVuService.layTatCaDichVu());
-        
-        Page<DatDichVu> trangDuLieu;
-        if ((tuKhoa != null && !tuKhoa.trim().isEmpty()) || (trangThai != null && !trangThai.trim().isEmpty())) {
-            trangDuLieu = datDichVuService.timKiemDonDatDichVu(tuKhoa, trangThai, page, size);
-        } else {
-            trangDuLieu = datDichVuService.layTatCaDonDatDichVu(page, size);
-        }
-        
-        model.addAttribute("danhSachDonDat", trangDuLieu.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", trangDuLieu.getTotalPages());
-        model.addAttribute("size", size);
-        model.addAttribute("tuKhoa", tuKhoa);
-        model.addAttribute("trangThai", trangThai);
-        
         return "admin/dich_vu_list"; // File view: templates/admin/dich_vu_list.html
-    }
-
-    @GetMapping("/don-dat/duyet/{id}")
-    public String duyetDonDatDichVu(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            datDichVuService.duyetDonDatDichVu(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã duyệt đăng ký dịch vụ thành công.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi duyệt đăng ký dịch vụ: " + e.getMessage());
-        }
-        return "redirect:/admin/dich-vu";
-    }
-
-    @GetMapping("/don-dat/tu-choi/{id}")
-    public String tuChoiDonDatDichVu(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            datDichVuService.tuChoiDonDatDichVu(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã từ chối đăng ký dịch vụ.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi từ chối đăng ký dịch vụ: " + e.getMessage());
-        }
-        return "redirect:/admin/dich-vu";
-    }
-
-    @GetMapping("/don-dat/huy-duyet/{id}")
-    public String huyDuyetDonDatDichVu(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            datDichVuService.huyDuyetDonDatDichVu(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã hủy duyệt đăng ký dịch vụ.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi hủy duyệt đăng ký dịch vụ: " + e.getMessage());
-        }
-        return "redirect:/admin/dich-vu";
-    }
-
-    @GetMapping("/don-dat/sua/{id}")
-    public String suaLaiTrangThaiChoDuyet(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            datDichVuService.suaLaiTrangThaiChoDuyet(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã chuyển đơn về trạng thái Chờ duyệt.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi sửa trạng thái đăng ký dịch vụ: " + e.getMessage());
-        }
-        return "redirect:/admin/dich-vu";
     }
 
     // 2. Hiển thị form tạo mới dịch vụ
@@ -127,19 +62,5 @@ public class DichVuController {
     public String xoaDichVu(@PathVariable("id") Long id) {
         dichVuService.xoaDichVu(id);
         return "redirect:/admin/dich-vu";
-    }
-
-    @GetMapping("/don-dat/xuat-excel")
-    public ResponseEntity<byte[]> xuatExcelDonDat(@RequestParam(required = false) String tuKhoa,
-                                                  @RequestParam(required = false) String trangThai) {
-        byte[] bytes = datDichVuService.xuatExcelDonDatDichVu(tuKhoa, trangThai);
-
-        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        String filename = "danh_sach_dang_ky_dich_vu_" + ts + ".xlsx";
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                .body(bytes);
     }
 }
