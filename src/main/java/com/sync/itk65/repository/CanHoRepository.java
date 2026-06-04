@@ -15,6 +15,17 @@ public interface CanHoRepository extends JpaRepository<CanHo, Long> {
 
        Optional<CanHo> findByMaCanHo(String maCanHo);
 
+       /**
+        * Lấy danh sách căn hộ có ít nhất một cư dân đang ở (trangThai LIKE 'Đang Ở').
+        * Dùng native query để tránh vấn đề collation Unicode tiếng Việt trên SQL Server.
+        * Dùng cho tạo chỉ số hàng loạt và form tạo chỉ số thủ công.
+        */
+       @Query(value = "SELECT DISTINCT c.* FROM can_ho c " +
+              "JOIN cu_dan cd ON cd.ma_can_ho = c.id " +
+              "WHERE cd.trang_thai LIKE N'Đang Ở' OR cd.trang_thai LIKE N'Đang ở'",
+              nativeQuery = true)
+       java.util.List<CanHo> findCanHoCoDanDangO();
+
        // Lấy tổng số lượng tất cả căn hộ trong hệ thống
        @Query("SELECT COUNT(canHo) FROM CanHo canHo")
        long countTotalCanHo();

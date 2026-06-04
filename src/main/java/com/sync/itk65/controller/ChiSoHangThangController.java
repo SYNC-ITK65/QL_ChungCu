@@ -65,7 +65,8 @@ public class ChiSoHangThangController {
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
         model.addAttribute("chiSo", new ChiSoHangThang());
-        model.addAttribute("danhSachCanHo", canHoRepository.findAll());
+        // Chỉ hiển thị căn hộ có cư dân đang ở
+        model.addAttribute("danhSachCanHo", canHoRepository.findCanHoCoDanDangO());
         return "admin/chi_so_form";
     }
 
@@ -87,8 +88,15 @@ public class ChiSoHangThangController {
 
     // Xóa chỉ số
     @GetMapping("/xoa/{id}")
-    public String xoaChiSo(@PathVariable("id") Long id) {
-        chiSoHangThangService.xoaChiSo(id);
+    public String xoaChiSo(@PathVariable("id") Long id, RedirectAttributes ra) {
+        try {
+            chiSoHangThangService.xoaChiSo(id);
+            ra.addFlashAttribute("thongBaoThanhCong", "Đã xóa chỉ số thành công.");
+        } catch (IllegalStateException e) {
+            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xóa chỉ số: " + e.getMessage());
+        }
         return "redirect:/admin/chi-so";
     }
 
@@ -157,4 +165,4 @@ public class ChiSoHangThangController {
 
         return "admin/chi_so_hang_loat";
     }
-}
+}
