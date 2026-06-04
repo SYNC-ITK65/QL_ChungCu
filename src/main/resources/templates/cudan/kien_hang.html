@@ -57,8 +57,10 @@
                         <div th:if="${kh.trangThai != null && kh.trangThai.contains('Đã')}" class="text-success mb-1" th:text="#{kh.user.da_nhan}">
                             ✅ Đã nhận thành công
                         </div>
-                        <span class="badge" th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã')) ? 'bg-warning text-dark' : 'bg-success'}"
-                              th:text="${kh.trangThai}"></span>
+                        <span class="badge" th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã')) ? 'bg-warning text-dark' : 'bg-success'}">
+                            <th:block th:if="${kh.trangThai == 'Chờ nhận'}" th:text="#{kh.ds.cho_nhan}">Chờ nhận</th:block>
+                            <th:block th:if="${kh.trangThai == 'Đã nhận'}" th:text="#{kh.ds.da_nhan}">Đã nhận</th:block>
+                        </span>
                     </div>
                 </div>
             </div>

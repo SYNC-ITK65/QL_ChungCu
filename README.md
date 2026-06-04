@@ -21,8 +21,6 @@ Dự án **QL_ChungCu** là phần mềm quản lý chung cư toàn diện, đư
 
 ## 🌟 Tính năng nổi bật
 
-## 🌟 Tính năng nổi bật
-
 ### 👨‍💼 Dành cho Ban Quản Lý (Admin)
 * **Quản lý Căn hộ & Cư dân:** Theo dõi trạng thái căn hộ, cập nhật thông tin chủ hộ, quản lý nhân khẩu và thông tin liên hệ.
 * **Quản lý Tài chính:** Lập hóa đơn định kỳ, theo dõi trạng thái thanh toán chi tiết của từng hộ, quản lý lịch sử thanh toán.

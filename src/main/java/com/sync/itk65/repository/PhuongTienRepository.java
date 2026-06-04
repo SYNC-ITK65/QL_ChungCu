@@ -22,7 +22,7 @@ public interface PhuongTienRepository extends JpaRepository<PhuongTien, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE PhuongTien p SET p.trangThai = 'Chờ duyệt' WHERE p.trangThai IS NULL OR TRIM(p.trangThai) = '' OR p.trangThai = 'Đăng ký mới'")
+    @Query(value = "UPDATE phuong_tien SET trang_thai = N'Chờ duyệt' WHERE trang_thai IS NULL OR TRIM(trang_thai) = '' OR trang_thai = N'Đăng ký mới'", nativeQuery = true)
     int chuanHoaTrangThaiChoDuyet();
     @Query("SELECT DISTINCT p FROM PhuongTien p LEFT JOIN p.canHo ch LEFT JOIN ch.danhSachCuDan c WHERE " +
             "(:tuKhoa IS NULL OR LOWER(p.bienSoXe) LIKE LOWER(:tuKhoa) OR LOWER(ch.maCanHo) LIKE LOWER(:tuKhoa) OR LOWER(c.hoTen) LIKE LOWER(:tuKhoa)) AND " +

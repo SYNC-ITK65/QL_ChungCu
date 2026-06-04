@@ -16,7 +16,13 @@ import java.util.List;
 public interface DatDichVuRepository extends JpaRepository<DatDichVu, Long> {
     Page<DatDichVu> findAllByOrderByNgayDatDesc(Pageable pageable);
 
-    @Query("SELECT d FROM DatDichVu d WHERE d.cuDan.canHo.id = :canHoId AND MONTH(d.ngayDat) = :thang AND YEAR(d.ngayDat) = :nam AND d.trangThai IN ('Đã duyệt', 'Đã sử dụng', 'Đã hoàn thành') ORDER BY d.ngayDat DESC")
+    @Query(value = "SELECT ddv.* FROM dat_dich_vu ddv " +
+                   "INNER JOIN cu_dan c ON ddv.cu_dan_id = c.id " +
+                   "WHERE c.can_ho_id = :canHoId " +
+                   "AND MONTH(ddv.ngay_dat) = :thang " +
+                   "AND YEAR(ddv.ngay_dat) = :nam " +
+                   "AND ddv.trang_thai IN (N'Đã duyệt', N'Đã sử dụng', N'Đã hoàn thành') " +
+                   "ORDER BY ddv.ngay_dat DESC", nativeQuery = true)
     List<DatDichVu> findDichVuCuaCanHoTrongThang(@Param("canHoId") Long canHoId, @Param("thang") int thang, @Param("nam") int nam);
 
     // Dùng @Query để lấy lịch sử đặt dịch vụ, sắp xếp ngày mới nhất lên đầu
@@ -33,6 +39,6 @@ public interface DatDichVuRepository extends JpaRepository<DatDichVu, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE DatDichVu d SET d.trangThai = 'Chờ duyệt' WHERE d.trangThai IS NULL OR TRIM(d.trangThai) = '' OR d.trangThai = 'Đăng ký mới'")
+    @Query(value = "UPDATE dat_dich_vu SET trang_thai = N'Chờ duyệt' WHERE trang_thai IS NULL OR TRIM(trang_thai) = '' OR trang_thai = N'Đăng ký mới'", nativeQuery = true)
     int chuanHoaTrangThaiChoDuyet();
 }

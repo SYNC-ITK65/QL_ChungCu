@@ -48,9 +48,9 @@
 
     <div class="card shadow-sm border-0">
       <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold mb-0"><i class="fas fa-history"></i> LỊCH SỬ BÌNH CHỌN</h5>
+        <h5 class="fw-bold mb-0"><i class="fas fa-history"></i> <span th:text="#{ks.chitiet.lich_su_binh_chon}" th:remove="tag">LỊCH SỬ BÌNH CHỌN</span></h5>
         <a th:href="@{/admin/khao-sat/chi-tiet/{id}/xuat-excel(id=${khaoSat.id}, tuKhoa=${tuKhoa}, luaChonId=${luaChonId})}" class="btn btn-success btn-sm fw-bold">
-          <i class="fas fa-file-excel"></i> Xuất Excel
+          <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
         </a>
       </div>
       <div class="card-body">
@@ -78,10 +78,10 @@
           <table class="table table-striped table-hover align-middle mb-0 no-paging">
             <thead class="table-dark">
             <tr>
-              <th class="ps-4">Họ tên Cư dân</th>
-              <th>Mã Căn Hộ (Phòng)</th>
-              <th>Phương án đã chọn</th>
-              <th>Thời gian Vote</th>
+              <th class="ps-4" th:text="#{ks.chitiet.ho_ten_cu_dan}">Họ tên Cư dân</th>
+              <th th:text="#{hdon.form.can_ho}">Mã Căn Hộ (Phòng)</th>
+              <th th:text="#{ks.chitiet.phuong_an_da_chon}">Phương án đã chọn</th>
+              <th th:text="#{ks.chitiet.thoi_gian_vote}">Thời gian Vote</th>
             </tr>
             </thead>
             <tbody>

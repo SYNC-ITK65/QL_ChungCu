@@ -46,7 +46,7 @@
                                 <input type="datetime-local" name="thoiGianDuKien" th:value="${oldThoiGian}" class="form-control" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Thời gian dự kiến đi <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold"><span th:text="#{kt.ui.thoi_gian_du_kien_di}" th:remove="tag">Thời gian dự kiến đi </span><span class="text-danger">*</span></label>
                                 <input type="datetime-local" name="ngayDi" th:value="${oldNgayDi}" class="form-control" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 fw-bold" th:text="#{kt.ui.gui_dang_ky}">Gửi đăng ký</button>
@@ -68,7 +68,7 @@
                                 <th th:text="#{chung.cccd}">CMND/CCCD</th>
                                 <th th:text="#{kt.ui.bien_so_xe}">Biển số xe</th>
                                 <th th:text="#{kt.ui.tg_du_kien_den}">TG Dự kiến đến</th>
-                                <th>TG Dự kiến đi</th>
+                                <th th:text="#{kt.ui.tg_du_kien_di}">TG Dự kiến đi</th>
                                 <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
                                 <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
                             </tr>
@@ -118,7 +118,7 @@
                                                             <input type="datetime-local" name="thoiGianDuKien" class="form-control" th:value="${khach.thoiGianDuKien}" required>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label class="form-label fw-bold">Thời gian dự kiến đi</label>
+                                                            <label class="form-label fw-bold" th:text="#{kt.ui.thoi_gian_du_kien_di}">Thời gian dự kiến đi</label>
                                                             <input type="datetime-local" name="ngayDi" class="form-control" th:value="${khach.ngayDi}" required>
                                                         </div>
                                                     </div>

@@ -11,10 +11,10 @@ import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface PhanAnhRepository extends JpaRepository<PhanAnh, Long> {
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE LOWER(p.trangThai) LIKE 'chờ%'")
+    @org.springframework.data.jpa.repository.Query(value = "SELECT COUNT(*) FROM phan_anh WHERE LOWER(trang_thai) LIKE N'chờ%'", nativeQuery = true)
     long countChoXuLy();
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) FROM PhanAnh p WHERE LOWER(p.trangThai) LIKE 'đang%'")
+    @org.springframework.data.jpa.repository.Query(value = "SELECT COUNT(*) FROM phan_anh WHERE LOWER(trang_thai) LIKE N'đang%'", nativeQuery = true)
     long countDangXuLy();
     List<PhanAnh> findByCanHoIdOrderByNgayGuiDesc(Long canHoId);
     @Query("SELECT p FROM PhanAnh p WHERE " +

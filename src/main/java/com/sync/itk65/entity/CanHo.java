@@ -147,6 +147,23 @@ public class CanHo {
         return "ch.tt.trong";
     }
 
+    @Transient
+    public String getLoaiHienThi() {
+        if ("Căn hộ tiêu chuẩn".equalsIgnoreCase(this.loai)) {
+            return "ch.loai.tieu_chuan";
+        }
+        if ("Studio".equalsIgnoreCase(this.loai)) {
+            return "ch.loai.studio";
+        }
+        if ("Penthouse".equalsIgnoreCase(this.loai)) {
+            return "ch.loai.penthouse";
+        }
+        if ("Duplex".equalsIgnoreCase(this.loai)) {
+            return "ch.loai.duplex";
+        }
+        return null;
+    }
+
     public void setMaCanHo(String maCanHo) {
         this.maCanHo = maCanHo;
     }

@@ -15,7 +15,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
                 <h2 th:text="#{pa.ds.danh_sach_cu_dan_pha}" class="mb-0">Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</h2>
                 <a th:href="@{/admin/phan-anh/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success fw-bold">
-                    <i class="fas fa-file-excel"></i> Xuất Excel
+                    <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
                 </a>
             </div>
             <form method="get" action="/admin/phan-anh" class="row g-3 mb-4">

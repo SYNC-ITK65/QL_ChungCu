@@ -15,7 +15,7 @@
       <h2 class="text-primary fw-bold"><i class="fas fa-tasks"></i><span th:text="#{ks.ds.quan_ly_khao_sat}" th:remove="tag"> Quản lý Khảo Sát</span></h2>
       <div>
         <a th:href="@{/admin/khao-sat/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success">
-          <i class="fas fa-file-excel"></i> Xuất Excel
+          <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
         </a>
         <a th:href="@{/admin/khao-sat/tao-moi}" class="btn btn-primary">
           <i class="fas fa-plus"></i><span th:text="#{ks.ds.tao_khao_sat_moi}" th:remove="tag"> Tạo khảo sát mới

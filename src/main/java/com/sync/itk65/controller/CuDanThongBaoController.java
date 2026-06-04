@@ -47,6 +47,7 @@ public class CuDanThongBaoController {
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("tieuDeTrang", "Bảng tin chung");
+        model.addAttribute("tieuDeTrangKey", "tb.loai.tin_tuc");
         return "cudan/bang_tin";
     }
 
@@ -75,6 +76,7 @@ public class CuDanThongBaoController {
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("tieuDeTrang", "Cẩm nang cư dân");
+        model.addAttribute("tieuDeTrangKey", "tb.ds.cam_nang_cu_dan");
         return "cudan/cam_nang";
     }
 
