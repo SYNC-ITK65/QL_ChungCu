@@ -49,7 +49,10 @@
                                 <small class="text-muted" th:text="${pa.noiDung}"></small>
                             </td>
                             <td>
-                                    <span th:text="${pa.trangThai}" th:classappend="${pa.trangThai == 'Đã xong' ? 'badge bg-success' : (pa.trangThai == 'Đang xử lý' ? 'badge bg-warning text-dark' : 'badge bg-secondary')}">
+                                    <span th:classappend="${pa.trangThai == 'Đã xong' ? 'badge bg-success' : (pa.trangThai == 'Đang xử lý' ? 'badge bg-warning text-dark' : 'badge bg-secondary')}">
+                                        <th:block th:if="${pa.trangThai == 'Chờ xử lý'}" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</th:block>
+                                        <th:block th:if="${pa.trangThai == 'Đang xử lý'}" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</th:block>
+                                        <th:block th:if="${pa.trangThai == 'Đã xong'}" th:text="#{pa.form.da_xong}">Đã xong</th:block>
                                     </span>
                             </td>
                             <td>

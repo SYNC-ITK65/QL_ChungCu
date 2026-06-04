@@ -90,8 +90,9 @@
                             <td th:text="${kh.nguoiNhan}">Nguyễn Văn A</td>
                             <td th:text="${kh.ngayNhan}">2024-03-20</td>
                             <td>
-                                <span class="badge status-badge" th:classappend="${kh.trangThai != null &amp;&amp; (kh.trangThai.contains('Đã') || kh.trangThai.contains('nhận') &amp;&amp; !kh.trangThai.contains('Chờ')) ? 'bg-success' : 'bg-warning text-dark'}" th:text="${kh.trangThai}">
-                                    Chờ nhận
+                                <span class="badge status-badge" th:classappend="${kh.trangThai != null &amp;&amp; (kh.trangThai.contains('Đã') || kh.trangThai.contains('nhận') &amp;&amp; !kh.trangThai.contains('Chờ')) ? 'bg-success' : 'bg-warning text-dark'}">
+                                    <th:block th:if="${kh.trangThai == 'Chờ nhận'}" th:text="#{kh.ds.cho_nhan}">Chờ nhận</th:block>
+                                    <th:block th:if="${kh.trangThai == 'Đã nhận'}" th:text="#{kh.ds.da_nhan}">Đã nhận</th:block>
                                 </span>
                             </td>
                             <td>

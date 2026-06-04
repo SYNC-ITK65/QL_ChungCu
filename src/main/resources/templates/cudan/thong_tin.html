@@ -36,7 +36,7 @@
                     <h4 class="text-primary"><span th:text="#{tb.ui.phong}" th:remove="tag">Phòng </span><span th:text="${cuDan.canHo.maCanHo}"></span></h4>
                     <p><strong th:text="#{ch.chitiet.tang}">Tầng:</strong> <span th:text="${cuDan.canHo.tang}"></span></p>
                     <p><strong th:text="#{ch.chitiet.dien_tich}">Diện tích:</strong> <span th:text="|${cuDan.canHo.dienTich} #{chung.don_vi_m2}|"></span></p>
-                    <p><strong th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</strong> <span th:text="${cuDan.canHo.loai}"></span></p>
+                    <p><strong th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</strong> <span th:text="${cuDan.canHo.loaiHienThi != null ? #messages.msg(cuDan.canHo.loaiHienThi) : cuDan.canHo.loai}"></span></p>
                 </div>
                 <div class="card-body text-danger" th:if="${cuDan.canHo == null}" th:text="#{tb.ui.ban_chua_duoc_phan_b}">
                     Bạn chưa được phân bổ vào căn hộ nào. Vui lòng liên hệ Ban Quản Lý.

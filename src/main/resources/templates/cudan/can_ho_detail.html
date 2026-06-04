@@ -33,7 +33,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3 fw-bold" th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</div>
-                    <div class="col-sm-9" th:text="${canHo.loai}">-</div>
+                    <div class="col-sm-9" th:text="${canHo.loaiHienThi != null ? #messages.msg(canHo.loaiHienThi) : canHo.loai}">-</div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-3 fw-bold" th:text="#{hd.detail.trang_thai}">Trạng thái:</div>

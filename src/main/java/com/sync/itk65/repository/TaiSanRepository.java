@@ -14,10 +14,12 @@ import java.util.List;
 @Repository
 public interface TaiSanRepository extends JpaRepository<TaiSan, Long> {
 
-    @Query("SELECT t FROM TaiSan t WHERE t.ngayBaoTriTiepTheo <= :date OR t.tinhTrang = 'Đang hỏng'")
+    @Query(value = "SELECT * FROM tai_san WHERE ngay_bao_tri_tiep_theo <= :date OR tinh_trang = N'Đang hỏng'", nativeQuery = true)
     List<TaiSan> findAlertAssets(@Param("date") LocalDate date);
 
-    @Query("SELECT t FROM TaiSan t WHERE t.ngayBaoTriTiepTheo <= :date OR t.tinhTrang = 'Đang hỏng'")
+    @Query(value = "SELECT * FROM tai_san WHERE ngay_bao_tri_tiep_theo <= :date OR tinh_trang = N'Đang hỏng'",
+           countQuery = "SELECT COUNT(*) FROM tai_san WHERE ngay_bao_tri_tiep_theo <= :date OR tinh_trang = N'Đang hỏng'",
+           nativeQuery = true)
     Page<TaiSan> findAlertAssets(@Param("date") LocalDate date, Pageable pageable);
 
     List<TaiSan> findByTinhTrang(String tinhTrang);

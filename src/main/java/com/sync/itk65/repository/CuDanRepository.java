@@ -49,6 +49,6 @@ public interface CuDanRepository extends JpaRepository<CuDan, Long> {
     List<CuDan> layTatCaCuDanTheoCanHo(@Param("canHoId") Long canHoId);
 
     // Đếm tổng số lượng cư dân đang có trạng thái bắt đầu bằng chữ 'ĐANG' (ví dụ: 'Đang ở')
-    @Query("SELECT COUNT(cuDan) FROM CuDan cuDan WHERE UPPER(cuDan.trangThai) LIKE 'ĐANG%'")
+    @Query(value = "SELECT COUNT(*) FROM cu_dan WHERE UPPER(trang_thai) LIKE N'ĐANG%'", nativeQuery = true)
     long countResidentResiding();
 }
