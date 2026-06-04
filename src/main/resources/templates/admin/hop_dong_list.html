@@ -48,10 +48,10 @@
                         <label class="form-label" th:text="#{hd.ds.loc_trang_thai}">Trạng thái</label>
                         <select class="form-select" name="trangThai">
                             <option value="" th:text="#{hd.ds.loc_trang_thai_tat_ca}">-- Tất cả --</option>
-                            <option value="ACTIVE" th:selected="${trangThai == 'ACTIVE'}">Còn hạn</option>
-                            <option value="EXPIRED" th:selected="${trangThai == 'EXPIRED'}">Hết hạn</option>
-                            <option value="TERMINATED" th:selected="${trangThai == 'TERMINATED'}">Thanh lý</option>
-                            <option value="DRAFT" th:selected="${trangThai == 'DRAFT'}">Nháp</option>
+                            <option value="ACTIVE" th:selected="${trangThai == 'ACTIVE'}" th:text="#{hd.trang_thai.active}">Còn hạn</option>
+                            <option value="EXPIRED" th:selected="${trangThai == 'EXPIRED'}" th:text="#{hd.trang_thai.expired}">Hết hạn</option>
+                            <option value="TERMINATED" th:selected="${trangThai == 'TERMINATED'}" th:text="#{hd.trang_thai.terminated}">Thanh lý</option>
+                            <option value="DRAFT" th:selected="${trangThai == 'DRAFT'}" th:text="#{hd.trang_thai.draft}">Nháp</option>
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
@@ -96,10 +96,10 @@
                 <td th:text="${hd.ngayKetThuc != null ? #temporals.format(hd.ngayKetThuc, 'dd/MM/yyyy') : ''}"></td>
                 <td th:text="${hd.tienThue != null} ? |${#numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}| : |0 #{chung.don_vi_vnd_symbol}|"></td>
                 <td>
-                    <span th:if="${hd.trangThai == 'ACTIVE'}" class="badge bg-success">Còn hạn</span>
-                    <span th:if="${hd.trangThai == 'EXPIRED'}" class="badge bg-danger">Hết hạn</span>
-                    <span th:if="${hd.trangThai == 'TERMINATED'}" class="badge bg-secondary">Thanh lý</span>
-                    <span th:if="${hd.trangThai == 'DRAFT'}" class="badge bg-warning">Nháp</span>
+                    <span th:if="${hd.trangThai == 'ACTIVE'}" class="badge bg-success" th:text="#{hd.trang_thai.active}">Còn hạn</span>
+                    <span th:if="${hd.trangThai == 'EXPIRED'}" class="badge bg-danger" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
+                    <span th:if="${hd.trangThai == 'TERMINATED'}" class="badge bg-secondary" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
+                    <span th:if="${hd.trangThai == 'DRAFT'}" class="badge bg-warning" th:text="#{hd.trang_thai.draft}">Nháp</span>
                     <span th:if="${hd.trangThai != 'ACTIVE' and hd.trangThai != 'EXPIRED' and hd.trangThai != 'TERMINATED' and hd.trangThai != 'DRAFT'}" th:text="${hd.trangThai}" class="badge bg-info"></span>
                 </td>
                 <td>

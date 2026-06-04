@@ -90,25 +90,26 @@ public class HoaDonController {
     // Xử lý lưu hóa đơn khi bấm nút Lưu
     @PostMapping("/luu")
     public String luuHoaDon(@RequestParam("ngayPhatHanh") String ngayPhatHanhStr,
-                            @RequestParam("ngayDenHan") String ngayDenHanStr,
+                            @RequestParam("soNgay") Integer soNgay,
                             @RequestParam("canHoId") Long canHoId) {
         try {
-            System.out.println("DEBUG: Creating invoice with dates: " + ngayPhatHanhStr + " to " + ngayDenHanStr + " for apartment ID: " + canHoId);
+            System.out.println("DEBUG: Creating invoice with issue date: " + ngayPhatHanhStr + ", term: " + soNgay + " days, for apartment ID: " + canHoId);
             
             // Validate inputs
             if (ngayPhatHanhStr == null || ngayPhatHanhStr.trim().isEmpty()) {
                 throw new RuntimeException("Vui lòng chọn ngày phát hành");
             }
-            if (ngayDenHanStr == null || ngayDenHanStr.trim().isEmpty()) {
-                throw new RuntimeException("Vui lòng chọn ngày đến hạn");
+            if (soNgay == null) {
+                throw new RuntimeException("Vui lòng chọn hạn thanh toán");
             }
             if (canHoId == null) {
                 throw new RuntimeException("Vui lòng chọn căn hộ");
             }
             
             HoaDon hoaDon = new HoaDon();
-            hoaDon.setNgayPhatHanh(LocalDate.parse(ngayPhatHanhStr));
-            hoaDon.setNgayDenHan(LocalDate.parse(ngayDenHanStr));
+            LocalDate ngayPhatHanh = LocalDate.parse(ngayPhatHanhStr);
+            hoaDon.setNgayPhatHanh(ngayPhatHanh);
+            hoaDon.setNgayDenHan(ngayPhatHanh.plusDays(soNgay));
 
             CanHo canHo = new CanHo();
             canHo.setId(canHoId);
@@ -136,9 +137,23 @@ public class HoaDonController {
 
     // API Xử lý khi người dùng bấm nút "Xem"
     @GetMapping("/xem/{id}")
-    public String xemHoaDon(@PathVariable("id") Long id, Model model) {
-        hoaDonService.themChiTietHoaDonVaoModel(id, model);
-        return "admin/hoa_don_chi_tiet";
+    public String xemHoaDon(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
+        try {
+            hoaDonService.themChiTietHoaDonVaoModel(id, model);
+            // Kiểm tra nếu model không có thông tin hóa đơn (service đã bắt exception nội bộ)
+            if (!model.containsAttribute("thongTinHoaDon") || model.getAttribute("thongTinHoaDon") == null) {
+                if (model.containsAttribute("errorMessage")) {
+                    ra.addFlashAttribute("thongBaoLoi", model.getAttribute("errorMessage"));
+                } else {
+                    ra.addFlashAttribute("thongBaoLoi", "Không thể tải chi tiết hóa đơn.");
+                }
+                return "redirect:/admin/hoa-don";
+            }
+            return "admin/hoa_don_chi_tiet";
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xem chi tiết hóa đơn: " + e.getMessage());
+            return "redirect:/admin/hoa-don";
+        }
     }
 
     // API Xử lý khi người dùng bấm nút "Sửa"
@@ -176,13 +191,14 @@ public class HoaDonController {
 
     // API Xử lý khi người dùng bấm nút "Xóa"
     @GetMapping("/xoa/{id}")
-    public String xoaHoaDon(@PathVariable("id") Long id) {
+    public String xoaHoaDon(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             hoaDonService.xoaHoaDon(id);
-            return "redirect:/admin/hoa-don";
-        } catch (RuntimeException e) {
-            return "redirect:/admin/hoa-don?error=" + e.getMessage();
+            ra.addFlashAttribute("thongBaoThanhCong", "Xóa hóa đơn thành công.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
         }
+        return "redirect:/admin/hoa-don";
     }
 
     // ============================================================

@@ -28,7 +28,7 @@
                     <td th:text="${tt.id}">1</td>
                     <td th:text="|#{hdon.ds.ma_hd}-${tt.hoaDon != null ? tt.hoaDon.id : ''}|"></td>
                     <td th:text="${tt.ngayThanhToan != null ? #temporals.format(tt.ngayThanhToan, 'dd/MM/yyyy') : ''}">13/04/2026</td>
-                    <td class="text-success fw-bold" th:text="${tt.soTien != null} ? |#{numbers.formatDecimal(tt.soTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></td>
+                    <td class="text-success fw-bold" th:text="${tt.soTien != null} ? |${#numbers.formatDecimal(tt.soTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|">
                         1,000,000 VNĐ
                     </td>
                     <td>

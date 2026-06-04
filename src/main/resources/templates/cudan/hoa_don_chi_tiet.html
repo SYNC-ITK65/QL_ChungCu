@@ -277,7 +277,7 @@
             <span class="row-label" th:text="#{hdon.chitiet.tien_thue_hang_thang1}">Tiền thuê hàng tháng</span>
             <span class="row-value" th:text="|${#numbers.formatDecimal(chiTietThueChungCu.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}|"></span>
         </div>
-        <div class="fee-row" th:if="${chiTietThueChungCu.ngayDonVao != null and chiTietThueChungCu.ngayDonVao > 0}">
+        <div class="fee-row" th:if="${chiTietThueChungCu.ngayDonVao != null}">
             <span class="row-label" th:text="#{hdon.chitiet.ngay_don_vao_thang_d}">Ngày dọn vào (tháng đầu)</span>
             <span class="row-value"><span th:text="#{hdon.chitiet.ngay}" th:remove="tag">Ngày </span><span th:text="${chiTietThueChungCu.ngayDonVao}"></span></span>
         </div>

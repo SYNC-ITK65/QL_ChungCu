@@ -529,6 +529,7 @@ public class HoaDonService {
         thueChungCu.put("tienThue", hopDong != null ? hopDong.getTienThue() : 0.0);
         thueChungCu.put("ngayTrongThang", hoaDon.getNgayPhatHanh().lengthOfMonth());
         thueChungCu.put("soNgayTinh", soNgayTinh);
+        thueChungCu.put("ngayDonVao", (hopDong != null && hopDong.getNgayBatDau() != null && hopDong.getNgayBatDau().isAfter(firstDayOfMonth)) ? hopDong.getNgayBatDau().getDayOfMonth() : null);
         thueChungCu.put("tienThueChungCu", Math.round(tienThueChungCu * 100.0) / 100.0);
         chiTiet.put("thueChungCu", thueChungCu);
 
@@ -611,6 +612,10 @@ public class HoaDonService {
     public void xoaHoaDon(Long id) {
         HoaDon hoaDon = hoaDonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn có ID: " + id));
+
+        if ("Đã đóng".equalsIgnoreCase(hoaDon.getTrangThaiThanhToan())) {
+            throw new RuntimeException("Hóa đơn đã thanh toán không thể xóa!");
+        }
 
         // Xóa các bản ghi thanh toán liên quan đến hóa đơn này
         List<com.sync.itk65.entity.ThanhToan> danhSachThanhToan = thanhToanRepository.findByHoaDonId(id);

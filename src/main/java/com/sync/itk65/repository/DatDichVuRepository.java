@@ -18,7 +18,7 @@ public interface DatDichVuRepository extends JpaRepository<DatDichVu, Long> {
 
     @Query(value = "SELECT ddv.* FROM dat_dich_vu ddv " +
                    "INNER JOIN cu_dan c ON ddv.cu_dan_id = c.id " +
-                   "WHERE c.can_ho_id = :canHoId " +
+                   "WHERE c.ma_can_ho = :canHoId " +
                    "AND MONTH(ddv.ngay_dat) = :thang " +
                    "AND YEAR(ddv.ngay_dat) = :nam " +
                    "AND ddv.trang_thai IN (N'Đã duyệt', N'Đã sử dụng', N'Đã hoàn thành') " +

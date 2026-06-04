@@ -66,9 +66,10 @@ public class AdminHopDongController {
     public String luuHopDong(@ModelAttribute("hopDong") HopDong hopDong,
                              @RequestParam("canHoId") Long canHoId,
                              @RequestParam("cuDanId") Long cuDanId,
+                             @RequestParam(value = "thoiHan", defaultValue = "12") int thoiHan,
                              RedirectAttributes ra) {
         try {
-            hopDongService.taoHopDong(hopDong, canHoId, cuDanId);
+            hopDongService.taoHopDong(hopDong, canHoId, cuDanId, thoiHan);
             ra.addFlashAttribute("thongBaoThanhCong", "Tạo hợp đồng thành công.");
             return "redirect:/admin/hop-dong";
         } catch (Exception e) {
@@ -135,9 +136,10 @@ public class AdminHopDongController {
                                   @ModelAttribute("hopDong") HopDong hopDong,
                                   @RequestParam("canHoId") Long canHoId,
                                   @RequestParam("cuDanId") Long cuDanId,
+                                  @RequestParam(value = "thoiHan", defaultValue = "12") int thoiHan,
                                   RedirectAttributes ra) {
         try {
-            hopDongService.capNhatHopDong(id, hopDong, canHoId, cuDanId);
+            hopDongService.capNhatHopDong(id, hopDong, canHoId, cuDanId, thoiHan);
             ra.addFlashAttribute("thongBaoThanhCong", "Cập nhật hợp đồng thành công.");
             return "redirect:/admin/hop-dong";
         } catch (Exception e) {

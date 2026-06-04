@@ -43,8 +43,12 @@
                     <input type="date" class="form-control" name="ngayPhatHanh" required readonly>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label" th:text="#{hdon.form.ngay_den_han}">Ngày Đến Hạn</label>
-                    <input type="date" class="form-control" name="ngayDenHan" required>
+                    <label class="form-label" th:text="#{hdon.form.han_thanh_toan}">Hạn thanh toán</label>
+                    <select class="form-select" name="soNgay" required>
+                        <option value="7" th:text="#{hdon.form.han_7_ngay}">7 ngày</option>
+                        <option value="14" th:text="#{hdon.form.han_14_ngay}">14 ngày</option>
+                        <option value="30" th:text="#{hdon.form.han_30_ngay}">30 ngày</option>
+                    </select>
                 </div>
             </div>
 

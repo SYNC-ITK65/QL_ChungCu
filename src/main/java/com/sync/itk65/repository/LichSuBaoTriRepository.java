@@ -12,6 +12,7 @@ import java.util.List;
 public interface LichSuBaoTriRepository extends JpaRepository<LichSuBaoTri, Long> {
 
     List<LichSuBaoTri> findByTaiSanIdOrderByNgayBaoTriDesc(Long taiSanId);
+
     Page<LichSuBaoTri> findByTaiSanIdOrderByNgayBaoTriDesc(Long taiSanId, Pageable pageable);
 
     // Xóa toàn bộ lịch sử bảo trì của một tài sản (dùng trước khi xóa tài sản)

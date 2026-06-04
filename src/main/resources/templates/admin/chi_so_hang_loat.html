@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Tạo Chỉ Số Hàng Loạt</title>
+    <title th:text="#{cs.batch.title}">Tạo Chỉ Số Hàng Loạt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -119,7 +119,7 @@
 <div id="loadingOverlay">
     <div class="text-center">
         <div class="spinner-border text-success" style="width:3rem;height:3rem;" role="status"></div>
-        <div class="mt-3 fw-semibold text-success">Đang tạo chỉ số, vui lòng chờ…</div>
+        <div class="mt-3 fw-semibold text-success" th:text="#{cs.batch.loading_text}">Đang tạo chỉ số, vui lòng chờ…</div>
     </div>
 </div>
 
@@ -132,11 +132,11 @@
         <div class="hero-card">
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                 <div>
-                    <h2><i class="bi bi-speedometer2 me-2"></i>Tạo Chỉ Số Hàng Loạt</h2>
-                    <p>Hệ thống sẽ tự động sinh chỉ số điện/nước ngẫu nhiên hợp lý cho <strong>tất cả căn hộ</strong> chưa có chỉ số trong tháng được chọn.</p>
+                    <h2><i class="bi bi-speedometer2 me-2"></i><span th:text="#{cs.batch.title}" th:remove="tag">Tạo Chỉ Số Hàng Loạt</span></h2>
+                    <p th:text="#{cs.batch.hero_desc}">Hệ thống sẽ tự động sinh chỉ số điện/nước ngẫu nhiên hợp lý cho tất cả căn hộ chưa có chỉ số trong tháng được chọn.</p>
                 </div>
                 <a th:href="@{/admin/chi-so}" class="btn btn-outline-light btn-sm align-self-start">
-                    <i class="bi bi-arrow-left me-1"></i> Quay lại
+                    <i class="bi bi-arrow-left me-1"></i> <span th:text="#{cs.batch.btn_back}">Quay lại</span>
                 </a>
             </div>
         </div>
@@ -144,44 +144,44 @@
         <!-- LỖI -->
         <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
             <i class="bi bi-exclamation-circle-fill me-2"></i>
-            <strong>Lỗi:</strong> <span th:text="${errorMessage}"></span>
+            <strong th:text="#{chung.loi}">Lỗi:</strong> <span th:text="${errorMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
         <!-- FORM -->
         <div class="form-card">
-            <div class="section-title"><i class="bi bi-calendar3 me-1"></i> Chọn tháng cần tạo chỉ số</div>
+            <div class="section-title"><i class="bi bi-calendar3 me-1"></i> <span th:text="#{cs.batch.select_month_section}" th:remove="tag">Chọn tháng cần tạo chỉ số</span></div>
 
             <div class="alert-info-custom mb-4">
-                <strong><i class="bi bi-info-circle me-1"></i> Lưu ý:</strong>
+                <strong><i class="bi bi-info-circle me-1"></i> <span th:text="#{cs.batch.note_title}">Lưu ý:</span></strong>
                 <ul>
-                    <li>Chỉ số được sinh <strong>ngẫu nhiên hợp lý</strong>: Điện <strong>80–350 kWh</strong>, Nước <strong>8–45 m³</strong>.</li>
-                    <li>Căn hộ <strong>đã có chỉ số</strong> trong tháng sẽ được <strong>bỏ qua</strong> (không ghi đè).</li>
-                    <li>Ngày ghi nhận: <strong>ngày cuối tháng</strong> (nếu tháng hiện tại thì dùng hôm nay).</li>
-                    <li>Sau khi tạo chỉ số, vào <a href="/admin/hoa-don/tao-hang-loat" class="alert-link">Tạo hóa đơn hàng loạt</a> để tạo hóa đơn.</li>
+                    <li th:text="#{cs.batch.note_range}">Chỉ số được sinh ngẫu nhiên hợp lý: Điện 80–350 kWh, Nước 8–45 m³.</li>
+                    <li th:text="#{cs.batch.note_exist}">Căn hộ đã có chỉ số trong tháng sẽ được bỏ qua (không ghi đè).</li>
+                    <li th:text="#{cs.batch.note_date}">Ngày ghi nhận: ngày cuối tháng (nếu tháng hiện tại thì dùng hôm nay).</li>
+                    <li><span th:text="#{cs.batch.note.next_step_prefix}" th:remove="tag">Sau khi tạo chỉ số, vào</span> <a href="/admin/hoa-don/tao-hang-loat" class="alert-link" th:text="#{cs.batch.result.next_step_link}">Tạo hóa đơn hàng loạt</a> <span th:text="#{cs.batch.note.next_step_suffix}" th:remove="tag"> để tạo hóa đơn.</span></li>
                 </ul>
             </div>
 
             <form th:action="@{/admin/chi-so/tao-hang-loat}" method="post" id="batchForm">
                 <div class="row g-4 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label">Tháng muốn tạo <span class="text-danger">*</span></label>
+                        <label class="form-label"><span th:text="#{cs.batch.month_to_create}" th:remove="tag">Tháng muốn tạo</span> <span class="text-danger">*</span></label>
                         <select name="thang" id="selectThang" class="form-select">
                             <option th:each="t : ${#numbers.sequence(1,12)}"
                                     th:value="${t}"
-                                    th:text="${'Tháng ' + t}"
+                                    th:text="|#{chung.thang_option} ${t}|"
                                     th:selected="${t == thangHienTai}">
                             </option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Năm <span class="text-danger">*</span></label>
+                        <label class="form-label"><span th:text="#{chung.nam}" th:remove="tag">Năm</span> <span class="text-danger">*</span></label>
                         <input type="number" name="nam" id="selectNam" class="form-control"
                                th:value="${namHienTai}" min="2020" max="2100">
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 rounded-3" style="background:#f0fff4; border:1px solid #a3cfbb;">
-                            <div class="small text-muted mb-1"><i class="bi bi-shuffle me-1"></i>Phạm vi sinh ngẫu nhiên</div>
+                            <div class="small text-muted mb-1"><i class="bi bi-shuffle me-1"></i><span th:text="#{cs.batch.random_range}" th:remove="tag">Phạm vi sinh ngẫu nhiên</span></div>
                             <div class="d-flex gap-3">
                                 <span class="badge bg-warning text-dark fs-6">⚡ 80–350 kWh</span>
                                 <span class="badge bg-info text-dark fs-6">💧 8–45 m³</span>
@@ -194,14 +194,14 @@
                 <div class="d-flex align-items-center gap-3 flex-wrap">
                     <button type="submit" class="btn-submit-main" id="btnSubmit"
                             onclick="document.getElementById('loadingOverlay').classList.add('show')">
-                        <i class="bi bi-magic me-2"></i>Tạo Chỉ Số Hàng Loạt
+                        <i class="bi bi-magic me-2"></i><span th:text="#{cs.batch.btn_submit}" th:remove="tag">Tạo Chỉ Số Hàng Loạt</span>
                     </button>
                     <a th:href="@{/admin/chi-so}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle me-1"></i>Hủy
+                        <i class="bi bi-x-circle me-1"></i><span th:text="#{chung.huy}" th:remove="tag">Hủy</span>
                     </a>
                     <div class="text-muted small ms-auto">
                         <i class="bi bi-shield-check me-1 text-success"></i>
-                        Căn hộ đã có chỉ số sẽ <strong>không bị ghi đè</strong>
+                        <span th:text="#{cs.batch.exist_no_overwrite}" th:remove="tag">Căn hộ đã có chỉ số sẽ không bị ghi đè</span>
                     </div>
                 </div>
             </form>
@@ -214,19 +214,19 @@
             <div class="stat-boxes">
                 <div class="stat-box total">
                     <div class="stat-num" th:text="${ketQua.tongCanHo}">0</div>
-                    <div class="stat-lbl">Tổng căn hộ</div>
+                    <div class="stat-lbl" th:text="#{cs.batch.stat.total_apartments}">Tổng căn hộ</div>
                 </div>
                 <div class="stat-box success">
                     <div class="stat-num" th:text="${ketQua.soThanhCong}">0</div>
-                    <div class="stat-lbl">Tạo thành công</div>
+                    <div class="stat-lbl" th:text="#{cs.batch.stat.success}">Tạo thành công</div>
                 </div>
                 <div class="stat-box warning">
                     <div class="stat-num" th:text="${ketQua.soBoQua}">0</div>
-                    <div class="stat-lbl">Bỏ qua (đã có)</div>
+                    <div class="stat-lbl" th:text="#{cs.batch.stat.skipped}">Bỏ qua (đã có)</div>
                 </div>
                 <div class="stat-box danger">
                     <div class="stat-num" th:text="${ketQua.soLoi}">0</div>
-                    <div class="stat-lbl">Lỗi</div>
+                    <div class="stat-lbl" th:text="#{cs.batch.stat.error}">Lỗi</div>
                 </div>
             </div>
 
@@ -234,12 +234,12 @@
                 <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <span>
                         <i class="bi bi-clipboard-data me-2 text-success"></i>
-                        Kết quả tạo chỉ số tháng
+                        <span th:text="#{cs.batch.result.title}" th:remove="tag">Kết quả tạo chỉ số tháng</span>
                         <span class="text-success fw-bold" th:text="${thang + '/' + nam}">6/2026</span>
                     </span>
                     <a th:href="@{/admin/chi-so(thang=${thang}, nam=${nam})}"
                        class="btn btn-sm btn-success">
-                        <i class="bi bi-eye me-1"></i>Xem chỉ số tháng này
+                        <i class="bi bi-eye me-1"></i><span th:text="#{cs.batch.result.btn_view}" th:remove="tag">Xem chỉ số tháng này</span>
                     </a>
                 </div>
 
@@ -247,8 +247,8 @@
                 <div th:if="${ketQua.soThanhCong > 0}" class="p-3 border-bottom">
                     <div class="alert alert-success py-2 px-3 rounded-3 mb-0 small">
                         <i class="bi bi-check-circle-fill me-1"></i>
-                        Hệ thống đã tạo thành công <strong th:text="${ketQua.soThanhCong}">0</strong>
-                        chỉ số ngẫu nhiên hợp lý cho tháng <strong th:text="${thang + '/' + nam}"></strong>.
+                        <span th:text="#{cs.batch.result.success_msg_1}" th:remove="tag">Hệ thống đã tạo thành công </span><strong th:text="${ketQua.soThanhCong}">0</strong>
+                        <span th:text="#{cs.batch.result.success_msg_2}" th:remove="tag"> chỉ số ngẫu nhiên hợp lý cho tháng </span><strong th:text="${thang + '/' + nam}"></strong>.
                     </div>
                 </div>
 
@@ -257,21 +257,21 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="fw-semibold text-warning">
                             <i class="bi bi-skip-forward-fill me-1"></i>
-                            Bỏ qua – đã có chỉ số (<span th:text="${ketQua.soBoQua}">0</span> căn hộ)
+                            <span th:text="#{cs.batch.result.skipped_prefix}" th:remove="tag">Bỏ qua – đã có chỉ số (</span><span th:text="${ketQua.soBoQua}">0</span><span th:text="#{cs.batch.result.skipped_suffix}" th:remove="tag"> căn hộ)</span>
                         </span>
                         <span class="detail-toggle" onclick="toggleDetail('detailBoQua')">
-                            <i class="bi bi-chevron-down" id="iconBoQua"></i> Chi tiết
+                            <i class="bi bi-chevron-down" id="iconBoQua"></i> <span th:text="#{cs.batch.result.btn_detail}" th:remove="tag">Chi tiết</span>
                         </span>
                     </div>
                     <div id="detailBoQua" style="display:none;">
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered table-result mb-0">
-                                <thead><tr><th style="width:50px">#</th><th>Mã căn hộ</th><th>Lý do</th></tr></thead>
+                                <thead><tr><th style="width:50px">#</th><th th:text="#{cs.batch.result.col_apartment_code}">Mã căn hộ</th><th th:text="#{cs.batch.result.col_reason}">Lý do</th></tr></thead>
                                 <tbody>
                                     <tr th:each="item, stat : ${ketQua.danhSachBoQua}">
                                         <td class="text-muted" th:text="${stat.count}"></td>
                                         <td><span class="badge-skip" th:text="${item}"></span></td>
-                                        <td class="text-muted small">Đã có chỉ số trong tháng – bỏ qua</td>
+                                        <td class="text-muted small" th:text="#{cs.batch.result.skipped_reason}">Đã có chỉ số trong tháng – bỏ qua</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -284,16 +284,16 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="fw-semibold text-danger">
                             <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                            Không tạo được (<span th:text="${ketQua.soLoi}">0</span> căn hộ)
+                            <span th:text="#{cs.batch.result.error_prefix}" th:remove="tag">Không tạo được (</span><span th:text="${ketQua.soLoi}">0</span><span th:text="#{cs.batch.result.error_suffix}" th:remove="tag"> căn hộ)</span>
                         </span>
                         <span class="detail-toggle" onclick="toggleDetail('detailLoi')">
-                            <i class="bi bi-chevron-down" id="iconLoi"></i> Chi tiết
+                            <i class="bi bi-chevron-down" id="iconLoi"></i> <span th:text="#{cs.batch.result.btn_detail}" th:remove="tag">Chi tiết</span>
                         </span>
                     </div>
                     <div id="detailLoi">
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered table-result mb-0">
-                                <thead><tr><th style="width:50px">#</th><th style="width:130px">Mã căn hộ</th><th>Nguyên nhân</th></tr></thead>
+                                <thead><tr><th style="width:50px">#</th><th style="width:130px" th:text="#{cs.batch.result.col_apartment_code}">Mã căn hộ</th><th th:text="#{cs.batch.result.col_error_cause}">Nguyên nhân</th></tr></thead>
                                 <tbody>
                                     <tr th:each="item, stat : ${ketQua.danhSachLoi}">
                                         <td class="text-muted" th:text="${stat.count}"></td>
@@ -311,16 +311,17 @@
                 <!-- KHÔNG CÓ GÌ -->
                 <div th:if="${ketQua.tongCanHo == 0}" class="p-4 text-center text-muted">
                     <i class="bi bi-inbox fs-1"></i>
-                    <p class="mt-2">Không có căn hộ nào trong hệ thống.</p>
+                    <p class="mt-2" th:text="#{cs.batch.result.no_apartments}">Không có căn hộ nào trong hệ thống.</p>
                 </div>
             </div>
 
             <!-- GỢI Ý TIẾP THEO -->
             <div th:if="${ketQua.soThanhCong > 0}" class="alert alert-info rounded-3">
                 <i class="bi bi-lightbulb me-2"></i>
-                <strong>Bước tiếp theo:</strong> Chỉ số đã được tạo. Bạn có thể
-                <a th:href="@{/admin/hoa-don/tao-hang-loat}" class="alert-link fw-bold">Tạo hóa đơn hàng loạt</a>
-                cho tháng <span th:text="${thang + '/' + nam}"></span>.
+                <strong th:text="#{cs.batch.result.next_step_title}">Bước tiếp theo:</strong>
+                <span th:text="#{cs.batch.result.next_step_text_1}">Chỉ số đã được tạo. Bạn có thể</span>
+                <a th:href="@{/admin/hoa-don/tao-hang-loat}" class="alert-link fw-bold" th:text="#{cs.batch.result.next_step_link}">Tạo hóa đơn hàng loạt</a>
+                <span th:text="#{cs.batch.result.next_step_text_2}"> cho tháng </span><span th:text="${thang + '/' + nam}"></span>.
             </div>
 
         </div><!-- /ketQua -->
@@ -346,15 +347,21 @@
         if (thangChon > thangHienTaiDate) {
             e.preventDefault();
             document.getElementById('loadingOverlay').classList.remove('show');
+            
+            var titleFuture = /*[[#{cs.batch.js.title_future}]]*/ 'Tháng tương lai';
+            var msgFuture = /*[[#{cs.batch.js.msg_future}]]*/ 'Không thể tạo chỉ số cho tháng ';
+            var msgFutureSuffix = /*[[#{cs.batch.js.msg_future_suffix}]]*/ ' vì chưa đến!';
+
             Swal.fire({
-                icon: 'warning', title: 'Tháng tương lai',
-                text: 'Không thể tạo chỉ số cho tháng ' + thang + '/' + nam + ' vì chưa đến!',
+                icon: 'warning', title: titleFuture,
+                text: msgFuture + thang + '/' + nam + msgFutureSuffix,
                 confirmButtonColor: '#27ae60'
             });
             return;
         }
     });
 
+    // Toggle detail sections
     function toggleDetail(id) {
         const el = document.getElementById(id);
         if (!el) return;

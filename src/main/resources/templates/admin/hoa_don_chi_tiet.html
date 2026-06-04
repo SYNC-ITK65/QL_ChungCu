@@ -41,7 +41,12 @@
 <div class="d-flex">
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="container-fluid p-4">
+    <div class="container-fluid p-4" th:if="${thongTinHoaDon != null}">
+        <!-- Error message -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
         <!-- Header -->
         <div class="invoice-header">
             <div class="row">
@@ -258,13 +263,13 @@
                         <td th:text="#{hdon.chitiet.so_ngay_trong_thang}">Số ngày trong tháng:</td>
                         <td class="text-end" th:text="${chiTietThueChungCu.ngayTrongThang}">30</td>
                     </tr>
-                    <tr>
+                    <tr th:if="${chiTietThueChungCu.ngayDonVao != null}">
                         <td th:text="#{hdon.chitiet.ngay_don_vao}">Ngày dọn vào:</td>
                         <td class="text-end" th:text="${chiTietThueChungCu.ngayDonVao}">20</td>
                     </tr>
                     <tr class="total-row">
                         <td><strong th:text="#{hdon.chitiet.tong_tien_thue_chung}">Tổng tiền thuê chung cư:</strong></td>
-                        <td class="text-end"><strong th:text="${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">1,666,667 VNĐ</strong></td>
+                        <td class="text-end"><strong th:text="|${#numbers.formatDecimal(chiTietThueChungCu.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">1,666,667 VNĐ</strong></td>
                     </tr>
                 </tbody></table>
             </div>
@@ -279,27 +284,27 @@
                 <table class="table table-sm">
                     <tbody><tr>
                         <td th:text="#{hdon.chitiet.tien_dien}">Tiền Điện:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienDien, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">216,000 VNĐ</td>
+                        <td class="text-end" th:text="|${#numbers.formatDecimal(tongHop.tienDien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">216,000 VNĐ</td>
                     </tr>
                     <tr>
                         <td th:text="#{hdon.chitiet.tien_nuoc}">Tiền Nước:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienNuoc, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">450,000 VNĐ</td>
+                        <td class="text-end" th:text="|${#numbers.formatDecimal(tongHop.tienNuoc, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">450,000 VNĐ</td>
                     </tr>
                     <tr>
                         <td th:text="#{hdon.chitiet.phi_quan_ly}">Phí Quản lý:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiQuanLy, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">900,000 VNĐ</td>
+                        <td class="text-end" th:text="|${#numbers.formatDecimal(tongHop.phiQuanLy, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">900,000 VNĐ</td>
                     </tr>
                     <tr th:if="${tongHop.phiXe > 0}">
                         <td th:text="#{hdon.chitiet.phi_gui_xe}">Phí Gửi Xe:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiXe, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">1,350,000 VNĐ</td>
+                        <td class="text-end" th:text="|${#numbers.formatDecimal(tongHop.phiXe, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">1,350,000 VNĐ</td>
                     </tr>
                     <tr th:if="${tongHop.phiDichVu > 0}">
                         <td th:text="#{hdon.chitiet.phi_dich_vu}">Phí Dịch Vụ:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">150,000 VNĐ</td>
+                        <td class="text-end" th:text="|${#numbers.formatDecimal(tongHop.phiDichVu, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">150,000 VNĐ</td>
                     </tr>
                     <tr th:if="${tongHop.tienThueChungCu > 0}">
                         <td th:text="#{hdon.chitiet.tien_thue_chung_cu}">Tiền Thuê Chung Cư:</td>
-                        <td class="text-end" th:text="${#numbers.formatDecimal(tongHop.tienThueChungCu, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">1,666,667 VNĐ</td>
+                        <td class="text-end" th:text="|${#numbers.formatDecimal(tongHop.tienThueChungCu, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">1,666,667 VNĐ</td>
                     </tr>
                     <tr th:if="${thongTinHoaDon.isQuaHan}" style="background:#fff3cd;">
                         <td><strong style="color:#e67e22">⚠️ Tiền phạt quá hạn (0.5%/ngày &times; <span th:text="${thongTinHoaDon.soNgayQuaHan}"></span> ngày):</strong></td>
@@ -311,7 +316,7 @@
                     </tr>
                     <tr class="grand-total" th:if="${!thongTinHoaDon.isQuaHan}">
                         <td><h5 class="mb-0" th:text="#{hdon.chitiet.tong_cong}">TỔNG CỘNG:</h5></td>
-                        <td class="text-end"><h5 class="mb-0 text-success" th:text="${#numbers.formatDecimal(tongHop.tongCong, 0, 'COMMA', 0, 'POINT') + ' ' + #{chung.don_vi_vnd}}">3,066,000 VNĐ</h5></td>
+                        <td class="text-end"><h5 class="mb-0 text-success" th:text="|${#numbers.formatDecimal(tongHop.tongCong, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|">3,066,000 VNĐ</h5></td>
                     </tr>
                 </tbody></table>
             </div>
@@ -381,5 +386,16 @@
 
     <!-- Dùng fragment Datatable chung -->
     <div th:replace="~{fragments/datatable :: scripts}"></div>
+
+    <!-- Fallback khi không có dữ liệu hóa đơn -->
+    <div class="container-fluid p-4" th:if="${thongTinHoaDon == null}">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Lỗi</h4>
+            <p th:if="${errorMessage}" th:text="${errorMessage}">Không thể tải chi tiết hóa đơn.</p>
+            <p th:unless="${errorMessage}">Không thể tải chi tiết hóa đơn. Vui lòng thử lại sau.</p>
+            <hr>
+            <a th:href="@{/admin/hoa-don}" class="btn btn-secondary">Quay về danh sách</a>
+        </div>
+    </div>
 </body>
 </html>

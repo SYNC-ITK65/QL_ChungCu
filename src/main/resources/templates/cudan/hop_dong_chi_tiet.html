@@ -24,18 +24,21 @@
                 <span th:text="${hopDong.ngayBatDau != null ? #temporals.format(hopDong.ngayBatDau, 'dd/MM/yyyy') : ''}"></span>
             </p>
             <p><strong th:text="#{hd.detail.ngay_ket_thuc}">Ngày kết thúc:</strong>
-                <span th:text="${hopDong.ngayKetThuc != null ? #temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy') : #{chung.khong_thoi_han}}"></span>
+                <span th:if="${hopDong.ngayKetThuc != null}" th:text="${#temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy')}"></span>
+                <span th:unless="${hopDong.ngayKetThuc != null}" th:text="#{chung.khong_thoi_han}"></span>
             </p>
             <p><strong th:text="#{hd.detail.tien_thue}">Tiền thuê:</strong>
-                <span th:text="${hopDong.tienThue != null} ? |#{numbers.formatDecimal(hopDong.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></span>
+                <span th:text="${hopDong.tienThue != null} ? |${#numbers.formatDecimal(hopDong.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></span>
             </p>
             <p><strong th:text="#{hd.detail.tien_coc}">Tiền cọc:</strong>
-                <span th:text="${hopDong.tienCoc != null} ? |#{numbers.formatDecimal(hopDong.tienCoc, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></span>
+                <span th:text="${hopDong.tienCoc != null} ? |${#numbers.formatDecimal(hopDong.tienCoc, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></span>
             </p>
             <p><strong th:text="#{hd.detail.trang_thai}">Trạng thái:</strong> 
-                <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success">Còn hạn</span>
-                <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-danger">Hết hạn</span>
-                <span th:if="${hopDong.trangThai != 'ACTIVE' and hopDong.trangThai != 'EXPIRED'}" th:text="${hopDong.trangThai}"></span>
+                <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success" th:text="#{hd.trang_thai.active}">Còn hạn</span>
+                <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-danger" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
+                <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="badge bg-secondary" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
+                <span th:if="${hopDong.trangThai == 'DRAFT'}" class="badge bg-warning" th:text="#{hd.trang_thai.draft}">Nháp</span>
+                <span th:if="${hopDong.trangThai != 'ACTIVE' and hopDong.trangThai != 'EXPIRED' and hopDong.trangThai != 'TERMINATED' and hopDong.trangThai != 'DRAFT'}" th:text="${hopDong.trangThai}"></span>
             </p>
         </div>
     </div>

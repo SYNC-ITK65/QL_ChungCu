@@ -12,9 +12,11 @@
   <div class="main-content p-4 w-100 bg-light">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0" th:text="#{duyet.ui.quan_ly_yeu_cau_le}">📋 Quản Lý Yêu Cầu Lễ Tân</h2>
-        <a th:href="@{/admin/duyet-yeu-cau/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success fw-bold">
-            <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
-        </a>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/duyet-yeu-cau/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success fw-bold">
+                <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
+            </a>
+        </div>
     </div>
 
     <!-- Form Tìm kiếm & Lọc -->
