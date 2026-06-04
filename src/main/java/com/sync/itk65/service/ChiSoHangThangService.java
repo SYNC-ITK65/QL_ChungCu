@@ -296,9 +296,10 @@ public class ChiSoHangThangService {
         LocalDate lastDayOfMonth  = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth());
 
         java.util.Random rng = new java.util.Random();
-        List<com.sync.itk65.entity.CanHo> tatCaCanHo = canHoRepository.findAll();
+        // Chỉ tạo chỉ số cho căn hộ có cư dân đang ở, bỏ qua căn hộ trống
+        List<com.sync.itk65.entity.CanHo> tatCaCanHo = canHoRepository.findCanHoCoDanDangO();
         if (tatCaCanHo == null || tatCaCanHo.isEmpty()) {
-            throw new IllegalArgumentException("Không có căn hộ nào trong hệ thống.");
+            throw new IllegalArgumentException("Không có căn hộ nào đang có người ở trong hệ thống.");
         }
 
         KetQuaTaoHangLoat ketQua = new KetQuaTaoHangLoat();
@@ -356,4 +357,4 @@ public class ChiSoHangThangService {
 
         return ketQua;
     }
-}
+}

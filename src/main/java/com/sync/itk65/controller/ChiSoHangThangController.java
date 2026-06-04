@@ -65,7 +65,8 @@ public class ChiSoHangThangController {
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
         model.addAttribute("chiSo", new ChiSoHangThang());
-        model.addAttribute("danhSachCanHo", canHoRepository.findAll());
+        // Chỉ hiển thị căn hộ có cư dân đang ở
+        model.addAttribute("danhSachCanHo", canHoRepository.findCanHoCoDanDangO());
         return "admin/chi_so_form";
     }
 
@@ -157,4 +158,4 @@ public class ChiSoHangThangController {
 
         return "admin/chi_so_hang_loat";
     }
-}
+}
