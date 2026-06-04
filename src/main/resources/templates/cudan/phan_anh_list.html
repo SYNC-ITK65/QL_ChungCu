@@ -47,6 +47,11 @@
                                 <strong th:text="${pa.tieuDe}"></strong>
                                 <br>
                                 <small class="text-muted" th:text="${pa.noiDung}"></small>
+                                <div th:if="${pa.hinhAnh != null}" class="mt-2">
+                                    <a th:href="${pa.hinhAnh}" target="_blank">
+                                        <img th:src="${pa.hinhAnh}" alt="Ảnh phản ánh" style="max-height: 80px; max-width: 150px; border-radius: 4px; object-fit: cover; border: 1px solid #dee2e6;"/>
+                                    </a>
+                                </div>
                             </td>
                             <td>
                                     <span th:classappend="${pa.trangThai == 'Đã xong' ? 'badge bg-success' : (pa.trangThai == 'Đang xử lý' ? 'badge bg-warning text-dark' : 'badge bg-secondary')}">

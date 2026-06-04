@@ -71,6 +71,7 @@
                             <th th:text="#{hdon.chitiet.bien_so}">Biển Số</th>
                             <th th:text="#{hdon.chitiet.loai_xe}">Loại Xe</th>
                             <th th:text="#{pt.ui.mau_xe}">Màu Xe</th>
+                            <th>Hình ảnh</th>
                             <th th:text="#{hdon.ds.bang_trang_thai}">Trạng Thái</th>
                             <th th:text="#{dv.ds.thao_tac}">Thao tác</th>
                         </tr>
@@ -82,6 +83,12 @@
                             <td th:text="${xe.bienSoXe}"></td>
                             <td th:text="${xe.loaiXe}"></td>
                             <td th:text="${xe.mauXe}"></td>
+                            <td>
+                                <a th:if="${xe.hinhAnh != null}" th:href="${xe.hinhAnh}" target="_blank">
+                                    <img th:src="${xe.hinhAnh}" alt="Ảnh xe" style="max-height: 40px; max-width: 80px; border-radius: 4px; object-fit: cover; border: 1px solid #dee2e6;"/>
+                                </a>
+                                <span th:if="${xe.hinhAnh == null}" class="text-muted small">Không có ảnh</span>
+                            </td>
 
                             <td>
                                 <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark" th:text="#{pt.ui.cho_duyet}">⏳ Chờ duyệt</span>

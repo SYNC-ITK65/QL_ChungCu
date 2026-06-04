@@ -15,7 +15,7 @@ public class PhanAnh {
     private String tieuDe;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column
     private String noiDung;
 
     @Column(nullable = false)
@@ -30,10 +30,13 @@ public class PhanAnh {
     private CanHo canHo;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column
     private String phanHoi;
 
     private LocalDateTime ngayPhanHoi;
+
+    @Column(name = "hinh_anh")
+    private String hinhAnh;
 
     // Tự động set ngày giờ hiện tại và trạng thái mặc định khi thêm mới
     @PrePersist
@@ -108,5 +111,13 @@ public class PhanAnh {
 
     public void setCanHo(CanHo canHo) {
         this.canHo = canHo;
+    }
+
+    public String getHinhAnh() {
+        return hinhAnh;
+    }
+
+    public void setHinhAnh(String hinhAnh) {
+        this.hinhAnh = hinhAnh;
     }
 }

@@ -3,13 +3,10 @@
 -- Phiên bản đồng bộ với các Entity Java (JPA/Hibernate)
 -- Thứ tự tạo bảng theo phụ thuộc khóa ngoại
 -- ============================================================
-Create database QL_ChungCu
-go
-USE QL_ChungCu
-go
-
 -- 1. NGUOI_DUNG (Bảng cha - kế thừa JOINED với cu_dan)
 --    @Entity @Table(name="nguoi_dung") @Inheritance(JOINED)
+USe QL_ChungCu;
+
 CREATE TABLE nguoi_dung (
     id                BIGINT IDENTITY(1,1) PRIMARY KEY,
     ten_dang_nhap     NVARCHAR(255) NOT NULL,
@@ -237,17 +234,11 @@ CREATE TABLE phuong_tien (
     loai        NVARCHAR(255),
     mau_sac     NVARCHAR(255),
     trang_thai  NVARCHAR(255),
+    hinh_anh    NVARCHAR(255),
     CONSTRAINT fk_pt_can_ho FOREIGN KEY (can_ho_id) REFERENCES can_ho(id)
 );
 
--- 18. DANG_KY_KHACH_THAM
---     @Entity @Table(name="dang_ky_khach_tham")
---     tenKhach      -> ten_khach (no @Column -> snake_case)
---     cmnd          -> cmnd
---     bienSoXe      -> bien_so_xe (no @Column -> snake_case)
---     thoiGianDuKien-> thoi_gian_du_kien (no @Column -> snake_case)
---     trangThai     -> trang_thai (no @Column -> snake_case)
---     thoiGianDuyet -> @Column(name="thoi_gian_duyet")
+
 CREATE TABLE dang_ky_khach_tham (
     id                  BIGINT IDENTITY(1,1) PRIMARY KEY,
     cu_dan_id           BIGINT         NOT NULL,
@@ -257,6 +248,7 @@ CREATE TABLE dang_ky_khach_tham (
     thoi_gian_du_kien   DATETIME,
     thoi_gian_duyet     DATETIME,
     trang_thai          NVARCHAR(255),
+    ngay_di             DATETIME,
     CONSTRAINT fk_dkkt_cu_dan FOREIGN KEY (cu_dan_id) REFERENCES cu_dan(id)
 );
 

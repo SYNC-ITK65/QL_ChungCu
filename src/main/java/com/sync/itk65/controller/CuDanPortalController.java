@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.validation.BindingResult;
 import org.springframework.dao.DataIntegrityViolationException;
+import com.sync.itk65.service.CloudinaryService;
+import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 
 @Controller
@@ -35,6 +37,9 @@ public class CuDanPortalController {
 
     @Autowired
     private PhuongTienService phuongTienService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     // =======================================================
     // CHỨC NĂNG 1: THÔNG TIN CÁ NHÂN & CĂN HỘ
@@ -68,10 +73,10 @@ public class CuDanPortalController {
     // 2.2 Xử lý khi cư dân bấm nút "Đăng ký"
     @PostMapping("/dich-vu/dat")
     public String datDichVu(HttpSession session,
-                            @RequestParam Long dichVuId,
-                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayDat,
-                            @RequestParam(required = false) String ghiChu,
-                            RedirectAttributes redirectAttributes) {
+            @RequestParam Long dichVuId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayDat,
+            @RequestParam(required = false) String ghiChu,
+            RedirectAttributes redirectAttributes) {
 
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
@@ -91,7 +96,8 @@ public class CuDanPortalController {
         datDichVuService.dangKyDichVu(datDichVu);
 
         // Gửi thông báo thành công
-        redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đăng ký dịch vụ thành công! Vui lòng chờ BQL duyệt.");
+        redirectAttributes.addFlashAttribute("thongBaoThanhCong",
+                "Đăng ký dịch vụ thành công! Vui lòng chờ BQL duyệt.");
         return "redirect:/cudan/dich-vu";
     }
 
@@ -117,10 +123,11 @@ public class CuDanPortalController {
     // 3.2 Xử lý khi Cư dân bấm gửi yêu cầu đăng ký xe mới
     @PostMapping("/phuong-tien/luu")
     public String dangKyXeCuDan(HttpSession session,
-                                @ModelAttribute("xeMoi") PhuongTien xe,
-                                BindingResult result,
-                                Model model,
-                                RedirectAttributes ra) {
+            @ModelAttribute("xeMoi") PhuongTien xe,
+            BindingResult result,
+            @RequestParam("fileImage") MultipartFile multipartFile,
+            Model model,
+            RedirectAttributes ra) {
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
 
@@ -132,12 +139,25 @@ public class CuDanPortalController {
             xe.setCanHo(cuDan.getCanHo());
             xe.setTrangThai("Chờ duyệt");
 
+            // Kiểm tra dung lượng ảnh (giới hạn 2MB)
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                if (multipartFile.getSize() > 2 * 1024 * 1024) {
+                    result.rejectValue("hinhAnh", "error.xe.hinhAnh.size", "Dung lượng ảnh không được vượt quá 2MB!");
+                }
+            }
+
             kiemTraLogicDangKyXe(xe, result);
 
             if (result.hasErrors()) {
                 model.addAttribute("danhSachXe", phuongTienService.layXeTheoCanHoId(cuDan.getCanHo().getId()));
                 model.addAttribute("thongBaoLoi", "Dữ liệu đăng ký không hợp lệ, vui lòng kiểm tra lại form!");
                 return "cudan/phuong-tien";
+            }
+
+            // Upload hình ảnh lên Cloudinary
+            if (multipartFile != null && !multipartFile.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadFile(multipartFile);
+                xe.setHinhAnh(imageUrl);
             }
 
             phuongTienService.dangKyXe(xe);
@@ -169,20 +189,20 @@ public class CuDanPortalController {
         if ("Ô tô".equals(xe.getLoaiXe())) {
             if (xe.getBienSoXe() == null || xe.getBienSoXe().trim().isEmpty()) {
                 result.rejectValue("bienSoXe", "error.xe", "Ô tô bắt buộc phải nhập biển số!");
-            } else if (!xe.getBienSoXe().matches("^[0-9]{2}[A-Z]\\s*-\\s*[0-9]{3}\\.[0-9]{2}$")) {
-                result.rejectValue("bienSoXe", "error.xe", "Biển số Ô tô sai định dạng (VD: 51A-123.45 hoặc 51A - 123.45)");
+            } else if (!xe.getBienSoXe().trim().matches("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9\\s.-]+$")) {
+                result.rejectValue("bienSoXe", "error.xe.bienSoXe.oto.pattern", "Biển số Ô tô phải bao gồm cả chữ và số.");
             }
-        }
-        else if ("Xe máy".equals(xe.getLoaiXe())) {
+        } else if ("Xe máy".equals(xe.getLoaiXe())) {
             if (xe.getBienSoXe() == null || xe.getBienSoXe().trim().isEmpty()) {
                 result.rejectValue("bienSoXe", "error.xe", "Xe máy bắt buộc phải nhập biển số!");
-            } else if (!xe.getBienSoXe().matches("^[0-9]{2}-[A-Z][A-Z0-9]\\s*[0-9]{3}\\.[0-9]{2}$")) {
-                result.rejectValue("bienSoXe", "error.xe", "Biển số Xe máy sai định dạng (VD: 51-AA 123.45 hoặc 51-A1 123.45)");
+            } else if (!xe.getBienSoXe().trim().matches("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9\\s.-]+$")) {
+                result.rejectValue("bienSoXe", "error.xe.bienSoXe.xemay.pattern", "Biển số Xe máy phải bao gồm cả chữ và số.");
             }
-        }
-        else if ("Xe điện".equals(xe.getLoaiXe())) {
+        } else if ("Xe điện".equals(xe.getLoaiXe())) {
             if (xe.getBienSoXe() == null || xe.getBienSoXe().trim().isEmpty()) {
                 result.rejectValue("bienSoXe", "error.xe", "Xe điện bắt buộc phải nhập biển số (hoặc số khung)!");
+            } else if (!xe.getBienSoXe().trim().matches("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9\\s.-]+$")) {
+                result.rejectValue("bienSoXe", "error.xe.bienSoXe.xedien.pattern", "Biển số hoặc số khung xe điện phải bao gồm cả chữ và số.");
             }
         }
     }
@@ -198,6 +218,7 @@ public class CuDanPortalController {
         }
         return "redirect:/cudan/phuong-tien";
     }
+
     @GetMapping("/can-ho")
     public String thongTinCanHo(HttpSession session, Model model) {
         // 1. Lấy thông tin người dùng đang đăng nhập từ Session

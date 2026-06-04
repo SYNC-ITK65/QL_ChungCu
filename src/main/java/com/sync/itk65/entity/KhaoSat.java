@@ -13,10 +13,10 @@ public class KhaoSat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tieu_de", columnDefinition = "NVARCHAR(255)", nullable = false)
+    @Column(name = "tieu_de", nullable = false)
     private String tieuDe;
 
-    @Column(name = "mo_ta", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "mo_ta")
     private String moTa;
 
     @Column(name = "thoi_gian_bat_dau", nullable = false)

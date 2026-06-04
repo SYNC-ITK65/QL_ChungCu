@@ -19,7 +19,7 @@ public class ThongBao {
 
     // Sửa TEXT thành NVARCHAR(MAX)
     @NotBlank(message = "Nội dung không được để trống")
-    @Column(name = "noi_dung", columnDefinition = "NVARCHAR(MAX)", nullable = false)
+    @Column(name = "noi_dung", nullable = false)
     private String noiDung;
 
     @Column(name = "ngay_dang")

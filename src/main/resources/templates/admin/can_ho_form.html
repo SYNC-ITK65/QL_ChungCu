@@ -88,11 +88,11 @@
                         <div class="row g-4 mt-1">
                             <div class="col-md-12">
                                 <label for="fileImage" class="form-label fw-semibold">
-                                    <i class="bi bi-image"></i> Hình ảnh căn hộ
+                                    <i class="bi bi-image"></i> <span th:text="#{ch.form.hinh_anh_can_ho}">Hình ảnh căn hộ:</span>
                                 </label>
                                 <input type="file" class="form-control" name="fileImage" id="fileImage"
                                        accept="image/png, image/jpeg">
-                                <div class="form-text">Chấp nhận file PNG, JPEG. Để trống nếu không muốn thay đổi ảnh.</div>
+                                <div class="form-text" th:text="#{ch.form.hinh_anh_can_ho_help}">Chấp nhận file PNG, JPEG. Để trống nếu không muốn thay đổi ảnh (giới hạn 2MB).</div>
                             </div>
                             <div class="col-md-12" th:if="${canHo.hinhAnh != null}">
                                 <label class="form-label fw-semibold">Ảnh hiện tại:</label>
