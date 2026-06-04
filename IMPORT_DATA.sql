@@ -191,7 +191,7 @@ INSERT INTO thong_bao (tieu_de, noi_dung, loai, ngay_dang, doi_tuong_gui, gia_tr
 (N'Sự kiện Ngày hội cư dân 2026',           N'Ban quản lý tổ chức Ngày hội cư dân vào Chủ nhật 26/05/2026. Nhiều hoạt động thú vị và quà tặng hấp dẫn!', 1, '2026-05-20 09:00:00', N'ALL', 'ALL'),
 (N'Cẩm nang: Quy định sử dụng thang máy',  N'Không chở hàng hóa cồng kềnh giờ cao điểm (7h-9h, 17h-19h). Không hút thuốc trong thang máy. Ưu tiên người già và trẻ em.', 2, '2026-04-01 08:00:00', N'ALL', 'ALL'),
 (N'Cẩm nang: Phân loại rác đúng cách',     N'Rác hữu cơ để túi xanh, rác vô cơ túi trắng. Giờ đổ rác: 6h-8h và 18h-20h. Vui lòng không để rác ngoài hành lang.', 2, '2026-04-05 08:00:00', N'ALL', 'ALL'),
-(N'Cẩm nang: Quy định sử dụng hồ bơi',    N'Giờ hoạt động: 6h00-21h00. Bắt buộc mặc đồ bơi chuyên dụng. Trẻ em dưới 12 tuổi phải có người lớn đi kèm.', 2, '2026-04-10 08:00:00', N'ALL', 'ALL'),
+(N'Cẩm nang: Quy định sử dụng hồ bơi',    N'Giờ hoạt động: 6h00-21h00. Bắt buộc mặc đồ bơi chuyên dụng. Trẻ em dưới 12 tuổi phải có người lớn đi kèm.', 2, '2026-04-10 08:00:00', N'ALL', 'ALL');
 -- Tổng: 20 thông báo | IDs: 1-20
 
 -- ============================================================
@@ -274,26 +274,26 @@ INSERT INTO kien_hang (can_ho_id, nguoi_gui, nguoi_nhan, ngay_nhan, trang_thai) 
 -- trang_thai: "Chờ xử lý", "Đang xử lý", "Đã xử lý"
 -- ============================================================
 INSERT INTO phan_anh (can_ho_id, tieu_de, noi_dung, ngay_gui, phan_hoi, ngay_phan_hoi, trang_thai, hinh_anh) VALUES
-(1,  N'Hành lang tầng 1 bẩn',         N'Hành lang tầng 1 có rác chưa được dọn từ sáng sớm, gây mùi khó chịu.',                 '2026-04-28 09:00:00', N'Đã điều nhân viên vệ sinh kiểm tra và dọn dẹp lúc 10h30.',   '2026-04-28 10:30:00', N'Đã xử lý',  'pa_001.jpg'),
-(3,  N'Tiếng ồn ban đêm từ tầng trên',N'Căn hộ tầng trên thường xuyên gây tiếng ồn sau 23h, ảnh hưởng giấc ngủ.',              '2026-04-20 23:30:00', N'Đã nhắc nhở chủ hộ tầng trên tuân thủ nội quy giờ yên lặng.','2026-04-21 09:00:00', N'Đã xử lý',  NULL),
+(1,  N'Hành lang tầng 1 bẩn',         N'Hành lang tầng 1 có rác chưa được dọn từ sáng sớm, gây mùi khó chịu.',                 '2026-04-28 09:00:00', N'Đã điều nhân viên vệ sinh kiểm tra và dọn dẹp lúc 10h30.',   '2026-04-28 10:30:00', N'Đã xong',  'pa_001.jpg'),
+(3,  N'Tiếng ồn ban đêm từ tầng trên',N'Căn hộ tầng trên thường xuyên gây tiếng ồn sau 23h, ảnh hưởng giấc ngủ.',              '2026-04-20 23:30:00', N'Đã nhắc nhở chủ hộ tầng trên tuân thủ nội quy giờ yên lặng.','2026-04-21 09:00:00', N'Đã xong',  NULL),
 (7,  N'Đèn hành lang bị nhấp nháy',   N'Đèn LED trước cửa căn hộ A1-03 nhấp nháy liên tục từ tuần trước.',                     '2026-05-01 19:00:00', NULL, NULL, N'Đang xử lý', 'pa_003.jpg'),
 (2,  N'Thang máy hay bị dừng giữa chừng', N'Thang máy Block A số 1 thường xuyên dừng và rung nhẹ giữa các tầng.',              '2026-05-03 14:00:00', N'Đã báo đơn vị bảo trì thang máy, dự kiến kiểm tra ngày 06/05.','2026-05-03 15:30:00', N'Đang xử lý','pa_004.jpg'),
-(5,  N'Bồn hoa lối vào xuống cấp',    N'Bồn hoa trang trí lối vào Block A bị vỡ và cây chết, trông mất thẩm mỹ.',             '2026-05-05 10:00:00', N'Ghi nhận, đã lên kế hoạch cải tạo cảnh quan vào tháng 6.',    '2026-05-06 08:00:00', N'Đã xử lý',  NULL),
+(5,  N'Bồn hoa lối vào xuống cấp',    N'Bồn hoa trang trí lối vào Block A bị vỡ và cây chết, trông mất thẩm mỹ.',             '2026-05-05 10:00:00', N'Ghi nhận, đã lên kế hoạch cải tạo cảnh quan vào tháng 6.',    '2026-05-06 08:00:00', N'Đã xong',  NULL),
 (4,  N'Bãi xe đầy, không có chỗ gửi', N'Tầng hầm B1 thường xuyên hết chỗ từ 18h-20h, xe phải gửi bên ngoài tốn thêm chi phí.','2026-05-07 20:00:00', N'Đang nghiên cứu thêm khu vực gửi xe phụ tại tầng hầm B2.',   '2026-05-08 09:00:00', N'Đang xử lý','pa_006.jpg'),
 (8,  N'Nước yếu vào giờ cao điểm',    N'Áp lực nước rất yếu vào buổi sáng từ 6h-8h, không đủ dùng sinh hoạt.',                '2026-05-09 07:30:00', NULL, NULL, N'Chờ xử lý',  NULL),
-(9,  N'Cửa kính sảnh bị hỏng khóa',  N'Cửa kính sảnh tầng trệt Block B không đóng được chặt, gây mất an ninh.',              '2026-05-10 11:00:00', N'Đã sửa chữa khóa cửa ngay trong ngày.',                        '2026-05-10 15:00:00', N'Đã xử lý',  'pa_008.jpg'),
-(6,  N'Hồ bơi nhiều rong rêu',        N'Hồ bơi có váng màu xanh và rong rêu ở góc bể, e ngại vệ sinh.',                      '2026-05-11 16:00:00', N'Đã xử lý nước và vệ sinh hồ bơi, hoạt động bình thường từ 13/5.','2026-05-12 08:00:00', N'Đã xử lý', 'pa_009.jpg'),
+(9,  N'Cửa kính sảnh bị hỏng khóa',  N'Cửa kính sảnh tầng trệt Block B không đóng được chặt, gây mất an ninh.',              '2026-05-10 11:00:00', N'Đã sửa chữa khóa cửa ngay trong ngày.',                        '2026-05-10 15:00:00', N'Đã xong',  'pa_008.jpg'),
+(6,  N'Hồ bơi nhiều rong rêu',        N'Hồ bơi có váng màu xanh và rong rêu ở góc bể, e ngại vệ sinh.',                      '2026-05-11 16:00:00', N'Đã xử lý nước và vệ sinh hồ bơi, hoạt động bình thường từ 13/5.','2026-05-12 08:00:00', N'Đã xong', 'pa_009.jpg'),
 (10, N'Wifi tòa nhà chập chờn',        N'Mạng wifi sảnh và hành lang thường xuyên bị mất tín hiệu vào buổi tối.',               '2026-05-12 21:00:00', NULL, NULL, N'Đang xử lý', NULL),
 (11, N'Xe đạp bị mất trong bãi xe',   N'Xe đạp điện để ở bãi xe B1 bị mất, không thấy camera ghi lại.',                       '2026-05-13 08:00:00', N'Đã xem lại camera, đang phối hợp với cơ quan công an điều tra.','2026-05-13 10:00:00', N'Đang xử lý','pa_011.jpg'),
-(12, N'Mùi hôi từ cống tầng hầm',     N'Tầng hầm B2 có mùi hôi nặng từ hệ thống cống thoát nước.',                           '2026-05-14 09:00:00', N'Đã thông cống và khử trùng hệ thống thoát nước hầm B2.',       '2026-05-15 14:00:00', N'Đã xử lý',  NULL),
-(1,  N'Trẻ em chơi gây ồn ào',        N'Nhóm trẻ em chơi đùa trong hành lang và ném đồ vật, nguy hiểm và ồn ào.',             '2026-05-14 15:00:00', N'Đã thông báo đến phụ huynh và nhắc nhở con em tuân thủ nội quy.','2026-05-15 08:00:00', N'Đã xử lý', NULL),
+(12, N'Mùi hôi từ cống tầng hầm',     N'Tầng hầm B2 có mùi hôi nặng từ hệ thống cống thoát nước.',                           '2026-05-14 09:00:00', N'Đã thông cống và khử trùng hệ thống thoát nước hầm B2.',       '2026-05-15 14:00:00', N'Đã xong',  NULL),
+(1,  N'Trẻ em chơi gây ồn ào',        N'Nhóm trẻ em chơi đùa trong hành lang và ném đồ vật, nguy hiểm và ồn ào.',             '2026-05-14 15:00:00', N'Đã thông báo đến phụ huynh và nhắc nhở con em tuân thủ nội quy.','2026-05-15 08:00:00', N'Đã xong', NULL),
 (2,  N'Phòng tập Gym máy hỏng',       N'Máy chạy bộ số 2 và ghế tạ số 1 trong phòng gym bị hỏng từ 2 tuần nay.',             '2026-05-15 10:00:00', N'Đã liên hệ đơn vị bảo trì, dự kiến sửa xong trước 20/05.',     '2026-05-15 14:00:00', N'Đang xử lý', 'pa_014.jpg'),
-(3,  N'Chó nuôi không rọ mõm',        N'Một số cư dân dắt chó lớn đi trong tòa nhà không đeo rọ mõm, gây lo ngại cho trẻ em.','2026-05-16 11:00:00', N'Đã nhắc nhở và gửi thông báo về quy định nuôi thú cưng.',      '2026-05-16 14:00:00', N'Đã xử lý',  NULL),
+(3,  N'Chó nuôi không rọ mõm',        N'Một số cư dân dắt chó lớn đi trong tòa nhà không đeo rọ mõm, gây lo ngại cho trẻ em.','2026-05-16 11:00:00', N'Đã nhắc nhở và gửi thông báo về quy định nuôi thú cưng.',      '2026-05-16 14:00:00', N'Đã xong',  NULL),
 (4,  N'Thùng rác đầy, chưa được dọn', N'Thùng rác khu vực tầng 4 đã đầy từ hôm qua nhưng chưa được dọn.',                    '2026-05-17 08:00:00', NULL, NULL, N'Chờ xử lý',  NULL),
 (5,  N'Camera hành lang tầng 5 hỏng', N'Camera an ninh tại hành lang tầng 5 Block A không hoạt động, hình ảnh bị nhiễu.',     '2026-05-17 13:00:00', N'Đã cử kỹ thuật viên kiểm tra, camera bị đứt dây cần thay mới.',  '2026-05-17 16:00:00', N'Đang xử lý','pa_017.jpg'),
-(6,  N'Cống thoát nước sân thượng',   N'Cống thoát nước sân thượng tầng mái bị tắc, nước đọng lại ứ đọng.',                   '2026-04-30 10:00:00', N'Đã thông cống và kiểm tra toàn bộ hệ thống thoát nước mái.',   '2026-05-01 09:00:00', N'Đã xử lý',  NULL),
+(6,  N'Cống thoát nước sân thượng',   N'Cống thoát nước sân thượng tầng mái bị tắc, nước đọng lại ứ đọng.',                   '2026-04-30 10:00:00', N'Đã thông cống và kiểm tra toàn bộ hệ thống thoát nước mái.',   '2026-05-01 09:00:00', N'Đã xong',  NULL),
 (7,  N'Vết nứt tường hành lang',       N'Tường hành lang tầng 3 Block A xuất hiện vết nứt dài khoảng 30cm.',                  '2026-05-18 09:00:00', NULL, NULL, N'Chờ xử lý',  'pa_019.jpg'),
-(8,  N'Ánh đèn hành lang quá tối',    N'Hành lang tầng 8 Block B thiếu sáng vào ban đêm, đi lại không an toàn.',             '2026-05-18 20:00:00', N'Đã thay bóng đèn và kiểm tra toàn bộ hệ thống chiếu sáng.',   '2026-05-19 08:00:00', N'Đã xử lý',  NULL);
+(8,  N'Ánh đèn hành lang quá tối',    N'Hành lang tầng 8 Block B thiếu sáng vào ban đêm, đi lại không an toàn.',             '2026-05-18 20:00:00', N'Đã thay bóng đèn và kiểm tra toàn bộ hệ thống chiếu sáng.',   '2026-05-19 08:00:00', N'Đã xong',  NULL);
 -- Tổng: 20 phản ánh | IDs: 1-20
 
 -- ============================================================
