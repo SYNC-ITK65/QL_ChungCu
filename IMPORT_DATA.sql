@@ -2,11 +2,9 @@
 USE QL_ChungCu;
 SET NOCOUNT ON;
 
-
+-- ===================================================================
 
 INSERT INTO nguoi_dung (ten_dang_nhap, mat_khau_ma_hoa, ho_ten, email, so_dien_thoai, vai_tro) VALUES
--- 
--- Cư dân (vai_tro = 3) - id sẽ là 1..15 (15 bản ghi)
 ('levan_thang','1234', N'Lê Văn Thắng','levan.thang@gmail.com','0987654321', 3),
 ('nguyen_mai','1234', N'Nguyễn Thị Mai','nguyen.mai@gmail.com','0987654322', 3),
 ('pham_hoang','1234', N'Phạm Minh Hoàng','pham.hoang@gmail.com','0977112233', 3),
@@ -23,9 +21,6 @@ INSERT INTO nguoi_dung (ten_dang_nhap, mat_khau_ma_hoa, ho_ten, email, so_dien_t
 ('user123','1234', N'Lê Văn Lương','user123@gmail.com','0856789012', 3),
 ('user456','1234', N'Trần Thị Mỹ Linh','user456@gmail.com','0845678901', 3);
 
-
--- IDs: 1-20
--- trang_thai lưu trong DB nhưng thực tế tính qua CuDan.trangThai
 -- ============================================================
 INSERT INTO can_ho (ma_can_ho, dien_tich, tang, loai, trang_thai, hinh_anh) VALUES
 ('A1-01', 75.5,  1,  N'Căn hộ tiêu chuẩn', N'Đã có chủ','https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
@@ -48,13 +43,7 @@ INSERT INTO can_ho (ma_can_ho, dien_tich, tang, loai, trang_thai, hinh_anh) VALU
 ('D3-01', 65.0,  3,  N'Studio',             N'Trống', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
 ('E1-01', 90.0,  1,  N'Duplex',             N'Trống', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
 ('E2-01', 75.5,  2,  N'Căn hộ tiêu chuẩn', N'Trống', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg');
--- Tổng: 20 căn hộ | IDs: 1-20
 
--- ============================================================
--- 3. CU_DAN (13 bản ghi - liên kết với 13 người dùng đầu tiên)
--- Chú ý: id phải khớp với nguoi_dung.id, ma_can_ho là khóa ngoại
--- Gán các cư dân vào căn hộ Đang Ở (can_ho_id 1-13)
--- trang_thai CuDan: "Đang Ở" / "Đã chuyển đi" (ảnh hưởng tính trangThai CanHo)
 -- ============================================================
 INSERT INTO cu_dan (id, ma_can_ho, moi_quan_he, trang_thai, ngay_sinh, cccd) VALUES
 ( 1,  1, N'Chủ hộ',      N'Đang Ở', '1985-05-15', '001085001001'),
@@ -71,8 +60,7 @@ INSERT INTO cu_dan (id, ma_can_ho, moi_quan_he, trang_thai, ngay_sinh, cccd) VAL
 (12, 11, N'Chủ hộ',      N'Đang Ở', '1983-01-30', '001083011001'),
 (13, 11, N'Vợ/Chồng',    N'Đang Ở', '1996-07-17', '001096012001');
 
--- ============================================================
---
+
 -- ============================================================
 INSERT INTO dich_vu (ten, don_gia, don_vi_tinh, loai, mo_ta) VALUES
 (N'Gửi xe máy',           150000,   N'Chiếc/Tháng',   N'Gửi xe',      N'Phí trông giữ xe máy hàng tháng'),
@@ -95,12 +83,9 @@ INSERT INTO dich_vu (ten, don_gia, don_vi_tinh, loai, mo_ta) VALUES
 (N'Giữ trẻ theo giờ',     80000,   N'Giờ',           N'Chăm sóc',    N'Dịch vụ giữ trẻ tại nhà'),
 (N'Vận chuyển nội khu',   100000,  N'Lần',           N'Vận chuyển',  N'Hỗ trợ vận chuyển đồ trong tòa nhà'),
 (N'Lắp đặt thiết bị',     150000,  N'Lần',           N'Lắp đặt',     N'Hỗ trợ lắp đặt thiết bị điện tử');
--- Tổng: 20 dịch vụ | IDs: 1-20
 
--- ============================================================
--- Lưu ý: @PrePersist tự tính ngay_bao_tri_tiep_theo = ngay_mua + chu_ky_bao_tri tháng
--- Trong SQL ta nhập thủ công giá trị đã tính sẵn
--- ============================================================
+-- ==============================================================
+
 INSERT INTO tai_san (ma_tai_san, ten_tai_san, vi_tri, tinh_trang, ngay_mua, chu_ky_bao_tri, ngay_bao_tri_tiep_theo) VALUES
 ('TS-TM-A01', N'Thang máy Block A - Số 1',        N'Hành lang Block A, B1-15F',   N'Hoạt động tốt','2026-01-15',  6,'2026-07-15'),
 ('TS-TM-A02', N'Thang máy Block A - Số 2',        N'Hành lang Block A, B1-15F',   N'Hoạt động tốt','2026-01-15',  6,'2026-07-15'),
@@ -114,6 +99,7 @@ INSERT INTO tai_san (ma_tai_san, ten_tai_san, vi_tri, tinh_trang, ngay_mua, chu_
 ('TS-CC-02',  N'Hệ thống camera an ninh Block B', N'Toàn bộ Block B',            N'Đang hỏng','2026-05-10',  12, '2029-05-10'),
 ('TS-CC-03',  N'Hệ thống camera hầm xe B1',       N'Tầng hầm B1',                N'Hoạt động tốt','2026-01-01',  12, '2029-01-01');
 
+-- =======================================================
 
 INSERT INTO khao_sat (tieu_de, mo_ta, thoi_gian_bat_dau, thoi_gian_ket_thuc) VALUES
 (N'Khảo sát chất lượng dịch vụ bảo vệ',        N'Chúng tôi muốn biết ý kiến của bạn về đội ngũ bảo vệ tòa nhà trong 6 tháng qua.', '2026-04-01 08:00:00', '2026-05-01 17:00:00'),
@@ -123,7 +109,7 @@ INSERT INTO khao_sat (tieu_de, mo_ta, thoi_gian_bat_dau, thoi_gian_ket_thuc) VAL
 (N'Lấy ý kiến về giờ giới nghiêm âm thanh',     N'Thăm dò ý kiến cư dân về quy định giờ yên lặng trong khu chung cư.', '2026-07-01 08:00:00', '2026-07-20 17:00:00');
 -- Tổng: 5 khảo sát | IDs: 1-5
 
-
+-- ============================================================
 INSERT INTO lua_chon_khao_sat (khao_sat_id, noi_dung_lua_chon, so_luot_binh_chon) VALUES
 -- Khảo sát 1: Chất lượng bảo vệ (4 lựa chọn)
 (1, N'Rất hài lòng',       15),
@@ -148,16 +134,15 @@ INSERT INTO lua_chon_khao_sat (khao_sat_id, noi_dung_lua_chon, so_luot_binh_chon
 (5, N'23h - 7h sáng',      18),
 (5, N'Giữ nguyên quy định hiện tại', 12);
 
--- Tổng: 16 lựa chọn. Thêm 4 nữa cho đủ 20:
+-- ===========================================================
+
 INSERT INTO lua_chon_khao_sat (khao_sat_id, noi_dung_lua_chon, so_luot_binh_chon) VALUES
 (1, N'Chưa tiếp xúc bảo vệ lần nào',  3),
 (2, N'Không muốn tổ chức',             2),
 (4, N'Chưa sử dụng hồ bơi',           9),
 (5, N'Không quan tâm',                 7);
--- Tổng: 20 lựa chọn | IDs: 1-20
 
-
-
+-- ===========================================================
 
 INSERT INTO thong_bao (tieu_de, noi_dung, loai, ngay_dang, doi_tuong_gui, gia_tri_doi_tuong) VALUES 
 (N'Nhắc nhở', N'Vui lòng thanh toán phí quản lý trước ngày 05/05/2026.', 1, N'2026-06-04T16:19:27.3', N'HO_GIA_DINH', N'A1-01'),
@@ -178,7 +163,7 @@ INSERT INTO thong_bao (tieu_de, noi_dung, loai, ngay_dang, doi_tuong_gui, gia_tr
 (N'Khóa học kỹ năng sống', N'Mời cư dân tham gia khóa đào tạo kỹ năng sống vào cuối tháng 5.', 1, N'2026-06-04T16:19:27.3', N'ALL', N'ALL');
 -- Tổng: 20 thông báo | IDs: 1-20
 
-
+-- =================================================================
 
 INSERT INTO hop_dong (can_ho_id, cu_dan_id, loai_hop_dong, gia_tri_hop_dong, tien_coc, tien_thue, ngay_bat_dau, ngay_ket_thuc, ben_cho_thue, ben_thue, trang_thai) VALUES
 (1, 1, N'Thue', 120000000, 20000000, 10000000, N'2026-01-01', N'2027-01-01', N'Ban quản lý chung cư', N'Lê Văn Thắng', N'ACTIVE'),
@@ -191,38 +176,38 @@ INSERT INTO hop_dong (can_ho_id, cu_dan_id, loai_hop_dong, gia_tri_hop_dong, tie
 (10, 11, N'Thue', 144000000, 24000000, 12000000, N'2025-01-15', N'2026-01-15', N'Ban quản lý chung cư', N'Cao Ngọc Phương', N'EXPIRED'),
 (11, 12, N'Mua', 2200000000, 440000000, 0, N'2025-12-01', NULL, N'Công Ty Đầu Tư Địa Ốc', N'Lý Kim Phi', N'ACTIVE');
 
-
+-- ================================================================
 
 INSERT INTO phuong_tien (can_ho_id, bien_so, loai, mau_sac, trang_thai, hinh_anh) VALUES
-    (1,'29A-123.45', N'Xe máy',  N'Đỏ',       N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (1,'30H-999.88', N'Ô tô',    N'Trắng',    N'Chờ duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (1,'29C-111.22', N'Xe máy',  N'Đen',      N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (2,'29C-567.89', N'Xe máy',  N'Xanh',     N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (3,'51G-444.22', N'Ô tô',    N'Đen',      N'Từ chối', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (3,'29P-222.11', N'Xe máy',  N'Bạc',      N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (4,'30K-555.66', N'Xe máy',  N'Trắng',    N'Chờ duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (4,'29T-777.33', N'Ô tô',    N'Xám',      N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (5,'29D-888.99', N'Xe máy',  N'Xám',      N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (6,'51B-100.10', N'Xe đạp',  N'Xanh lá',  N'Từ chối', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (6,'29A-200.20', N'Xe máy',  N'Vàng',     N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (7,'30G-300.30', N'Xe máy',  N'Đỏ',       N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (8,'29E-400.40', N'Ô tô',    N'Xanh navy',N'Chờ duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (8,'29K-500.50', N'Xe máy',  N'Trắng',    N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (9,'51H-600.60', N'Xe máy',  N'Đen',      N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (10,'51M-777.77', N'Xe máy', N'Đỏ',       N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (11,'29X-888.88', N'Ô tô',   N'Trắng',    N'Chờ duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (12,'51N-999.99', N'Xe đạp', N'Xanh',     N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (13,'30M-111.11', N'Xe máy', N'Vàng',     N'Từ chối', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (1,'29R-222.22', N'Ô tô',    N'Đen',      N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (2,'51P-333.33', N'Xe máy',  N'Bạc',      N'Chờ duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (3,'29Q-444.44', N'Xe máy',  N'Xám',      N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (4,'51Q-555.55', N'Xe đạp',  N'Xanh lá',  N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (5,'29S-666.66', N'Ô tô',    N'Bạc',      N'Từ chối', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (6,'30N-777.77', N'Xe máy',  N'Trắng',    N'Đã duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg),
-    (7,'29T-888.88', N'Ô tô',    N'Đỏ',       N'Chờ duyệt', https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg);
--- Tổng: 20 phương tiện | IDs: 1-20
+    (1,'29A-123.45', N'Xe máy',  N'Đỏ',       N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (1,'30H-999.88', N'Ô tô',    N'Trắng',    N'Chờ duyệt', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png'),
+    (1,'29C-111.22', N'Xe máy',  N'Đen',      N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (2,'29C-567.89', N'Xe máy',  N'Xanh',     N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (3,'51G-444.22', N'Ô tô',    N'Đen',      N'Từ chối', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png'),
+    (3,'29P-222.11', N'Xe máy',  N'Bạc',      N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (4,'30K-555.66', N'Xe máy',  N'Trắng',    N'Chờ duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (4,'29T-777.33', N'Ô tô',    N'Xám',      N'Đã duyệt', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png'),
+    (5,'29D-888.99', N'Xe máy',  N'Xám',      N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (6,'51B-100.10', N'Xe đạp',  N'Xanh lá',  N'Từ chối', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (6,'29A-200.20', N'Xe máy',  N'Vàng',     N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (7,'30G-300.30', N'Xe máy',  N'Đỏ',       N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (8,'29E-400.40', N'Ô tô',    N'Xanh navy',N'Chờ duyệt', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png'),
+    (8,'29K-500.50', N'Xe máy',  N'Trắng',    N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (9,'51H-600.60', N'Xe máy',  N'Đen',      N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (10,'51M-777.77', N'Xe máy', N'Đỏ',       N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (11,'29X-888.88', N'Ô tô',   N'Trắng',    N'Chờ duyệt', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png'),
+    (12,'51N-999.99', N'Xe đạp', N'Xanh',     N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (13,'30M-111.11', N'Xe máy', N'Vàng',     N'Từ chối', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (1,'29R-222.22', N'Ô tô',    N'Đen',      N'Đã duyệt', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png'),
+    (2,'51P-333.33', N'Xe máy',  N'Bạc',      N'Chờ duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (3,'29Q-444.44', N'Xe máy',  N'Xám',      N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (4,'51Q-555.55', N'Xe đạp',  N'Xanh lá',  N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (5,'29S-666.66', N'Ô tô',    N'Bạc',      N'Từ chối', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png'),
+    (6,'30N-777.77', N'Xe máy',  N'Trắng',    N'Đã duyệt', 'https://cdn2.tuoitre.vn/thumb_w/1200/2021/8/19/hinh-1-16293617253051743233681.jpg'),
+    (7,'29T-888.88', N'Ô tô',    N'Đỏ',       N'Chờ duyệt', 'https://hondaotobienhoa.com.vn/wp-content/uploads/2025/09/4.png');
 
 -- ============================================================
+
 INSERT INTO kien_hang (can_ho_id, nguoi_gui, nguoi_nhan, ngay_nhan, trang_thai) VALUES
 (1,  N'Shopee',          N'Lê Văn Thắng','2026-04-28', N'Đã nhận'),
 (1,  N'Tiki',            N'Nguyễn Thị Mai', '2026-05-02', N'Đã nhận'),
@@ -235,27 +220,28 @@ INSERT INTO kien_hang (can_ho_id, nguoi_gui, nguoi_nhan, ngay_nhan, trang_thai) 
 (8,  N'Tiki',            N'Đỗ Minh Tuấn','2026-05-14', N'Chờ nhận'),
 (9,  N'DHL',             N'Bùi Thu Hà','2026-05-15', N'Chờ nhận');
 
-
-
 -- ============================================================
-INSERT INTO phan_anh (can_ho_id, tieu_de, noi_dung, ngay_gui, phan_hoi, ngay_phan_hoi, trang_thai, hinh_anh) VALUES
-(1,  N'Hành lang tầng 1 bẩn',         N'Hành lang tầng 1 có rác chưa được dọn từ sáng sớm, gây mùi khó chịu.',      '2026-04-28 09:00:00', N'Đã điều nhân viên vệ sinh kiểm tra và dọn dẹp lúc 10h30.','2026-04-28 10:30:00', N'Đã xử lý','https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(3,  N'Tiếng ồn ban đêm từ tầng trên',N'Căn hộ tầng trên thường xuyên gây tiếng ồn sau 23h, ảnh hưởng giấc ngủ.',   '2026-04-20 23:30:00', N'Đã nhắc nhở chủ hộ tầng trên tuân thủ nội quy giờ yên lặng.','2026-04-21 09:00:00', N'Đã xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(7,  N'Đèn hành lang bị nhấp nháy',   N'Đèn LED trước cửa căn hộ A1-03 nhấp nháy liên tục từ tuần trước.',          '2026-05-01 19:00:00', NULL, NULL, N'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(2,  N'Thang máy hay bị dừng giữa chừng', N'Thang máy Block A số 1 thường xuyên dừng và rung nhẹ giữa các tầng.',   '2026-05-03 14:00:00', N'Đã báo đơn vị bảo trì thang máy, dự kiến kiểm tra ngày 06/05.','2026-05-03 15:30:00', N'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(5,  N'Bồn hoa lối vào xuống cấp',    N'Bồn hoa trang trí lối vào Block A bị vỡ và cây chết, trông mất thẩm mỹ.',  '2026-05-05 10:00:00', N'Ghi nhận, đã lên kế hoạch cải tạo cảnh quan vào tháng 6.', '2026-05-06 08:00:00', N'Đã xử lý',  'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(4,  N'Bãi xe đầy, không có chỗ gửi', N'Tầng hầm B1 thường xuyên hết chỗ từ 18h-20h, xe phải gửi bên ngoài tốn thêm chi phí.','2026-05-07 20:00:00', N'Đang nghiên cứu thêm khu vực gửi xe phụ tại tầng hầm B2.','2026-05-08 09:00:00', N'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(8,  N'Nước yếu vào giờ cao điểm',    N'Áp lực nước rất yếu vào buổi sáng từ 6h-8h, không đủ dùng sinh hoạt.',     '2026-05-09 07:30:00', NULL, NULL, N'Chờ xử lý',  'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(9,  N'Cửa kính sảnh bị hỏng khóa',  N'Cửa kính sảnh tầng trệt Block B không đóng được chặt, gây mất an ninh.',   '2026-05-10 11:00:00', N'Đã sửa chữa khóa cửa ngay trong ngày.',             '2026-05-10 15:00:00', N'Đã xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(6,  N'Hồ bơi nhiều rong rêu',        N'Hồ bơi có váng màu xanh và rong rêu ở góc bể, e ngại vệ sinh.',          '2026-05-11 16:00:00', N'Đã xong nước và vệ sinh hồ bơi, hoạt động bình thường từ 13/5.','2026-05-12 08:00:00', N'Đã xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(10, N'Rò rỉ nước từ tầng trên',       N'Tường phòng khách bị rò rỉ nước khiến sơn bị ướt và nứt.','2026-05-12 10:00:00', N'Đã yêu cầu cư dân tầng trên kiểm tra và khắc phục.', '2026-05-13 09:00:00', N'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(11, N'Chất lượng nước sinh hoạt',     N'Nước có mùi lạ và màu hơi vàng, không rõ là do ống hay bể chứa.', '2026-05-13 08:00:00', N'Đã kiểm tra hệ thống, sẽ vệ sinh bể chứa tuần tới.', '2026-05-14 15:00:00', N'Đã xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(12, N'Mất nước áp lực',                N'Áp lực nước bị mất hoàn toàn trong 2 giờ tối hôm 14/5.', '2026-05-14 18:00:00', NULL, NULL, N'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(1,  N'Thông thoáng gió kém',          N'Hệ thống thông khí chung không hoạt động, gây ẩm mốc.', '2026-05-15 12:00:00', N'Đã kiểm tra và làm sạch ống thông khí.', '2026-05-16 10:00:00', N'Đã xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(3,  N'Tủ điện chung bị khóa sai',     N'Cánh tủ điện chung tầng 3 khóa không khít, gây nguy hiểm.', '2026-05-16 09:00:00', N'Đã sửa lại khóa và kiểm tra an toàn.', '2026-05-16 14:00:00', N'Đã xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(5,  N'Sảnh lối ra vào bị bẩn',        N'Sảnh chính tòa nhà chưa được lau dọn từ sáng sớm.', '2026-05-17 07:00:00', N'Đã nhắc nhở nhân viên vệ sinh kiểm tra thêm lần.', '2026-05-17 08:00:00', N'Đã xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
-(8,  N'Bậc cầu thang bị nứt',          N'Một vài bậc cầu thang tầng 8 bị nứt, có nguy hiểm trơn trượt.', '2026-05-18 14:00:00', N'Đã báo đơn vị sửa chữa, dự kiến sửa tuần sau.', '2026-05-19 09:00:00', N'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg');
--- Tổng: 20 phản ánh | IDs: 1-20
+
+insert into QL_ChungCu.phan_anh (id, can_ho_id, tieu_de, noi_dung, ngay_gui, phan_hoi, ngay_phan_hoi, trang_thai, hinh_anh)
+values  (1, 1, 'Hành lang tầng 1 bẩn', 'Hành lang tầng 1 có rác chưa được dọn từ sáng sớm, gây mùi khó chịu.', '2026-04-28 09:00:00', 'Đã điều nhân viên vệ sinh kiểm tra và dọn dẹp lúc 10h30.', '2026-04-28 10:30:00', 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (2, 3, 'Tiếng ồn ban đêm từ tầng trên', 'Căn hộ tầng trên thường xuyên gây tiếng ồn sau 23h, ảnh hưởng giấc ngủ.', '2026-04-20 23:30:00', 'Đã nhắc nhở chủ hộ tầng trên tuân thủ nội quy giờ yên lặng.', '2026-04-21 09:00:00', 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (3, 7, 'Đèn hành lang bị nhấp nháy', 'Đèn LED trước cửa căn hộ A1-03 nhấp nháy liên tục từ tuần trước.', '2026-05-01 19:00:00', '', null, 'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (4, 2, 'Thang máy hay bị dừng giữa chừng', 'Thang máy Block A số 1 thường xuyên dừng và rung nhẹ giữa các tầng.', '2026-05-03 14:00:00', 'Đã báo đơn vị bảo trì thang máy, dự kiến kiểm tra ngày 06/05.', '2026-05-03 15:30:00', 'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (5, 5, 'Bồn hoa lối vào xuống cấp', 'Bồn hoa trang trí lối vào Block A bị vỡ và cây chết, trông mất thẩm mỹ.', '2026-05-05 10:00:00', 'Ghi nhận, đã lên kế hoạch cải tạo cảnh quan vào tháng 6.', '2026-05-06 08:00:00', 'Đã xong', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (6, 4, 'Bãi xe đầy, không có chỗ gửi', 'Tầng hầm B1 thường xuyên hết chỗ từ 18h-20h, xe phải gửi bên ngoài tốn thêm chi phí.', '2026-05-07 20:00:00', 'Đang nghiên cứu thêm khu vực gửi xe phụ tại tầng hầm B2.', '2026-05-08 09:00:00', 'Đã xong', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (7, 8, 'Nước yếu vào giờ cao điểm', 'Áp lực nước rất yếu vào buổi sáng từ 6h-8h, không đủ dùng sinh hoạt.', '2026-05-09 07:30:00', null, null, 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (8, 9, 'Cửa kính sảnh bị hỏng khóa', 'Cửa kính sảnh tầng trệt Block B không đóng được chặt, gây mất an ninh.', '2026-05-10 11:00:00', 'Đã sửa chữa khóa cửa ngay trong ngày.', '2026-05-10 15:00:00', 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (9, 6, 'Hồ bơi nhiều rong rêu', 'Hồ bơi có váng màu xanh và rong rêu ở góc bể, e ngại vệ sinh.', '2026-05-11 16:00:00', 'Đã xong nước và vệ sinh hồ bơi, hoạt động bình thường từ 13/5.', '2026-05-12 08:00:00', 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (10, 10, 'Rò rỉ nước từ tầng trên', 'Tường phòng khách bị rò rỉ nước khiến sơn bị ướt và nứt.', '2026-05-12 10:00:00', 'Đã yêu cầu cư dân tầng trên kiểm tra và khắc phục.', '2026-05-13 09:00:00', 'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (11, 11, 'Chất lượng nước sinh hoạt', 'Nước có mùi lạ và màu hơi vàng, không rõ là do ống hay bể chứa.', '2026-05-13 08:00:00', 'Đã kiểm tra hệ thống, sẽ vệ sinh bể chứa tuần tới.', '2026-05-14 15:00:00', 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (12, 12, 'Mất nước áp lực', 'Áp lực nước bị mất hoàn toàn trong 2 giờ tối hôm 14/5.', '2026-05-14 18:00:00', null, null, 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (13, 1, 'Thông thoáng gió kém', 'Hệ thống thông khí chung không hoạt động, gây ẩm mốc.', '2026-05-15 12:00:00', 'Đã kiểm tra và làm sạch ống thông khí.', '2026-05-16 10:00:00', 'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (14, 3, 'Tủ điện chung bị khóa sai', 'Cánh tủ điện chung tầng 3 khóa không khít, gây nguy hiểm.', '2026-05-16 09:00:00', 'Đã sửa lại khóa và kiểm tra an toàn.', '2026-05-16 14:00:00', 'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (15, 5, 'Sảnh lối ra vào bị bẩn', 'Sảnh chính tòa nhà chưa được lau dọn từ sáng sớm.', '2026-05-17 07:00:00', 'Đã nhắc nhở nhân viên vệ sinh kiểm tra thêm lần.', '2026-05-17 08:00:00', 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (16, 8, 'Bậc cầu thang bị nứt', 'Một vài bậc cầu thang tầng 8 bị nứt, có nguy hiểm trơn trượt.', '2026-05-18 14:00:00', 'Đã báo đơn vị sửa chữa, dự kiến sửa tuần sau.', '2026-05-19 09:00:00', 'Đang xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780563759/canho/g4iltpgjlfuavc5twyt0.jpg'),
+        (17, 1, 'Hư máy lạnh', 'Máy lạnh hư không thể sử dụng
+Vui lòng sửa gấp', '2026-06-04 19:17:20', null, null, 'Chờ xử lý', 'https://res.cloudinary.com/dtr8hrxlt/image/upload/v1780575441/canho/l9nvkzffb9fzxqvoebv7.png');
+-- Tổng: 17 phản ánh | IDs: 1-17
 
 -- ============================================================
 INSERT INTO dang_ky_khach_tham
@@ -294,6 +280,7 @@ INSERT INTO dat_dich_vu (cu_dan_id, dich_vu_id, ngay_dat, thoi_gian_duyet, trang
 -- Tổng: 20 lần đặt dịch vụ | IDs: 1-20
 
 -- ============================================================
+
 INSERT INTO lich_su_vote (cu_dan_id, khao_sat_id, lua_chon_id, thoi_gian_vote) VALUES
 -- Khảo sát 1 (lua_chon: 1=Rất hài lòng, 2=Hài lòng, 3=Bình thường, 4=Không hài lòng, 17=Chưa tiếp xúc)
 (8,   1, 1,'2026-04-10 09:00:00'),
@@ -319,10 +306,8 @@ INSERT INTO lich_su_vote (cu_dan_id, khao_sat_id, lua_chon_id, thoi_gian_vote) V
 -- Khảo sát 5 (lua_chon: 15=22h-6h, 16=23h-7h, 17=Giữ nguyên, 20=Không quan tâm)
 (9,   5, 15, '2026-07-05 09:00:00'),
 (10,  5, 16, '2026-07-06 10:00:00');
--- Tổng: 20 lượt vote | IDs: 1-20
 
--- ============================================================
--- 17. LICH_SU_BAO_TRI 
+
 -- ============================================================
 INSERT INTO lich_su_bao_tri (tai_san_id, ngay_bao_tri, noi_dung, chi_phi, nguoi_thuc_hien) VALUES
 (1,'2023-01-15', N'Kiểm tra định kỳ 6 tháng, tra dầu mỡ cơ cấu, thử tải',                  2500000,  N'Công ty Thang máy Otis VN'),

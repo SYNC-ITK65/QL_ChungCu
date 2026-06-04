@@ -3,8 +3,7 @@
 -- Phiên bản đồng bộ với các Entity Java (JPA/Hibernate)
 -- Thứ tự tạo bảng theo phụ thuộc khóa ngoại
 -- ============================================================
--- 1. NGUOI_DUNG (Bảng cha - kế thừa JOINED với cu_dan)
---    @Entity @Table(name="nguoi_dung") @Inheritance(JOINED)
+
 USe QL_ChungCu;
 
 CREATE TABLE nguoi_dung (
@@ -18,8 +17,6 @@ CREATE TABLE nguoi_dung (
     -- 1: Admin, 2: Quản lý, 3: Cư dân, 4: Lễ tân, 5: Bảo vệ
 );
 
--- 2. CAN_HO
---    @Entity @Table(name="can_ho")
 CREATE TABLE can_ho (
     id          BIGINT IDENTITY(1,1) PRIMARY KEY,
     ma_can_ho   NVARCHAR(255) NOT NULL,
@@ -30,9 +27,6 @@ CREATE TABLE can_ho (
     hinh_anh    NVARCHAR(255)
 );
 
--- 3. CU_DAN (Bảng con - kế thừa từ nguoi_dung qua JOINED)
---    @Entity @Table(name="cu_dan") @PrimaryKeyJoinColumn(name="id")
---    extends NguoiDung
 CREATE TABLE cu_dan (
     id          BIGINT PRIMARY KEY,
     ma_can_ho   BIGINT,                        -- FK -> can_ho.id
@@ -44,8 +38,6 @@ CREATE TABLE cu_dan (
     CONSTRAINT fk_cu_dan_can_ho     FOREIGN KEY (ma_can_ho) REFERENCES can_ho(id)
 );
 
--- 4. DICH_VU
---    @Entity @Table(name="dich_vu")
 CREATE TABLE dich_vu (
     id          BIGINT IDENTITY(1,1) PRIMARY KEY,
     ten         NVARCHAR(255),
@@ -55,8 +47,6 @@ CREATE TABLE dich_vu (
     mo_ta       NVARCHAR(255)
 );
 
--- 5. CHI_SO_HANG_THANG
---    @Entity @Table(name="chi_so_hang_thang")
 CREATE TABLE chi_so_hang_thang (
     id              BIGINT IDENTITY(1,1) PRIMARY KEY,
     can_ho_id       BIGINT NOT NULL,
@@ -66,8 +56,6 @@ CREATE TABLE chi_so_hang_thang (
     CONSTRAINT fk_csht_can_ho FOREIGN KEY (can_ho_id) REFERENCES can_ho(id)
 );
 
--- 6. HOA_DON
---    @Entity @Table(name="hoa_don")
 CREATE TABLE hoa_don (
     id                    BIGINT IDENTITY(1,1) PRIMARY KEY,
     can_ho_id             BIGINT,
@@ -78,9 +66,6 @@ CREATE TABLE hoa_don (
     CONSTRAINT fk_hoadon_can_ho FOREIGN KEY (can_ho_id) REFERENCES can_ho(id)
 );
 
--- 7. THANH_TOAN
---    @Entity @Table(name="thanh_toan")
---    @UniqueConstraint(columnNames="hoa_don_id", name="uk_thanh_toan_hoa_don")
 CREATE TABLE thanh_toan (
     id              BIGINT IDENTITY(1,1) PRIMARY KEY,
     hoa_don_id      BIGINT NOT NULL,
@@ -91,9 +76,6 @@ CREATE TABLE thanh_toan (
     CONSTRAINT uk_thanh_toan_hoa_don UNIQUE (hoa_don_id)
 );
 
--- 8. LICH_SU_THANH_TOAN
---    @Entity @Table(name="lich_su_thanh_toan")
---    @UniqueConstraint(columnNames="hoa_don_id", name="uk_hoa_don_id")
 CREATE TABLE lich_su_thanh_toan (
     id                    BIGINT IDENTITY(1,1) PRIMARY KEY,
     hoa_don_id            BIGINT        NOT NULL,
@@ -110,8 +92,6 @@ CREATE TABLE lich_su_thanh_toan (
     CONSTRAINT uk_hoa_don_id   UNIQUE (hoa_don_id)
 );
 
--- 9. HOP_DONG
---    @Entity @Table(name="hop_dong")
 CREATE TABLE hop_dong (
     id               BIGINT IDENTITY(1,1) PRIMARY KEY,
     can_ho_id        BIGINT         NOT NULL,
@@ -129,8 +109,6 @@ CREATE TABLE hop_dong (
     CONSTRAINT fk_hd_cu_dan  FOREIGN KEY (cu_dan_id) REFERENCES cu_dan(id)
 );
 
--- 10. KIEN_HANG
---     @Entity @Table(name="kien_hang")
 CREATE TABLE kien_hang (
     id          BIGINT IDENTITY(1,1) PRIMARY KEY,
     can_ho_id   BIGINT,
@@ -141,8 +119,6 @@ CREATE TABLE kien_hang (
     CONSTRAINT fk_kh_can_ho FOREIGN KEY (can_ho_id) REFERENCES can_ho(id)
 );
 
--- 11. KHAO_SAT
---     @Entity @Table(name="khao_sat")
 CREATE TABLE khao_sat (
     id                  BIGINT IDENTITY(1,1) PRIMARY KEY,
     tieu_de             NVARCHAR(255)  NOT NULL,
@@ -151,10 +127,6 @@ CREATE TABLE khao_sat (
     thoi_gian_ket_thuc  DATETIME       NOT NULL
 );
 
--- 12. LUA_CHON_KHAO_SAT
---     @Entity @Table(name="lua_chon_khao_sat")
---     field noiDungLuaChon -> JPA snake_case -> noi_dung_lua_chon
---     field soLuotBinhChon -> JPA snake_case -> so_luot_binh_chon
 CREATE TABLE lua_chon_khao_sat (
     id                 BIGINT IDENTITY(1,1) PRIMARY KEY,
     khao_sat_id        BIGINT,
@@ -163,10 +135,6 @@ CREATE TABLE lua_chon_khao_sat (
     CONSTRAINT fk_lcks_khao_sat FOREIGN KEY (khao_sat_id) REFERENCES khao_sat(id)
 );
 
--- 13. LICH_SU_VOTE
---     @Entity @Table(name="lich_su_vote")
---     @UniqueConstraint(columnNames={"cu_dan_id","khao_sat_id"})
---     field luaChonDaNgan -> JPA snake_case -> lua_chon_da_ngan... BUT @JoinColumn(name="lua_chon_id")
 CREATE TABLE lich_su_vote (
     id              BIGINT IDENTITY(1,1) PRIMARY KEY,
     cu_dan_id       BIGINT,
@@ -179,9 +147,6 @@ CREATE TABLE lich_su_vote (
     CONSTRAINT uq_lsv_cu_dan_khaosat UNIQUE (cu_dan_id, khao_sat_id)
 );
 
--- 14. TAI_SAN
---     @Entity @Table(name="tai_san")
---     Các field không có @Column -> JPA tự sinh tên snake_case
 CREATE TABLE tai_san (
     id                      BIGINT IDENTITY(1,1) PRIMARY KEY,
     ma_tai_san              NVARCHAR(255) NOT NULL UNIQUE,
@@ -193,9 +158,6 @@ CREATE TABLE tai_san (
     ngay_bao_tri_tiep_theo  DATE
 );
 
--- 15. LICH_SU_BAO_TRI
---     @Entity @Table(name="lich_su_bao_tri")
---     @Column(columnDefinition="NVARCHAR(MAX)") for noi_dung
 CREATE TABLE lich_su_bao_tri (
     id              BIGINT IDENTITY(1,1) PRIMARY KEY,
     tai_san_id      BIGINT         NOT NULL,
@@ -206,9 +168,6 @@ CREATE TABLE lich_su_bao_tri (
     CONSTRAINT fk_lsbt_tai_san FOREIGN KEY (tai_san_id) REFERENCES tai_san(id)
 );
 
--- 16. PHAN_ANH
---     @Entity @Table(name="phan_anh")
---     @Column(columnDefinition="NVARCHAR(MAX)") for noi_dung, phan_hoi
 CREATE TABLE phan_anh (
     id              BIGINT IDENTITY(1,1) PRIMARY KEY,
     can_ho_id       BIGINT         NOT NULL,
@@ -222,11 +181,7 @@ CREATE TABLE phan_anh (
     CONSTRAINT fk_pa_can_ho FOREIGN KEY (can_ho_id) REFERENCES can_ho(id)
 );
 
--- 17. PHUONG_TIEN
---     @Entity @Table(name="phuong_tien")
---     bienSoXe -> @Column(name="bien_so")
---     loaiXe   -> @Column(name="loai")
---     mauXe    -> @Column(name="mau_sac")
+
 CREATE TABLE phuong_tien (
     id          BIGINT IDENTITY(1,1) PRIMARY KEY,
     can_ho_id   BIGINT,

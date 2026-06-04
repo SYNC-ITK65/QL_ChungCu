@@ -132,11 +132,11 @@ public class AdminKhaoSatController {
         String txt = input.trim();
         if (txt.length() < min || txt.length() > max) {
             result.rejectValue(fieldName, "error.ks", label + " phải từ " + min + " đến " + max + " ký tự.");
-        } else if (!txt.matches(".*\\p{L}.*")) {
+        } else if (!txt.matches("(?s).*\\p{L}.*")) {
             result.rejectValue(fieldName, "error.ks", label + " phải chứa ít nhất một chữ cái (không được chỉ toàn số/ký tự đặc biệt).");
-        } else if (txt.matches(".*(.)\\1{4,}.*")) {
+        } else if (txt.matches("(?s).*(.)\\1{4,}.*")) {
             result.rejectValue(fieldName, "error.ks", label + " chứa ký tự lặp lại liên tiếp vô nghĩa (Vd: aaaaa).");
-        } else if (txt.toLowerCase().matches(".*(asdf|qwerty|test|abc|hehe|xxxx).*")) {
+        } else if (txt.toLowerCase().matches("(?s).*(asdf|qwerty|test|abc|hehe|xxxx).*")) {
             result.rejectValue(fieldName, "error.ks", label + " chứa mẫu dữ liệu rác không hợp lệ.");
         } else {
             int nonLetterCount = 0;

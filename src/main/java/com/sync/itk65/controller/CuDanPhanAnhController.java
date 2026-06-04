@@ -153,30 +153,30 @@ public class CuDanPhanAnhController {
             result.rejectValue("tieuDe", "error.pa.tieuDe.length", msg("error.pa.tieuDe.length"));
         }
         // Bẫy 1: Không có bất kỳ chữ cái nào (Toàn số, dấu chấm, icon: "123 456 !!!")
-        else if (!t.matches(".*\\p{L}.*")) {
+        else if (!t.matches("(?s).*\\p{L}.*")) {
             result.rejectValue("tieuDe", "error.pa.tieuDe.noLetter", msg("error.pa.tieuDe.noLetter"));
         }
         // Bẫy 2: Lặp 3 chữ cái y hệt nhau liên tiếp (Vd: aaaa, bbb, eee) - Tiếng Việt/Anh không có từ nào như vậy
-        else if (t.matches(".*([a-zA-Z])\\1{2,}.*")) {
+        else if (t.matches("(?s).*([a-zA-Z])\\1{2,}.*")) {
             result.rejectValue("tieuDe", "error.pa.tieuDe.repeatChar", msg("error.pa.tieuDe.repeatChar"));
         }
         // Bẫy 3: Có 5 phụ âm đứng liền nhau (Chắc chắn là vuốt bừa bàn phím: zxcvb, lkjhg, dfghj)
-        else if (t.toLowerCase().matches(".*[bcdfghjklmnpqrstvwxz]{5,}.*")) {
+        else if (t.toLowerCase().matches("(?s).*[bcdfghjklmnpqrstvwxz]{5,}.*")) {
             result.rejectValue("tieuDe", "error.pa.tieuDe.consonants", msg("error.pa.tieuDe.consonants"));
         }
         // Bẫy 4: Gõ không dấu (ASCII) nhưng lại KHÔNG có nguyên âm (a,e,i,o,u,y) -> (Vd: qwrrt, hklm)
-        else if (t.matches("^[\\x00-\\x7F]+$") && !t.toLowerCase().matches(".*[aeiouy].*")) {
+        else if (t.matches("^[\\x00-\\x7F]+$") && !t.toLowerCase().matches("(?s).*[aeiouy].*")) {
             result.rejectValue("tieuDe", "error.pa.tieuDe.noVowel", msg("error.pa.tieuDe.noVowel"));
         }
         // Bẫy 5: Chặn từ khóa rác kinh điển
-        else if (t.toLowerCase().matches(".*(test|asdf|qwer|zxcv|1234|abcd).*")) {
+        else if (t.toLowerCase().matches("(?s).*(test|asdf|qwer|zxcv|1234|abcd).*")) {
             result.rejectValue("tieuDe", "error.pa.tieuDe.spam", msg("error.pa.tieuDe.spam"));
         }
         // Bẫy 6: Dài hơn 15 ký tự mà không thèm gõ dấu cách
         else if (!t.contains(" ") && t.length() >= 15) {
             result.rejectValue("tieuDe", "error.pa.tieuDe.noSpace", msg("error.pa.tieuDe.noSpace"));
         }
-        else if (t.equals(t.toUpperCase()) && t.matches(".*[a-zA-Z].*")) {
+        else if (t.equals(t.toUpperCase()) && t.matches("(?s).*[a-zA-Z].*")) {
             result.rejectValue("tieuDe", "error.pa.tieuDe.allCaps", msg("error.pa.tieuDe.allCaps"));
         }
 
@@ -190,22 +190,22 @@ public class CuDanPhanAnhController {
         else if (n.length() < 20 || n.length() > 5000) {
             result.rejectValue("noiDung", "error.pa.noiDung.length", msg("error.pa.noiDung.length"));
         }
-        else if (!n.matches(".*\\p{L}.*")) {
+        else if (!n.matches("(?s).*\\p{L}.*")) {
             result.rejectValue("noiDung", "error.pa.noiDung.noLetter", msg("error.pa.noiDung.noLetter"));
         }
         // Cấm lặp 4 chữ cái liên tiếp
-        else if (n.matches(".*([a-zA-Z])\\1{3,}.*")) {
+        else if (n.matches("(?s).*([a-zA-Z])\\1{3,}.*")) {
             result.rejectValue("noiDung", "error.pa.noiDung.repeatChar", msg("error.pa.noiDung.repeatChar"));
         }
         // Cấm 6 phụ âm liên tiếp
-        else if (n.toLowerCase().matches(".*[bcdfghjklmnpqrstvwxz]{6,}.*")) {
+        else if (n.toLowerCase().matches("(?s).*[bcdfghjklmnpqrstvwxz]{6,}.*")) {
             result.rejectValue("noiDung", "error.pa.noiDung.consonants", msg("error.pa.noiDung.consonants"));
         }
         // Cấm gõ không dấu + không nguyên âm
-        else if (n.matches("^[\\x00-\\x7F]+$") && !n.toLowerCase().matches(".*[aeiouy].*")) {
+        else if (n.matches("^[\\x00-\\x7F]+$") && !n.toLowerCase().matches("(?s).*[aeiouy].*")) {
             result.rejectValue("noiDung", "error.pa.noiDung.noVowel", msg("error.pa.noiDung.noVowel"));
         }
-        else if (n.toLowerCase().matches(".*(test|asdf|qwer|zxcv|1234|abcd).*")) {
+        else if (n.toLowerCase().matches("(?s).*(test|asdf|qwer|zxcv|1234|abcd).*")) {
             result.rejectValue("noiDung", "error.pa.noiDung.spam", msg("error.pa.noiDung.spam"));
         }
         // Cấm dán một cục dính liền

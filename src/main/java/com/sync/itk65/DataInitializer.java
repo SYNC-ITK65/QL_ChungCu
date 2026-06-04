@@ -159,7 +159,7 @@ public class DataInitializer implements CommandLineRunner {
             cudan.setVaiTro(3);
             cudan.setSoDienThoai("0123456789");
             cudan.setMoiQuanHe("Chủ hộ");
-            cudan.setTrangThai("Đang ở");
+            cudan.setTrangThai("Đang Ở");
             cudan.setNgaySinh(java.time.LocalDate.of(2000, 1, 1));
             cudan.setCccd("001000000000");
 

@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
-       @Query(value = "SELECT COALESCE(SUM(h.tong_tien), 0) FROM hoa_don h WHERE MONTH(h.ngay_phat_hanh) = MONTH(GETDATE()) AND YEAR(h.ngay_phat_hanh) = YEAR(GETDATE()) AND h.trang_thai_thanh_toan = N'Đã đóng'", nativeQuery = true)
+       @Query("SELECT COALESCE(SUM(h.tongTien), 0.0) FROM HoaDon h WHERE MONTH(h.ngayPhatHanh) = MONTH(CURRENT_DATE) AND YEAR(h.ngayPhatHanh) = YEAR(CURRENT_DATE) AND h.trangThaiThanhToan = 'Đã đóng'")
        Double sumRevenueCurrentMonth();
 
        // Lấy danh sách hóa đơn của một căn hộ
@@ -48,7 +48,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
        // --- Từ nhánh main ---
        // Lấy hóa đơn quá hạn - cần thiết cho quản lý công nợ
-       @Query(value = "SELECT * FROM hoa_don WHERE trang_thai_thanh_toan = N'Chưa đóng' AND ngay_den_han < GETDATE() ORDER BY ngay_den_han ASC", nativeQuery = true)
+       @Query("SELECT h FROM HoaDon h WHERE h.trangThaiThanhToan = 'Chưa đóng' AND h.ngayDenHan < CURRENT_DATE ORDER BY h.ngayDenHan ASC")
        List<HoaDon> findOverdueInvoices();
 
        // Đếm số lượng hóa đơn theo trạng thái - cho dashboard
