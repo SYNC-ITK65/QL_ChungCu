@@ -88,8 +88,15 @@ public class ChiSoHangThangController {
 
     // Xóa chỉ số
     @GetMapping("/xoa/{id}")
-    public String xoaChiSo(@PathVariable("id") Long id) {
-        chiSoHangThangService.xoaChiSo(id);
+    public String xoaChiSo(@PathVariable("id") Long id, RedirectAttributes ra) {
+        try {
+            chiSoHangThangService.xoaChiSo(id);
+            ra.addFlashAttribute("thongBaoThanhCong", "Đã xóa chỉ số thành công.");
+        } catch (IllegalStateException e) {
+            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+        } catch (Exception e) {
+            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xóa chỉ số: " + e.getMessage());
+        }
         return "redirect:/admin/chi-so";
     }
 

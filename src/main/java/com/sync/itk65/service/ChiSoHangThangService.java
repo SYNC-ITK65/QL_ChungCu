@@ -4,6 +4,7 @@ import com.sync.itk65.entity.ChiSoHangThang;
 import com.sync.itk65.entity.CanHo;
 import com.sync.itk65.repository.CanHoRepository;
 import com.sync.itk65.repository.ChiSoHangThangRepository;
+import com.sync.itk65.repository.HoaDonRepository;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -31,6 +32,8 @@ public class ChiSoHangThangService {
     private ChiSoHangThangRepository chiSoHangThangRepository;
     @Autowired
     private CanHoRepository canHoRepository;
+    @Autowired
+    private HoaDonRepository hoaDonRepository;
 
     // Lấy danh sách toàn bộ chỉ số, sắp xếp ngày mới nhất lên đầu
     public List<ChiSoHangThang> layTatCaChiSo() {
@@ -106,8 +109,28 @@ public class ChiSoHangThangService {
         return chiSoHangThangRepository.save(chiSoMoi);
     }
 
-    // Xóa chỉ số
+    // Xóa chỉ số — kiểm tra hóa đơn cùng tháng trước khi xóa
     public void xoaChiSo(Long id) {
+        ChiSoHangThang chiSo = chiSoHangThangRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy chỉ số với ID: " + id));
+
+        if (chiSo.getNgayGhiNhan() != null && chiSo.getCanHo() != null) {
+            int thang = chiSo.getNgayGhiNhan().getMonthValue();
+            int nam   = chiSo.getNgayGhiNhan().getYear();
+            Long canHoId = chiSo.getCanHo().getId();
+            String maCanHo = chiSo.getCanHo().getMaCanHo() != null
+                    ? chiSo.getCanHo().getMaCanHo() : "ID:" + canHoId;
+
+            long soHoaDon = hoaDonRepository.countByCanHoAndThangNam(canHoId, thang, nam);
+            if (soHoaDon > 0) {
+                throw new IllegalStateException(
+                    "Không thể xóa chỉ số của căn hộ " + maCanHo
+                    + " tháng " + thang + "/" + nam
+                    + " vì đã có " + soHoaDon + " hóa đơn trong tháng này. "
+                    + "Vui lòng xóa hóa đơn trước.");
+            }
+        }
+
         chiSoHangThangRepository.deleteById(id);
     }
 
