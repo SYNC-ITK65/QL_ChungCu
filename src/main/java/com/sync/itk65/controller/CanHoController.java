@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/can-ho") // Đường dẫn trên web: localhost:8080/admin/can-ho
@@ -28,6 +31,9 @@ public class CanHoController {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     // Hàm hiển thị danh sách căn hộ (Có phân trang dữ liệu, và các tiêu chí tìm
     // kiếm cơ bản)
@@ -89,6 +95,11 @@ public class CanHoController {
         try {
             // Xử lý upload hình ảnh lên Cloudinary
             if (!multipartFile.isEmpty()) {
+                if (multipartFile.getSize() > 2 * 1024 * 1024) {
+                    Locale locale = LocaleContextHolder.getLocale();
+                    String msg = messageSource.getMessage("error.ch.hinhAnh.size", null, "Dung lượng ảnh không được vượt quá 2MB!", locale);
+                    throw new IllegalArgumentException(msg);
+                }
                 String imageUrl = cloudinaryService.uploadFile(multipartFile);
                 canHo.setHinhAnh(imageUrl);
             } else {

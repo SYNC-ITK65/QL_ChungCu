@@ -3,18 +3,27 @@ import com.sync.itk65.entity.*;
 import com.sync.itk65.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/cudan/khach-tham")
 public class CuDanKhachThamController {
     @Autowired private CuDanService cuDanService;
     @Autowired private DangKyKhachThamService khachThamService;
+    @Autowired private MessageSource messageSource;
+
+    private String msg(String code) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(code, null, code, locale);
+    }
 
     @GetMapping
     public String trangKhachTham(HttpSession session, Model model,
@@ -92,9 +101,8 @@ public class CuDanKhachThamController {
         // Regex Biển số xe (Nếu có nhập)
         if (bienSoXe != null && !bienSoXe.trim().isEmpty()) {
             String bs = bienSoXe.trim();
-            if (!bs.matches("^\\d{2}[A-Za-z]\\s*-\\s*\\d{3}\\.\\d{2}$") &&
-                    !bs.matches("^\\d{2}\\s*-\\s*[A-Za-z][A-Za-z0-9]\\s+\\d{3}\\.\\d{2}$")) {
-                return "Lỗi: Biển số xe sai định dạng! (Vd Ô tô: 51A-123.45 | Xe máy: 51-AA 123.45)";
+            if (!bs.matches("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9\\s.-]+$")) {
+                return msg("error.kt.bienSoXe.pattern");
             }
         }
         return null;

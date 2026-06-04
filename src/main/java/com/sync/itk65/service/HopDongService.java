@@ -318,6 +318,12 @@ public class HopDongService {
         if (hopDong.getTienThue() == null && hopDong.getGiaTriHopDong() != null) {
             hopDong.setTienThue(hopDong.getGiaTriHopDong());
         }
+        if ("ACTIVE".equalsIgnoreCase(hopDong.getTrangThai()) 
+                && hopDong.getNgayKetThuc() != null 
+                && hopDong.getNgayKetThuc().isBefore(LocalDate.now())) {
+            hopDong.setTrangThai("EXPIRED");
+            hopDongRepository.save(hopDong);
+        }
     }
 
     private void taoThongBaoHopDongMoi(HopDong hopDong, CuDan cuDan) {

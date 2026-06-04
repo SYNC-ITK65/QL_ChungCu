@@ -21,6 +21,9 @@ public class PhuongTien {
     @Column(name = "trang_thai")
     private String trangThai;
 
+    @Column(name = "hinh_anh")
+    private String hinhAnh;
+
     // Thay đổi ở đây: Liên kết với Căn Hộ theo lược đồ
     @ManyToOne
     @JoinColumn(name = "can_ho_id")
@@ -68,4 +71,11 @@ public class PhuongTien {
 
     public void setTrangThai(String trangThai) {this.trangThai = trangThai;}
 
+    public String getHinhAnh() {
+        return hinhAnh;
+    }
+
+    public void setHinhAnh(String hinhAnh) {
+        this.hinhAnh = hinhAnh;
+    }
 }

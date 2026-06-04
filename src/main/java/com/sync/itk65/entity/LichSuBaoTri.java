@@ -23,7 +23,7 @@ public class LichSuBaoTri {
     private String nguoiThucHien;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column
     private String noiDung;
 
     public Long getId() {
