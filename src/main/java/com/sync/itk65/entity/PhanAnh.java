@@ -15,7 +15,7 @@ public class PhanAnh {
     private String tieuDe;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column
     private String noiDung;
 
     @Column(nullable = false)
@@ -30,7 +30,7 @@ public class PhanAnh {
     private CanHo canHo;
 
     // Sửa TEXT thành NVARCHAR(MAX)
-    @Column(columnDefinition = "NVARCHAR(MAX)")
+    @Column
     private String phanHoi;
 
     private LocalDateTime ngayPhanHoi;

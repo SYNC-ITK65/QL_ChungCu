@@ -103,6 +103,13 @@ public class CuDanPhanAnhController {
         if (phanAnh.getTieuDe() != null) phanAnh.setTieuDe(phanAnh.getTieuDe().replaceAll("<", "&lt;").replaceAll(">", "&gt;").trim());
         if (phanAnh.getNoiDung() != null) phanAnh.setNoiDung(phanAnh.getNoiDung().replaceAll("<", "&lt;").replaceAll(">", "&gt;").trim());
 
+        // Kiểm tra dung lượng ảnh (giới hạn 2MB)
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            if (multipartFile.getSize() > 2 * 1024 * 1024) {
+                result.rejectValue("hinhAnh", "error.pa.hinhAnh.size", "Dung lượng ảnh không được vượt quá 2MB!");
+            }
+        }
+
         // 3. Gọi hàm Check lỗi
         validatePhanAnh(phanAnh, result);
         if (result.hasErrors()) return "cudan/phan_anh_form";

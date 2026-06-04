@@ -11,6 +11,7 @@ import com.sync.itk65.repository.CanHoRepository;
 import com.sync.itk65.repository.DatDichVuRepository;
 import com.sync.itk65.repository.NguoiDungRepository;
 import com.sync.itk65.repository.PhuongTienRepository;
+import com.sync.itk65.service.HopDongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,8 @@ public class DataInitializer implements CommandLineRunner {
     private CanHoRepository canHoRepository;
     @Autowired
     private PhuongTienRepository phuongTienRepository;
+    @Autowired
+    private HopDongService hopDongService;
     @Autowired
     private javax.sql.DataSource dataSource;
 
@@ -102,6 +105,12 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         convertVarcharToNvarchar();
+        try {
+            hopDongService.tuDongHetHanHopDong();
+            System.out.println("[DataInitializer] Đã chạy tự động hết hạn hợp đồng thành công.");
+        } catch (Exception e) {
+            System.err.println("[DataInitializer] Chạy tự động hết hạn hợp đồng thất bại: " + e.getMessage());
+        }
         int soDonDichVuDuocChuanHoa = datDichVuRepository.chuanHoaTrangThaiChoDuyet();
         int soXeDuocChuanHoa = phuongTienRepository.chuanHoaTrangThaiChoDuyet();
         if (soDonDichVuDuocChuanHoa > 0 || soXeDuocChuanHoa > 0) {

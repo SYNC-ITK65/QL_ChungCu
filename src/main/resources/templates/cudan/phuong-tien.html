@@ -56,9 +56,11 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Hình ảnh xe:</label>
-                            <input type="file" name="fileImage" class="form-control" accept="image/*">
-                            <div class="form-text">Tải lên ảnh của phương tiện để làm căn cứ duyệt.</div>
+                            <label class="form-label fw-bold" th:text="#{pt.ui.hinh_anh_xe}">Hình ảnh xe:</label>
+                            <input type="file" name="fileImage" class="form-control" accept="image/*"
+                                   th:classappend="${#fields.hasErrors('hinhAnh')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('hinhAnh')}" th:errors="*{hinhAnh}"></div>
+                            <div class="form-text" th:text="#{pt.ui.hinh_anh_xe_help}">Tải lên ảnh của phương tiện để làm căn cứ duyệt (giới hạn 2MB).</div>
                         </div>
 
                         <button type="submit" class="btn btn-success w-100 fw-bold" th:text="#{pt.ui.gui_yeu_cau_dang_ky1}">Gửi yêu cầu đăng ký</button>

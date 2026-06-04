@@ -40,9 +40,11 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="fileImage" class="form-label fw-bold">Hình ảnh đính kèm (nếu có)</label>
-                            <input type="file" class="form-control" id="fileImage" name="fileImage" accept="image/*">
-                            <div class="form-text">Chọn ảnh mô tả chi tiết vấn đề phản ánh.</div>
+                            <label for="fileImage" class="form-label fw-bold" th:text="#{pa.form.hinh_anh_dinh_kem}">Hình ảnh đính kèm (nếu có)</label>
+                            <input type="file" class="form-control" id="fileImage" name="fileImage" accept="image/*"
+                                   th:classappend="${#fields.hasErrors('hinhAnh')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback fw-bold" th:if="${#fields.hasErrors('hinhAnh')}" th:errors="*{hinhAnh}"></div>
+                            <div class="form-text" th:text="#{pa.form.hinh_anh_dinh_kem_help}">Chọn ảnh mô tả chi tiết vấn đề phản ánh (giới hạn 2MB).</div>
                         </div>
 
                         <div class="d-flex gap-2">

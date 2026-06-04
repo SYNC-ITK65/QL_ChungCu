@@ -11,7 +11,7 @@ public class LuaChonKhaoSat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "NVARCHAR(255)", nullable = false)
+    @Column(nullable = false)
     private String noiDungLuaChon;
 
     private Integer soLuotBinhChon = 0;
