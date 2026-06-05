@@ -1,99 +1,222 @@
-<!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{dv.ui.dang_ky_dich_vu}">Đăng ký Dịch vụ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        select, input[type="date"] {
+            color-scheme: dark;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
 </head>
-<body class="d-flex bg-light">
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-<div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
+    <!-- Global Sidebar -->
+    <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
-<div class="container p-5 w-100">
-    <h2 class="mb-4" th:text="#{dv.ui.dang_ky_tien_ich_chu}">Đăng Ký Tiện Ích Chung Cư</h2>
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{dv.ui.dang_ky_dich_vu}">Đăng ký Dịch vụ</span>
+            </div>
+        </header>
 
-    <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <span th:text="${thongBaoThanhCong}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    <div th:if="${thongBaoLoi}" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <span th:text="${thongBaoLoi}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-
-    <div class="row">
-        <div class="col-md-5">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0" th:text="#{dv.ui.tao_dang_ky_moi}">📝 Tạo đăng ký mới</h5>
-                </div>
-                <div class="card-body">
-                    <form action="/cudan/dich-vu/dat" method="post">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold" th:text="#{dv.ui.chon_dich_vu}">Chọn dịch vụ</label>
-                            <select name="dichVuId" class="form-select" required>
-                                <option value="" th:text="#{dv.ui.vui_long_chon}">-- Vui lòng chọn --</option>
-                                <option th:each="dv : ${danhSachDichVu}" th:value="${dv.id}" th:text="${dv.ten + ' (' + dv.loai + ')'}"></option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold" th:text="#{dv.ui.ngay_su_dung}">Ngày sử dụng</label>
-                            <input type="date" name="ngayDat" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold" th:text="#{dv.ui.ghi_chu_them_neu_co}">Ghi chú thêm (Nếu có)</label>
-                            <textarea name="ghiChu" class="form-control" rows="2" placeholder="Ví dụ: Đặt nướng BBQ bàn số 1..." th:placeholder="#{dv.ui.vi_du_dat_nuong_bbq}"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100" th:text="#{dv.ui.dang_ky_ngay}">Đăng Ký Ngay</button>
-                    </form>
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="layers" class="w-6 h-6 text-brand-500"></i>
+                        <span th:text="#{dv.ui.dang_ky_tien_ich_chu}">Đăng Ký Tiện Ích Chung Cư</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.ui.dang_ky_dich_vu}">Tạo yêu cầu sử dụng dịch vụ mới</p>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-7">
-            <div class="card shadow-sm border-secondary">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0" th:text="#{dv.ui.lich_su_dang_ky_cua}">🕒 Lịch sử đăng ký của bạn</h5>
+            <!-- Notifications -->
+            <div th:if="${thongBaoThanhCong}" class="mb-6 flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <span th:text="${thongBaoThanhCong}"></span>
                 </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover table-striped m-0 no-paging">
-                        <thead class="table-light">
-                        <tr>
-                            <th th:text="#{dv.ds.dich_vu}">Dịch vụ</th>
-                            <th th:text="#{dv.ds.ngay_dung}">Ngày dùng</th>
-                            <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
-                            <th th:text="#{dv.ui.ghi_chu}">Ghi chú</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="dat : ${lichSuDat}">
-                            <td class="fw-bold text-primary" th:text="${dat.dichVu.ten}"></td>
-                            <td th:text="${#temporals.format(dat.ngayDat, 'dd/MM/yyyy')}"></td>
-                            <td>
-                                <span th:if="${dat.trangThai == null || #strings.isEmpty(dat.trangThai) || dat.trangThai == 'Chờ duyệt' || dat.trangThai == 'Đăng ký mới'}" class="badge bg-warning text-dark" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
-                                <span th:if="${dat.trangThai == 'Đã duyệt'}" class="badge bg-info" th:text="#{dv.ds.da_duyet}">Đã duyệt</span>
-                                <span th:if="${dat.trangThai == 'Đã sử dụng'}" class="badge bg-success" th:text="#{dv.ds.da_su_dung}">Đã sử dụng</span>
-                                <span th:if="${dat.trangThai == 'Từ chối'}" class="badge bg-danger" th:text="#{dv.ds.tu_choi}">Từ chối</span>
-                                <span th:if="${dat.trangThai == 'Hủy duyệt'}" class="badge bg-secondary" th:text="#{dv.ds.huy_duyet}">Hủy duyệt</span>
-                                <span th:if="${dat.trangThai == 'Đã hủy'}" class="badge bg-danger" th:text="#{dv.ui.da_huy}">Đã hủy</span>
-                                <span th:if="${dat.trangThai != null &amp;&amp; dat.trangThai != 'Chờ duyệt' &amp;&amp; dat.trangThai != 'Đăng ký mới' &amp;&amp; dat.trangThai != 'Đã duyệt' &amp;&amp; dat.trangThai != 'Đã sử dụng' &amp;&amp; dat.trangThai != 'Từ chối' &amp;&amp; dat.trangThai != 'Hủy duyệt' &amp;&amp; dat.trangThai != 'Đã hủy'}" class="badge bg-dark" th:text="${dat.trangThai}">Trạng thái khác</span>
-                            </td>
-                            <td th:text="${dat.ghiChu}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(lichSuDat)}">
-                            <td colspan="4" class="text-center text-muted py-3" th:text="#{dv.ui.ban_chua_dang_ky_dic}">Bạn chưa đăng ký dịch vụ nào.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <button onclick="this.parentElement.remove()" class="text-emerald-400 hover:text-emerald-300"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
-        </div>
+            
+            <div th:if="${thongBaoLoi}" class="mb-6 flex items-center justify-between p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                    <span th:text="${thongBaoLoi}"></span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+
+            <!-- 2-Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Col 1: Form Đăng ký -->
+                <div class="lg:col-span-5">
+                    <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20">
+                        <div class="p-5 border-b border-darkborder bg-[#111622]">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="pen-tool" class="w-4.5 h-4.5 text-brand-400"></i>
+                                <span th:text="#{dv.ui.tao_dang_ky_moi}">Tạo đăng ký mới</span>
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <form action="/cudan/dich-vu/dat" method="post" class="space-y-5">
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.chon_dich_vu}">Chọn dịch vụ</label>
+                                    <select name="dichVuId" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                                        <option value="" th:text="#{dv.ui.vui_long_chon}">-- Vui lòng chọn --</option>
+                                        <option th:each="dv : ${danhSachDichVu}" th:value="${dv.id}" th:text="${dv.ten + ' (' + dv.loai + ')'}"></option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ngay_su_dung}">Ngày sử dụng</label>
+                                    <input type="date" name="ngayDat" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ghi_chu_them_neu_co}">Ghi chú thêm (Nếu có)</label>
+                                    <textarea name="ghiChu" rows="3" th:placeholder="#{dv.ui.vi_du_dat_nuong_bbq}" placeholder="Ví dụ: Đặt nướng BBQ bàn số 1..." class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition resize-none"></textarea>
+                                </div>
+                                <div class="pt-2">
+                                    <button type="submit" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
+                                        <i data-lucide="send" class="w-4 h-4"></i> <span th:text="#{dv.ui.dang_ky_ngay}">Đăng Ký Ngay</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Col 2: Lịch sử đăng ký -->
+                <div class="lg:col-span-7">
+                    <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20 flex flex-col h-full">
+                        <div class="p-5 border-b border-darkborder bg-[#111622] flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="clock" class="w-4.5 h-4.5 text-slate-400"></i>
+                                <span th:text="#{dv.ui.lich_su_dang_ky_cua}">Lịch sử đăng ký của bạn</span>
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs whitespace-nowrap">
+                                <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
+                                    <tr>
+                                        <th class="px-5 py-4" th:text="#{dv.ds.dich_vu}">Dịch vụ</th>
+                                        <th class="px-5 py-4" th:text="#{dv.ds.ngay_dung}">Ngày dùng</th>
+                                        <th class="px-5 py-4" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                                        <th class="px-5 py-4" th:text="#{dv.ui.ghi_chu}">Ghi chú</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-darkborder text-slate-300">
+                                    <tr th:each="dat : ${lichSuDat}" class="hover:bg-slate-800/30 transition">
+                                        <td class="px-5 py-3.5 font-bold text-brand-400" th:text="${dat.dichVu.ten}"></td>
+                                        <td class="px-5 py-3.5 text-slate-400" th:text="${#temporals.format(dat.ngayDat, 'dd/MM/yyyy')}"></td>
+                                        <td class="px-5 py-3.5">
+                                            <span th:if="${dat.trangThai == null || #strings.isEmpty(dat.trangThai) || dat.trangThai == 'Chờ duyệt' || dat.trangThai == 'Đăng ký mới'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
+                                            <span th:if="${dat.trangThai == 'Đã duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{dv.ds.da_duyet}">Đã duyệt</span>
+                                            <span th:if="${dat.trangThai == 'Đã sử dụng'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{dv.ds.da_su_dung}">Đã sử dụng</span>
+                                            <span th:if="${dat.trangThai == 'Từ chối'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{dv.ds.tu_choi}">Từ chối</span>
+                                            <span th:if="${dat.trangThai == 'Hủy duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{dv.ds.huy_duyet}">Hủy duyệt</span>
+                                            <span th:if="${dat.trangThai == 'Đã hủy'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{dv.ui.da_huy}">Đã hủy</span>
+                                            <span th:if="${dat.trangThai != null &amp;&amp; dat.trangThai != 'Chờ duyệt' &amp;&amp; dat.trangThai != 'Đăng ký mới' &amp;&amp; dat.trangThai != 'Đã duyệt' &amp;&amp; dat.trangThai != 'Đã sử dụng' &amp;&amp; dat.trangThai != 'Từ chối' &amp;&amp; dat.trangThai != 'Hủy duyệt' &amp;&amp; dat.trangThai != 'Đã hủy'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${dat.trangThai}">Trạng thái khác</span>
+                                        </td>
+                                        <td class="px-5 py-3.5 text-slate-400 max-w-[150px] truncate" th:text="${dat.ghiChu}" th:title="${dat.ghiChu}"></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(lichSuDat)}">
+                                        <td colspan="4" class="px-5 py-8 text-center text-slate-500">
+                                            <div class="flex flex-col items-center justify-center gap-2">
+                                                <i data-lucide="calendar-x" class="w-8 h-8 text-slate-600 mb-1"></i>
+                                                <span th:text="#{dv.ui.ban_chua_dang_ky_dic}">Bạn chưa đăng ký dịch vụ nào.</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Dùng fragment Datatable chung -->
+    <!-- Script chung -->
     <div th:replace="~{fragments/datatable :: scripts}"></div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

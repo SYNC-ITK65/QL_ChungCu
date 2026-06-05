@@ -1,69 +1,197 @@
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title th:text="#{pa.form.xu_ly_phan_anh}">Xử lý Phản ánh</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{pa.form.xu_ly_phan_anh}">Xử lý Phản ánh</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
 </head>
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-<body>
-  <div class="d-flex">
+    <!-- Global Sidebar -->
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="container-fluid p-4">
-      <h2 th:text="#{pa.form.xu_ly_phan_anh}">Xử lý Phản ánh</h2>
-      <form th:action="@{/admin/phan-anh/save}" th:object="${phanAnh}" method="post" class="mt-4" style="max-width: 600px;">
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pa.form.xu_ly_phan_anh}">Xử lý Phản ánh</span>
+            </div>
+        </header>
 
-        <input type="hidden" th:field="*{id}">
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-4xl mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="wrench" class="w-6 h-6 text-brand-500"></i>
+                        <span th:text="#{pa.form.xu_ly_phan_anh}">Xử lý Phản ánh</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Cập nhật tiến độ và phản hồi yêu cầu của cư dân</p>
+                </div>
+                <div class="flex gap-2">
+                    <a th:href="@{/admin/phan-anh}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">
+                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{hd.form.quay_lai}">Quay lại</span>
+                    </a>
+                </div>
+            </div>
 
-        <div class="mb-3">
-          <label class="form-label" th:text="#{pa.form.can_ho_phan_anh}">Căn hộ phản ánh</label>
-          <input type="text" class="form-control bg-light" th:value="${phanAnh.canHo.maCanHo}" readonly>
-        </div>
+            <!-- Form Card -->
+            <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20">
+                <form th:action="@{/admin/phan-anh/save}" th:object="${phanAnh}" method="post">
+                    <input type="hidden" th:field="*{id}">
 
-        <div class="mb-3">
-          <label class="form-label" th:text="#{tb.form.tieude}">Tiêu đề</label>
-          <input type="text" class="form-control bg-light" th:value="${phanAnh.tieuDe}" readonly>
-        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2">
+                        
+                        <!-- Col 1: Thông tin phản ánh (Readonly) -->
+                        <div class="p-6 md:p-8 border-b md:border-b-0 md:border-r border-darkborder space-y-6">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-4">
+                                <i data-lucide="info" class="w-4.5 h-4.5 text-brand-400"></i>
+                                <span>Nội dung phản ánh</span>
+                            </h3>
+                            
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-400" th:text="#{pa.form.can_ho_phan_anh}">Căn hộ phản ánh</label>
+                                <input type="text" th:value="${phanAnh.canHo.maCanHo}" readonly class="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2.5 px-4 text-sm text-brand-400 font-bold focus:outline-none cursor-not-allowed">
+                            </div>
 
-        <div class="mb-3">
-          <label class="form-label" th:text="#{pa.form.noi_dung_chi_tiet}">Nội dung chi tiết</label>
-          <textarea class="form-control bg-light" rows="4" th:text="${phanAnh.noiDung}" readonly></textarea>
-        </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-400" th:text="#{tb.form.tieude}">Tiêu đề</label>
+                                <input type="text" th:value="${phanAnh.tieuDe}" readonly class="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2.5 px-4 text-sm text-white font-medium focus:outline-none cursor-not-allowed">
+                            </div>
 
-        <div class="mb-3" th:if="${phanAnh.hinhAnh != null}">
-          <label class="form-label">Hình ảnh đính kèm</label>
-          <div>
-            <a th:href="${phanAnh.hinhAnh}" target="_blank">
-              <img th:src="${phanAnh.hinhAnh}" alt="Ảnh đính kèm" class="img-thumbnail" style="max-height: 250px; border: 1px solid #dee2e6; border-radius: 4px;"/>
-            </a>
-          </div>
-        </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-400" th:text="#{pa.form.noi_dung_chi_tiet}">Nội dung chi tiết</label>
+                                <textarea rows="5" th:text="${phanAnh.noiDung}" readonly class="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-3 px-4 text-sm text-slate-300 focus:outline-none cursor-not-allowed resize-none"></textarea>
+                            </div>
 
-        <div class="mb-3">
-          <label class="form-label text-danger fw-bold" th:text="#{pa.form.cap_nhat_trang_thai}">Cập nhật Trạng thái xử lý</label>
-          <select th:field="*{trangThai}" class="form-select border-danger">
-            <option value="Chờ xử lý" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</option>
-            <option value="Đang xử lý" th:text="#{pa.form.dang_xu_ly_da_cu_tho}">Đang xử lý (Đã cử thợ)</option>
-            <option value="Đã xong" th:text="#{pa.form.da_xong_hoan_thanh}">Đã xong (Hoàn thành)</option>
-          </select>
-        </div>
+                            <div class="space-y-1.5" th:if="${phanAnh.hinhAnh != null}">
+                                <label class="text-xs font-semibold text-slate-400">Hình ảnh đính kèm</label>
+                                <a th:href="${phanAnh.hinhAnh}" target="_blank" class="block rounded-xl overflow-hidden border border-slate-700 hover:border-brand-500 transition group relative">
+                                    <img th:src="${phanAnh.hinhAnh}" alt="Ảnh đính kèm" class="w-full max-h-48 object-cover"/>
+                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                        <i data-lucide="external-link" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
 
-        <div class="mb-3">
-          <label class="form-label fw-bold" th:text="#{pa.form.phan_hoi_cua_ban_qua}">Phản hồi của Ban Quản Lý</label>
-          <textarea th:field="*{phanHoi}" class="form-control" rows="4" placeholder="Nhập nội dung phản hồi cho cư dân..." th:placeholder="#{pa.form.nhap_noi_dung_phan_h}"></textarea>
-        </div>
+                        <!-- Col 2: Xử lý của Ban Quản Lý -->
+                        <div class="p-6 md:p-8 space-y-6 flex flex-col">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2 mb-4">
+                                <i data-lucide="shield-check" class="w-4.5 h-4.5 text-emerald-400"></i>
+                                <span>Phần xử lý của BQL</span>
+                            </h3>
 
-        <div class="mb-3" th:if="${phanAnh.ngayPhanHoi != null}">
-          <small class="text-muted"><span th:text="#{pa.form.ngay_phan_hoi}" th:remove="tag">Ngày phản hồi: </span><span th:text="${#temporals.format(phanAnh.ngayPhanHoi, 'dd/MM/yyyy HH:mm')}"></span></small>
-        </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5 text-emerald-400">
+                                    <i data-lucide="activity" class="w-4 h-4"></i> <span th:text="#{pa.form.cap_nhat_trang_thai}">Cập nhật Trạng thái xử lý</span>
+                                </label>
+                                <select th:field="*{trangThai}" class="w-full bg-darkbg border border-emerald-500/30 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-emerald-500 transition appearance-none cursor-pointer">
+                                    <option value="Chờ xử lý" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</option>
+                                    <option value="Đang xử lý" th:text="#{pa.form.dang_xu_ly_da_cu_tho}">Đang xử lý (Đã cử thợ)</option>
+                                    <option value="Đã xong" th:text="#{pa.form.da_xong_hoan_thanh}">Đã xong (Hoàn thành)</option>
+                                </select>
+                            </div>
 
-        <button type="submit" class="btn btn-success" th:text="#{pa.form.cap_nhat_trang_thai1}">Cập nhật trạng thái</button>
-        <a th:href="@{/admin/phan-anh}" class="btn btn-secondary" th:text="#{hd.form.quay_lai}">Quay lại</a>
-      </form>
+                            <div class="space-y-2 flex-grow flex flex-col">
+                                <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                                    <i data-lucide="message-square-reply" class="w-4 h-4 text-slate-500"></i> <span th:text="#{pa.form.phan_hoi_cua_ban_qua}">Phản hồi của Ban Quản Lý</span>
+                                </label>
+                                <textarea th:field="*{phanHoi}" rows="6" th:placeholder="#{pa.form.nhap_noi_dung_phan_h}" placeholder="Nhập nội dung phản hồi cho cư dân..." class="w-full flex-grow bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition resize-none"></textarea>
+                            </div>
+
+                            <div th:if="${phanAnh.ngayPhanHoi != null}" class="flex items-center gap-2 text-[11px] text-slate-500 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                                <span><span th:text="#{pa.form.ngay_phan_hoi}" th:remove="tag">Ngày phản hồi: </span><span th:text="${#temporals.format(phanAnh.ngayPhanHoi, 'dd/MM/yyyy HH:mm')}" class="font-semibold text-slate-400"></span></span>
+                            </div>
+
+                            <div class="pt-4 border-t border-darkborder">
+                                <button type="submit" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
+                                    <i data-lucide="save" class="w-5 h-5"></i> <span th:text="#{pa.form.cap_nhat_trang_thai1}">Cập nhật trạng thái</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            
+        </main>
     </div>
-  </div>
-</body>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
 </html>
