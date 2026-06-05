@@ -74,18 +74,7 @@ public class AdminYeuCauDichVuController {
         return "redirect:/admin/yeu-cau-dich-vu";
     }
 
-    @GetMapping("/don-dat/huy-duyet/{id}")
-    public String huyDuyetDonDatDichVu(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, java.util.Locale locale) {
-        try {
-            datDichVuService.huyDuyetDonDatDichVu(id);
-            String msg = messageSource.getMessage("dv.msg.huy_duyet_thanh_cong", null, "Đã hủy duyệt đăng ký dịch vụ.", locale);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", msg);
-        } catch (Exception e) {
-            String errorPrefix = messageSource.getMessage("dv.msg.huy_duyet_loi", null, "Lỗi hủy duyệt đăng ký dịch vụ: ", locale);
-            redirectAttributes.addFlashAttribute("thongBaoLoi", errorPrefix + e.getMessage());
-        }
-        return "redirect:/admin/yeu-cau-dich-vu";
-    }
+
 
     @GetMapping("/don-dat/sua/{id}")
     public String suaLaiTrangThaiChoDuyet(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, java.util.Locale locale) {
