@@ -35,12 +35,12 @@
 <body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
     <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{hdon.ds.tieude}">Quản lý Hóa Đơn</h1>
-                <p class="text-sm text-slate-400 mt-1">Quản lý hóa đơn, theo dõi trạng thái thanh toán của cư dân</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.hoadon.list.subtitle}">Quản lý hóa đơn, theo dõi trạng thái thanh toán của cư dân</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <a th:href="@{/admin/thanh-toan/lich-su}"
@@ -116,7 +116,7 @@
         <div class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-sm mb-8">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
                 <i data-lucide="filter" class="w-4 h-4 text-brand-400"></i>
-                <span>Lọc và Tìm kiếm</span>
+                <span th:text="#{chung.loc_va_tim_kiem}">Lọc và Tìm kiếm</span>
             </h3>
             <form th:action="@{/admin/hoa-don}" method="get" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <div class="md:col-span-3">

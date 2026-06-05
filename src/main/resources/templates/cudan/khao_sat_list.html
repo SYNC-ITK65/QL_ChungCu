@@ -86,7 +86,7 @@
                     <i data-lucide="bar-chart" class="w-6 h-6 text-brand-500"></i>
                     <span th:text="#{ks.ds.khao_sat_tham_do_y_k}">Khảo sát &amp; Thăm dò ý kiến</span>
                 </h2>
-                <p class="text-xs text-slate-400 mt-1">Bình chọn ý kiến để xây dựng cộng đồng tốt đẹp hơn</p>
+                <p class="text-xs text-slate-400 mt-1" th:text="#{cudan.khao_sat.list.subtitle}">Bình chọn ý kiến để xây dựng cộng đồng tốt đẹp hơn</p>
             </div>
 
             <!-- Survey Grid -->
@@ -122,7 +122,7 @@
                 <!-- Empty State -->
                 <div th:if="${#lists.isEmpty(listKhaoSat)}" class="col-span-full py-12 flex flex-col items-center justify-center text-slate-500 bg-darkcard border border-darkborder rounded-3xl border-dashed">
                     <i data-lucide="bar-chart-2" class="w-12 h-12 mb-3 opacity-20"></i>
-                    <p class="text-sm">Hiện chưa có cuộc khảo sát nào.</p>
+                    <p class="text-sm" th:text="#{ks.ds.trong}">Hiện chưa có cuộc khảo sát nào.</p>
                 </div>
             </div>
 

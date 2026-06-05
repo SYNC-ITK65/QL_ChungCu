@@ -93,7 +93,7 @@
                         <i data-lucide="settings-2" class="w-6 h-6 text-brand-500"></i>
                         <span th:text="${dichVu.id == null} ? #{dv.form.them_tieude} : #{dv.form.sua_tieude}">Thêm Dịch Vụ Mới</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.form.thong_tin_dich_vu}">Cập nhật thông tin chi tiết dịch vụ nội khu</p>
+                    <p class="text-sm text-slate-400 mt-1" th:text="#{admin.dichvu.form.subtitle}">Cập nhật thông tin chi tiết dịch vụ nội khu</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/dich-vu}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">

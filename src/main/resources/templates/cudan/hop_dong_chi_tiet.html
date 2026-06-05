@@ -15,20 +15,20 @@
 <body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
     <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-3 mb-8 max-w-7xl mx-auto">
             <a th:href="@{/cudan/can-ho}" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
             </a>
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{hd.chitiet.chi_tiet_hop_dong_cu}">Chi tiết Hợp đồng của tôi</h1>
-                <p class="text-sm text-slate-400 mt-1">Thông tin hợp đồng căn hộ của bạn</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{cudan.hop_dong.subtitle}">Thông tin hợp đồng căn hộ của bạn</p>
             </div>
         </div>
 
         <!-- Có dữ liệu -->
-        <div th:if="${hopDong != null}" class="max-w-2xl space-y-6">
+        <div th:if="${hopDong != null}" class="max-w-7xl mx-auto space-y-6">
 
             <!-- Tiêu đề trạng thái -->
             <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm">
@@ -88,7 +88,7 @@
             <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <i data-lucide="credit-card" class="w-3.5 h-3.5 text-emerald-400"></i>
-                    Thông tin tài chính
+                    <span th:text="#{hd.form.tai_chinh}">Thông tin tài chính</span>
                 </h3>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
@@ -107,7 +107,7 @@
         </div>
 
         <!-- Không có dữ liệu -->
-        <div th:if="${hopDong == null}" class="max-w-md mt-16 p-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 text-center">
+        <div th:if="${hopDong == null}" class="max-w-md mx-auto mt-16 p-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 text-center">
             <i data-lucide="alert-triangle" class="w-10 h-10 mx-auto mb-3"></i>
             <p class="font-semibold" th:text="#{hd.chitiet.khong_tim_thay_hop_d}">Không tìm thấy hợp đồng phù hợp.</p>
         </div>

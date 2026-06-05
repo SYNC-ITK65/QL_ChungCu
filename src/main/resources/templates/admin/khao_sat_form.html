@@ -92,7 +92,7 @@
                         <i data-lucide="edit-3" class="w-6 h-6 text-brand-500"></i>
                         <span th:text="${khaoSat.id == null} ? #{ks.form.them_tieude} : #{ks.form.sua_tieude}">Thêm / Sửa Khảo Sát</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">Thiết lập thông tin và các phương án khảo sát</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{admin.khaosat.form.subtitle}">Thiết lập thông tin và các phương án khảo sát</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/khao-sat}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">

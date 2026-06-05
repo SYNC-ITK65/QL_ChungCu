@@ -68,17 +68,17 @@
     <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
     <!-- Main Content -->
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="mb-8 border-b border-darkborder pb-4 flex items-center justify-between gap-4">
+        <div class="mb-8 border-b border-darkborder pb-4 flex items-center justify-between gap-4 max-w-7xl mx-auto">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{${tieuDeTrangKey}}">Bảng tin</h1>
-                <p class="text-sm text-slate-400 mt-1">Thông báo nội bộ, hoạt động cộng đồng và thông tin vận hành từ Ban Quản Lý</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{cudan.bang_tin.subtitle}">Thông báo nội bộ, hoạt động cộng đồng và thông tin vận hành từ Ban Quản Lý</p>
             </div>
         </div>
 
         <!-- News list grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl" th:if="${not #lists.isEmpty(danhSach)}">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto" th:if="${not #lists.isEmpty(danhSach)}">
             <div th:each="tb : ${danhSach}">
                 <a th:href="@{/cudan/thong-bao/chi-tiet/{id}(id=${tb.id})}"
                    class="bg-darkcard border border-darkborder hover:border-brand-500/30 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between h-full group cursor-pointer">
@@ -105,7 +105,7 @@
                     
                     <!-- Readmore Indicator -->
                     <div class="mt-6 pt-4 border-t border-darkborder/50 flex items-center justify-between text-xs text-brand-500 font-semibold group-hover:text-brand-400">
-                        <span>Chi tiết bài viết</span>
+                        <span th:text="#{user.bang_tin.read_more}">Chi tiết bài viết</span>
                         <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition"></i>
                     </div>
                 </a>
@@ -113,7 +113,7 @@
         </div>
 
         <!-- Empty Placeholder -->
-        <div th:if="${#lists.isEmpty(danhSach)}" class="text-center py-16 bg-darkcard border border-darkborder border-dashed rounded-2xl max-w-6xl">
+        <div th:if="${#lists.isEmpty(danhSach)}" class="text-center py-16 bg-darkcard border border-darkborder border-dashed rounded-2xl max-w-7xl mx-auto">
             <div class="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-darkborder">
                 <i data-lucide="inbox" class="w-6 h-6 text-slate-500"></i>
             </div>
@@ -121,7 +121,7 @@
         </div>
 
         <!-- Pagination fragment invocation -->
-        <div th:replace="~{fragments/pagination :: paging('/cudan/thong-bao/bang-tin', '')}" class="max-w-6xl mt-8"></div>
+        <div th:replace="~{fragments/pagination :: paging('/cudan/thong-bao/bang-tin', '')}" class="max-w-7xl mx-auto mt-8"></div>
     </main>
 
     <script>

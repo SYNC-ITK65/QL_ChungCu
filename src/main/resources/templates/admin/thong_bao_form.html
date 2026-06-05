@@ -194,7 +194,7 @@
                     th:text="${thongBao.id == null} ? #{tb.form.them_tieude} : #{tb.form.sua_tieude}">
                     Form Thông báo
                 </h1>
-                <p class="text-sm text-slate-400 mt-1">Soạn thảo bài viết, tin tức chung hoặc cẩm nang cư dân</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.thongbao.form.subtitle}">Soạn thảo bài viết, tin tức chung hoặc cẩm nang cư dân</p>
             </div>
             <a th:href="@{/admin/thong-bao}" 
                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">

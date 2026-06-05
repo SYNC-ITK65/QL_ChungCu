@@ -30,22 +30,22 @@
 <body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
     <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 max-w-7xl mx-auto">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{tt.ui.lich_su_thanh_toan_c}">Lịch Sử Thanh Toán</h1>
-                <p class="text-sm text-slate-400 mt-1">Các giao dịch thanh toán hóa đơn của bạn</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{cudan.thanh_toan.history.subtitle}">Các giao dịch thanh toán hóa đơn của bạn</p>
             </div>
             <a th:href="@{/cudan/hoa-don}"
                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-darkborder text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
                 <i data-lucide="wallet" class="w-4 h-4 text-brand-400"></i>
-                <span>Hóa đơn của tôi</span>
+                <span th:text="#{hdon.ds.hoa_don_cua_toi}">Hóa đơn của tôi</span>
             </a>
         </div>
 
         <!-- Table -->
-        <div class="bg-darkcard border border-darkborder rounded-2xl overflow-hidden shadow-sm">
+        <div class="bg-darkcard border border-darkborder rounded-2xl overflow-hidden shadow-sm max-w-7xl mx-auto">
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse text-left text-xs text-slate-300 no-paging">
                     <thead>

@@ -78,7 +78,7 @@
         </header>
 
         <!-- MAIN SCROLLABLE WRAPPER -->
-        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full mx-auto flex flex-col justify-start">
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto flex flex-col justify-start">
             
             <!-- Notifications -->
             <div th:if="${thongBaoThanhCong}" class="mb-6 flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-sm font-medium">
@@ -104,7 +104,7 @@
                         <i data-lucide="settings-2" class="w-6 h-6 text-brand-500"></i>
                         <span th:text="#{dv.ds.danh_sach_dich_vu}">Danh sách Dịch vụ</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.ds.quan_ly_dich_vu}">Quản lý các loại dịch vụ nội khu</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{admin.dichvu.list.subtitle}">Quản lý các loại dịch vụ nội khu</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/yeu-cau-dich-vu}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">
