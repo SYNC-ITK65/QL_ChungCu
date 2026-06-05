@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{dv.ds.quan_ly_dich_vu}">Quáº£n lÃ½ Dá»‹ch vá»¥</title>
+    <title th:text="#{dv.ds.quan_ly_dich_vu}">Quản lý Dịch vụ</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -73,7 +73,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{dv.ds.quan_ly_dich_vu}">Quáº£n lÃ½ Dá»‹ch vá»¥</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{dv.ds.quan_ly_dich_vu}">Quản lý Dịch vụ</span>
             </div>
         </header>
 
@@ -102,16 +102,16 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="settings-2" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="#{dv.ds.danh_sach_dich_vu}">Danh sÃ¡ch Dá»‹ch vá»¥</span>
+                        <span th:text="#{dv.ds.danh_sach_dich_vu}">Danh sách Dịch vụ</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.ds.quan_ly_dich_vu}">Quáº£n lÃ½ cÃ¡c loáº¡i dá»‹ch vá»¥ ná»™i khu</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.ds.quan_ly_dich_vu}">Quản lý các loại dịch vụ nội khu</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/yeu-cau-dich-vu}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">
-                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{dv.ds.quay_lai}">Quay láº¡i</span>
+                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{dv.ds.quay_lai}">Quay lại</span>
                     </a>
                     <a th:href="@{/admin/dich-vu/tao-moi}" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-brand-500/20 flex items-center gap-2">
-                        <i data-lucide="plus" class="w-4 h-4"></i> <span th:text="#{dv.ds.them_dich_vu_moi}">ThÃªm Dá»‹ch vá»¥ má»›i</span>
+                        <i data-lucide="plus" class="w-4 h-4"></i> <span th:text="#{dv.ds.them_dich_vu_moi}">Thêm Dịch vụ mới</span>
                     </a>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                 <div class="p-4 border-b border-darkborder flex items-center justify-between bg-[#111622]">
                     <h3 class="text-sm font-bold text-white flex items-center gap-2">
                         <i data-lucide="list" class="w-4.5 h-4.5 text-brand-400"></i>
-                        <span th:text="#{dv.ds.quan_ly_dich_vu}">Cáº¥u hÃ¬nh Dá»‹ch vá»¥</span>
+                        <span th:text="#{dv.ds.quan_ly_dich_vu}">Cấu hình Dịch vụ</span>
                     </h3>
                 </div>
                 
@@ -130,31 +130,31 @@
                         <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
                             <tr>
                                 <th class="px-4 py-3">ID</th>
-                                <th class="px-4 py-3" th:text="#{dv.form.ten_dich_vu}">TÃªn Dá»‹ch vá»¥</th>
-                                <th class="px-4 py-3" th:text="#{hd.ds.bang_loai}">Loáº¡i</th>
-                                <th class="px-4 py-3" th:text="#{dv.form.don_gia}">ÄÆ¡n GiÃ¡</th>
-                                <th class="px-4 py-3" th:text="#{dv.form.don_vi_tinh}">ÄÆ¡n Vá»‹ TÃ­nh</th>
-                                <th class="px-4 py-3" th:text="#{dv.ds.mo_ta}">MÃ´ Táº£</th>
-                                <th class="px-4 py-3 text-center" th:text="#{hdon.ds.bang_hanh_dong}">HÃ nh Äá»™ng</th>
+                                <th class="px-4 py-3" th:text="#{dv.form.ten_dich_vu}">Tên Dịch vụ</th>
+                                <th class="px-4 py-3" th:text="#{hd.ds.bang_loai}">Loại</th>
+                                <th class="px-4 py-3" th:text="#{dv.form.don_gia}">Đơn Giá</th>
+                                <th class="px-4 py-3" th:text="#{dv.form.don_vi_tinh}">Đơn Vị Tính</th>
+                                <th class="px-4 py-3" th:text="#{dv.ds.mo_ta}">Mô Tả</th>
+                                <th class="px-4 py-3 text-center" th:text="#{hdon.ds.bang_hanh_dong}">Hành Động</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-darkborder text-slate-300">
                             <tr th:each="dv : ${danhSachDichVu}" class="hover:bg-slate-800/30 transition">
                                 <td class="px-4 py-3 font-mono text-slate-400" th:text="${dv.id}">1</td>
-                                <td class="px-4 py-3 font-medium text-white" th:text="${dv.ten}">Tiá»n Äiá»‡n</td>
+                                <td class="px-4 py-3 font-medium text-white" th:text="${dv.ten}">Tiền Điện</td>
                                 <td class="px-4 py-3">
-                                    <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${dv.loai}">Äiá»‡n</span>
+                                    <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${dv.loai}">Điện</span>
                                 </td>
                                 <td class="px-4 py-3 text-emerald-400 font-medium" th:text="|${#numbers.formatDecimal(dv.donGia, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}|"></td>
                                 <td class="px-4 py-3 text-slate-400" th:text="${dv.donViTinh}">kWh</td>
-                                <td class="px-4 py-3 text-slate-400 max-w-[200px] truncate" th:text="${dv.moTa}" th:title="${dv.moTa}">Äiá»‡n sinh hoáº¡t báº­c 1</td>
+                                <td class="px-4 py-3 text-slate-400 max-w-[200px] truncate" th:text="${dv.moTa}" th:title="${dv.moTa}">Điện sinh hoạt bậc 1</td>
                                 <td class="px-4 py-3 text-center">
                                     <div class="flex items-center justify-center gap-1.5 flex-wrap">
                                         <a th:href="@{/admin/dich-vu/sua/{id}(id=${dv.id})}" class="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 rounded-lg text-xs font-semibold transition flex items-center gap-1" th:title="#{hdon.ds.nut_sua}">
-                                            <i data-lucide="edit" class="w-3.5 h-3.5"></i> <span th:text="#{hdon.ds.nut_sua}" class="hidden xl:inline">Sá»­a</span>
+                                            <i data-lucide="edit" class="w-3.5 h-3.5"></i> <span th:text="#{hdon.ds.nut_sua}" class="hidden xl:inline">Sửa</span>
                                         </a>
                                         <a th:href="@{/admin/dich-vu/xoa/{id}(id=${dv.id})}" th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" class="px-2.5 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-xs font-semibold transition flex items-center gap-1" th:title="#{hd.ds.nut_xoa}">
-                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> <span th:text="#{hd.ds.nut_xoa}" class="hidden xl:inline">XÃ³a</span>
+                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> <span th:text="#{hd.ds.nut_xoa}" class="hidden xl:inline">Xóa</span>
                                         </a>
                                     </div>
                                 </td>
@@ -163,7 +163,7 @@
                                 <td colspan="7" class="px-4 py-8 text-center text-slate-500">
                                     <div class="flex flex-col items-center justify-center gap-2">
                                         <i data-lucide="package-x" class="w-8 h-8 text-slate-600 mb-1"></i>
-                                        <span th:text="#{dv.ds.chua_co_dich_vu_nao}">ChÆ°a cÃ³ dá»‹ch vá»¥ nÃ o Ä‘Æ°á»£c táº¡o.</span>
+                                        <span th:text="#{dv.ds.chua_co_dich_vu_nao}">Chưa có dịch vụ nào được tạo.</span>
                                     </div>
                                 </td>
                             </tr>

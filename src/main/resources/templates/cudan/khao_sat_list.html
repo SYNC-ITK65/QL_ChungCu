@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{ks.ds.khao_sat_cu_dan}">Kháº£o sÃ¡t cÆ° dÃ¢n</title>
+    <title th:text="#{ks.ds.khao_sat_cu_dan}">Khảo sát cư dân</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -73,7 +73,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{ks.ds.khao_sat_cu_dan}">Kháº£o sÃ¡t cÆ° dÃ¢n</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{ks.ds.khao_sat_cu_dan}">Khảo sát cư dân</span>
             </div>
         </header>
 
@@ -84,24 +84,24 @@
             <div class="mb-8">
                 <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                     <i data-lucide="bar-chart" class="w-6 h-6 text-brand-500"></i>
-                    <span th:text="#{ks.ds.khao_sat_tham_do_y_k}">Kháº£o sÃ¡t &amp; ThÄƒm dÃ² Ã½ kiáº¿n</span>
+                    <span th:text="#{ks.ds.khao_sat_tham_do_y_k}">Khảo sát &amp; Thăm dò ý kiến</span>
                 </h2>
-                <p class="text-xs text-slate-400 mt-1">BÃ¬nh chá»n Ã½ kiáº¿n Ä‘á»ƒ xÃ¢y dá»±ng cá»™ng Ä‘á»“ng tá»‘t Ä‘áº¹p hÆ¡n</p>
+                <p class="text-xs text-slate-400 mt-1">Bình chọn ý kiến để xây dựng cộng đồng tốt đẹp hơn</p>
             </div>
 
             <!-- Survey Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
                 <div th:each="ks : ${listKhaoSat}" class="bg-darkcard rounded-3xl border overflow-hidden flex flex-col shadow-lg shadow-black/20 hover:shadow-black/40 transition-all duration-300 hover:-translate-y-1 group relative"
-                     th:classappend="${ks.trangThaiHienTai == 'ÄANG Má»ž' ? 'border-emerald-500/30' : (ks.trangThaiHienTai == 'Sáº®P Má»ž' ? 'border-amber-500/30' : 'border-darkborder')}">
+                     th:classappend="${ks.trangThaiHienTai == 'ĐANG MỞ' ? 'border-emerald-500/30' : (ks.trangThaiHienTai == 'SẮP MỞ' ? 'border-amber-500/30' : 'border-darkborder')}">
                     
                     <!-- Top glow accent based on status -->
-                    <div class="h-1 w-full" th:classappend="${ks.trangThaiHienTai == 'ÄANG Má»ž' ? 'bg-emerald-500' : (ks.trangThaiHienTai == 'Sáº®P Má»ž' ? 'bg-amber-500' : 'bg-slate-700')}"></div>
+                    <div class="h-1 w-full" th:classappend="${ks.trangThaiHienTai == 'ĐANG MỞ' ? 'bg-emerald-500' : (ks.trangThaiHienTai == 'SẮP MỞ' ? 'bg-amber-500' : 'bg-slate-700')}"></div>
                     
                     <div class="p-5 flex-grow flex flex-col">
                         <div class="flex justify-between items-start mb-3">
-                            <span th:if="${ks.trangThaiHienTai == 'ÄANG Má»ž'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.dang_mo}">ÄANG Má»ž</span></span>
-                            <span th:if="${ks.trangThaiHienTai == 'Sáº®P Má»ž'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.sap_mo}">Sáº®P Má»ž</span></span>
-                            <span th:if="${ks.trangThaiHienTai == 'ÄÃƒ ÄÃ“NG'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5"><i data-lucide="lock" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.da_ket_thuc}">ÄÃƒ Káº¾T THÃšC</span></span>
+                            <span th:if="${ks.trangThaiHienTai == 'ĐANG MỞ'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.dang_mo}">ĐANG MỞ</span></span>
+                            <span th:if="${ks.trangThaiHienTai == 'SẮP MỞ'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.sap_mo}">SẮP MỞ</span></span>
+                            <span th:if="${ks.trangThaiHienTai == 'ĐÃ ĐÓNG'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5"><i data-lucide="lock" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.da_ket_thuc}">ĐÃ KẾT THÚC</span></span>
                         </div>
                         
                         <h5 class="text-base font-bold text-white mb-4 line-clamp-2" th:text="${ks.tieuDe}"></h5>
@@ -109,11 +109,11 @@
                         <div class="mt-auto">
                             <div class="flex items-center gap-2 text-[11px] text-slate-400 mb-4 bg-slate-900/50 p-2.5 rounded-xl border border-slate-800/50">
                                 <i data-lucide="calendar-off" class="w-3.5 h-3.5 opacity-70"></i>
-                                <span><span th:text="#{ks.ds.ket_thuc}">Káº¿t thÃºc:</span> <strong class="text-slate-300" th:text="${#temporals.format(ks.thoiGianKetThuc, 'dd/MM/yyyy HH:mm')}"></strong></span>
+                                <span><span th:text="#{ks.ds.ket_thuc}">Kết thúc:</span> <strong class="text-slate-300" th:text="${#temporals.format(ks.thoiGianKetThuc, 'dd/MM/yyyy HH:mm')}"></strong></span>
                             </div>
                             
                             <a th:href="@{/cudan/khao-sat/chi-tiet/{id}(id=${ks.id})}" class="w-full py-2.5 bg-brand-500/10 hover:bg-brand-500 text-brand-400 hover:text-white border border-brand-500/20 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-[0_0_15px_rgba(14,165,233,0.3)]">
-                                <span th:text="#{hdon.ui.xem_chi_tiet}">Xem chi tiáº¿t</span> <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                                <span th:text="#{hdon.ui.xem_chi_tiet}">Xem chi tiết</span> <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                             </a>
                         </div>
                     </div>
@@ -122,11 +122,11 @@
                 <!-- Empty State -->
                 <div th:if="${#lists.isEmpty(listKhaoSat)}" class="col-span-full py-12 flex flex-col items-center justify-center text-slate-500 bg-darkcard border border-darkborder rounded-3xl border-dashed">
                     <i data-lucide="bar-chart-2" class="w-12 h-12 mb-3 opacity-20"></i>
-                    <p class="text-sm">Hiá»‡n chÆ°a cÃ³ cuá»™c kháº£o sÃ¡t nÃ o.</p>
+                    <p class="text-sm">Hiện chưa có cuộc khảo sát nào.</p>
                 </div>
             </div>
 
-            <!-- Fragment PhÃ¢n trang -->
+            <!-- Fragment Phân trang -->
             <div class="bg-darkcard border border-darkborder rounded-2xl p-4 shadow-lg shadow-black/20">
                 <div th:replace="~{fragments/pagination :: paging('/cudan/khao-sat', '')}"></div>
             </div>

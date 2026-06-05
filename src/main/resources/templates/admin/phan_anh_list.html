@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{pa.ds.danh_sach_phan_anh}">Danh sÃ¡ch Pháº£n Ã¡nh</title>
+    <title th:text="#{pa.ds.danh_sach_phan_anh}">Danh sách Phản ánh</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -79,7 +79,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pa.ds.danh_sach_phan_anh}">Danh sÃ¡ch Pháº£n Ã¡nh</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pa.ds.danh_sach_phan_anh}">Danh sách Phản ánh</span>
             </div>
         </header>
 
@@ -91,13 +91,13 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="message-square" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="#{pa.ds.danh_sach_cu_dan_pha}">Danh sÃ¡ch CÆ° dÃ¢n Pháº£n Ã¡nh / YÃªu cáº§u sá»­a chá»¯a</span>
+                        <span th:text="#{pa.ds.danh_sach_cu_dan_pha}">Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{pa.ds.danh_sach_phan_anh}">Quáº£n lÃ½ vÃ  theo dÃµi cÃ¡c pháº£n Ã¡nh tá»« cÆ° dÃ¢n</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{pa.ds.danh_sach_phan_anh}">Quản lý và theo dõi các phản ánh từ cư dân</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/phan-anh/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
-                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> <span th:text="#{chung.xuat_excel}">Xuáº¥t Excel</span>
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
                     </a>
                 </div>
             </div>
@@ -106,24 +106,24 @@
             <div class="bg-darkcard p-5 rounded-2xl border border-darkborder mb-6 shadow-lg shadow-black/20">
                 <form method="get" action="/admin/phan-anh" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                     <div class="md:col-span-5 space-y-1.5">
-                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.tim_kiem_label}">TÃ¬m kiáº¿m</label>
+                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.tim_kiem_label}">Tìm kiếm</label>
                         <div class="relative">
                             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="search" class="w-4 h-4"></i></span>
-                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" th:placeholder="#{pa.ds.tim_kiem_goi_y}" placeholder="Nháº­p tiÃªu Ä‘á» hoáº·c mÃ£ cÄƒn há»™..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" th:placeholder="#{pa.ds.tim_kiem_goi_y}" placeholder="Nhập tiêu đề hoặc mã căn hộ..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
                         </div>
                     </div>
                     <div class="md:col-span-4 space-y-1.5">
-                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.bang_trang_thai}">Tráº¡ng thÃ¡i</label>
+                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</label>
                         <select name="trangThai" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-3.5 text-xs text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
-                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Táº¥t cáº£ tráº¡ng thÃ¡i --</option>
-                            <option value="Chá» xá»­ lÃ½" th:selected="${trangThai == 'Chá» xá»­ lÃ½'}" th:text="#{pa.form.cho_xu_ly}">Chá» xá»­ lÃ½</option>
-                            <option value="Äang xá»­ lÃ½" th:selected="${trangThai == 'Äang xá»­ lÃ½'}" th:text="#{pa.form.dang_xu_ly}">Äang xá»­ lÃ½</option>
-                            <option value="ÄÃ£ xong" th:selected="${trangThai == 'ÄÃ£ xong'}" th:text="#{pa.form.da_xong}">ÄÃ£ xong</option>
+                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+                            <option value="Chờ xử lý" th:selected="${trangThai == 'Chờ xử lý'}" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</option>
+                            <option value="Đang xử lý" th:selected="${trangThai == 'Đang xử lý'}" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</option>
+                            <option value="Đã xong" th:selected="${trangThai == 'Đã xong'}" th:text="#{pa.form.da_xong}">Đã xong</option>
                         </select>
                     </div>
                     <div class="md:col-span-3 flex items-end">
                         <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
-                            <i data-lucide="search" class="w-4 h-4"></i> <span th:text="#{hdon.ds.nut_tim_kiem}">TÃ¬m kiáº¿m</span>
+                            <i data-lucide="search" class="w-4 h-4"></i> <span th:text="#{hdon.ds.nut_tim_kiem}">Tìm kiếm</span>
                         </button>
                     </div>
                 </form>
@@ -134,7 +134,7 @@
                 <div class="p-4 border-b border-darkborder flex items-center justify-between bg-[#111622]">
                     <h3 class="text-sm font-bold text-white flex items-center gap-2">
                         <i data-lucide="list" class="w-4.5 h-4.5 text-brand-400"></i>
-                        <span th:text="#{pa.ds.danh_sach_phan_anh}">Danh sÃ¡ch Pháº£n Ã¡nh</span>
+                        <span th:text="#{pa.ds.danh_sach_phan_anh}">Danh sách Phản ánh</span>
                     </h3>
                 </div>
                 
@@ -143,11 +143,11 @@
                         <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
                             <tr>
                                 <th class="px-4 py-3" th:text="#{chung.id}">ID</th>
-                                <th class="px-4 py-3" th:text="#{hdon.form.can_ho}">CÄƒn há»™</th>
-                                <th class="px-4 py-3" th:text="#{tb.form.tieude}">TiÃªu Ä‘á»</th>
-                                <th class="px-4 py-3" th:text="#{pa.ds.ngay_gui}">NgÃ y gá»­i</th>
-                                <th class="px-4 py-3" th:text="#{hdon.ds.bang_trang_thai}">Tráº¡ng thÃ¡i</th>
-                                <th class="px-4 py-3 text-center" th:text="#{hdon.ds.bang_hanh_dong}">HÃ nh Ä‘á»™ng</th>
+                                <th class="px-4 py-3" th:text="#{hdon.form.can_ho}">Căn hộ</th>
+                                <th class="px-4 py-3" th:text="#{tb.form.tieude}">Tiêu đề</th>
+                                <th class="px-4 py-3" th:text="#{pa.ds.ngay_gui}">Ngày gửi</th>
+                                <th class="px-4 py-3" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                                <th class="px-4 py-3 text-center" th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-darkborder text-slate-300">
@@ -157,14 +157,14 @@
                                 <td class="px-4 py-3 font-medium text-white max-w-xs truncate" th:title="${pa.tieuDe}" th:text="${pa.tieuDe}"></td>
                                 <td class="px-4 py-3 text-slate-400" th:text="${#temporals.format(pa.ngayGui, 'dd/MM/yyyy HH:mm')}"></td>
                                 <td class="px-4 py-3">
-                                    <span th:if="${pa.trangThai == 'Chá» xá»­ lÃ½'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{pa.form.cho_xu_ly}">Chá» xá»­ lÃ½</span>
-                                    <span th:if="${pa.trangThai == 'Äang xá»­ lÃ½'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{pa.form.dang_xu_ly}">Äang xá»­ lÃ½</span>
-                                    <span th:if="${pa.trangThai == 'ÄÃ£ xong'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{pa.form.da_xong}">ÄÃ£ xong</span>
-                                    <span th:if="${pa.trangThai != 'Chá» xá»­ lÃ½' &amp;&amp; pa.trangThai != 'Äang xá»­ lÃ½' &amp;&amp; pa.trangThai != 'ÄÃ£ xong'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${pa.trangThai}"></span>
+                                    <span th:if="${pa.trangThai == 'Chờ xử lý'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</span>
+                                    <span th:if="${pa.trangThai == 'Đang xử lý'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</span>
+                                    <span th:if="${pa.trangThai == 'Đã xong'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{pa.form.da_xong}">Đã xong</span>
+                                    <span th:if="${pa.trangThai != 'Chờ xử lý' &amp;&amp; pa.trangThai != 'Đang xử lý' &amp;&amp; pa.trangThai != 'Đã xong'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${pa.trangThai}"></span>
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     <a th:href="@{/admin/phan-anh/edit/{id}(id=${pa.id})}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 rounded-lg text-xs font-semibold transition" th:title="#{pa.ds.xem_xu_ly}">
-                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i> <span th:text="#{pa.ds.xem_xu_ly}">Xem &amp; Xá»­ lÃ½</span>
+                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i> <span th:text="#{pa.ds.xem_xu_ly}">Xem &amp; Xử lý</span>
                                     </a>
                                 </td>
                             </tr>
@@ -172,7 +172,7 @@
                                 <td colspan="6" class="px-4 py-8 text-center text-slate-500">
                                     <div class="flex flex-col items-center justify-center gap-2">
                                         <i data-lucide="inbox" class="w-8 h-8 text-slate-600 mb-1"></i>
-                                        <span th:text="#{pa.ds.chua_co_phan_anh_nao}">ChÆ°a cÃ³ pháº£n Ã¡nh nÃ o tá»« cÆ° dÃ¢n!</span>
+                                        <span th:text="#{pa.ds.chua_co_phan_anh_nao}">Chưa có phản ánh nào từ cư dân!</span>
                                     </div>
                                 </td>
                             </tr>

@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{kh.form.them_tieude}">Ghi nháº­n Ä‘Æ¡n thÆ° má»›i</title>
+    <title th:text="#{kh.form.them_tieude}">Ghi nhận đơn thư mới</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -79,7 +79,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="${kienHang.id != null} ? #{kh.form.sua_tieude} : #{kh.form.them_tieude}">Ghi nháº­n bÆ°u pháº©m má»›i</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="${kienHang.id != null} ? #{kh.form.sua_tieude} : #{kh.form.them_tieude}">Ghi nhận bưu phẩm mới</span>
             </div>
         </header>
 
@@ -95,9 +95,9 @@
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                             <i data-lucide="package-plus" class="w-6 h-6 text-brand-500"></i>
-                            <span th:text="${kienHang.id != null} ? #{kh.form.sua_tieude} : #{kh.form.them_tieude}">Ghi nháº­n bÆ°u pháº©m má»›i</span>
+                            <span th:text="${kienHang.id != null} ? #{kh.form.sua_tieude} : #{kh.form.them_tieude}">Ghi nhận bưu phẩm mới</span>
                         </h2>
-                        <p class="text-xs text-slate-400 mt-1">LÆ°u trá»¯ thÃ´ng tin gÃ³i hÃ ng chá» cÆ° dÃ¢n Ä‘áº¿n nháº­n</p>
+                        <p class="text-xs text-slate-400 mt-1">Lưu trữ thông tin gói hàng chờ cư dân đến nhận</p>
                     </div>
                 </div>
             </div>
@@ -106,27 +106,27 @@
             <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20">
                 <div class="p-6 md:p-8">
                     <form th:action="@{/admin/kien-hang/luu}" th:object="${kienHang}" method="POST" class="space-y-6">
-                        <!-- Giá»¯ láº¡i ID khi sá»­a -->
+                        <!-- Giữ lại ID khi sửa -->
                         <input type="hidden" th:field="*{id}">
                         
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 block">
-                                <span th:text="#{kh.form.chon_can}">Chá»n CÄƒn há»™ nháº­n</span>
+                                <span th:text="#{kh.form.chon_can}">Chọn Căn hộ nhận</span>
                             </label>
                             <select th:field="*{canHo.id}" required class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)]">
-                                <option value="" th:text="#{kh.form.chon_can_goi_y}">-- Chá»n mÃ£ cÄƒn há»™ --</option>
+                                <option value="" th:text="#{kh.form.chon_can_goi_y}">-- Chọn mã căn hộ --</option>
                                 <option th:each="ch : ${danhSachCanHo}" 
                                         th:value="${ch.id}" 
                                         th:text="${ch.maCanHo}"></option>
                             </select>
                             <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
-                                <i data-lucide="info" class="w-3.5 h-3.5"></i> <span th:text="#{kh.form.chon_can_hint}">BÆ°u pháº©m sáº½ Ä‘Æ°á»£c thÃ´ng bÃ¡o Ä‘áº¿n cÆ° dÃ¢n thuá»™c cÄƒn há»™ nÃ y.</span>
+                                <i data-lucide="info" class="w-3.5 h-3.5"></i> <span th:text="#{kh.form.chon_can_hint}">Bưu phẩm sẽ được thông báo đến cư dân thuộc căn hộ này.</span>
                             </p>
                         </div>
 
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 block">
-                                <span th:text="#{kh.form.nguoi_gui}">NgÆ°á»i gá»­i / ÄÆ¡n vá»‹ giao</span>
+                                <span th:text="#{kh.form.nguoi_gui}">Người gửi / Đơn vị giao</span>
                             </label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="truck" class="w-4 h-4"></i></span>
@@ -137,22 +137,22 @@
 
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 block">
-                                <span th:text="#{kh.form.nguoi_nhan}">TÃªn ngÆ°á»i nháº­n trÃªn gÃ³i hÃ ng</span>
+                                <span th:text="#{kh.form.nguoi_nhan}">Tên người nhận trên gói hàng</span>
                             </label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="user" class="w-4 h-4"></i></span>
-                                <input type="text" th:field="*{nguoiNhan}" required th:placeholder="#{kh.form.nguoi_nhan_goi_y}" placeholder="VD: Nguyá»…n VÄƒn A"
+                                <input type="text" th:field="*{nguoiNhan}" required th:placeholder="#{kh.form.nguoi_nhan_goi_y}" placeholder="VD: Nguyễn Văn A"
                                        class="w-full bg-darkbg border border-darkborder rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 focus:shadow-[0_0_0_1px_rgba(245,158,11,0.2)] transition">
                             </div>
                         </div>
 
                         <div class="pt-6 border-t border-darkborder flex flex-col sm:flex-row justify-end gap-3">
                             <a th:href="@{/admin/kien-hang}" class="py-3 px-6 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-bold transition text-center flex items-center justify-center">
-                                <span th:text="#{chung.huy}">Há»§y bá»</span>
+                                <span th:text="#{chung.huy}">Hủy bỏ</span>
                             </a>
                             <button type="submit" class="py-3 px-8 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
                                 <i data-lucide="save" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
-                                <span th:text="#{kh.form.nut_luu}">LÆ°u thÃ´ng tin</span>
+                                <span th:text="#{kh.form.nut_luu}">Lưu thông tin</span>
                             </button>
                         </div>
                     </form>

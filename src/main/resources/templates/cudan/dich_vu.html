@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{dv.ui.dang_ky_dich_vu}">ÄÄƒng kÃ½ Dá»‹ch vá»¥</title>
+    <title th:text="#{dv.ui.dang_ky_dich_vu}">Đăng ký Dịch vụ</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -82,7 +82,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{dv.ui.dang_ky_dich_vu}">ÄÄƒng kÃ½ Dá»‹ch vá»¥</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{dv.ui.dang_ky_dich_vu}">Đăng ký Dịch vụ</span>
             </div>
         </header>
 
@@ -94,9 +94,9 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="layers" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="#{dv.ui.dang_ky_tien_ich_chu}">ÄÄƒng KÃ½ Tiá»‡n Ãch Chung CÆ°</span>
+                        <span th:text="#{dv.ui.dang_ky_tien_ich_chu}">Đăng Ký Tiện Ích Chung Cư</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.ui.dang_ky_dich_vu}">Táº¡o yÃªu cáº§u sá»­ dá»¥ng dá»‹ch vá»¥ má»›i</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.ui.dang_ky_dich_vu}">Tạo yêu cầu sử dụng dịch vụ mới</p>
                 </div>
             </div>
 
@@ -120,35 +120,35 @@
             <!-- 2-Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 
-                <!-- Col 1: Form ÄÄƒng kÃ½ -->
+                <!-- Col 1: Form Đăng ký -->
                 <div class="lg:col-span-5">
                     <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20">
                         <div class="p-5 border-b border-darkborder bg-[#111622]">
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
                                 <i data-lucide="pen-tool" class="w-4.5 h-4.5 text-brand-400"></i>
-                                <span th:text="#{dv.ui.tao_dang_ky_moi}">Táº¡o Ä‘Äƒng kÃ½ má»›i</span>
+                                <span th:text="#{dv.ui.tao_dang_ky_moi}">Tạo đăng ký mới</span>
                             </h3>
                         </div>
                         <div class="p-6">
                             <form action="/cudan/dich-vu/dat" method="post" class="space-y-5">
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.chon_dich_vu}">Chá»n dá»‹ch vá»¥</label>
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.chon_dich_vu}">Chọn dịch vụ</label>
                                     <select name="dichVuId" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
-                                        <option value="" th:text="#{dv.ui.vui_long_chon}">-- Vui lÃ²ng chá»n --</option>
+                                        <option value="" th:text="#{dv.ui.vui_long_chon}">-- Vui lòng chọn --</option>
                                         <option th:each="dv : ${danhSachDichVu}" th:value="${dv.id}" th:text="${dv.ten + ' (' + dv.loai + ')'}"></option>
                                     </select>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ngay_su_dung}">NgÃ y sá»­ dá»¥ng</label>
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ngay_su_dung}">Ngày sử dụng</label>
                                     <input type="date" name="ngayDat" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition">
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ghi_chu_them_neu_co}">Ghi chÃº thÃªm (Náº¿u cÃ³)</label>
-                                    <textarea name="ghiChu" rows="3" th:placeholder="#{dv.ui.vi_du_dat_nuong_bbq}" placeholder="VÃ­ dá»¥: Äáº·t nÆ°á»›ng BBQ bÃ n sá»‘ 1..." class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition resize-none"></textarea>
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ghi_chu_them_neu_co}">Ghi chú thêm (Nếu có)</label>
+                                    <textarea name="ghiChu" rows="3" th:placeholder="#{dv.ui.vi_du_dat_nuong_bbq}" placeholder="Ví dụ: Đặt nướng BBQ bàn số 1..." class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition resize-none"></textarea>
                                 </div>
                                 <div class="pt-2">
                                     <button type="submit" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
-                                        <i data-lucide="send" class="w-4 h-4"></i> <span th:text="#{dv.ui.dang_ky_ngay}">ÄÄƒng KÃ½ Ngay</span>
+                                        <i data-lucide="send" class="w-4 h-4"></i> <span th:text="#{dv.ui.dang_ky_ngay}">Đăng Ký Ngay</span>
                                     </button>
                                 </div>
                             </form>
@@ -156,23 +156,23 @@
                     </div>
                 </div>
 
-                <!-- Col 2: Lá»‹ch sá»­ Ä‘Äƒng kÃ½ -->
+                <!-- Col 2: Lịch sử đăng ký -->
                 <div class="lg:col-span-7">
                     <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20 flex flex-col h-full">
                         <div class="p-5 border-b border-darkborder bg-[#111622] flex items-center justify-between">
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
                                 <i data-lucide="clock" class="w-4.5 h-4.5 text-slate-400"></i>
-                                <span th:text="#{dv.ui.lich_su_dang_ky_cua}">Lá»‹ch sá»­ Ä‘Äƒng kÃ½ cá»§a báº¡n</span>
+                                <span th:text="#{dv.ui.lich_su_dang_ky_cua}">Lịch sử đăng ký của bạn</span>
                             </h3>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs whitespace-nowrap">
                                 <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
                                     <tr>
-                                        <th class="px-5 py-4" th:text="#{dv.ds.dich_vu}">Dá»‹ch vá»¥</th>
-                                        <th class="px-5 py-4" th:text="#{dv.ds.ngay_dung}">NgÃ y dÃ¹ng</th>
-                                        <th class="px-5 py-4" th:text="#{hdon.ds.bang_trang_thai}">Tráº¡ng thÃ¡i</th>
-                                        <th class="px-5 py-4" th:text="#{dv.ui.ghi_chu}">Ghi chÃº</th>
+                                        <th class="px-5 py-4" th:text="#{dv.ds.dich_vu}">Dịch vụ</th>
+                                        <th class="px-5 py-4" th:text="#{dv.ds.ngay_dung}">Ngày dùng</th>
+                                        <th class="px-5 py-4" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                                        <th class="px-5 py-4" th:text="#{dv.ui.ghi_chu}">Ghi chú</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-darkborder text-slate-300">
@@ -180,13 +180,13 @@
                                         <td class="px-5 py-3.5 font-bold text-brand-400" th:text="${dat.dichVu.ten}"></td>
                                         <td class="px-5 py-3.5 text-slate-400" th:text="${#temporals.format(dat.ngayDat, 'dd/MM/yyyy')}"></td>
                                         <td class="px-5 py-3.5">
-                                            <span th:if="${dat.trangThai == null || #strings.isEmpty(dat.trangThai) || dat.trangThai == 'Chá» duyá»‡t' || dat.trangThai == 'ÄÄƒng kÃ½ má»›i'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{dv.ds.cho_duyet}">Chá» duyá»‡t</span>
-                                            <span th:if="${dat.trangThai == 'ÄÃ£ duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{dv.ds.da_duyet}">ÄÃ£ duyá»‡t</span>
-                                            <span th:if="${dat.trangThai == 'ÄÃ£ sá»­ dá»¥ng'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{dv.ds.da_su_dung}">ÄÃ£ sá»­ dá»¥ng</span>
-                                            <span th:if="${dat.trangThai == 'Tá»« chá»‘i'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{dv.ds.tu_choi}">Tá»« chá»‘i</span>
-                                            <span th:if="${dat.trangThai == 'Há»§y duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{dv.ds.huy_duyet}">Há»§y duyá»‡t</span>
-                                            <span th:if="${dat.trangThai == 'ÄÃ£ há»§y'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{dv.ui.da_huy}">ÄÃ£ há»§y</span>
-                                            <span th:if="${dat.trangThai != null &amp;&amp; dat.trangThai != 'Chá» duyá»‡t' &amp;&amp; dat.trangThai != 'ÄÄƒng kÃ½ má»›i' &amp;&amp; dat.trangThai != 'ÄÃ£ duyá»‡t' &amp;&amp; dat.trangThai != 'ÄÃ£ sá»­ dá»¥ng' &amp;&amp; dat.trangThai != 'Tá»« chá»‘i' &amp;&amp; dat.trangThai != 'Há»§y duyá»‡t' &amp;&amp; dat.trangThai != 'ÄÃ£ há»§y'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${dat.trangThai}">Tráº¡ng thÃ¡i khÃ¡c</span>
+                                            <span th:if="${dat.trangThai == null || #strings.isEmpty(dat.trangThai) || dat.trangThai == 'Chờ duyệt' || dat.trangThai == 'Đăng ký mới'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
+                                            <span th:if="${dat.trangThai == 'Đã duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{dv.ds.da_duyet}">Đã duyệt</span>
+                                            <span th:if="${dat.trangThai == 'Đã sử dụng'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{dv.ds.da_su_dung}">Đã sử dụng</span>
+                                            <span th:if="${dat.trangThai == 'Từ chối'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{dv.ds.tu_choi}">Từ chối</span>
+                                            <span th:if="${dat.trangThai == 'Hủy duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{dv.ds.huy_duyet}">Hủy duyệt</span>
+                                            <span th:if="${dat.trangThai == 'Đã hủy'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{dv.ui.da_huy}">Đã hủy</span>
+                                            <span th:if="${dat.trangThai != null &amp;&amp; dat.trangThai != 'Chờ duyệt' &amp;&amp; dat.trangThai != 'Đăng ký mới' &amp;&amp; dat.trangThai != 'Đã duyệt' &amp;&amp; dat.trangThai != 'Đã sử dụng' &amp;&amp; dat.trangThai != 'Từ chối' &amp;&amp; dat.trangThai != 'Hủy duyệt' &amp;&amp; dat.trangThai != 'Đã hủy'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${dat.trangThai}">Trạng thái khác</span>
                                         </td>
                                         <td class="px-5 py-3.5 text-slate-400 max-w-[150px] truncate" th:text="${dat.ghiChu}" th:title="${dat.ghiChu}"></td>
                                     </tr>
@@ -194,7 +194,7 @@
                                         <td colspan="4" class="px-5 py-8 text-center text-slate-500">
                                             <div class="flex flex-col items-center justify-center gap-2">
                                                 <i data-lucide="calendar-x" class="w-8 h-8 text-slate-600 mb-1"></i>
-                                                <span th:text="#{dv.ui.ban_chua_dang_ky_dic}">Báº¡n chÆ°a Ä‘Äƒng kÃ½ dá»‹ch vá»¥ nÃ o.</span>
+                                                <span th:text="#{dv.ui.ban_chua_dang_ky_dic}">Bạn chưa đăng ký dịch vụ nào.</span>
                                             </div>
                                         </td>
                                     </tr>

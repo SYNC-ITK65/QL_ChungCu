@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{kh.user.tieude}">Tá»§ Ä‘á»“ cá»§a tÃ´i</title>
+    <title th:text="#{kh.user.tieude}">Tủ đồ của tôi</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -73,7 +73,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{kh.user.tieude}">Tá»§ Ä‘á»“ cá»§a tÃ´i</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{kh.user.tieude}">Tủ đồ của tôi</span>
             </div>
         </header>
 
@@ -85,13 +85,13 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="box" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="#{kh.user.tieude}">Tá»§ Ä‘á»“ cá»§a tÃ´i</span>
+                        <span th:text="#{kh.user.tieude}">Tủ đồ của tôi</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">Quáº£n lÃ½ bÆ°u pháº©m vÃ  kiá»‡n hÃ ng gá»­i Ä‘áº¿n cÄƒn há»™</p>
+                    <p class="text-xs text-slate-400 mt-1">Quản lý bưu phẩm và kiện hàng gửi đến căn hộ</p>
                 </div>
                 <div>
                     <span class="inline-flex items-center gap-2 px-4 py-2 bg-brand-500/10 text-brand-400 border border-brand-500/20 rounded-xl text-sm font-bold shadow-lg shadow-black/20" th:text="#{kh.user.tong_cong(${#lists.size(danhSachKienHang)})}">
-                        Tá»•ng sá»‘: 0 Ä‘Æ¡n thÆ°
+                        Tổng số: 0 đơn thư
                     </span>
                 </div>
             </div>
@@ -99,18 +99,18 @@
             <!-- Empty State -->
             <div th:if="${#lists.isEmpty(danhSachKienHang)}" class="py-16 flex flex-col items-center justify-center text-slate-500 bg-darkcard border border-darkborder rounded-3xl border-dashed shadow-lg shadow-black/20 mb-8">
                 <i data-lucide="mailbox" class="w-16 h-16 mb-4 text-slate-600 opacity-50"></i>
-                <h4 class="text-base font-bold text-slate-300 mb-1" th:text="#{kh.user.trong}">Hiá»‡n táº¡i khÃ´ng cÃ³ Ä‘Æ¡n thÆ° nÃ o dÃ nh cho cÄƒn há»™ cá»§a báº¡n.</h4>
-                <p class="text-sm text-slate-500" th:text="#{kh.user.trong_mo_ta}">Khi cÃ³ bÆ°u pháº©m gá»­i Ä‘áº¿n sáº£nh, lá»… tÃ¢n sáº½ cáº­p nháº­t táº¡i Ä‘Ã¢y.</p>
+                <h4 class="text-base font-bold text-slate-300 mb-1" th:text="#{kh.user.trong}">Hiện tại không có đơn thư nào dành cho căn hộ của bạn.</h4>
+                <p class="text-sm text-slate-500" th:text="#{kh.user.trong_mo_ta}">Khi có bưu phẩm gửi đến sảnh, lễ tân sẽ cập nhật tại đây.</p>
             </div>
 
             <!-- List Cards -->
             <div th:if="${!#lists.isEmpty(danhSachKienHang)}" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div th:each="kh : ${danhSachKienHang}">
                     <div class="bg-darkcard rounded-2xl border overflow-hidden shadow-lg shadow-black/20 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group"
-                         th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Chá»') || !kh.trangThai.contains('ÄÃ£')) ? 'border-amber-500/30 shadow-amber-500/5 hover:shadow-amber-500/10' : 'border-emerald-500/30 opacity-80 hover:opacity-100'}">
+                         th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã')) ? 'border-amber-500/30 shadow-amber-500/5 hover:shadow-amber-500/10' : 'border-emerald-500/30 opacity-80 hover:opacity-100'}">
                         
                         <!-- Status Bar -->
-                        <div class="h-1 w-full" th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Chá»') || !kh.trangThai.contains('ÄÃ£')) ? 'bg-amber-500' : 'bg-emerald-500'}"></div>
+                        <div class="h-1 w-full" th:classappend="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã')) ? 'bg-amber-500' : 'bg-emerald-500'}"></div>
                         
                         <div class="p-5 flex-grow flex flex-col sm:flex-row justify-between gap-4">
                             <div class="flex-grow">
@@ -121,30 +121,30 @@
                                 </div>
                                 <div class="flex items-center gap-2 text-sm">
                                     <i data-lucide="user" class="w-4 h-4 text-slate-500"></i>
-                                    <span class="text-slate-400"><strong th:text="#{kh.user.nguoi_nhan}">NgÆ°á»i nháº­n:</strong> <span class="text-slate-300 font-medium" th:text="${kh.nguoiNhan}"></span></span>
+                                    <span class="text-slate-400"><strong th:text="#{kh.user.nguoi_nhan}">Người nhận:</strong> <span class="text-slate-300 font-medium" th:text="${kh.nguoiNhan}"></span></span>
                                 </div>
                             </div>
                             
                             <div class="flex flex-col sm:items-end justify-center gap-2 sm:min-w-[140px] pt-3 sm:pt-0 border-t sm:border-t-0 border-darkborder mt-1 sm:mt-0">
-                                <!-- Tráº¡ng thÃ¡i Chá» nháº­n -->
-                                <div th:if="${kh.trangThai != null && (kh.trangThai.contains('Chá»') || !kh.trangThai.contains('ÄÃ£'))}" class="flex flex-col sm:items-end gap-1.5">
+                                <!-- Trạng thái Chờ nhận -->
+                                <div th:if="${kh.trangThai != null && (kh.trangThai.contains('Chờ') || !kh.trangThai.contains('Đã'))}" class="flex flex-col sm:items-end gap-1.5">
                                     <div class="text-[11px] font-bold text-amber-400 flex items-center gap-1.5 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
                                         <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i>
-                                        <span th:text="#{kh.user.dang_cho}">Äang chá» báº¡n xuá»‘ng nháº­n</span>
+                                        <span th:text="#{kh.user.dang_cho}">Đang chờ bạn xuống nhận</span>
                                     </div>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500 text-amber-950 uppercase tracking-wider">
-                                        <th:block th:if="${kh.trangThai == 'Chá» nháº­n'}" th:text="#{kh.ds.cho_nhan}">Chá» nháº­n</th:block>
+                                        <th:block th:if="${kh.trangThai == 'Chờ nhận'}" th:text="#{kh.ds.cho_nhan}">Chờ nhận</th:block>
                                     </span>
                                 </div>
                                 
-                                <!-- Tráº¡ng thÃ¡i ÄÃ£ nháº­n -->
-                                <div th:if="${kh.trangThai != null && kh.trangThai.contains('ÄÃ£')}" class="flex flex-col sm:items-end gap-1.5">
+                                <!-- Trạng thái Đã nhận -->
+                                <div th:if="${kh.trangThai != null && kh.trangThai.contains('Đã')}" class="flex flex-col sm:items-end gap-1.5">
                                     <div class="text-[11px] font-bold text-emerald-400 flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
                                         <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
-                                        <span th:text="#{kh.user.da_nhan}">ÄÃ£ nháº­n thÃ nh cÃ´ng</span>
+                                        <span th:text="#{kh.user.da_nhan}">Đã nhận thành công</span>
                                     </div>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
-                                        <th:block th:if="${kh.trangThai == 'ÄÃ£ nháº­n'}" th:text="#{kh.ds.da_nhan}">ÄÃ£ nháº­n</th:block>
+                                        <th:block th:if="${kh.trangThai == 'Đã nhận'}" th:text="#{kh.ds.da_nhan}">Đã nhận</th:block>
                                     </span>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            <!-- Fragment PhÃ¢n trang -->
+            <!-- Fragment Phân trang -->
             <div th:if="${!#lists.isEmpty(danhSachKienHang)}" class="bg-darkcard border border-darkborder rounded-2xl p-4 shadow-lg shadow-black/20 mb-8">
                 <div th:replace="~{fragments/pagination :: paging('/cudan/kien-hang', '')}"></div>
             </div>
@@ -165,16 +165,16 @@
                 
                 <h5 class="text-sm font-bold text-brand-400 mb-3 flex items-center gap-2">
                     <i data-lucide="lightbulb" class="w-5 h-5"></i>
-                    <span th:text="#{kh.user.luu_y}">LÆ°u Ã½:</span>
+                    <span th:text="#{kh.user.luu_y}">Lưu ý:</span>
                 </h5>
                 <ul class="space-y-2 m-0 pl-1">
                     <li class="text-xs text-slate-300 flex items-start gap-2">
                         <i data-lucide="chevron-right" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
-                        <span th:text="#{kh.user.luu_y_1}">Vui lÃ²ng mang theo Ä‘iá»‡n thoáº¡i hoáº·c giáº¥y tá» tÃ¹y thÃ¢n khi xuá»‘ng nháº­n Ä‘á»“ táº¡i sáº£nh.</span>
+                        <span th:text="#{kh.user.luu_y_1}">Vui lòng mang theo điện thoại hoặc giấy tờ tùy thân khi xuống nhận đồ tại sảnh.</span>
                     </li>
                     <li class="text-xs text-slate-300 flex items-start gap-2">
                         <i data-lucide="chevron-right" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
-                        <span th:text="#{kh.user.luu_y_2}">Náº¿u bÆ°u pháº©m bá»‹ hÆ° há»ng, vui lÃ²ng pháº£n há»“i ngay vá»›i lá»… tÃ¢n táº¡i thá»i Ä‘iá»ƒm nháº­n.</span>
+                        <span th:text="#{kh.user.luu_y_2}">Nếu bưu phẩm bị hư hỏng, vui lòng phản hồi ngay với lễ tân tại thời điểm nhận.</span>
                     </li>
                 </ul>
             </div>

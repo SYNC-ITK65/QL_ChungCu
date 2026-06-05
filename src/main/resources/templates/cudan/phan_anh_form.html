@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{pa.form.gui_phan_anh_moi}">Gá»­i pháº£n Ã¡nh má»›i</title>
+    <title th:text="#{pa.form.gui_phan_anh_moi}">Gửi phản ánh mới</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -89,7 +89,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pa.form.gui_phan_anh_moi}">Gá»­i pháº£n Ã¡nh má»›i</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pa.form.gui_phan_anh_moi}">Gửi phản ánh mới</span>
             </div>
         </header>
 
@@ -101,13 +101,13 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="send" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="#{pa.form.gui_phan_anh_yeu_cau}">Gá»­i pháº£n Ã¡nh / YÃªu cáº§u má»›i</span>
+                        <span th:text="#{pa.form.gui_phan_anh_yeu_cau}">Gửi phản ánh / Yêu cầu mới</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{pa.form.gui_phan_anh_den_ban}">Gá»­i pháº£n Ã¡nh Ä‘áº¿n Ban Quáº£n LÃ½ (Vd: hÆ° há»ng Ä‘iá»‡n nÆ°á»›c, vá»‡ sinh, v.v.)</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{pa.form.gui_phan_anh_den_ban}">Gửi phản ánh đến Ban Quản Lý (Vd: hư hỏng điện nước, vệ sinh, v.v.)</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/cudan/phan-anh}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">
-                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{dv.form.huy_bo}">Há»§y bá»</span>
+                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{dv.form.huy_bo}">Hủy bỏ</span>
                     </a>
                 </div>
             </div>
@@ -128,9 +128,9 @@
                         
                         <div class="space-y-2">
                             <label for="tieuDe" class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="type" class="w-4 h-4 text-brand-400"></i> <span th:text="#{tb.form.tieude}">TiÃªu Ä‘á»</span>
+                                <i data-lucide="type" class="w-4 h-4 text-brand-400"></i> <span th:text="#{tb.form.tieude}">Tiêu đề</span>
                             </label>
-                            <input type="text" id="tieuDe" th:field="*{tieuDe}" th:placeholder="#{pa.form.vd_sua_chua_voi_nuoc}" placeholder="VD: Sá»­a chá»¯a vÃ²i nÆ°á»›c..." 
+                            <input type="text" id="tieuDe" th:field="*{tieuDe}" th:placeholder="#{pa.form.vd_sua_chua_voi_nuoc}" placeholder="VD: Sửa chữa vòi nước..." 
                                    class="w-full bg-darkbg border rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none transition"
                                    th:classappend="${#fields.hasErrors('tieuDe')} ? 'border-red-500 focus:border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.2)]' : 'border-darkborder focus:border-brand-500 focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)]'">
                             <div class="text-xs text-red-400 font-medium flex items-center gap-1 mt-1" th:if="${#fields.hasErrors('tieuDe')}">
@@ -140,9 +140,9 @@
 
                         <div class="space-y-2">
                             <label for="noiDung" class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="align-left" class="w-4 h-4 text-brand-400"></i> <span th:text="#{pa.form.noi_dung_chi_tiet}">Ná»™i dung chi tiáº¿t</span>
+                                <i data-lucide="align-left" class="w-4 h-4 text-brand-400"></i> <span th:text="#{pa.form.noi_dung_chi_tiet}">Nội dung chi tiết</span>
                             </label>
-                            <textarea id="noiDung" th:field="*{noiDung}" rows="6" th:placeholder="#{pa.form.mo_ta_cu_the_van_de}" placeholder="MÃ´ táº£ cá»¥ thá»ƒ váº¥n Ä‘á» báº¡n Ä‘ang gáº·p pháº£i..." 
+                            <textarea id="noiDung" th:field="*{noiDung}" rows="6" th:placeholder="#{pa.form.mo_ta_cu_the_van_de}" placeholder="Mô tả cụ thể vấn đề bạn đang gặp phải..." 
                                       class="w-full bg-darkbg border rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none transition resize-none"
                                       th:classappend="${#fields.hasErrors('noiDung')} ? 'border-red-500 focus:border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.2)]' : 'border-darkborder focus:border-brand-500 focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)]'"></textarea>
                             <div class="text-xs text-red-400 font-medium flex items-center gap-1 mt-1" th:if="${#fields.hasErrors('noiDung')}">
@@ -152,7 +152,7 @@
 
                         <div class="space-y-2">
                             <label for="fileImage" class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="image" class="w-4 h-4 text-brand-400"></i> <span th:text="#{pa.form.hinh_anh_dinh_kem}">HÃ¬nh áº£nh Ä‘Ã­nh kÃ¨m (náº¿u cÃ³)</span>
+                                <i data-lucide="image" class="w-4 h-4 text-brand-400"></i> <span th:text="#{pa.form.hinh_anh_dinh_kem}">Hình ảnh đính kèm (nếu có)</span>
                             </label>
                             <div class="relative bg-darkbg border border-dashed rounded-xl p-4 transition group hover:bg-slate-800/30" th:classappend="${#fields.hasErrors('hinhAnh')} ? 'border-red-500' : 'border-slate-700 hover:border-brand-500'">
                                 <input type="file" id="fileImage" name="fileImage" accept="image/*" 
@@ -162,17 +162,17 @@
                                 <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> <span th:errors="*{hinhAnh}"></span>
                             </div>
                             <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
-                                <i data-lucide="info" class="w-3.5 h-3.5"></i> <span th:text="#{pa.form.hinh_anh_dinh_kem_help}">Chá»n áº£nh mÃ´ táº£ chi tiáº¿t váº¥n Ä‘á» pháº£n Ã¡nh (giá»›i háº¡n 2MB).</span>
+                                <i data-lucide="info" class="w-3.5 h-3.5"></i> <span th:text="#{pa.form.hinh_anh_dinh_kem_help}">Chọn ảnh mô tả chi tiết vấn đề phản ánh (giới hạn 2MB).</span>
                             </p>
                         </div>
 
                         <div class="pt-6 border-t border-darkborder flex flex-col sm:flex-row gap-3">
                             <button type="submit" class="flex-1 py-3 px-4 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
                                 <i data-lucide="rocket" class="w-5 h-5 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform"></i>
-                                <span th:text="#{pa.form.gui_phan_anh}">Gá»­i pháº£n Ã¡nh</span>
+                                <span th:text="#{pa.form.gui_phan_anh}">Gửi phản ánh</span>
                             </button>
                             <a th:href="@{/cudan/phan-anh}" class="py-3 px-6 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-bold transition text-center flex items-center justify-center">
-                                <span th:text="#{dv.form.huy_bo}">Há»§y bá»</span>
+                                <span th:text="#{dv.form.huy_bo}">Hủy bỏ</span>
                             </a>
                         </div>
                     </form>
