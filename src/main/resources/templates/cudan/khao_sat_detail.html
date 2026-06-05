@@ -1,58 +1,208 @@
-<!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title th:text="#{ks.chitiet.binh_chon}">Bình chọn</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>.option-box:hover { background-color: #f1f8ff; cursor: pointer; }</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{ks.chitiet.binh_chon}">Bình chọn</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        /* Custom radio button styling */
+        .option-radio {
+            accent-color: #0ea5e9;
+        }
+        .option-box:has(.option-radio:checked) {
+            border-color: #0ea5e9;
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+    </style>
 </head>
-<body>
-<div class="d-flex">
-  <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
-  <div class="content p-4 w-100">
-    <a th:href="@{/cudan/khao-sat}" class="btn btn-light mb-3" th:text="#{ks.chitiet.quay_lai}">← Quay lại</a>
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-    <div th:if="${msg}" class="alert alert-success" th:text="${msg}"></div>
-    <div th:if="${err}" class="alert alert-danger" th:text="${err}"></div>
+    <!-- Global Sidebar -->
+    <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
-    <div class="card shadow-sm border-0">
-      <div class="card-body p-4">
-        <h3 class="fw-bold text-primary mb-3" th:text="${khaoSat.tieuDe}"></h3>
-        <p class="text-secondary" th:text="${khaoSat.moTa}"></p>
-        <hr>
-
-        <div th:if="${khaoSat.trangThaiHienTai == 'ĐANG MỞ'}">
-          <form th:action="@{/cudan/khao-sat/vote}" method="POST">
-            <input type="hidden" name="khaoSatId" th:value="${khaoSat.id}">
-            <div th:each="lc : ${khaoSat.danhSachLuaChon}" class="option-box form-check p-3 border rounded mb-2">
-              <input class="form-check-input ms-1 me-3" type="radio" name="luaChonId" th:id="'lc'+${lc.id}" th:value="${lc.id}" required th:checked="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id}">
-              <label class="form-check-label w-100 fw-semibold" th:for="'lc'+${lc.id}" th:text="${lc.noiDungLuaChon}"></label>
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{ks.chitiet.binh_chon}">Bình chọn</span>
             </div>
-            <button type="submit" class="btn btn-primary mt-3 px-4" th:text="${lichSu == null} ? #{ks.form.gui_binh_chon} : #{ks.form.sua_binh_chon}"></button>
-          </form>
-        </div>
+        </header>
 
-        <div th:if="${khaoSat.trangThaiHienTai == 'ĐÃ ĐÓNG'}">
-          <h5 class="text-danger mb-4"><i class="fas fa-lock"></i><span th:text="#{ks.chitiet.khao_sat_da_ket_thuc}" th:remove="tag"> Khảo sát đã kết thúc</span></h5>
-          <div th:each="lc : ${khaoSat.danhSachLuaChon}" class="mb-3">
-            <div class="d-flex justify-content-between">
-                            <span th:class="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id ? 'fw-bold text-success' : ''}">
-                                [[${lc.noiDungLuaChon}]] <span th:if="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id}" th:text="#{chung.ban_da_chon}">(Bạn đã chọn)</span>
-                            </span>
-              <span th:text="${khaoSat.tongSoVote == 0 ? '0%' : (#numbers.formatDecimal(lc.soLuotBinhChon * 100.0 / khaoSat.tongSoVote, 1, 1) + '%')}"></span>
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-4xl mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div class="flex items-center gap-3">
+                    <a th:href="@{/cudan/khao-sat}" class="p-2 bg-darkcard border border-darkborder hover:border-brand-500 hover:text-brand-400 text-slate-400 rounded-xl transition group">
+                        <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
+                    </a>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                            <span th:text="#{ks.chitiet.binh_chon}">Bình chọn</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Đóng góp ý kiến của bạn</p>
+                    </div>
+                </div>
             </div>
-            <div class="progress" style="height: 15px;">
-              <div class="progress-bar bg-primary" th:style="'width: ' + ${khaoSat.tongSoVote == 0 ? 0 : (lc.soLuotBinhChon * 100.0 / khaoSat.tongSoVote)} + '%'"></div>
-            </div>
-          </div>
-        </div>
 
-        <div th:if="${khaoSat.trangThaiHienTai == 'SẮP MỞ'}" class="alert alert-warning" th:text="#{ks.chitiet.khao_sat_chua_bat_da}">
-          Khảo sát chưa bắt đầu. Vui lòng quay lại sau!
-        </div>
-      </div>
+            <!-- Notifications -->
+            <div th:if="${msg}" class="mb-6 flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <strong th:text="${msg}"></strong>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-emerald-400 hover:text-emerald-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div th:if="${err}" class="mb-6 flex items-center justify-between p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                    <strong th:text="${err}"></strong>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+
+            <!-- Main Card -->
+            <div class="bg-darkcard p-6 md:p-8 rounded-3xl border border-darkborder mb-6 shadow-lg shadow-black/20 relative overflow-hidden">
+                <!-- Status Glow -->
+                <div class="absolute top-0 left-0 w-full h-1" th:classappend="${khaoSat.trangThaiHienTai == 'ĐANG MỞ' ? 'bg-emerald-500' : (khaoSat.trangThaiHienTai == 'SẮP MỞ' ? 'bg-amber-500' : 'bg-slate-700')}"></div>
+                
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span th:if="${khaoSat.trangThaiHienTai == 'ĐANG MỞ'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.dang_mo}">ĐANG MỞ</span></span>
+                        <span th:if="${khaoSat.trangThaiHienTai == 'SẮP MỞ'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.sap_mo}">SẮP MỞ</span></span>
+                        <span th:if="${khaoSat.trangThaiHienTai == 'ĐÃ ĐÓNG'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5"><i data-lucide="lock" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.da_ket_thuc}">ĐÃ KẾT THÚC</span></span>
+                    </div>
+                    
+                    <h3 class="text-xl md:text-2xl font-bold text-white mb-2" th:text="${khaoSat.tieuDe}"></h3>
+                    <p class="text-sm text-slate-400" th:text="${khaoSat.moTa}"></p>
+                </div>
+                
+                <hr class="border-darkborder mb-8">
+
+                <!-- ĐANG MỞ -->
+                <div th:if="${khaoSat.trangThaiHienTai == 'ĐANG MỞ'}">
+                    <form th:action="@{/cudan/khao-sat/vote}" method="POST" class="space-y-4">
+                        <input type="hidden" name="khaoSatId" th:value="${khaoSat.id}">
+                        
+                        <div class="space-y-3">
+                            <label class="block cursor-pointer" th:each="lc : ${khaoSat.danhSachLuaChon}">
+                                <div class="option-box flex items-center p-4 border border-darkborder rounded-2xl transition-all duration-200 hover:bg-slate-800/50">
+                                    <input class="option-radio w-4.5 h-4.5 bg-darkbg border-slate-600 focus:ring-brand-500 focus:ring-offset-darkbg" 
+                                           type="radio" name="luaChonId" th:id="'lc'+${lc.id}" th:value="${lc.id}" required 
+                                           th:checked="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id}">
+                                    <span class="ml-3 text-sm font-semibold text-slate-200" th:text="${lc.noiDungLuaChon}"></span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="pt-6">
+                            <button type="submit" class="w-full py-3.5 px-6 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
+                                <i data-lucide="check-circle" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                                <span th:text="${lichSu == null} ? #{ks.form.gui_binh_chon} : #{ks.form.sua_binh_chon}"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ĐÃ ĐÓNG -->
+                <div th:if="${khaoSat.trangThaiHienTai == 'ĐÃ ĐÓNG'}">
+                    <div class="flex items-center gap-2 mb-6 text-rose-400">
+                        <i data-lucide="lock" class="w-5 h-5"></i>
+                        <h5 class="text-sm font-bold m-0" th:text="#{ks.chitiet.khao_sat_da_ket_thuc}">Khảo sát đã kết thúc</h5>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div th:each="lc : ${khaoSat.danhSachLuaChon}" class="group">
+                            <div class="flex justify-between items-end mb-1.5">
+                                <span class="text-sm font-semibold flex items-center gap-1.5" th:classappend="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id ? 'text-brand-400' : 'text-slate-300'}">
+                                    <i th:if="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id}" data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                    <span>[[${lc.noiDungLuaChon}]] <span th:if="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id}" class="text-xs font-normal opacity-80" th:text="#{chung.ban_da_chon}">(Bạn đã chọn)</span></span>
+                                </span>
+                                <span class="text-sm font-bold text-slate-400" th:text="${khaoSat.tongSoVote == 0 ? '0%' : (#numbers.formatDecimal(lc.soLuotBinhChon * 100.0 / khaoSat.tongSoVote, 1, 1) + '%')}"></span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                                <div class="bg-brand-500 h-2 rounded-full relative transition-all duration-500" th:classappend="${lichSu != null and lichSu.luaChonDaNgan?.id == lc.id ? 'bg-brand-500' : 'bg-slate-500'}" th:style="'width: ' + ${khaoSat.tongSoVote == 0 ? 0 : (lc.soLuotBinhChon * 100.0 / khaoSat.tongSoVote)} + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SẮP MỞ -->
+                <div th:if="${khaoSat.trangThaiHienTai == 'SẮP MỞ'}">
+                    <div class="flex flex-col items-center justify-center py-8 text-amber-400 bg-amber-500/5 rounded-2xl border border-amber-500/20 border-dashed">
+                        <i data-lucide="clock-4" class="w-12 h-12 mb-3 opacity-80"></i>
+                        <p class="text-sm font-semibold text-center px-4" th:text="#{ks.chitiet.khao_sat_chua_bat_da}">Khảo sát chưa bắt đầu. Vui lòng quay lại sau!</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
-  </div>
-</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,111 +1,239 @@
-<!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title th:text="#{ks.chitiet.chi_tiet_khao_sat}">Chi tiết Khảo sát</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{ks.chitiet.chi_tiet_khao_sat}">Chi tiết Khảo sát</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
 </head>
-<body>
-<div class="d-flex">
-  <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-  <div class="content p-4 w-100">
-    <a th:href="@{/admin/khao-sat}" class="btn btn-light mb-3" th:text="#{ks.chitiet.tro_ve_danh_sach}">← Trở về danh sách</a>
+    <!-- Global Sidebar -->
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="d-flex justify-content-end mb-3 gap-2">
-      <a th:if="${khaoSat.trangThaiHienTai == 'ĐANG MỞ'}" th:href="@{/admin/khao-sat/ket-thuc/{id}(id=${khaoSat.id})}" class="btn btn-warning" th:onclick="|return confirm('#{ks.chitiet.xac_nhan_dong}')|">
-        <i class="fas fa-stop-circle"></i><span th:text="#{ks.chitiet.ket_thuc_som}" th:remove="tag"> Kết thúc sớm
-      </span></a>
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{ks.chitiet.chi_tiet_khao_sat}">Chi tiết Khảo sát</span>
+            </div>
+        </header>
 
-      <a th:if="${khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}" th:href="@{/admin/khao-sat/sua/{id}(id=${khaoSat.id})}" class="btn btn-primary">
-        <i class="fas fa-edit"></i><span th:text="#{ks.chitiet.chinh_sua}" th:remove="tag"> Chỉnh sửa
-      </span></a>
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div class="flex items-center gap-3">
+                    <a th:href="@{/admin/khao-sat}" class="p-2 bg-darkcard border border-darkborder hover:border-brand-500 hover:text-brand-400 text-slate-400 rounded-xl transition group">
+                        <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
+                    </a>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                            <span th:text="#{ks.chitiet.chi_tiet_khao_sat}">Chi tiết Khảo sát</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Kết quả và danh sách bình chọn</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a th:if="${khaoSat.trangThaiHienTai == 'ĐANG MỞ'}" th:href="@{/admin/khao-sat/ket-thuc/{id}(id=${khaoSat.id})}" th:onclick="|return confirm('#{ks.chitiet.xac_nhan_dong}')|" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-amber-500/25 flex items-center gap-2">
+                        <i data-lucide="stop-circle" class="w-4 h-4"></i> <span th:text="#{ks.chitiet.ket_thuc_som}">Kết thúc sớm</span>
+                    </a>
+                    
+                    <a th:if="${khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}" th:href="@{/admin/khao-sat/sua/{id}(id=${khaoSat.id})}" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-brand-500/25 flex items-center gap-2">
+                        <i data-lucide="edit" class="w-4 h-4"></i> <span th:text="#{ks.chitiet.chinh_sua}">Chỉnh sửa</span>
+                    </a>
 
-      <a th:if="${khaoSat.tongSoVote == 0 and khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}" th:href="@{/admin/khao-sat/xoa/{id}(id=${khaoSat.id})}" class="btn btn-danger" th:onclick="|return confirm('#{ks.chitiet.xac_nhan_xoa_vinh_vien}')|">
-        <i class="fas fa-trash"></i><span th:text="#{hd.ds.nut_xoa}" th:remove="tag"> Xóa
-      </span></a>
+                    <a th:if="${khaoSat.tongSoVote == 0 and khaoSat.trangThaiHienTai != 'ĐÃ ĐÓNG'}" th:href="@{/admin/khao-sat/xoa/{id}(id=${khaoSat.id})}" th:onclick="|return confirm('#{ks.chitiet.xac_nhan_xoa_vinh_vien}')|" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-rose-500/25 flex items-center gap-2">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> <span th:text="#{hd.ds.nut_xoa}">Xóa</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Survey Stats Card -->
+            <div class="bg-darkcard p-6 md:p-8 rounded-3xl border border-darkborder mb-6 shadow-lg shadow-black/20">
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-white mb-2" th:text="${khaoSat.tieuDe}"></h3>
+                    <p class="text-sm text-slate-400" th:text="${khaoSat.moTa}"></p>
+                </div>
+                
+                <hr class="border-darkborder mb-6">
+                
+                <h5 class="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                    <i data-lucide="bar-chart-2" class="w-5 h-5 text-brand-400"></i>
+                    <span><span th:text="#{ks.chitiet.ket_qua_thong_ke}">KẾT QUẢ THỐNG KÊ</span> (<span th:text="#{ks.chitiet.tong}">Tổng</span>: [[${khaoSat.tongSoVote}]] <span th:text="#{ks.chitiet.vote}">vote</span>)</span>
+                </h5>
+
+                <div class="space-y-4">
+                    <div th:each="lc : ${khaoSat.danhSachLuaChon}" th:if="${lc != null}" class="group">
+                        <div class="flex justify-between items-end mb-1.5">
+                            <span class="text-sm font-semibold text-slate-300" th:text="${lc.noiDungLuaChon}"></span>
+                            <span class="text-sm font-bold text-emerald-400" th:text="${khaoSat.tongSoVote == 0 ? '0%' : (#numbers.formatDecimal((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote, 1, 1) + '%')}"></span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden shadow-inner">
+                            <div class="bg-gradient-to-r from-emerald-500 to-brand-500 h-2.5 rounded-full relative group-hover:brightness-110 transition-all duration-500" 
+                                 th:style="'width: ' + ${khaoSat.tongSoVote == 0 ? 0 : ((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote)} + '%'">
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-slate-500 mt-1 text-right font-medium">
+                            <span th:text="|${lc.soLuotBinhChon ?: 0} #{ks.chitiet.luot}|"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vote History Card -->
+            <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden flex flex-col shadow-lg shadow-black/20 mb-32">
+                <div class="p-5 border-b border-darkborder bg-[#111622] flex flex-wrap items-center justify-between gap-3">
+                    <h5 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="history" class="w-4.5 h-4.5 text-brand-400"></i>
+                        <span th:text="#{ks.chitiet.lich_su_binh_chon}">LỊCH SỬ BÌNH CHỌN</span>
+                    </h5>
+                    <a th:href="@{/admin/khao-sat/chi-tiet/{id}/xuat-excel(id=${khaoSat.id}, tuKhoa=${tuKhoa}, luaChonId=${luaChonId})}" class="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                        <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
+                    </a>
+                </div>
+
+                <div class="p-5 border-b border-darkborder bg-slate-900/30">
+                    <form th:action="@{/admin/khao-sat/chi-tiet/{id}(id=${khaoSat.id})}" method="get" class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                        <div class="md:col-span-5 relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="search" class="w-4 h-4"></i></span>
+                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition" placeholder="Nhập Tên cư dân hoặc Mã Căn Hộ...">
+                        </div>
+                        <div class="md:col-span-4">
+                            <select name="luaChonId" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-3.5 text-xs text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                                <option value="">-- Tất cả phương án đã chọn --</option>
+                                <option th:each="lc : ${khaoSat.danhSachLuaChon}"
+                                        th:value="${lc.id}"
+                                        th:text="${lc.noiDungLuaChon}"
+                                        th:selected="${lc.id == luaChonId}"></option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-3 flex items-center gap-2">
+                            <button type="submit" class="flex-1 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                                <i data-lucide="filter" class="w-4 h-4"></i> Lọc
+                            </button>
+                            <a th:href="@{/admin/khao-sat/chi-tiet/{id}(id=${khaoSat.id})}" class="py-2.5 px-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center justify-center whitespace-nowrap">
+                                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs whitespace-nowrap">
+                        <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
+                            <tr>
+                                <th class="px-5 py-3" th:text="#{ks.chitiet.ho_ten_cu_dan}">Họ tên Cư dân</th>
+                                <th class="px-4 py-3" th:text="#{hdon.form.can_ho}">Mã Căn Hộ (Phòng)</th>
+                                <th class="px-4 py-3" th:text="#{ks.chitiet.phuong_an_da_chon}">Phương án đã chọn</th>
+                                <th class="px-4 py-3" th:text="#{ks.chitiet.thoi_gian_vote}">Thời gian Vote</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-darkborder text-slate-300">
+                            <tr th:if="${#lists.isEmpty(lichSuList)}">
+                                <td colspan="4" class="px-5 py-8 text-center text-rose-400 font-medium">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <i data-lucide="search-x" class="w-8 h-8 text-rose-500 mb-1 opacity-50"></i>
+                                        <span>Không tìm thấy dữ liệu phù hợp.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:each="ls : ${lichSuList}" class="hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3 font-bold text-brand-400" th:text="${ls.cuDan?.hoTen}"></td>
+                                <td class="px-4 py-3 font-bold text-white" th:text="${ls.cuDan?.canHo != null ? ls.cuDan.canHo.id : 'Trống'}"></td>
+                                <td class="px-4 py-3">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> <span th:text="${ls.luaChonDaNgan?.noiDungLuaChon}"></span>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-slate-400" th:text="${ls.thoiGianVote != null ? #temporals.format(ls.thoiGianVote, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 border-t border-darkborder bg-[#111622]">
+                    <div th:replace="~{fragments/pagination :: paging('/admin/khao-sat/chi-tiet/' + ${khaoSat.id}, '')}"></div>
+                </div>
+            </div>
+            
+        </main>
     </div>
 
-    <div class="card shadow-sm mb-4 border-0">
-      <div class="card-body">
-        <h3 class="fw-bold text-primary" th:text="${khaoSat.tieuDe}"></h3>
-        <p class="text-secondary" th:text="${khaoSat.moTa}"></p>
-        <hr>
-        <h5 class="fw-bold mb-3"><i class="fas fa-chart-bar"></i> <span th:text="#{ks.chitiet.ket_qua_thong_ke}">KẾT QUẢ THỐNG KÊ</span> (<span th:text="#{ks.chitiet.tong}">Tổng</span>: [[${khaoSat.tongSoVote}]] <span th:text="#{ks.chitiet.vote}">vote</span>)</h5>
-
-        <div th:each="lc : ${khaoSat.danhSachLuaChon}" th:if="${lc != null}" class="mb-3">
-          <div class="d-flex justify-content-between mb-1 fw-semibold">
-            <span th:text="${lc.noiDungLuaChon}"></span>
-            <span th:text="${khaoSat.tongSoVote == 0 ? '0%' : (#numbers.formatDecimal((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote, 1, 1) + '%')}"></span>
-          </div>
-          <div class="progress" style="height: 20px;">
-            <div class="progress-bar bg-success" th:style="'width: ' + ${khaoSat.tongSoVote == 0 ? 0 : ((lc.soLuotBinhChon ?: 0) * 100.0 / khaoSat.tongSoVote)} + '%'" th:text="|${lc.soLuotBinhChon ?: 0} #{ks.chitiet.luot}|"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card shadow-sm border-0">
-      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold mb-0"><i class="fas fa-history"></i> <span th:text="#{ks.chitiet.lich_su_binh_chon}" th:remove="tag">LỊCH SỬ BÌNH CHỌN</span></h5>
-        <a th:href="@{/admin/khao-sat/chi-tiet/{id}/xuat-excel(id=${khaoSat.id}, tuKhoa=${tuKhoa}, luaChonId=${luaChonId})}" class="btn btn-success btn-sm fw-bold">
-          <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
-        </a>
-      </div>
-      <div class="card-body">
-
-        <form th:action="@{/admin/khao-sat/chi-tiet/{id}(id=${khaoSat.id})}" method="get" class="row g-2 mb-3 bg-light p-3 rounded">
-          <div class="col-md-5">
-            <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="form-control" placeholder="🔍 Nhập Tên cư dân hoặc Mã Căn Hộ...">
-          </div>
-          <div class="col-md-4">
-            <select name="luaChonId" class="form-select">
-              <option value="">-- Tất cả phương án đã chọn --</option>
-              <option th:each="lc : ${khaoSat.danhSachLuaChon}"
-                      th:value="${lc.id}"
-                      th:text="${lc.noiDungLuaChon}"
-                      th:selected="${lc.id == luaChonId}"></option>
-            </select>
-          </div>
-          <div class="col-md-3 d-flex gap-2">
-            <button type="submit" class="btn btn-primary fw-bold w-100"><i class="fas fa-filter"></i> Lọc</button>
-            <a th:href="@{/admin/khao-sat/chi-tiet/{id}(id=${khaoSat.id})}" class="btn btn-secondary text-nowrap"><i class="fas fa-sync"></i> Bỏ lọc</a>
-          </div>
-        </form>
-
-        <div class="table-responsive">
-          <table class="table table-striped table-hover align-middle mb-0 no-paging">
-            <thead class="table-dark">
-            <tr>
-              <th class="ps-4" th:text="#{ks.chitiet.ho_ten_cu_dan}">Họ tên Cư dân</th>
-              <th th:text="#{hdon.form.can_ho}">Mã Căn Hộ (Phòng)</th>
-              <th th:text="#{ks.chitiet.phuong_an_da_chon}">Phương án đã chọn</th>
-              <th th:text="#{ks.chitiet.thoi_gian_vote}">Thời gian Vote</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${#lists.isEmpty(lichSuList)}">
-              <td colspan="4" class="text-center text-danger fw-bold py-4">Không tìm thấy dữ liệu phù hợp.</td>
-            </tr>
-            <tr th:each="ls : ${lichSuList}">
-              <td class="ps-4 fw-bold text-primary" th:text="${ls.cuDan?.hoTen}"></td>
-              <td class="fw-bold" th:text="${ls.cuDan?.canHo != null ? ls.cuDan.canHo.id : 'Trống'}"></td>
-              <td>
-                <span class="badge bg-success fs-6"><i class="fas fa-check-circle"></i> [[${ls.luaChonDaNgan?.noiDungLuaChon}]]</span>
-              </td>
-              <td th:text="${ls.thoiGianVote != null ? #temporals.format(ls.thoiGianVote, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="mt-3">
-          <div th:replace="~{fragments/pagination :: paging('/admin/khao-sat/chi-tiet/' + ${khaoSat.id}, '')}"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    <!-- Script chung -->
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

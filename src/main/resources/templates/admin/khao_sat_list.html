@@ -1,88 +1,223 @@
-<!doctype html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title th:text="#{ks.ds.quan_ly_khao_sat}">Quản lý Khảo sát</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{ks.ds.quan_ly_khao_sat}">Quản lý Khảo sát</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
 </head>
-<body>
-<div class="d-flex">
-  <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-  <div class="content p-4 w-100">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="text-primary fw-bold"><i class="fas fa-tasks"></i><span th:text="#{ks.ds.quan_ly_khao_sat}" th:remove="tag"> Quản lý Khảo Sát</span></h2>
-      <div>
-        <a th:href="@{/admin/khao-sat/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success">
-          <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
-        </a>
-        <a th:href="@{/admin/khao-sat/tao-moi}" class="btn btn-primary">
-          <i class="fas fa-plus"></i><span th:text="#{ks.ds.tao_khao_sat_moi}" th:remove="tag"> Tạo khảo sát mới
-        </span></a>
-      </div>
+    <!-- Global Sidebar -->
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{ks.ds.quan_ly_khao_sat}">Quản lý Khảo Sát</span>
+            </div>
+        </header>
+
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="clipboard-list" class="w-6 h-6 text-brand-500"></i>
+                        <span th:text="#{ks.ds.quan_ly_khao_sat}">Quản lý Khảo Sát</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">Tạo và quản lý các cuộc khảo sát ý kiến cư dân</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a th:href="@{/admin/khao-sat/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
+                    </a>
+                    <a th:href="@{/admin/khao-sat/tao-moi}" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-brand-500/20 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> <span th:text="#{ks.ds.tao_khao_sat_moi}">Tạo khảo sát mới</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div th:if="${msg}" class="mb-6 flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <strong th:text="${msg}"></strong>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-emerald-400 hover:text-emerald-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div th:if="${err}" class="mb-6 flex items-center justify-between p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                    <strong th:text="${err}"></strong>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+
+            <!-- Search and Filter Form -->
+            <div class="bg-darkcard p-5 rounded-2xl border border-darkborder mb-6 shadow-lg shadow-black/20">
+                <form th:action="@{/admin/khao-sat}" method="get" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div class="md:col-span-5 space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-300">Tìm kiếm</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="search" class="w-4 h-4"></i></span>
+                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" th:placeholder="#{ks.ds.tim_kiem_goi_y}" placeholder="Nhập tiêu đề bài khảo sát cần tìm..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                        </div>
+                    </div>
+                    <div class="md:col-span-4 space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</label>
+                        <select name="trangThai" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-3.5 text-xs text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+                            <option value="1" th:selected="${trangThai == 1}" th:text="#{ks.ds.chua_bat_dau}">Chưa bắt đầu</option>
+                            <option value="2" th:selected="${trangThai == 2}" th:text="#{ks.ds.dang_vote}">Đang mở (Đang Vote)</option>
+                            <option value="3" th:selected="${trangThai == 3}" th:text="#{ks.ds.da_dong}">Đã đóng</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-3 flex items-end gap-2">
+                        <button type="submit" class="flex-1 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
+                            <i data-lucide="search" class="w-4 h-4"></i> <span th:text="#{hdon.ds.nut_tim_kiem}">Tìm kiếm</span>
+                        </button>
+                        <a th:href="@{/admin/khao-sat}" th:title="#{ks.ds.bo_loc}" class="py-2.5 px-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center justify-center">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Table Card -->
+            <div class="bg-darkcard rounded-2xl border border-darkborder overflow-hidden flex-grow flex flex-col shadow-lg shadow-black/20">
+                <div class="p-4 border-b border-darkborder flex items-center justify-between bg-[#111622]">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="list" class="w-4.5 h-4.5 text-brand-400"></i>
+                        <span>Danh sách Khảo sát</span>
+                    </h3>
+                </div>
+                
+                <div class="overflow-x-auto flex-grow">
+                    <table class="w-full text-left text-xs whitespace-nowrap">
+                        <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
+                            <tr>
+                                <th class="px-5 py-3" th:text="#{tb.form.tieude}">Tiêu đề</th>
+                                <th class="px-4 py-3" th:text="#{ks.ds.thoi_gian_bat_dau}">Thời gian bắt đầu</th>
+                                <th class="px-4 py-3" th:text="#{ks.ds.thoi_gian_ket_thuc}">Thời gian kết thúc</th>
+                                <th class="px-4 py-3" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                                <th class="px-4 py-3 text-center" th:text="#{ks.ds.luot_vote}">Lượt Vote</th>
+                                <th class="px-4 py-3 text-center" th:text="#{dv.ds.thao_tac}">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-darkborder text-slate-300">
+                            <tr th:each="ks : ${listKhaoSat}" class="hover:bg-slate-800/30 transition">
+                                <td class="px-5 py-3 font-bold text-white max-w-xs truncate" th:title="${ks.tieuDe}" th:text="${ks.tieuDe}"></td>
+                                <td class="px-4 py-3 text-slate-400" th:text="${#temporals.format(ks.thoiGianBatDau, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td class="px-4 py-3 text-slate-400" th:text="${#temporals.format(ks.thoiGianKetThuc, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td class="px-4 py-3">
+                                    <span th:if="${ks.trangThaiHienTai == 'ĐANG MỞ'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{ks.ds.dang_mo}">ĐANG MỞ</span>
+                                    <span th:if="${ks.trangThaiHienTai == 'SẮP MỞ'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{ks.ds.sap_mo}">SẮP MỞ</span>
+                                    <span th:if="${ks.trangThaiHienTai == 'ĐÃ ĐÓNG'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700" th:text="#{ks.ds.da_ket_thuc}">ĐÃ KẾT THÚC</span>
+                                </td>
+                                <td class="px-4 py-3 text-center font-bold text-brand-400" th:text="${ks.tongSoVote}"></td>
+                                <td class="px-4 py-3 text-center">
+                                    <a th:href="@{/admin/khao-sat/chi-tiet/{id}(id=${ks.id})}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 rounded-lg text-xs font-semibold transition">
+                                        <i data-lucide="settings" class="w-3.5 h-3.5"></i> <span th:text="#{ks.ds.quan_ly}">Quản lý</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(listKhaoSat)}">
+                                <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <i data-lucide="clipboard-x" class="w-8 h-8 text-slate-600 mb-1"></i>
+                                        <span>Không tìm thấy bài khảo sát nào.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="p-4 border-t border-darkborder bg-[#111622]">
+                    <div th:replace="~{fragments/pagination :: paging('/admin/khao-sat', '')}"></div>
+                </div>
+            </div>
+            
+        </main>
     </div>
 
-    <div th:if="${msg}" class="alert alert-success fw-bold" th:text="${msg}"></div>
-    <div th:if="${err}" class="alert alert-danger fw-bold" th:text="${err}"></div>
-
-    <div class="card shadow-sm border-0">
-      <div class="card-body p-0">
-        <!-- BỘ LỌC TÌM KIẾM KHẢO SÁT -->
-        <form th:action="@{/admin/khao-sat}" method="get" class="row g-2 mb-3 bg-light p-3 rounded border">
-          <div class="col-md-5">
-            <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="form-control" th:placeholder="#{ks.ds.tim_kiem_goi_y}" placeholder="🔍 Nhập tiêu đề bài khảo sát cần tìm...">
-          </div>
-          <div class="col-md-4">
-            <select name="trangThai" class="form-select">
-              <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
-              <option value="1" th:selected="${trangThai == 1}" th:text="#{ks.ds.chua_bat_dau}">Chưa bắt đầu</option>
-              <option value="2" th:selected="${trangThai == 2}" th:text="#{ks.ds.dang_vote}">Đang mở (Đang Vote)</option>
-              <option value="3" th:selected="${trangThai == 3}" th:text="#{ks.ds.da_dong}">Đã đóng</option>
-            </select>
-          </div>
-          <div class="col-md-3 d-flex gap-2">
-            <button type="submit" class="btn btn-primary fw-bold w-100"><i class="fas fa-search"></i> <span th:text="#{hdon.ds.nut_tim_kiem}" th:remove="tag">Tìm kiếm</span></button>
-            <a th:href="@{/admin/khao-sat}" class="btn btn-secondary text-nowrap" th:title="#{ks.ds.bo_loc}"><i class="fas fa-sync"></i></a>
-          </div>
-        </form>
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-primary">
-          <tr>
-            <th class="ps-4" th:text="#{tb.form.tieude}">Tiêu đề</th>
-            <th th:text="#{ks.ds.thoi_gian_bat_dau}">Thời gian bắt đầu</th>
-            <th th:text="#{ks.ds.thoi_gian_ket_thuc}">Thời gian kết thúc</th>
-            <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
-            <th th:text="#{ks.ds.luot_vote}">Lượt Vote</th>
-            <th class="text-center" th:text="#{dv.ds.thao_tac}">Thao tác</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="ks : ${listKhaoSat}">
-            <td class="ps-4 fw-bold" th:text="${ks.tieuDe}"></td>
-            <td th:text="${#temporals.format(ks.thoiGianBatDau, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${#temporals.format(ks.thoiGianKetThuc, 'dd/MM/yyyy HH:mm')}"></td>
-            <td>
-              <span th:if="${ks.trangThaiHienTai == 'ĐANG MỞ'}" class="badge bg-success" th:text="#{ks.ds.dang_mo}">ĐANG MỞ</span>
-              <span th:if="${ks.trangThaiHienTai == 'SẮP MỞ'}" class="badge bg-warning text-dark" th:text="#{ks.ds.sap_mo}">SẮP MỞ</span>
-              <span th:if="${ks.trangThaiHienTai == 'ĐÃ ĐÓNG'}" class="badge bg-secondary" th:text="#{ks.ds.da_ket_thuc}">ĐÃ KẾT THÚC</span>
-            </td>
-            <td><strong class="text-primary" th:text="${ks.tongSoVote}"></strong></td>
-            <td class="text-center">
-              <a th:href="@{/admin/khao-sat/chi-tiet/{id}(id=${ks.id})}" class="btn btn-sm btn-outline-primary">
-                <i class="fas fa-cog"></i><span th:text="#{ks.ds.quan_ly}" th:remove="tag"> Quản lý
-              </span></a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Fragment Phân trang -->
-    <div th:replace="~{fragments/pagination :: paging('/admin/khao-sat', '')}"></div>
-
-  </div>
-</div>
+    <!-- Script chung -->
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

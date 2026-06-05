@@ -1,82 +1,202 @@
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{pa.ds.danh_sach_phan_anh}">Danh sách Phản ánh</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
 </head>
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-<body>
-    <div class="d-flex">
-        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+    <!-- Global Sidebar -->
+    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-        <div class="container-fluid p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                <h2 th:text="#{pa.ds.danh_sach_cu_dan_pha}" class="mb-0">Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</h2>
-                <a th:href="@{/admin/phan-anh/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="btn btn-success fw-bold">
-                    <i class="fas fa-file-excel"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
-                </a>
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pa.ds.danh_sach_phan_anh}">Danh sách Phản ánh</span>
             </div>
-            <form method="get" action="/admin/phan-anh" class="row g-3 mb-4">
-                <div class="col-md-5">
-                    <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}"
-                           th:placeholder="#{pa.ds.tim_kiem_goi_y}" placeholder="Nhập tiêu đề hoặc mã căn hộ (VD: A1-05)...">
+        </header>
+
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="message-square" class="w-6 h-6 text-brand-500"></i>
+                        <span th:text="#{pa.ds.danh_sach_cu_dan_pha}">Danh sách Cư dân Phản ánh / Yêu cầu sửa chữa</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{pa.ds.danh_sach_phan_anh}">Quản lý và theo dõi các phản ánh từ cư dân</p>
                 </div>
-                <div class="col-md-4">
-                    <select name="trangThai" class="form-select">
-                        <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
-                        <option value="Chờ xử lý" th:selected="${trangThai == 'Chờ xử lý'}" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</option>
-                        <option value="Đang xử lý" th:selected="${trangThai == 'Đang xử lý'}" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</option>
-                        <option value="Đã xong" th:selected="${trangThai == 'Đã xong'}" th:text="#{pa.form.da_xong}">Đã xong</option>
-                    </select>
+                <div class="flex gap-2">
+                    <a th:href="@{/admin/phan-anh/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
+                    </a>
                 </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search"></i> <span th:text="#{hdon.ds.nut_tim_kiem}" th:remove="tag">Tìm kiếm</span>
-                    </button>
+            </div>
+
+            <!-- Search and Filter Form -->
+            <div class="bg-darkcard p-5 rounded-2xl border border-darkborder mb-6 shadow-lg shadow-black/20">
+                <form method="get" action="/admin/phan-anh" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div class="md:col-span-5 space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.tim_kiem_label}">Tìm kiếm</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="search" class="w-4 h-4"></i></span>
+                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" th:placeholder="#{pa.ds.tim_kiem_goi_y}" placeholder="Nhập tiêu đề hoặc mã căn hộ..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                        </div>
+                    </div>
+                    <div class="md:col-span-4 space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</label>
+                        <select name="trangThai" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-3.5 text-xs text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
+                            <option value="Chờ xử lý" th:selected="${trangThai == 'Chờ xử lý'}" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</option>
+                            <option value="Đang xử lý" th:selected="${trangThai == 'Đang xử lý'}" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</option>
+                            <option value="Đã xong" th:selected="${trangThai == 'Đã xong'}" th:text="#{pa.form.da_xong}">Đã xong</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-3 flex items-end">
+                        <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
+                            <i data-lucide="search" class="w-4 h-4"></i> <span th:text="#{hdon.ds.nut_tim_kiem}">Tìm kiếm</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Table Card -->
+            <div class="bg-darkcard rounded-2xl border border-darkborder overflow-hidden flex-grow flex flex-col shadow-lg shadow-black/20">
+                <div class="p-4 border-b border-darkborder flex items-center justify-between bg-[#111622]">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="list" class="w-4.5 h-4.5 text-brand-400"></i>
+                        <span th:text="#{pa.ds.danh_sach_phan_anh}">Danh sách Phản ánh</span>
+                    </h3>
                 </div>
-            </form>
-            <table class="table table-bordered table-striped mt-3 no-paging">
-                <thead class="table-dark">
-                    <tr>
-                        <th th:text="#{chung.id}">ID</th>
-                        <th th:text="#{hdon.form.can_ho}">Căn hộ</th>
-                        <th th:text="#{tb.form.tieude}">Tiêu đề</th>
-                        <th th:text="#{pa.ds.ngay_gui}">Ngày gửi</th>
-                        <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
-                        <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="pa : ${phanAnhs}">
-                        <td th:text="${pa.id}"></td>
-                        <td th:text="${pa.canHo != null} ? ${pa.canHo.maCanHo} : #{chung.n_a}"></td>
-                        <td th:text="${pa.tieuDe}"></td>
-                        <td th:text="${#temporals.format(pa.ngayGui, 'dd/MM/yyyy HH:mm')}"></td>
-                        <td>
-                            <span th:class="'badge ' + ${pa.trangThai == 'Đã xong' ? 'bg-success' : (pa.trangThai == 'Đang xử lý' ? 'bg-warning text-dark' : 'bg-secondary')}">
-                                <th:block th:if="${pa.trangThai == 'Chờ xử lý'}" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</th:block>
-                                <th:block th:if="${pa.trangThai == 'Đang xử lý'}" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</th:block>
-                                <th:block th:if="${pa.trangThai == 'Đã xong'}" th:text="#{pa.form.da_xong}">Đã xong</th:block>
-                            </span>
-                        </td>
-                        <td>
-                            <a th:href="@{/admin/phan-anh/edit/{id}(id=${pa.id})}" class="btn btn-sm btn-info" th:text="#{pa.ds.xem_xu_ly}">Xem &amp; Xử
-                                lý</a>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(phanAnhs)}">
-                        <td colspan="6" class="text-center text-muted" th:text="#{pa.ds.chua_co_phan_anh_nao}">Chưa có phản ánh nào từ cư dân!</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div th:replace="~{fragments/pagination :: paging('/admin/phan-anh', ${queryString})}"></div>
-        </div>
+                
+                <div class="overflow-x-auto flex-grow">
+                    <table class="w-full text-left text-xs whitespace-nowrap">
+                        <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
+                            <tr>
+                                <th class="px-4 py-3" th:text="#{chung.id}">ID</th>
+                                <th class="px-4 py-3" th:text="#{hdon.form.can_ho}">Căn hộ</th>
+                                <th class="px-4 py-3" th:text="#{tb.form.tieude}">Tiêu đề</th>
+                                <th class="px-4 py-3" th:text="#{pa.ds.ngay_gui}">Ngày gửi</th>
+                                <th class="px-4 py-3" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
+                                <th class="px-4 py-3 text-center" th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-darkborder text-slate-300">
+                            <tr th:each="pa : ${phanAnhs}" class="hover:bg-slate-800/30 transition">
+                                <td class="px-4 py-3 font-mono text-slate-400" th:text="${pa.id}"></td>
+                                <td class="px-4 py-3 font-medium text-brand-400" th:text="${pa.canHo != null} ? ${pa.canHo.maCanHo} : #{chung.n_a}"></td>
+                                <td class="px-4 py-3 font-medium text-white max-w-xs truncate" th:title="${pa.tieuDe}" th:text="${pa.tieuDe}"></td>
+                                <td class="px-4 py-3 text-slate-400" th:text="${#temporals.format(pa.ngayGui, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td class="px-4 py-3">
+                                    <span th:if="${pa.trangThai == 'Chờ xử lý'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</span>
+                                    <span th:if="${pa.trangThai == 'Đang xử lý'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{pa.form.dang_xu_ly}">Đang xử lý</span>
+                                    <span th:if="${pa.trangThai == 'Đã xong'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{pa.form.da_xong}">Đã xong</span>
+                                    <span th:if="${pa.trangThai != 'Chờ xử lý' &amp;&amp; pa.trangThai != 'Đang xử lý' &amp;&amp; pa.trangThai != 'Đã xong'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${pa.trangThai}"></span>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <a th:href="@{/admin/phan-anh/edit/{id}(id=${pa.id})}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 rounded-lg text-xs font-semibold transition" th:title="#{pa.ds.xem_xu_ly}">
+                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i> <span th:text="#{pa.ds.xem_xu_ly}">Xem &amp; Xử lý</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(phanAnhs)}">
+                                <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <i data-lucide="inbox" class="w-8 h-8 text-slate-600 mb-1"></i>
+                                        <span th:text="#{pa.ds.chua_co_phan_anh_nao}">Chưa có phản ánh nào từ cư dân!</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="p-4 border-t border-darkborder bg-[#111622]">
+                    <div th:replace="~{fragments/pagination :: paging('/admin/phan-anh', ${queryString})}"></div>
+                </div>
+            </div>
+            
+        </main>
     </div>
 
-    <!-- Dùng fragment Datatable chung -->
+    <!-- Script chung -->
     <div th:replace="~{fragments/datatable :: scripts}"></div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
-
 </html>
