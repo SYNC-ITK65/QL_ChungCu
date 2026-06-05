@@ -53,17 +53,17 @@
     <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
     <!-- Main Content -->
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="mb-8">
+        <div class="mb-8 max-w-7xl mx-auto">
             <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2" th:text="#{ch.chitiet.thong_tin_can_ho_cu}">
                 🏢 Thông tin căn hộ của tôi
             </h1>
-            <p class="text-sm text-slate-400 mt-1">Hồ sơ thông số kỹ thuật chi tiết của căn hộ bạn đang cư trú</p>
+            <p class="text-sm text-slate-400 mt-1" th:text="#{cudan.can_ho.subtitle}">Hồ sơ thông số kỹ thuật chi tiết của căn hộ bạn đang cư trú</p>
         </div>
 
         <!-- If apartment exists -->
-        <div th:if="${canHo != null}" class="max-w-2xl bg-darkcard border border-darkborder rounded-2xl overflow-hidden shadow-xl p-6 md:p-8">
+        <div th:if="${canHo != null}" class="max-w-7xl mx-auto bg-darkcard border border-darkborder rounded-2xl overflow-hidden shadow-xl p-6 md:p-8">
             
             <div class="flex items-center justify-between pb-4 border-b border-darkborder mb-6">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2">
@@ -74,32 +74,34 @@
                       th:text="${canHo.trangThaiHienThi != null ? #messages.msg(canHo.trangThaiHienThi) : canHo.trangThai}"></span>
             </div>
 
-            <!-- Image View -->
-            <div th:if="${canHo.hinhAnh != null}" class="mb-6 rounded-2xl overflow-hidden border border-darkborder max-w-md mx-auto aspect-video shadow-lg">
-                <img th:src="${canHo.hinhAnh}" alt="Ảnh căn hộ" class="w-full h-full object-cover">
-            </div>
+            <div th:class="${canHo.hinhAnh != null and canHo.hinhAnh != ''} ? 'grid grid-cols-1 md:grid-cols-2 gap-8 items-start' : 'max-w-2xl mx-auto'">
+                <!-- Image View -->
+                <div th:if="${canHo.hinhAnh != null and canHo.hinhAnh != ''}" class="rounded-2xl overflow-hidden border border-darkborder aspect-video shadow-lg">
+                    <img th:src="${canHo.hinhAnh}" alt="Ảnh căn hộ" class="w-full h-full object-cover">
+                </div>
 
-            <!-- Info details -->
-            <div class="space-y-4 text-sm mt-6">
-                <div class="flex items-center justify-between py-2 border-b border-darkborder/50">
-                    <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.tang}">Tầng:</span>
-                    <span class="text-white font-semibold" th:text="${canHo.tang}">-</span>
-                </div>
-                <div class="flex items-center justify-between py-2 border-b border-darkborder/50">
-                    <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.dien_tich}">Diện tích:</span>
-                    <span class="text-white font-semibold" th:text="${canHo.dienTich} + ' ' + #{chung.don_vi_m2}">-</span>
-                </div>
-                <div class="flex items-center justify-between py-2 border-b border-darkborder/50">
-                    <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</span>
-                    <span class="text-white font-semibold" 
-                          th:text="${canHo.loaiHienThi != null ? #messages.msg(canHo.loaiHienThi) : canHo.loai}">-</span>
+                <!-- Info details -->
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center justify-between py-2 border-b border-darkborder/50">
+                        <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.tang}">Tầng:</span>
+                        <span class="text-white font-semibold" th:text="${canHo.tang}">-</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-darkborder/50">
+                        <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.dien_tich}">Diện tích:</span>
+                        <span class="text-white font-semibold" th:text="${canHo.dienTich} + ' ' + #{chung.don_vi_m2}">-</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-darkborder/50">
+                        <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</span>
+                        <span class="text-white font-semibold" 
+                              th:text="${canHo.loaiHienThi != null ? #messages.msg(canHo.loaiHienThi) : canHo.loai}">-</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- If apartment not registered -->
         <div th:if="${canHo == null}" 
-             class="max-w-xl p-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-xl text-sm flex items-center gap-2 shadow-lg" 
+             class="max-w-xl mx-auto p-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-xl text-sm flex items-center gap-2 shadow-lg" 
              th:text="#{ch.chitiet.ban_hien_chua_duoc_d}">
             Bạn hiện chưa được đăng ký vào căn hộ nào. Vui lòng liên hệ Ban Quản Lý.
         </div>

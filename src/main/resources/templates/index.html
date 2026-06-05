@@ -1,239 +1,719 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{index.tieude}">Skyline Residence - Nâng Tầm Cuộc Sống</title>
+    <title th:text="#{index.tieude}">Khu Căn Hộ Thông Minh Cao Cấp | SmartApt</title>
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        luxury: {
+                            400: '#fbbf24', // Amber for luxury accents
+                            500: '#f59e0b',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
 
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(rgba(13, 36, 56, 0.7), rgba(13, 36, 56, 0.7)), url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            color: white;
-            text-align: center;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
 
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
+        ::-webkit-scrollbar-track {
+            background: #0B0F17;
         }
 
-        .hero-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            font-weight: 300;
+        ::-webkit-scrollbar-thumb {
+            background: #242B3D;
+            border-radius: 4px;
         }
 
-        /* Section Titles */
-        .section-title {
-            position: relative;
-            margin-bottom: 3rem;
-            font-weight: 700;
-            color: #0d2438;
-        }
-        .section-title::after {
-            content: "";
-            width: 60px;
-            height: 3px;
-            background-color: #0d6efd;
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
         }
 
-        /* Amenities */
-        .amenity-card {
-            padding: 2rem;
-            border-radius: 15px;
-            background: #fff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            height: 100%;
-        }
-        .amenity-icon {
-            font-size: 3rem;
-            color: #0d6efd;
-            margin-bottom: 1rem;
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #242B3D 1px, transparent 1px),
+                linear-gradient(to bottom, #242B3D 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
         }
 
-        /* Portal Cards */
-        .portal-section {
-            background-color: #f8f9fa;
-            padding: 5rem 0;
-        }
-        .portal-card {
-            cursor: pointer;
-            border: none;
-            border-radius: 15px;
-            background: #fff;
-        }
-        .portal-icon-box {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
+        .glass-panel {
+            background: rgba(22, 27, 38, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
-        /* Footer */
-        footer {
-            background-color: #0d2438;
-            color: #adb5bd;
+        .hero-bg {
+            background-image: linear-gradient(to bottom, rgba(11, 15, 23, 0.4), rgba(11, 15, 23, 1)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
     </style>
 </head>
-<body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="70">
 
-<!-- Navbar -->
-<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm" style="background-color: rgba(13, 36, 56, 0.95) !important;">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#">🏢 Skyline Residence</a>
-        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<body class="min-h-screen flex flex-col bg-darkbg text-slate-200 antialiased font-sans relative overflow-x-hidden">
 
-        <!-- Offcanvas (Sidebar mobile bên phải) -->
-        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="background-color: rgba(13, 36, 56, 0.98) !important;">
-            <div class="offcanvas-header border-bottom border-secondary">
-                <h5 class="offcanvas-title fw-bold" id="offcanvasRightLabel">🏢 Danh Mục</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <!-- Navigation -->
+    <nav class="relative z-50 border-b border-darkborder/50 glass-panel sticky top-0 transition-all duration-300"
+        id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i data-lucide="building-2" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="font-bold text-2xl text-white tracking-tight">Smart<span
+                        class="text-brand-400">Apt</span></span>
             </div>
-            <div class="offcanvas-body">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="#home" data-bs-dismiss="offcanvas">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about" data-bs-dismiss="offcanvas">Giới thiệu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#amenities" data-bs-dismiss="offcanvas">Tiện ích</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold text-info" href="/login" onclick="window.location.href='/login'; return false;">Đăng nhập hệ thống</a></li>
-                </ul>
+
+            <div class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
+                <a href="#tong-quan" class="hover:text-brand-400 transition-colors">Tổng Quan</a>
+                <a href="#tien-ich" class="hover:text-brand-400 transition-colors">Tiện Ích 5 Sao</a>
+                <a href="#mat-bang" class="hover:text-brand-400 transition-colors">Mặt Bằng Căn Hộ</a>
+                <a href="#chinh-sach" class="hover:text-brand-400 transition-colors">Chính Sách</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex flex-col items-end mr-2">
+                    <span class="text-xs text-slate-400">Hotline Tư Vấn</span>
+                    <a href="tel:0900123456" class="text-sm font-bold text-luxury-400">0900.123.456</a>
+                </div>
+                <a th:href="@{/login}" href="/login"
+                    class="px-5 py-2.5 bg-darkbg border border-darkborder hover:border-brand-500 hover:text-brand-400 text-white text-sm font-bold rounded-xl transition-all duration-200 flex items-center gap-2">
+                    <i data-lucide="user-circle" class="w-4 h-4"></i>
+                    <span>Cổng Cư Dân</span>
+                </a>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<!-- Hero Section -->
-<section id="home" class="hero-section">
-    <div class="container">
-        <h1 class="hero-title">Không Gian Sống Lý Tưởng</h1>
-        <p class="hero-subtitle">Tận hưởng cuộc sống hiện đại, an toàn và tiện nghi ngay giữa lòng thành phố.</p>
-        <a href="#about" class="btn btn-primary btn-lg rounded-pill px-4 me-2">Khám phá ngay</a>
-        <a href="#portals" class="btn btn-outline-light btn-lg rounded-pill px-4">Truy cập hệ thống</a>
-    </div>
-</section>
+    <!-- Main Content -->
+    <main class="flex-grow relative z-10 flex flex-col items-center">
 
-<!-- About Section -->
-<section id="about" class="py-5 mt-4">
-    <div class="container py-5">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="About Skyline" class="img-fluid rounded-4 shadow-lg">
-            </div>
-            <div class="col-lg-6 px-lg-5">
-                <h2 class="fw-bold mb-4">Về Skyline Residence</h2>
-                <p class="text-muted fs-5 mb-4">Chúng tôi kiến tạo một cộng đồng văn minh, nơi mỗi tổ ấm đều được chăm chút tỉ mỉ. Với hệ thống quản lý thông minh và đội ngũ chuyên nghiệp, cuộc sống của bạn sẽ luôn được đảm bảo sự tiện nghi và an tâm tuyệt đối.</p>
-                <ul class="list-unstyled text-muted">
-                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Vị trí đắc địa, giao thông thuận tiện</li>
-                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Thiết kế căn hộ đón ánh sáng tự nhiên</li>
-                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Ứng dụng công nghệ vào quản lý vận hành</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
+        <!-- Hero Section -->
+        <section
+            class="w-full hero-bg relative flex flex-col items-center justify-center min-h-[90vh] text-center px-6">
+            <div class="absolute inset-0 bg-darkbg/50 z-0"></div> <!-- Overlay -->
+            <div class="absolute inset-0 bg-grid-pattern opacity-30 z-0"></div>
 
-<!-- Amenities Section -->
-<section id="amenities" class="py-5 bg-light">
-    <div class="container py-5">
-        <h2 class="text-center section-title">Tiện Ích Đẳng Cấp</h2>
-        <div class="row g-4 text-center mt-3">
-            <div class="col-md-6 col-lg-3">
-                <div class="amenity-card">
-                    <i class="bi bi-water amenity-icon"></i>
-                    <h5 class="fw-bold">Hồ bơi vô cực</h5>
-                    <p class="text-muted small">Hồ bơi bốn mùa tiêu chuẩn resort mang lại phút giây thư giãn tuyệt vời.</p>
+            <!-- Thêm pb-32 (padding-bottom) để các nút bấm không bị đè bởi chữ "Khám phá" ghim ở đáy -->
+            <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center pb-32">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-darkbg/80 border border-luxury-500/50 text-luxury-400 text-xs font-bold mb-8 shadow-sm backdrop-blur-md uppercase tracking-widest">
+                    <i data-lucide="gem" class="w-3.5 h-3.5"></i>
+                    Biểu tượng sống mới tại trung tâm thành phố
+                </div>
+
+                <h1
+                    class="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tight mb-8 max-w-5xl leading-[1.1] drop-shadow-2xl">
+                    Sống Trọn Tinh Hoa <br />
+                    <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-emerald-300">Công
+                        Nghệ & Đẳng Cấp</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-slate-300 mb-12 max-w-3xl leading-relaxed font-medium drop-shadow-md">
+                    SmartApt mang đến trải nghiệm sống vượt chuẩn mực với hệ thống Smart Home tích hợp, tiện ích nghỉ
+                    dưỡng 5 sao và không gian xanh mát giữa lòng đô thị nhộn nhịp.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
+                    <a href="#lien-he"
+                        class="w-full sm:w-auto px-10 py-4 bg-brand-500 hover:bg-brand-400 text-white text-base font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(14,165,233,0.4)] hover:-translate-y-1">
+                        Đăng Ký Nhận Báo Giá
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#mat-bang"
+                        class="w-full sm:w-auto px-10 py-4 bg-darkcard/80 backdrop-blur-md hover:bg-slate-800 border border-darkborder hover:border-brand-500/50 text-white text-base font-bold rounded-xl transition-all flex items-center justify-center gap-2 hover:-translate-y-1">
+                        <i data-lucide="map" class="w-5 h-5 text-brand-400"></i>
+                        Xem Mặt Bằng
+                    </a>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="amenity-card">
-                    <i class="bi bi-bicycle amenity-icon"></i>
-                    <h5 class="fw-bold">Phòng Gym & Yoga</h5>
-                    <p class="text-muted small">Trang thiết bị hiện đại, giúp bạn duy trì sức khỏe và vóc dáng mỗi ngày.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="amenity-card">
-                    <i class="bi bi-tree amenity-icon"></i>
-                    <h5 class="fw-bold">Công viên xanh</h5>
-                    <p class="text-muted small">Không gian xanh mát, khu vui chơi an toàn cho trẻ em phát triển toàn diện.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="amenity-card">
-                    <i class="bi bi-shield-check amenity-icon"></i>
-                    <h5 class="fw-bold">An ninh 24/7</h5>
-                    <p class="text-muted small">Hệ thống camera giám sát và đội ngũ bảo vệ chuyên nghiệp, an toàn tuyệt đối.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Portals Section (Hệ thống quản lý) -->
-<section id="portals" class="portal-section">
-    <div class="container text-center">
-        <h2 class="section-title">Cổng Thông Tin Điện Tử</h2>
-        <p class="text-muted mb-5">Hệ thống phần mềm quản lý thông minh tích hợp 2 trong 1.</p>
+            <!-- Scroll indicator -->
+            <div
+                class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-10">
+                <span class="text-xs text-slate-400 font-semibold tracking-widest uppercase">Khám phá</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400"></i>
+            </div>
+        </section>
 
-        <div class="row justify-content-center">
-            <!-- Cổng Đăng Nhập Chung -->
-            <div class="col-md-8 col-lg-6">
-                <div class="card shadow h-100 portal-card" onclick="window.location.href='/login'">
-                    <div class="card-body p-5">
-                        <div class="portal-icon-box text-primary">
-                            <i class="bi bi-person-badge"></i>
+        <!-- Stats Section (Dự án) -->
+        <section id="tong-quan"
+            class="w-full border-y border-darkborder/80 bg-darkcard/60 backdrop-blur-sm relative z-20">
+            <div class="max-w-7xl mx-auto px-6 py-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-darkborder/50">
+                    <div class="text-center px-4">
+                        <div class="text-brand-400 flex justify-center mb-3"><i data-lucide="building"
+                                class="w-8 h-8"></i></div>
+                        <h4 class="text-3xl md:text-4xl font-black text-white mb-1">03</h4>
+                        <p class="text-sm font-semibold text-slate-400 uppercase tracking-wide">Tòa Tháp Cao Cấp</p>
+                    </div>
+                    <div class="text-center px-4">
+                        <div class="text-emerald-400 flex justify-center mb-3"><i data-lucide="home"
+                                class="w-8 h-8"></i></div>
+                        <h4 class="text-3xl md:text-4xl font-black text-white mb-1">1,250</h4>
+                        <p class="text-sm font-semibold text-slate-400 uppercase tracking-wide">Căn Hộ Smart Home</p>
+                    </div>
+                    <div class="text-center px-4">
+                        <div class="text-luxury-400 flex justify-center mb-3"><i data-lucide="leaf" class="w-8 h-8"></i>
                         </div>
-                        <h3 class="fw-bold">Đăng Nhập Hệ Thống</h3>
-                        <p class="text-muted mt-3 fs-5">Dành cho cả Cư dân và Ban quản lý. Hệ thống sẽ tự động nhận diện tài khoản và chuyển hướng bạn đến bảng điều khiển tương ứng.</p>
-                        <a href="/login" class="btn btn-primary mt-4 px-5 py-3 rounded-pill fw-bold fs-5 shadow-sm">Đăng nhập ngay</a>
+                        <h4 class="text-3xl md:text-4xl font-black text-white mb-1">65<span
+                                class="text-luxury-500">%</span></h4>
+                        <p class="text-sm font-semibold text-slate-400 uppercase tracking-wide">Mật Độ Cảnh Quan Xanh
+                        </p>
+                    </div>
+                    <div class="text-center px-4">
+                        <div class="text-purple-400 flex justify-center mb-3"><i data-lucide="calendar-check"
+                                class="w-8 h-8"></i></div>
+                        <h4 class="text-3xl md:text-4xl font-black text-white mb-1">Q4/26</h4>
+                        <p class="text-sm font-semibold text-slate-400 uppercase tracking-wide">Dự Kiến Bàn Giao</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
-<!-- Footer -->
-<footer class="py-4">
-    <div class="container text-center text-md-start">
-        <div class="row align-items-center">
-            <div class="col-md-6 mb-3 mb-md-0">
-                <h5 class="text-white fw-bold">🏢 Skyline Residence</h5>
-                <p class="mb-1 small"><i class="bi bi-geo-alt me-2"></i> 123 Đường Số 1, Quận Trung Tâm, TP.HCM</p>
-                <p class="mb-1 small"><i class="bi bi-telephone me-2"></i> Hotline: 1900 6868</p>
-                <p class="mb-0 small"><i class="bi bi-envelope me-2"></i> cskh@skylineresidence.com</p>
+        <!-- Features / Tiện ích Section -->
+        <section id="tien-ich" class="w-full max-w-7xl mx-auto px-6 py-24">
+            <div class="text-center mb-20 max-w-3xl mx-auto">
+                <span class="text-luxury-400 font-bold tracking-wider uppercase text-sm mb-3 block">Đặc Quyền Cư
+                    Dân</span>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Hệ Thống Tiện Ích Đỉnh Cao <br />Chuẩn Resort
+                    5 Sao</h2>
+                <p class="text-slate-400 text-lg">Mỗi bước chân là một trải nghiệm sống hoàn mỹ. SmartApt đáp ứng trọn
+                    vẹn mọi nhu cầu sống, làm việc và giải trí ngay thềm nhà.</p>
             </div>
-            <div class="col-md-6 text-md-end text-center">
-                <div class="mb-3">
-                    <a href="#" class="text-light me-3 fs-5"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-light me-3 fs-5"><i class="bi bi-youtube"></i></a>
-                    <a href="#" class="text-light fs-5"><i class="bi bi-twitter-x"></i></a>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Tiện ích 1 -->
+                <div
+                    class="bg-darkcard border border-darkborder rounded-3xl p-8 hover:bg-slate-800/80 hover:border-brand-500/50 transition duration-300 group shadow-lg">
+                    <div
+                        class="w-14 h-14 bg-brand-500/10 rounded-2xl flex items-center justify-center text-brand-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="waves" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Hồ Bơi Vô Cực Trên Không</h3>
+                    <p class="text-base text-slate-400 leading-relaxed">Tận hưởng tầm nhìn toàn cảnh thành phố cực đỉnh
+                        từ Sky Pool tiêu chuẩn Olympic, cùng khu bể bơi dành riêng cho trẻ em.</p>
                 </div>
-                <p class="mb-0 small">&copy; 2026 Hệ thống Quản lý Chung Cư. Phát triển bởi Đội ngũ kỹ thuật.</p>
+
+                <!-- Tiện ích 2 -->
+                <div
+                    class="bg-darkcard border border-darkborder rounded-3xl p-8 hover:bg-slate-800/80 hover:border-emerald-500/50 transition duration-300 group shadow-lg">
+                    <div
+                        class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="tree-pine" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Công Viên Sinh Thái 2ha</h3>
+                    <p class="text-base text-slate-400 leading-relaxed">Không gian xanh mát, đường dạo bộ rợp bóng cây,
+                        hồ cảnh quan nhân tạo mang lại sự thư thái tuyệt đối giữa thiên nhiên.</p>
+                </div>
+
+                <!-- Tiện ích 3 -->
+                <div
+                    class="bg-darkcard border border-darkborder rounded-3xl p-8 hover:bg-slate-800/80 hover:border-amber-500/50 transition duration-300 group shadow-lg">
+                    <div
+                        class="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="dumbbell" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Gym & Spa Cao Cấp</h3>
+                    <p class="text-base text-slate-400 leading-relaxed">Phòng tập thiết bị tân tiến nhất thế giới, phòng
+                        Yoga tầm nhìn Panorama và khu vực Spa phục hồi năng lượng chuyên biệt.</p>
+                </div>
+
+                <!-- Tiện ích 4 -->
+                <div
+                    class="bg-darkcard border border-darkborder rounded-3xl p-8 hover:bg-slate-800/80 hover:border-rose-500/50 transition duration-300 group shadow-lg">
+                    <div
+                        class="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="shopping-bag" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Trung Tâm Thương Mại Đa Tầng</h3>
+                    <p class="text-base text-slate-400 leading-relaxed">Khối đế 4 tầng quy tụ hàng trăm thương hiệu mua
+                        sắm, siêu thị, nhà hàng ẩm thực Á-Âu và khu vui chơi giải trí sầm uất.</p>
+                </div>
+
+                <!-- Tiện ích 5 -->
+                <div
+                    class="bg-darkcard border border-darkborder rounded-3xl p-8 hover:bg-slate-800/80 hover:border-purple-500/50 transition duration-300 group shadow-lg">
+                    <div
+                        class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="shield-check" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">An Ninh Đa Lớp 24/7</h3>
+                    <p class="text-base text-slate-400 leading-relaxed">Hệ thống camera AI giám sát, thẻ từ phân tầng
+                        thang máy, bảo vệ tuần tra liên tục đảm bảo an toàn tuyệt đối cho gia đình bạn.</p>
+                </div>
+
+                <!-- Tiện ích 6 -->
+                <div
+                    class="bg-darkcard border border-darkborder rounded-3xl p-8 hover:bg-slate-800/80 hover:border-sky-500/50 transition duration-300 group shadow-lg">
+                    <div
+                        class="w-14 h-14 bg-sky-500/10 rounded-2xl flex items-center justify-center text-sky-400 mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="smartphone-nfc" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Ứng Dụng Quản Lý Smart Home</h3>
+                    <p class="text-base text-slate-400 leading-relaxed">Điều khiển thiết bị điện, thanh toán hóa đơn,
+                        đặt lịch sử dụng tiện ích (BBQ, Tennis) ngay trên App độc quyền của tòa nhà.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Apartment Types Section -->
+        <section id="mat-bang"
+            class="w-full bg-darkcard/50 border-y border-darkborder/50 py-24 relative overflow-hidden">
+            <div
+                class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/10 blur-[150px] rounded-full pointer-events-none">
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 relative z-10">
+                <div class="text-center mb-16">
+                    <span class="text-brand-400 font-bold tracking-wider uppercase text-sm mb-3 block">Mặt bằng điển
+                        hình</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Lựa Chọn Không Gian Sống Hoàn Hảo</h2>
+                    <p class="text-slate-400 max-w-2xl mx-auto">Đa dạng các loại hình căn hộ với thiết kế tối ưu công
+                        năng, đón trọn ánh sáng và gió tự nhiên.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Type 1 -->
+                    <div
+                        class="bg-darkbg border border-darkborder rounded-3xl overflow-hidden hover:border-brand-500/50 transition duration-300 group flex flex-col">
+                        <div class="h-64 bg-slate-800 relative overflow-hidden">
+                            <!-- Placeholder image for Apartment -->
+                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Căn hộ 1PN"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div
+                                class="absolute top-4 left-4 bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                Phổ biến cho người trẻ</div>
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-bold text-white mb-2">Căn Hộ 1 Phòng Ngủ</h3>
+                            <p class="text-brand-400 font-semibold mb-6">Diện tích: 45m² - 52m²</p>
+
+                            <ul class="space-y-3 mb-8 flex-grow">
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> 1 Phòng khách
+                                    + Bếp mở</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> 1 Phòng ngủ
+                                    Master + 1 WC</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Logia đón
+                                    nắng tự nhiên</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Bàn giao nội
+                                    thất cơ bản cao cấp</li>
+                            </ul>
+                            <div class="mt-auto border-t border-darkborder pt-6 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs text-slate-400">Giá dự kiến từ</p>
+                                    <p class="text-xl font-bold text-white">2.5 Tỷ <span
+                                            class="text-sm font-normal text-slate-400">VNĐ</span></p>
+                                </div>
+                                <a href="#lien-he"
+                                    class="w-10 h-10 rounded-full bg-darkcard border border-darkborder flex items-center justify-center hover:bg-brand-500 hover:text-white transition">
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Type 2 -->
+                    <div
+                        class="bg-darkbg border-2 border-brand-500/50 rounded-3xl overflow-hidden hover:border-brand-500 transition duration-300 group flex flex-col relative shadow-[0_0_20px_rgba(14,165,233,0.1)] lg:-translate-y-4">
+                        <div
+                            class="absolute top-0 right-0 bg-brand-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl z-20">
+                            BÁN CHẠY NHẤT</div>
+                        <div class="h-64 bg-slate-800 relative overflow-hidden">
+                            <!-- Đã thay đổi link ảnh mới hoạt động ổn định 100% -->
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Căn hộ 2PN"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500 relative z-10">
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-bold text-white mb-2">Căn Hộ 2 Phòng Ngủ</h3>
+                            <p class="text-brand-400 font-semibold mb-6">Diện tích: 68m² - 75m²</p>
+
+                            <ul class="space-y-3 mb-8 flex-grow">
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Phòng khách
+                                    rộng rãi, tầm nhìn Panorama</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> 2 Phòng ngủ +
+                                    2 WC (1 Master)</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> 2 Logia riêng
+                                    biệt thoáng đãng</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Phù hợp cho
+                                    gia đình tiêu chuẩn</li>
+                            </ul>
+                            <div class="mt-auto border-t border-darkborder pt-6 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs text-slate-400">Giá dự kiến từ</p>
+                                    <p class="text-xl font-bold text-white">3.8 Tỷ <span
+                                            class="text-sm font-normal text-slate-400">VNĐ</span></p>
+                                </div>
+                                <a href="#lien-he"
+                                    class="w-10 h-10 rounded-full bg-brand-500 text-white flex items-center justify-center hover:bg-brand-400 transition shadow-lg">
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Type 3 -->
+                    <div
+                        class="bg-darkbg border border-darkborder rounded-3xl overflow-hidden hover:border-luxury-500/50 transition duration-300 group flex flex-col">
+                        <div class="h-64 bg-slate-800 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                alt="Căn hộ 3PN"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div
+                                class="absolute top-4 left-4 bg-luxury-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                Gia đình đa thế hệ</div>
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-bold text-white mb-2">Căn Hộ 3 Phòng Ngủ</h3>
+                            <p class="text-luxury-400 font-semibold mb-6">Diện tích: 95m² - 110m²</p>
+
+                            <ul class="space-y-3 mb-8 flex-grow">
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Không gian
+                                    chung cực lớn, ban công dài</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> 3 Phòng ngủ +
+                                    2 WC thiết kế thông minh</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Khu vực bếp
+                                    kín độc lập</li>
+                                <li class="flex items-center gap-3 text-sm text-slate-300"><i
+                                        data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Vị trí góc,
+                                    tối đa ánh sáng 3 mặt</li>
+                            </ul>
+                            <div class="mt-auto border-t border-darkborder pt-6 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs text-slate-400">Giá dự kiến từ</p>
+                                    <p class="text-xl font-bold text-white">5.5 Tỷ <span
+                                            class="text-sm font-normal text-slate-400">VNĐ</span></p>
+                                </div>
+                                <a href="#lien-he"
+                                    class="w-10 h-10 rounded-full bg-darkcard border border-darkborder flex items-center justify-center hover:bg-luxury-500 hover:text-white transition">
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="#lien-he"
+                        class="inline-flex items-center gap-2 text-brand-400 hover:text-white font-semibold transition border-b border-brand-500/30 hover:border-white pb-1">
+                        Xem thêm thiết kế Penthouse & Duplex <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Policies Section -->
+        <section id="chinh-sach" class="w-full max-w-7xl mx-auto px-6 py-24">
+            <div class="bg-darkcard border border-darkborder rounded-3xl p-8 md:p-12 relative overflow-hidden">
+                <!-- Background decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-luxury-500/10 rounded-full blur-[80px]"></div>
+
+                <div class="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+                    <div class="lg:w-1/2">
+                        <span class="text-luxury-400 font-bold tracking-wider uppercase text-sm mb-3 block">Ưu đãi cực
+                            khủng tháng này</span>
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Chính Sách Bán Hàng <br /> & Tiến Độ
+                            Thanh Toán</h2>
+                        <p class="text-slate-400 mb-8 leading-relaxed">Sở hữu căn hộ tại SmartApt chưa bao giờ dễ dàng
+                            đến thế với đòn bẩy tài chính cực tốt và lịch thanh toán giãn dài, giảm áp lực cho người
+                            mua.</p>
+
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-luxury-500/10 flex items-center justify-center flex-shrink-0 text-luxury-400">
+                                    <i data-lucide="percent" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Chiết khấu lên đến 8%</h4>
+                                    <p class="text-sm text-slate-400">Áp dụng cho khách hàng thanh toán sớm 95% giá trị
+                                        căn hộ lúc ký HĐMB.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center flex-shrink-0 text-brand-400">
+                                    <i data-lucide="landmark" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Ngân hàng hỗ trợ vay 70%</h4>
+                                    <p class="text-sm text-slate-400">Ân hạn nợ gốc và miễn lãi suất 0% trong vòng 24
+                                        tháng cho đến khi nhận nhà.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0 text-emerald-400">
+                                    <i data-lucide="gift" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Quà tặng gói nội thất Smart Home</h4>
+                                    <p class="text-sm text-slate-400">Tặng kèm gói hệ thống điều khiển thông minh trị
+                                        giá 100 triệu đồng cho 50 khách booking đầu tiên.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:w-1/2 w-full bg-darkbg p-6 md:p-8 rounded-2xl border border-darkborder shadow-inner">
+                        <h4 class="text-xl font-bold text-white mb-6 border-b border-darkborder pb-4">Tiến độ thanh toán
+                            chuẩn</h4>
+                        <ul class="space-y-4">
+                            <li class="flex justify-between items-center">
+                                <span class="text-sm text-slate-300 font-semibold">Cọc giữ chỗ</span>
+                                <span class="text-sm text-brand-400 font-bold">50 Triệu VNĐ</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-sm text-slate-300">Đợt 1 (Ký HĐMB)</span>
+                                <span class="text-sm text-white font-bold">15%</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-sm text-slate-300">Đợt 2 - Đợt 6 (Mỗi đợt cách 2 tháng)</span>
+                                <span class="text-sm text-white font-bold">5% / Đợt</span>
+                            </li>
+                            <li class="flex justify-between items-center text-emerald-400">
+                                <span class="text-sm font-semibold">Đợt 7 (Nhận bàn giao nhà)</span>
+                                <span class="text-sm font-bold">25% + 2% KPBT</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-sm text-slate-300">Đợt cuối (Nhận sổ hồng)</span>
+                                <span class="text-sm text-white font-bold">5%</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact CTA Section -->
+        <section id="lien-he" class="w-full max-w-5xl mx-auto px-6 py-20 mb-12">
+            <div
+                class="bg-gradient-to-br from-brand-900/40 to-darkbg border border-brand-500/30 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-[0_0_50px_rgba(14,165,233,0.1)] flex flex-col md:flex-row items-center gap-12">
+                <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+
+                <div class="relative z-10 md:w-1/2">
+                    <h2 class="text-3xl md:text-4xl font-black text-white mb-4">Nhận trọn bộ <br />Tài Liệu Dự Án</h2>
+                    <p class="text-brand-100/80 mb-8 text-sm leading-relaxed">Để lại thông tin để chuyên viên tư vấn hỗ
+                        trợ quý khách tham quan sa bàn, xem nhà mẫu thực tế và nhận bảng tính dòng tiền chi tiết.</p>
+
+                    <div class="flex items-center gap-4 mb-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-darkcard flex items-center justify-center border border-darkborder">
+                            <i data-lucide="phone-call" class="w-4 h-4 text-brand-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 uppercase tracking-wide">Hotline Phòng Kinh Doanh</p>
+                            <p class="text-xl font-bold text-white">0900.123.456</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="relative z-10 md:w-1/2 w-full bg-darkcard/80 backdrop-blur-md p-6 rounded-2xl border border-darkborder">
+                    <form action="#" method="POST" class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Họ và Tên</label>
+                            <input type="text" placeholder="Nhập tên của bạn"
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Số điện thoại (*)</label>
+                            <input type="tel" placeholder="Nhập số điện thoại" required
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Nhu cầu quan tâm</label>
+                            <select
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-slate-300 focus:outline-none focus:border-brand-500 transition appearance-none">
+                                <option>Căn hộ 1 Phòng ngủ</option>
+                                <option>Căn hộ 2 Phòng ngủ</option>
+                                <option>Căn hộ 3 Phòng ngủ</option>
+                                <option>Penthouse / Duplex</option>
+                            </select>
+                        </div>
+                        <button type="button"
+                            onclick="alert('Cảm ơn bạn đã quan tâm. Chuyên viên sẽ liên hệ lại trong thời gian sớm nhất!');"
+                            class="w-full py-3.5 mt-2 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-sm font-bold rounded-xl transition flex justify-center items-center gap-2 shadow-lg shadow-brand-500/20">
+                            Đăng Ký Tư Vấn Ngay
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Expanded Footer -->
+    <footer class="border-t border-darkborder bg-[#070b12] relative z-10 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Brand col -->
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div
+                            class="w-8 h-8 rounded bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
+                            <i data-lucide="building-2" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <span class="font-bold text-lg text-white">Smart<span class="text-brand-400">Apt</span></span>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6">Dự án căn hộ thông minh cao cấp bậc nhất, mang đến không gian
+                        sống đẳng cấp và tiện nghi cho gia đình bạn.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-slate-500 hover:text-brand-400 transition"><i data-lucide="facebook"
+                                class="w-5 h-5"></i></a>
+                        <a href="#" class="text-slate-500 hover:text-brand-400 transition"><i data-lucide="youtube"
+                                class="w-5 h-5"></i></a>
+                        <a href="#" class="text-slate-500 hover:text-brand-400 transition"><i data-lucide="instagram"
+                                class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+
+                <!-- Product Links -->
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Dự án</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#tong-quan" class="text-sm text-slate-400 hover:text-white transition">Tổng
+                                quan</a></li>
+                        <li><a href="#tien-ich" class="text-sm text-slate-400 hover:text-white transition">Tiện ích nội
+                                khu</a></li>
+                        <li><a href="#mat-bang" class="text-sm text-slate-400 hover:text-white transition">Thiết kế &
+                                Mặt bằng</a></li>
+                        <li><a href="#chinh-sach" class="text-sm text-slate-400 hover:text-white transition">Chính sách
+                                bán hàng</a></li>
+                    </ul>
+                </div>
+
+                <!-- Internal Portal Link -->
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Cư Dân & Quản Lý</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a th:href="@{/login}" href="/login"
+                                class="inline-flex items-center gap-2 text-sm text-brand-400 hover:text-brand-300 font-semibold transition">
+                                <i data-lucide="log-in" class="w-4 h-4"></i> Đăng nhập hệ thống
+                            </a>
+                        </li>
+                        <li>
+                            <p class="text-xs text-slate-500 mt-2">Dành cho Cư dân đã nhận nhà và Ban quản lý tòa nhà
+                                (SmartApt Management).</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Liên hệ Sales Gallery</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-sm text-slate-400">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-slate-500 flex-shrink-0"></i>
+                            <span>123 Đại lộ Trung Tâm, Quận 1, TP. Hồ Chí Minh</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-400">
+                            <i data-lucide="phone" class="w-5 h-5 text-slate-500 flex-shrink-0"></i>
+                            <span>0900.123.456</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-slate-400">
+                            <i data-lucide="mail" class="w-5 h-5 text-slate-500 flex-shrink-0"></i>
+                            <span>sales@smartapt.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-darkborder pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-500">
+                    &copy; 2026 SmartApt. Developer: Tập Đoàn Bất Động Sản.
+                </p>
+                <div class="flex gap-4 text-xs text-slate-500">
+                    <span class="flex items-center gap-1 text-emerald-500"><span
+                            class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Nhà mẫu mở
+                        cửa 8h-20h</span>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+
+            // Add scroll effect to navbar
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    navbar.classList.add('shadow-lg', 'shadow-black/40', 'bg-darkbg/95');
+                    navbar.classList.remove('bg-darkbg/80');
+                    navbar.classList.add('border-brand-500/20');
+                } else {
+                    navbar.classList.remove('shadow-lg', 'shadow-black/40', 'bg-darkbg/95');
+                    navbar.classList.add('bg-darkbg/80');
+                    navbar.classList.remove('border-brand-500/20');
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>

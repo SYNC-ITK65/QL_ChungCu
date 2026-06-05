@@ -53,16 +53,16 @@
     <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
     <!-- Main Content -->
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="mb-8">
+        <div class="mb-8 max-w-7xl mx-auto">
             <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2" th:text="#{tb.ui.thong_tin_ca_nhan_ca}">
                 Thông tin cá nhân &amp; Căn hộ
             </h1>
-            <p class="text-sm text-slate-400 mt-1">Thông tin chi tiết về cư dân đăng ký và tình trạng căn hộ trực thuộc</p>
+            <p class="text-sm text-slate-400 mt-1" th:text="#{cudan.thong_tin.subtitle}">Thông tin chi tiết về cư dân đăng ký và tình trạng căn hộ trực thuộc</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto">
             <!-- Card 1: Resident Personal Info -->
             <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl flex flex-col justify-between">
                 <div>
@@ -102,7 +102,7 @@
                     
                     <div th:if="${cuDan.canHo != null}" class="space-y-4 text-sm">
                         <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
-                            <span class="text-slate-400 font-medium">Mã Phòng:</span>
+                            <span class="text-slate-400 font-medium" th:text="#{hdon.ds.loc_ma_can} + ':'">Mã Phòng:</span>
                             <span class="text-brand-400 font-bold text-base" th:text="${cuDan.canHo.maCanHo}"></span>
                         </div>
                         <div class="flex items-center justify-between py-1 border-b border-darkborder/50">

@@ -28,12 +28,12 @@
 <body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
     <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-center">
         <!-- Header -->
         <div class="w-full max-w-2xl flex items-center justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{cs.form.ghi_nhan_chi_so_dien}">Ghi Nhận Chỉ Số Điện Nước</h1>
-                <p class="text-sm text-slate-400 mt-1">Nhập chỉ số điện nước hàng tháng cho căn hộ</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.chiso.form.subtitle}">Nhập chỉ số điện nước hàng tháng cho căn hộ</p>
             </div>
             <a th:href="@{/admin/chi-so}"
                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
@@ -53,7 +53,7 @@
                     <input type="text" id="ngayGhiNhanDisplay" readonly
                            class="w-full bg-darkbg/50 border border-darkborder rounded-xl px-4 py-3 text-sm text-slate-300 cursor-not-allowed">
                     <input type="hidden" th:field="*{ngayGhiNhan}" id="ngayGhiNhanHidden">
-                    <p class="text-xs text-slate-500 mt-1">Ngày ghi nhận được tự động điền là hôm nay</p>
+                    <p class="text-xs text-slate-500 mt-1" th:text="#{cs.form.ngay_ghi_nhan_hint}">Ngày ghi nhận được tự động điền là hôm nay</p>
                 </div>
 
                 <!-- Căn hộ -->

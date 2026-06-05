@@ -18,12 +18,12 @@
 </head>
 <body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
     <div th:replace="fragments/sidebar :: menu-trai"></div>
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{hd.ds.tieude}">Danh sách Hợp đồng</h1>
-                <p class="text-sm text-slate-400 mt-1">Quản lý hợp đồng thuê và mua căn hộ</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.hopdong.list.subtitle}">Quản lý hợp đồng thuê và mua căn hộ</p>
             </div>
             <a th:href="@{/admin/hop-dong/tao-moi}"
                class="px-4 py-2 bg-brand-500 hover:bg-brand-400 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-brand-500/10">

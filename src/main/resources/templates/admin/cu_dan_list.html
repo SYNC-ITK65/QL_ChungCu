@@ -69,7 +69,7 @@
     <div th:replace="fragments/sidebar :: menu-trai"></div>
 
     <!-- Main Content -->
-    <main class="flex-grow min-w-0 p-6 md:p-8 overflow-y-auto">
+    <main class="flex-grow min-w-0 p-6 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
         <!-- Title and Top Actions -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
@@ -80,7 +80,7 @@
                         <strong class="text-brand-400" th:text="${canHoHienTai.maCanHo}"></strong>
                     </span>
                 </h1>
-                <p class="text-sm text-slate-400 mt-1">Danh sách cư dân đăng ký tạm trú và sinh sống trong khu căn hộ</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.cudan.list.subtitle}">Danh sách cư dân đăng ký tạm trú và sinh sống trong khu căn hộ</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <button data-bs-toggle="modal" data-bs-target="#importExcelModal"
@@ -146,7 +146,7 @@
         <div class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-sm mb-8">
             <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
                 <i data-lucide="filter" class="w-4 h-4 text-brand-400"></i>
-                <span>Lọc và Tìm kiếm</span>
+                <span th:text="#{chung.loc_va_tim_kiem}">Lọc và Tìm kiếm</span>
             </h3>
             <form method="GET" th:action="@{/admin/cu-dan}" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <div class="md:col-span-3">

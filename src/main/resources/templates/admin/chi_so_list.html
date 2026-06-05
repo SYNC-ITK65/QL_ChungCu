@@ -32,12 +32,12 @@
 <body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
     <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{cs.ds.quan_ly_chi_so_dien}">Quản lý Chỉ số Điện Nước</h1>
-                <p class="text-sm text-slate-400 mt-1">Ghi nhận và theo dõi chỉ số điện nước hàng tháng của các căn hộ</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.chiso.list.subtitle}">Ghi nhận và theo dõi chỉ số điện nước hàng tháng của các căn hộ</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <button data-bs-toggle="modal" data-bs-target="#importExcelModal"

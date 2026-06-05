@@ -84,7 +84,7 @@
         </header>
 
         <!-- MAIN SCROLLABLE WRAPPER -->
-        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full mx-auto flex flex-col justify-start">
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto flex flex-col justify-start">
             
             <!-- Page Header -->
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -93,7 +93,7 @@
                         <i data-lucide="clipboard-list" class="w-6 h-6 text-brand-500"></i>
                         <span th:text="#{ks.ds.quan_ly_khao_sat}">Quản lý Khảo Sát</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">Tạo và quản lý các cuộc khảo sát ý kiến cư dân</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{admin.khaosat.list.subtitle}">Tạo và quản lý các cuộc khảo sát ý kiến cư dân</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <a th:href="@{/admin/khao-sat/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">

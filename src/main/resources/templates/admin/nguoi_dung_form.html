@@ -61,7 +61,7 @@
                     th:text="${nguoiDung.id != null} ? #{nd.form.sua_tieude} : #{nd.form.them_tieude}">
                     Thêm mới người dùng
                 </h1>
-                <p class="text-sm text-slate-400 mt-1">Điền đầy đủ thông tin tài khoản để cập nhật hệ thống</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.nguoidung.form.subtitle}">Điền đầy đủ thông tin tài khoản để cập nhật hệ thống</p>
             </div>
             <a th:href="@{/admin/nguoi-dung}" 
                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">

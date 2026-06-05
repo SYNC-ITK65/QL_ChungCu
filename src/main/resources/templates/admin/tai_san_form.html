@@ -14,13 +14,13 @@
 </head>
 <body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
     <div th:replace="fragments/sidebar :: menu-trai"></div>
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-center">
         <!-- Header -->
         <div class="w-full max-w-2xl flex items-center justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-bold text-white tracking-tight"
                     th:text="${taiSan.id == null} ? #{ts.form.them_tieude} : #{ts.form.sua_tieude}">Thêm Tài Sản</h1>
-                <p class="text-sm text-slate-400 mt-1">Quản lý thông tin tài sản tòa nhà</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.taisan.form.subtitle}">Quản lý thông tin tài sản tòa nhà</p>
             </div>
             <a th:href="@{/admin/tai-san}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>

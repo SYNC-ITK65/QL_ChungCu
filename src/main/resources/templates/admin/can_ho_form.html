@@ -62,7 +62,7 @@
                     th:text="${canHo.id == null} ? #{ch.form.them_tieude} : #{ch.form.sua_tieude}">
                     Thêm Căn Hộ Mới
                 </h1>
-                <p class="text-sm text-slate-400 mt-1">Quản lý các thông số cấu hình và hình ảnh của căn hộ</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.canho.form.subtitle}">Quản lý các thông số cấu hình và hình ảnh của căn hộ</p>
             </div>
             <a th:href="@{/admin/can-ho}" 
                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">

@@ -87,7 +87,7 @@
                         <i data-lucide="box" class="w-6 h-6 text-brand-500"></i>
                         <span th:text="#{kh.user.tieude}">Tủ đồ của tôi</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">Quản lý bưu phẩm và kiện hàng gửi đến căn hộ</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{cudan.kien_hang.subtitle}">Quản lý bưu phẩm và kiện hàng gửi đến căn hộ</p>
                 </div>
                 <div>
                     <span class="inline-flex items-center gap-2 px-4 py-2 bg-brand-500/10 text-brand-400 border border-brand-500/20 rounded-xl text-sm font-bold shadow-lg shadow-black/20" th:text="#{kh.user.tong_cong(${#lists.size(danhSachKienHang)})}">
