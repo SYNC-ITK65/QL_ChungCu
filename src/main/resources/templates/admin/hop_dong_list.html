@@ -1,188 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{hd.ds.tieude}">Danh sách Hợp đồng</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = { darkMode:'class', theme:{ extend:{ fontFamily:{sans:['Inter','sans-serif']}, colors:{brand:{500:'#0ea5e9',400:'#38bdf8',600:'#0284c7'},darkbg:'#0B0F17',darkcard:'#161B26',darkborder:'#242B3D'} } } }
+    </script>
+    <style>
+        body{background-color:#0B0F17;color:#E2E8F0;font-family:'Inter',sans-serif;}
+        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#111827}::-webkit-scrollbar-thumb{background:#374151;border-radius:3px}
+    </style>
 </head>
-
-<body class="d-flex overflow-hidden" style="height: 100vh;">
-    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
-
-    <div class="flex-grow-1 p-4 overflow-auto">
-        <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <span th:text="${thongBaoThanhCong}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        <div th:if="${thongBaoLoi}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <span th:text="${thongBaoLoi}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 th:text="#{hd.ds.tieude}">Danh sách Hợp đồng</h2>
-            <a th:href="@{/admin/hop-dong/tao-moi}" class="btn btn-primary" th:text="#{hd.ds.nut_them}">+ Tạo Hợp đồng mới</a>
-        </div>
-
-        <!-- Form tìm kiếm -->
-        <div class="card mb-4">
-            <div class="card-header bg-light">
-                <h6 class="mb-0">🔍 <span th:text="#{chung.tim}">Tìm kiếm</span></h6>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{hd.ds.tieude}">Danh sách Hợp đồng</h1>
+                <p class="text-sm text-slate-400 mt-1">Quản lý hợp đồng thuê và mua căn hộ</p>
             </div>
-            <div class="card-body">
-                <form th:action="@{/admin/hop-dong}" method="get" class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label" th:text="#{hd.ds.loc_ma_can}">Mã căn hộ</label>
-                        <input type="text" class="form-control" name="maCanHo" th:value="${maCanHo}" th:placeholder="#{hd.ds.loc_ma_can_goi_y}" placeholder="Nhập mã căn hộ...">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label" th:text="#{hd.ds.loc_loai}">Loại hợp đồng</label>
-                        <select class="form-select" name="loaiHopDong">
-                            <option value="" th:text="#{hd.ds.loc_loai_tat_ca}">-- Tất cả --</option>
-                            <option value="Thue" th:selected="${loaiHopDong == 'Thue'}" th:text="#{hd.ds.loai_thue}">Thuê</option>
-                            <option value="Mua" th:selected="${loaiHopDong == 'Mua'}" th:text="#{hd.ds.loai_mua}">Mua</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label" th:text="#{hd.ds.loc_trang_thai}">Trạng thái</label>
-                        <select class="form-select" name="trangThai">
-                            <option value="" th:text="#{hd.ds.loc_trang_thai_tat_ca}">-- Tất cả --</option>
-                            <option value="ACTIVE" th:selected="${trangThai == 'ACTIVE'}" th:text="#{hd.trang_thai.active}">Còn hạn</option>
-                            <option value="EXPIRED" th:selected="${trangThai == 'EXPIRED'}" th:text="#{hd.trang_thai.expired}">Hết hạn</option>
-                            <option value="TERMINATED" th:selected="${trangThai == 'TERMINATED'}" th:text="#{hd.trang_thai.terminated}">Thanh lý</option>
-                            <option value="DRAFT" th:selected="${trangThai == 'DRAFT'}" th:text="#{hd.trang_thai.draft}">Nháp</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100" th:text="#{hd.ds.nut_tim_kiem}">Tìm kiếm</button>
-                    </div>
-                </form>
-                <div class="mt-2">
-                    <a th:href="@{/admin/hop-dong}" class="btn btn-sm btn-secondary" id="clearFilterBtn" th:text="#{hd.ds.nut_xoa_loc}">↻ Xóa bộ lọc</a>
+            <a th:href="@{/admin/hop-dong/tao-moi}"
+               class="px-4 py-2 bg-brand-500 hover:bg-brand-400 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-brand-500/10">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span th:text="#{hd.ds.nut_them}">+ Tạo Hợp đồng mới</span>
+            </a>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${thongBaoThanhCong}" class="mb-4 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-sm" th:text="${thongBaoThanhCong}"></div>
+        <div th:if="${thongBaoLoi}" class="mb-4 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-sm" th:text="${thongBaoLoi}"></div>
+
+        <!-- Filter -->
+        <div class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-sm mb-8">
+            <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                <i data-lucide="filter" class="w-4 h-4 text-brand-400"></i>
+                <span th:text="#{chung.tim}">Tìm kiếm</span>
+            </h3>
+            <form th:action="@{/admin/hop-dong}" method="get" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div class="md:col-span-3">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{hd.ds.loc_ma_can}">Mã căn hộ</label>
+                    <input type="text" name="maCanHo" th:value="${maCanHo}" th:placeholder="#{hd.ds.loc_ma_can_goi_y}"
+                           class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
                 </div>
+                <div class="md:col-span-3">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{hd.ds.loc_loai}">Loại</label>
+                    <select name="loaiHopDong" class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option value="" th:text="#{hd.ds.loc_loai_tat_ca}">-- Tất cả --</option>
+                        <option value="Thue" th:selected="${loaiHopDong == 'Thue'}" th:text="#{hd.ds.loai_thue}">Thuê</option>
+                        <option value="Mua" th:selected="${loaiHopDong == 'Mua'}" th:text="#{hd.ds.loai_mua}">Mua</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{hd.ds.loc_trang_thai}">Trạng thái</label>
+                    <select name="trangThai" class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option value="" th:text="#{hd.ds.loc_trang_thai_tat_ca}">-- Tất cả --</option>
+                        <option value="ACTIVE" th:selected="${trangThai == 'ACTIVE'}" th:text="#{hd.trang_thai.active}">Còn hạn</option>
+                        <option value="EXPIRED" th:selected="${trangThai == 'EXPIRED'}" th:text="#{hd.trang_thai.expired}">Hết hạn</option>
+                        <option value="TERMINATED" th:selected="${trangThai == 'TERMINATED'}" th:text="#{hd.trang_thai.terminated}">Thanh lý</option>
+                        <option value="DRAFT" th:selected="${trangThai == 'DRAFT'}" th:text="#{hd.trang_thai.draft}">Nháp</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3 flex items-end gap-2">
+                    <button type="submit" class="flex-grow py-2.5 bg-brand-500 hover:bg-brand-400 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <span th:text="#{hd.ds.nut_tim_kiem}">Tìm kiếm</span>
+                    </button>
+                    <a th:href="@{/admin/hop-dong}" id="clearFilterBtn"
+                       class="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl transition flex items-center justify-center">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-darkcard border border-darkborder rounded-2xl overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse text-left text-xs text-slate-300 no-paging">
+                    <thead>
+                        <tr class="bg-darkbg/50 border-b border-darkborder">
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_id}">ID</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_loai}">Loại</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_can_ho}">Căn hộ</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_cu_dan}">Cư dân</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_ngay_bat_dau}">Ngày bắt đầu</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_ngay_ket_thuc}">Ngày kết thúc</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_tien_thue}">Tiền thuê</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{hd.ds.bang_trang_thai}">Trạng thái</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider text-right" th:text="#{hd.ds.bang_hanh_dong}">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-darkborder">
+                        <tr th:each="hd : ${danhSachHopDong}" class="hover:bg-slate-800/20 transition">
+                            <td class="p-4 font-semibold text-white" th:text="${hd.id}"></td>
+                            <td class="p-4">
+                                <span th:if="${hd.loaiHopDong == 'Thue'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{hd.ds.loai_thue}">Thuê</span>
+                                <span th:if="${hd.loaiHopDong == 'Mua'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20" th:text="#{hd.ds.loai_mua}">Mua</span>
+                                <span th:if="${hd.loaiHopDong != 'Thue' and hd.loaiHopDong != 'Mua'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="${hd.loaiHopDong}"></span>
+                            </td>
+                            <td class="p-4 font-bold text-white" th:text="${hd.canHo != null ? hd.canHo.maCanHo : ''}"></td>
+                            <td class="p-4" th:text="${hd.cuDan != null ? hd.cuDan.hoTen : ''}"></td>
+                            <td class="p-4" th:text="${hd.ngayBatDau != null ? #temporals.format(hd.ngayBatDau, 'dd/MM/yyyy') : ''}"></td>
+                            <td class="p-4" th:text="${hd.ngayKetThuc != null ? #temporals.format(hd.ngayKetThuc, 'dd/MM/yyyy') : ''}"></td>
+                            <td class="p-4 font-semibold text-emerald-400"
+                                th:text="${hd.tienThue != null} ? |${#numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}| : |0 #{chung.don_vi_vnd_symbol}|"></td>
+                            <td class="p-4">
+                                <span th:if="${hd.trangThai == 'ACTIVE'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{hd.trang_thai.active}">Còn hạn</span>
+                                <span th:if="${hd.trangThai == 'EXPIRED'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
+                                <span th:if="${hd.trangThai == 'TERMINATED'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
+                                <span th:if="${hd.trangThai == 'DRAFT'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{hd.trang_thai.draft}">Nháp</span>
+                            </td>
+                            <td class="p-4 text-right">
+                                <div class="inline-flex items-center gap-1.5">
+                                    <a th:href="@{/admin/hop-dong/chi-tiet/{id}(id=${hd.id})}"
+                                       class="px-2.5 py-1 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_xem}">Xem</a>
+                                    <a th:href="@{/admin/hop-dong/sua/{id}(id=${hd.id})}"
+                                       class="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_sua}">Sửa</a>
+                                    <a th:if="${hd.trangThai == 'ACTIVE'}"
+                                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='TERMINATED')}"
+                                       class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_thanh_ly}">Thanh lý</a>
+                                    <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}"
+                                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}"
+                                       class="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_kich_hoat}">Kích hoạt</a>
+                                    <a th:href="@{/admin/hop-dong/xoa/{id}(id=${hd.id})}"
+                                       th:onclick="|return confirm('#{hd.ds.xac_nhan_xoa}')|"
+                                       class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_xoa}">Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(danhSachHopDong)}">
+                            <td colspan="9" class="p-8 text-center text-slate-500" th:text="#{hd.ds.trong}">Chưa có hợp đồng nào!</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <table class="table table-striped table-hover border no-paging">
-            <thead class="table-dark">
-            <tr>
-                <th th:text="#{hd.ds.bang_id}">ID</th>
-                <th th:text="#{hd.ds.bang_loai}">Loại</th>
-                <th th:text="#{hd.ds.bang_can_ho}">Căn hộ</th>
-                <th th:text="#{hd.ds.bang_cu_dan}">Cư dân</th>
-                <th th:text="#{hd.ds.bang_ben_cho_thue}">Bên cho thuê</th>
-                <th th:text="#{hd.ds.bang_ben_thue}">Bên thuê</th>
-                <th th:text="#{hd.ds.bang_ngay_bat_dau}">Ngày bắt đầu</th>
-                <th th:text="#{hd.ds.bang_ngay_ket_thuc}">Ngày kết thúc</th>
-                <th th:text="#{hd.ds.bang_tien_thue}">Tiền thuê</th>
-                <th th:text="#{hd.ds.bang_trang_thai}">Trạng thái</th>
-                <th th:text="#{hd.ds.bang_hanh_dong}">Hành động</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="hd : ${danhSachHopDong}">
-                <td th:text="${hd.id}"></td>
-                <td>
-                    <span th:if="${hd.loaiHopDong == 'Thue'}" class="badge bg-info" th:text="#{hd.ds.loai_thue}">Thuê</span>
-                    <span th:if="${hd.loaiHopDong == 'Mua'}" class="badge bg-primary" th:text="#{hd.ds.loai_mua}">Mua</span>
-                    <span th:if="${hd.loaiHopDong != 'Thue' and hd.loaiHopDong != 'Mua'}" th:text="${hd.loaiHopDong}"></span>
-                </td>
-                <td th:text="${hd.canHo != null ? hd.canHo.maCanHo : ''}"></td>
-                <td th:text="${hd.cuDan != null ? hd.cuDan.hoTen : ''}"></td>
-                <td th:text="${hd.benChoThue != null ? hd.benChoThue : ''}"></td>
-                <td th:text="${hd.benThue != null ? hd.benThue : ''}"></td>
-                <td th:text="${hd.ngayBatDau != null ? #temporals.format(hd.ngayBatDau, 'dd/MM/yyyy') : ''}"></td>
-                <td th:text="${hd.ngayKetThuc != null ? #temporals.format(hd.ngayKetThuc, 'dd/MM/yyyy') : ''}"></td>
-                <td th:text="${hd.tienThue != null} ? |${#numbers.formatDecimal(hd.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}| : |0 #{chung.don_vi_vnd_symbol}|"></td>
-                <td>
-                    <span th:if="${hd.trangThai == 'ACTIVE'}" class="badge bg-success" th:text="#{hd.trang_thai.active}">Còn hạn</span>
-                    <span th:if="${hd.trangThai == 'EXPIRED'}" class="badge bg-danger" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
-                    <span th:if="${hd.trangThai == 'TERMINATED'}" class="badge bg-secondary" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
-                    <span th:if="${hd.trangThai == 'DRAFT'}" class="badge bg-warning" th:text="#{hd.trang_thai.draft}">Nháp</span>
-                    <span th:if="${hd.trangThai != 'ACTIVE' and hd.trangThai != 'EXPIRED' and hd.trangThai != 'TERMINATED' and hd.trangThai != 'DRAFT'}" th:text="${hd.trangThai}" class="badge bg-info"></span>
-                </td>
-                <td>
-                    <a th:href="@{/admin/hop-dong/chi-tiet/{id}(id=${hd.id})}" class="btn btn-sm btn-info text-white" th:text="#{hd.ds.nut_xem}">Xem</a>
-                    <a th:href="@{/admin/hop-dong/sua/{id}(id=${hd.id})}" class="btn btn-sm btn-warning" th:text="#{hd.ds.nut_sua}">Sửa</a>
-                    <a th:if="${hd.trangThai == 'ACTIVE'}" th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='TERMINATED')}" class="btn btn-sm btn-danger" th:text="#{hd.ds.nut_thanh_ly}">Thanh lý</a>
-                    <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}" th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}" class="btn btn-sm btn-success" th:text="#{hd.ds.nut_kich_hoat}">Kích hoạt</a>
-                    <a th:href="@{/admin/hop-dong/xoa/{id}(id=${hd.id})}" class="btn btn-sm btn-outline-danger" th:onclick="|return confirm('#{hd.ds.xac_nhan_xoa}')|" th:text="#{hd.ds.nut_xoa}">Xóa</a>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(danhSachHopDong)}">
-                <td colspan="11" class="text-center text-muted" th:text="#{hd.ds.trong}">Chưa có hợp đồng nào trong hệ thống!</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <form method="GET" th:action="@{/admin/hop-dong}" class="d-flex align-items-center gap-2">
+        <!-- Phân trang -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6">
+            <form method="GET" th:action="@{/admin/hop-dong}" class="flex items-center gap-2">
                 <input type="hidden" name="maCanHo" th:value="${maCanHo}">
                 <input type="hidden" name="loaiHopDong" th:value="${loaiHopDong}">
                 <input type="hidden" name="trangThai" th:value="${trangThai}">
                 <input type="hidden" name="page" value="0">
-                <label class="form-label mb-0" th:text="#{pagi.hien_thi}">Hiển thị</label>
-                <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                <label class="text-xs text-slate-400" th:text="#{pagi.hien_thi}">Hiển thị</label>
+                <select name="size" onchange="this.form.submit()" class="bg-darkbg border border-darkborder rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none cursor-pointer">
                     <option value="5" th:selected="${size == 5}" th:text="#{hd.ds.5_dong}">5 dòng</option>
                     <option value="10" th:selected="${size == 10}" th:text="#{hd.ds.10_dong}">10 dòng</option>
                     <option value="20" th:selected="${size == 20}" th:text="#{hd.ds.20_dong}">20 dòng</option>
                     <option value="50" th:selected="${size == 50}" th:text="#{hd.ds.50_dong}">50 dòng</option>
                 </select>
             </form>
-            <div th:if="${totalPages > 1}">
-                <nav>
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/hop-dong(page=0, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}" th:text="#{hd.ds.dau}">Đầu</a>
-                        </li>
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/hop-dong(page=${currentPage - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}" th:text="#{pagi.truoc}">Trước</a>
-                        </li>
-                        <li class="page-item active">
-                            <span class="page-link" th:text="${currentPage + 1} + '/' + ${totalPages}"></span>
-                        </li>
-                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/hop-dong(page=${currentPage + 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}">Sau</a>
-                        </li>
-                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/hop-dong(page=${totalPages - 1}, size=${size}, maCanHo=${maCanHo}, loaiHopDong=${loaiHopDong}, trangThai=${trangThai})}" th:text="#{hd.ds.cuoi}">Cuối</a>
-                        </li>
-                    </ul>
-                </nav>
+            <div th:if="${totalPages > 1}" class="flex items-center gap-1.5 text-xs">
+                <a th:href="@{/admin/hop-dong(page=0,size=${size},maCanHo=${maCanHo},loaiHopDong=${loaiHopDong},trangThai=${trangThai})}" th:classappend="${currentPage==0}?'opacity-40 pointer-events-none':''" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition" th:text="#{hd.ds.dau}">Đầu</a>
+                <a th:href="@{/admin/hop-dong(page=${currentPage-1},size=${size},maCanHo=${maCanHo},loaiHopDong=${loaiHopDong},trangThai=${trangThai})}" th:classappend="${currentPage==0}?'opacity-40 pointer-events-none':''" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition" th:text="#{pagi.truoc}">Trước</a>
+                <span class="px-3 py-1.5 bg-brand-500/10 text-brand-400 border border-brand-500/20 rounded-lg font-bold" th:text="${currentPage+1}+'/'+${totalPages}">1/5</span>
+                <a th:href="@{/admin/hop-dong(page=${currentPage+1},size=${size},maCanHo=${maCanHo},loaiHopDong=${loaiHopDong},trangThai=${trangThai})}" th:classappend="${currentPage==totalPages-1}?'opacity-40 pointer-events-none':''" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition">Sau</a>
+                <a th:href="@{/admin/hop-dong(page=${totalPages-1},size=${size},maCanHo=${maCanHo},loaiHopDong=${loaiHopDong},trangThai=${trangThai})}" th:classappend="${currentPage==totalPages-1}?'opacity-40 pointer-events-none':''" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition" th:text="#{hd.ds.cuoi}">Cuối</a>
             </div>
         </div>
+    </main>
 
-    </div>
-
-
-<script>
-    // Save scroll position before form submission
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchForm = document.querySelector('form[action="/admin/hop-dong"]');
-        if (searchForm) {
-            searchForm.addEventListener('submit', function() {
-                sessionStorage.setItem('scrollPosition', window.scrollY);
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+            const scrollPos = sessionStorage.getItem('scrollPosition');
+            if (scrollPos) { window.scrollTo(0, parseInt(scrollPos)); sessionStorage.removeItem('scrollPosition'); }
+            document.querySelectorAll('form, #clearFilterBtn').forEach(el => {
+                el.addEventListener('click', () => sessionStorage.setItem('scrollPosition', window.scrollY));
+                el.addEventListener('submit', () => sessionStorage.setItem('scrollPosition', window.scrollY));
             });
-        }
-
-        // Save scroll position before clear filter link click
-        const clearFilterBtn = document.getElementById('clearFilterBtn');
-        if (clearFilterBtn) {
-            clearFilterBtn.addEventListener('click', function() {
-                sessionStorage.setItem('scrollPosition', window.scrollY);
-            });
-        }
-
-        // Restore scroll position after page load
-        const scrollPosition = sessionStorage.getItem('scrollPosition');
-        if (scrollPosition) {
-            window.scrollTo(0, parseInt(scrollPosition));
-            sessionStorage.removeItem('scrollPosition');
-        }
-    });
-</script>
-
+        });
+    </script>
 </body>
-
 </html>

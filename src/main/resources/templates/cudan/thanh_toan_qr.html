@@ -1,298 +1,192 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{tt.ui.thanh_toan_qua_qr_co}">Thanh Toán Qua QR Code</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 500: '#0ea5e9', 400: '#38bdf8', 600: '#0284c7' },
+                        darkbg: '#0B0F17', darkcard: '#161B26', darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { background: #f8f9fa; }
-
-        .qr-container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .qr-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 30px;
-            text-align: center;
-        }
-
-        .qr-image {
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-        }
-
-        .qr-image img {
-            max-width: 280px;
-            max-height: 280px;
-        }
-
-        .qr-placeholder {
-            color: #6c757d;
-            font-size: 1.1rem;
-        }
-
-        .qr-placeholder i {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 15px;
-            color: #adb5bd;
-        }
-
-        .bank-info {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .bank-info .row {
-            margin-bottom: 10px;
-        }
-
-        .bank-info .row:last-child {
-            margin-bottom: 0;
-        }
-
-        .bank-info .label {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .bank-info .value {
-            font-weight: 600;
-            color: #212529;
-        }
-
-        .bank-info .value.highlight {
-            color: #0d6efd;
-            font-size: 1.1rem;
-        }
-
-        .btn-generate {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            padding: 12px 30px;
-            font-weight: 600;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-generate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-back {
-            border-radius: 25px;
-            padding: 10px 25px;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .status-waiting {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-paid {
-            background: #d1e7dd;
-            color: #0a3622;
-        }
-
-        .instructions {
-            background: #e7f3ff;
-            border-left: 4px solid #0d6efd;
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .instructions h6 {
-            color: #0d6efd;
-            margin-bottom: 10px;
-        }
-
-        .instructions ol {
-            margin-bottom: 0;
-            padding-left: 20px;
-        }
-
-        .instructions li {
-            margin-bottom: 5px;
-            color: #495057;
-        }
+        body { background-color: #0B0F17; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
     </style>
 </head>
-<body class="d-flex">
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
-<div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
-
-<div class="flex-grow-1 p-4">
-
-    <!-- Tiêu đề -->
-    <div class="d-flex align-items-center gap-3 mb-4">
-        <a th:href="@{/cudan/hoa-don}" class="btn btn-sm btn-outline-secondary btn-back">
-            <i class="bi bi-arrow-left"></i><span th:text="#{hd.form.quay_lai}" th:remove="tag"> Quay lại
-        </span></a>
-        <div>
-            <h4 class="mb-0 fw-bold" th:text="#{tt.ui.thanh_toan_qua_qr_co}">Thanh Toán Qua QR Code</h4>
-            <small class="text-muted" th:text="#{tt.ui.quet_ma_qr_de_chuyen}">Quét mã QR để chuyển khoản nhanh chóng</small>
-        </div>
-    </div>
-
-    <div class="qr-container">
-        <!-- Thông tin hóa đơn -->
-        <div class="qr-card mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted" th:text="#{hdon.ui.ma_hoa_don}">Mã hóa đơn</span>
-                <span class="fw-bold text-primary" th:text="#{hdon.ds.ma_hd} + '-' + ${hoaDon.id}"></span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted" th:text="#{hdon.form.can_ho}">Căn hộ</span>
-                <span class="fw-bold" th:text="${hoaDon.canHo.maCanHo}"></span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted" th:text="#{tt.ui.thang_nam}">Tháng/Năm</span>
-                <span class="fw-bold" th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'MM/yyyy')}"></span>
-            </div>
-            <hr>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="text-muted" th:text="#{tt.ui.so_tien_thanh_toan}">Số tiền thanh toán</span>
-                <span class="fw-bold text-danger fs-4" th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}|"></span>
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-8">
+            <a th:href="@{/cudan/hoa-don}"
+               class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{tt.ui.thanh_toan_qua_qr_co}">Thanh Toán Qua QR Code</h1>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{tt.ui.quet_ma_qr_de_chuyen}">Quét mã QR để chuyển khoản nhanh chóng</p>
             </div>
         </div>
 
-        <!-- Trạng thái thanh toán -->
-        <div class="qr-card mb-4" th:if="${hoaDon.trangThaiThanhToan == 'Chờ duyệt'}">
-            <span class="status-badge status-waiting">
-                <i class="bi bi-hourglass-split me-2"></i><span th:text="#{dv.ds.cho_duyet}" th:remove="tag">Chờ duyệt
-            </span></span>
-            <p class="text-muted mt-3 mb-0"><span th:text="#{tt.ui.giao_dich_cua_ban_da}" th:remove="tag">
-                Giao dịch của bạn đang chờ admin xác nhận.</span><br><span th:text="#{tt.ui.vui_long_cho_trong_g}" th:remove="tag">
-                Vui lòng chờ trong giây lát.
-            </span></p>
-        </div>
+        <div class="max-w-lg mx-auto space-y-6">
 
-        <!-- Form tạo QR (chỉ hiển thị khi chưa thanh toán) -->
-        <div class="qr-card" th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}">
-            <h5 class="mb-3">
-                <i class="bi bi-qr-code-scan me-2 text-primary"></i><span th:text="#{tt.ui.tao_ma_qr_thanh_toan}" th:remove="tag">
-                Tạo mã QR thanh toán
-            </span></h5>
-
-            <!-- Nút tạo QR -->
-            <button type="button" class="btn btn-primary btn-generate" onclick="generateQR()">
-                <i class="bi bi-qr-code me-2"></i><span th:text="#{tt.ui.tao_qr_code}" th:remove="tag">Tạo QR Code
-            </span></button>
-
-            <!-- Khu vực hiển thị QR -->
-            <div id="qrDisplay" class="d-none mt-4">
-                <div class="qr-image">
-                    <img id="qrImage" src="" alt="QR Code Thanh Toán" th:alt="#{tt.ui.qr_code_thanh_toan}">
-                </div>
-
-                <!-- Thông tin chuyển khoản -->
-                <div class="bank-info">
-                    <div class="row">
-                        <div class="col-5 label" th:text="#{tt.ui.ngan_hang}">Ngân hàng:</div>
-                        <div class="col-7 value" th:text="#{tt.ui.mb_bank_quan_doi}">MB Bank (Quân đội)</div>
+            <!-- Thông tin hóa đơn -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i data-lucide="receipt" class="w-4 h-4 text-brand-400"></i>
+                    Thông tin hóa đơn
+                </h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400" th:text="#{hdon.ui.ma_hoa_don}">Mã hóa đơn</span>
+                        <span class="font-bold text-brand-400" th:text="#{hdon.ds.ma_hd} + '-' + ${hoaDon.id}">HD-001</span>
                     </div>
-                    <div class="row">
-                        <div class="col-5 label" th:text="#{tt.ui.so_tai_khoan}">Số tài khoản:</div>
-                        <div class="col-7 value highlight">0854870939</div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400" th:text="#{hdon.form.can_ho}">Căn hộ</span>
+                        <span class="font-bold text-white" th:text="${hoaDon.canHo.maCanHo}">P.3508</span>
                     </div>
-                    <div class="row">
-                        <div class="col-5 label" th:text="#{tt.ui.so_tien}">Số tiền:</div>
-                        <div class="col-7 value text-danger" th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}|"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400" th:text="#{tt.ui.thang_nam}">Tháng/Năm</span>
+                        <span class="font-semibold text-white" th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'MM/yyyy')}">05/2026</span>
                     </div>
-                    <div class="row">
-                        <div class="col-5 label" th:text="#{tt.ui.noi_dung_ck}">Nội dung CK:</div>
-                        <div class="col-7 value" id="transferContent"></div>
+                    <div class="flex justify-between items-center pt-3 border-t border-darkborder">
+                        <span class="text-slate-400" th:text="#{tt.ui.so_tien_thanh_toan}">Số tiền thanh toán</span>
+                        <span class="text-2xl font-extrabold text-emerald-400"
+                              th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}|">1,850,000 ₫</span>
                     </div>
-                </div>
-
-                <!-- Hướng dẫn -->
-                <div class="instructions">
-                    <h6><i class="bi bi-info-circle me-2"></i><span th:text="#{tt.ui.huong_dan_thanh_toan}" th:remove="tag">Hướng dẫn thanh toán</span></h6>
-                    <ol>
-                        <li th:text="#{tt.ui.mo_ung_dung_ngan_han}">Mở ứng dụng ngân hàng hoặc ví điện tử trên điện thoại</li>
-                        <li th:text="#{tt.ui.chon_chuc_nang_quet}">Chọn chức năng "Quét mã QR" hoặc "Chuyển khoản"</li>
-                        <li th:text="#{tt.ui.quet_ma_qr_hoac_nhap}">Quét mã QR hoặc nhập thông tin chuyển khoản bên trên</li>
-                        <li th:text="#{tt.ui.kiem_tra_so_tien_va}">Kiểm tra số tiền và nội dung chuyển khoản</li>
-                        <li th:text="#{tt.form.xac_nhan_thanh_toan}">Xác nhận thanh toán</li>
-                    </ol>
-                </div>
-
-                <!-- Nút xác nhận đã thanh toán -->
-                <div class="mt-4">
-                    <p class="text-muted mb-3" th:text="#{tt.ui.sau_khi_chuyen_khoan}">Sau khi chuyển khoản thành công, vui lòng bấm nút bên dưới:</p>
-                    <form th:action="@{/cudan/thanh-toan/xac-nhan-qr}" method="post">
-                        <input type="hidden" name="hoaDonId" th:value="${hoaDon.id}">
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="bi bi-check-circle me-2"></i><span th:text="#{tt.ui.toi_da_thanh_toan}" th:remove="tag">Tôi đã thanh toán
-                        </span></button>
-                    </form>
                 </div>
             </div>
+
+            <!-- Trạng thái chờ duyệt -->
+            <div th:if="${hoaDon.trangThaiThanhToan == 'Chờ duyệt'}"
+                 class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6 text-center">
+                <div class="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="hourglass" class="w-6 h-6 text-amber-400"></i>
+                </div>
+                <h3 class="font-bold text-amber-400 mb-2" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</h3>
+                <p class="text-xs text-amber-300" th:text="#{tt.ui.giao_dich_cua_ban_da}">Giao dịch của bạn đang chờ admin xác nhận.</p>
+                <p class="text-xs text-amber-300 mt-1" th:text="#{tt.ui.vui_long_cho_trong_g}">Vui lòng chờ trong giây lát.</p>
+            </div>
+
+            <!-- Form tạo QR -->
+            <div th:if="${hoaDon.trangThaiThanhToan == 'Chưa đóng'}"
+                 class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-sm">
+                <h3 class="text-sm font-bold text-white mb-5 flex items-center gap-2">
+                    <i data-lucide="qr-code" class="w-4 h-4 text-brand-400"></i>
+                    <span th:text="#{tt.ui.tao_ma_qr_thanh_toan}">Tạo mã QR thanh toán</span>
+                </h3>
+
+                <!-- Nút tạo QR -->
+                <button type="button" onclick="generateQR()"
+                        class="w-full py-3 bg-brand-500 hover:bg-brand-400 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20">
+                    <i data-lucide="qr-code" class="w-5 h-5"></i>
+                    <span th:text="#{tt.ui.tao_qr_code}">Tạo QR Code</span>
+                </button>
+
+                <!-- Khu vực QR (ẩn ban đầu) -->
+                <div id="qrDisplay" class="hidden mt-6 space-y-5">
+                    <!-- Ảnh QR -->
+                    <div class="flex justify-center">
+                        <div class="w-64 h-64 bg-white rounded-2xl p-3 shadow-lg flex items-center justify-center">
+                            <img id="qrImage" src="" alt="QR Code" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Thông tin chuyển khoản -->
+                    <div class="bg-darkbg/50 border border-darkborder rounded-xl p-4 space-y-3 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400" th:text="#{tt.ui.ngan_hang}">Ngân hàng</span>
+                            <span class="font-bold text-white" th:text="#{tt.ui.mb_bank_quan_doi}">MB Bank (Quân đội)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400" th:text="#{tt.ui.so_tai_khoan}">Số tài khoản</span>
+                            <span class="font-bold text-brand-400">0854870939</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400" th:text="#{tt.ui.so_tien}">Số tiền</span>
+                            <span class="font-bold text-emerald-400"
+                                  th:text="|${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd_symbol}|"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400" th:text="#{tt.ui.noi_dung_ck}">Nội dung CK</span>
+                            <span class="font-bold text-white" id="transferContent"></span>
+                        </div>
+                    </div>
+
+                    <!-- Hướng dẫn -->
+                    <div class="p-4 bg-brand-500/10 border border-brand-500/20 rounded-xl text-xs text-brand-300">
+                        <p class="font-semibold text-brand-400 mb-2 flex items-center gap-1.5">
+                            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+                            <span th:text="#{tt.ui.huong_dan_thanh_toan}">Hướng dẫn thanh toán</span>
+                        </p>
+                        <ol class="space-y-1 list-decimal list-inside">
+                            <li th:text="#{tt.ui.mo_ung_dung_ngan_han}">Mở ứng dụng ngân hàng trên điện thoại</li>
+                            <li th:text="#{tt.ui.chon_chuc_nang_quet}">Chọn "Quét mã QR" hoặc "Chuyển khoản"</li>
+                            <li th:text="#{tt.ui.quet_ma_qr_hoac_nhap}">Quét mã QR hoặc nhập thông tin bên trên</li>
+                            <li th:text="#{tt.ui.kiem_tra_so_tien_va}">Kiểm tra số tiền và nội dung chuyển khoản</li>
+                            <li th:text="#{tt.form.xac_nhan_thanh_toan}">Xác nhận thanh toán</li>
+                        </ol>
+                    </div>
+
+                    <!-- Xác nhận đã TT -->
+                    <div class="border-t border-darkborder pt-5">
+                        <p class="text-xs text-slate-400 mb-3" th:text="#{tt.ui.sau_khi_chuyen_khoan}">Sau khi chuyển khoản thành công, bấm nút bên dưới:</p>
+                        <form th:action="@{/cudan/thanh-toan/xac-nhan-qr}" method="post">
+                            <input type="hidden" name="hoaDonId" th:value="${hoaDon.id}">
+                            <button type="submit"
+                                    class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-2">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                                <span th:text="#{tt.ui.toi_da_thanh_toan}">Tôi đã thanh toán</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
-</div>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script th:inline="javascript">
-    function generateQR() {
-        const hoaDonId = /*[[${hoaDon.id}]]*/ 0;
-        const maCanHo = /*[[${hoaDon.canHo.maCanHo}]]*/ '';
-        const ngayPhatHanh = /*[[${hoaDon.ngayPhatHanh}]]*/ '';
-        const tongTien = /*[[${hoaDon.tongTien}]]*/ 0;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () { lucide.createIcons(); });
 
-        // Format tháng/năm từ ngayPhatHanh (yyyy-MM-dd)
-        const date = new Date(ngayPhatHanh);
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        const monthYear = month + '/' + year;
+        function generateQR() {
+            const hoaDonId   = /*[[${hoaDon.id}]]*/ 0;
+            const maCanHo    = /*[[${hoaDon.canHo.maCanHo}]]*/ '';
+            const ngayPhatHanh = /*[[${hoaDon.ngayPhatHanh}]]*/ '';
+            const tongTien   = /*[[${hoaDon.tongTien}]]*/ 0;
 
-        // Tạo nội dung chuyển khoản
-        const transferContent = 'HD' + hoaDonId + '_' + maCanHo + '_' + monthYear;
-        document.getElementById('transferContent').textContent = transferContent;
+            const date = new Date(ngayPhatHanh);
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year  = date.getFullYear();
+            const transferContent = 'HD' + hoaDonId + '_' + maCanHo + '_' + month + '/' + year;
+            document.getElementById('transferContent').textContent = transferContent;
 
-        // Tạo URL QR code theo format Sepay
-        // https://qr.sepay.vn/img?acc=SO_TAI_KHOAN&bank=NGAN_HANG&amount=SO_TIEN&des=NOI_DUNG&template=compact&download=0
-        const qrUrl = 'https://qr.sepay.vn/img?acc=0854870939' +
-                      '&bank=MB' +
-                      '&amount=' + Math.round(tongTien) +
-                      '&des=' + encodeURIComponent(transferContent) +
-                      '&template=compact' +
-                      '&download=0';
+            const qrUrl = 'https://qr.sepay.vn/img?acc=0854870939&bank=MB&amount='
+                + Math.round(tongTien) + '&des=' + encodeURIComponent(transferContent)
+                + '&template=compact&download=0';
 
-        // Hiển thị QR code
-        document.getElementById('qrImage').src = qrUrl;
-        document.getElementById('qrDisplay').classList.remove('d-none');
-
-        // Cuộn xuống để xem QR
-        document.getElementById('qrDisplay').scrollIntoView({ behavior: 'smooth' });
-    }
-</script>
+            document.getElementById('qrImage').src = qrUrl;
+            const display = document.getElementById('qrDisplay');
+            display.classList.remove('hidden');
+            display.scrollIntoView({ behavior: 'smooth' });
+            lucide.createIcons();
+        }
+    </script>
 </body>
 </html>

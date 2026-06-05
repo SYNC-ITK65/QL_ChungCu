@@ -1,51 +1,119 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{hd.chitiet.chi_tiet_hop_dong_cu}">Chi tiết hợp đồng của tôi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = { darkMode:'class', theme:{ extend:{ fontFamily:{sans:['Inter','sans-serif']}, colors:{brand:{500:'#0ea5e9',400:'#38bdf8',600:'#0284c7'},darkbg:'#0B0F17',darkcard:'#161B26',darkborder:'#242B3D'} } } }
+    </script>
+    <style>body{background-color:#0B0F17;color:#E2E8F0;font-family:'Inter',sans-serif;} ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#111827}::-webkit-scrollbar-thumb{background:#374151;border-radius:3px}</style>
 </head>
-<body class="d-flex">
-<div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
-<div class="container p-5">
-    <h2 class="mb-4" th:text="#{hd.chitiet.chi_tiet_hop_dong_cu}">Chi tiết Hợp đồng của tôi</h2>
-
-    <div class="card shadow-sm" th:if="${hopDong != null}">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><span th:text="#{hd.chitiet.hop_dong}" th:remove="tag">Hợp đồng #</span><span th:text="${hopDong.id}"></span></h5>
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-8">
+            <a th:href="@{/cudan/can-ho}" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{hd.chitiet.chi_tiet_hop_dong_cu}">Chi tiết Hợp đồng của tôi</h1>
+                <p class="text-sm text-slate-400 mt-1">Thông tin hợp đồng căn hộ của bạn</p>
+            </div>
         </div>
-        <div class="card-body">
-            <p><strong th:text="#{hd.detail.loai}">Loại hợp đồng:</strong> <span th:text="${hopDong.loaiHopDong}"></span></p>
-            <p><strong th:text="#{hd.detail.can_ho}">Căn hộ:</strong> <span th:text="${hopDong.canHo != null ? hopDong.canHo.maCanHo : ''}"></span></p>
-            <p><strong th:text="#{hd.detail.ben_cho_thue}">Bên cho thuê:</strong> <span th:text="${hopDong.benChoThue != null ? hopDong.benChoThue : ''}"></span></p>
-            <p><strong th:text="#{hd.detail.ben_thue}">Bên thuê:</strong> <span th:text="${hopDong.benThue != null ? hopDong.benThue : ''}"></span></p>
-            <p><strong th:text="#{hd.detail.ngay_bat_dau}">Ngày bắt đầu:</strong>
-                <span th:text="${hopDong.ngayBatDau != null ? #temporals.format(hopDong.ngayBatDau, 'dd/MM/yyyy') : ''}"></span>
-            </p>
-            <p><strong th:text="#{hd.detail.ngay_ket_thuc}">Ngày kết thúc:</strong>
-                <span th:if="${hopDong.ngayKetThuc != null}" th:text="${#temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy')}"></span>
-                <span th:unless="${hopDong.ngayKetThuc != null}" th:text="#{chung.khong_thoi_han}"></span>
-            </p>
-            <p><strong th:text="#{hd.detail.tien_thue}">Tiền thuê:</strong>
-                <span th:text="${hopDong.tienThue != null} ? |${#numbers.formatDecimal(hopDong.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></span>
-            </p>
-            <p><strong th:text="#{hd.detail.tien_coc}">Tiền cọc:</strong>
-                <span th:text="${hopDong.tienCoc != null} ? |${#numbers.formatDecimal(hopDong.tienCoc, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|"></span>
-            </p>
-            <p><strong th:text="#{hd.detail.trang_thai}">Trạng thái:</strong> 
-                <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="badge bg-success" th:text="#{hd.trang_thai.active}">Còn hạn</span>
-                <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="badge bg-danger" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
-                <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="badge bg-secondary" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
-                <span th:if="${hopDong.trangThai == 'DRAFT'}" class="badge bg-warning" th:text="#{hd.trang_thai.draft}">Nháp</span>
-                <span th:if="${hopDong.trangThai != 'ACTIVE' and hopDong.trangThai != 'EXPIRED' and hopDong.trangThai != 'TERMINATED' and hopDong.trangThai != 'DRAFT'}" th:text="${hopDong.trangThai}"></span>
-            </p>
-        </div>
-    </div>
 
-    <div class="alert alert-warning" th:if="${hopDong == null}" th:text="#{hd.chitiet.khong_tim_thay_hop_d}">
-        Không tìm thấy hợp đồng phù hợp.
-    </div>
-</div>
+        <!-- Có dữ liệu -->
+        <div th:if="${hopDong != null}" class="max-w-2xl space-y-6">
+
+            <!-- Tiêu đề trạng thái -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 bg-brand-500/10 rounded-xl">
+                            <i data-lucide="file-text" class="w-5 h-5 text-brand-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400" th:text="#{hd.chitiet.ma_hop_dong}">Mã hợp đồng</p>
+                            <p class="font-bold text-white" th:text="'HD-' + ${hopDong.id}">HD-1</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{hd.trang_thai.active}">Còn hạn</span>
+                        <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="px-3 py-1.5 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
+                        <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
+                        <span th:if="${hopDong.trangThai == 'DRAFT'}" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{hd.trang_thai.draft}">Nháp</span>
+                        <span th:if="${hopDong.trangThai != 'ACTIVE' and hopDong.trangThai != 'EXPIRED' and hopDong.trangThai != 'TERMINATED' and hopDong.trangThai != 'DRAFT'}"
+                              class="px-3 py-1.5 rounded-full text-xs font-bold bg-brand-500/10 text-brand-400 border border-brand-500/20"
+                              th:text="${hopDong.trangThai}"></span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                        <p class="text-xs text-slate-500 mb-1" th:text="#{hd.detail.loai}">Loại hợp đồng</p>
+                        <p class="font-semibold text-white" th:text="${hopDong.loaiHopDong}">Thuê</p>
+                    </div>
+                    <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                        <p class="text-xs text-slate-500 mb-1" th:text="#{hd.detail.can_ho}">Căn hộ</p>
+                        <p class="font-bold text-white" th:text="${hopDong.canHo != null ? hopDong.canHo.maCanHo : ''}">P.3508</p>
+                    </div>
+                    <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                        <p class="text-xs text-slate-500 mb-1" th:text="#{hd.detail.ben_cho_thue}">Bên cho thuê</p>
+                        <p class="font-semibold text-white" th:text="${hopDong.benChoThue != null ? hopDong.benChoThue : '-'}">-</p>
+                    </div>
+                    <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                        <p class="text-xs text-slate-500 mb-1" th:text="#{hd.detail.ben_thue}">Bên thuê</p>
+                        <p class="font-semibold text-white" th:text="${hopDong.benThue != null ? hopDong.benThue : '-'}">-</p>
+                    </div>
+                    <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                        <p class="text-xs text-slate-500 mb-1" th:text="#{hd.detail.ngay_bat_dau}">Ngày bắt đầu</p>
+                        <p class="font-semibold text-white" th:text="${hopDong.ngayBatDau != null ? #temporals.format(hopDong.ngayBatDau, 'dd/MM/yyyy') : '-'}">-</p>
+                    </div>
+                    <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                        <p class="text-xs text-slate-500 mb-1" th:text="#{hd.detail.ngay_ket_thuc}">Ngày kết thúc</p>
+                        <p class="font-semibold text-white">
+                            <span th:if="${hopDong.ngayKetThuc != null}" th:text="${#temporals.format(hopDong.ngayKetThuc, 'dd/MM/yyyy')}"></span>
+                            <span th:unless="${hopDong.ngayKetThuc != null}" class="text-slate-500" th:text="#{chung.khong_thoi_han}">Không thời hạn</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tài chính -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i data-lucide="credit-card" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    Thông tin tài chính
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                        <p class="text-xs text-emerald-300 mb-1" th:text="#{hd.detail.tien_thue}">Tiền thuê</p>
+                        <p class="text-xl font-extrabold text-emerald-400"
+                           th:text="${hopDong.tienThue != null} ? |${#numbers.formatDecimal(hopDong.tienThue, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|">0 VNĐ</p>
+                    </div>
+                    <div class="p-4 bg-sky-500/10 border border-sky-500/20 rounded-xl">
+                        <p class="text-xs text-sky-300 mb-1" th:text="#{hd.detail.tien_coc}">Tiền cọc</p>
+                        <p class="text-xl font-extrabold text-sky-400"
+                           th:text="${hopDong.tienCoc != null} ? |${#numbers.formatDecimal(hopDong.tienCoc, 0, 'COMMA', 0, 'POINT')} #{chung.don_vi_vnd}| : |0 #{chung.don_vi_vnd}|">0 VNĐ</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Không có dữ liệu -->
+        <div th:if="${hopDong == null}" class="max-w-md mt-16 p-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-400 text-center">
+            <i data-lucide="alert-triangle" class="w-10 h-10 mx-auto mb-3"></i>
+            <p class="font-semibold" th:text="#{hd.chitiet.khong_tim_thay_hop_d}">Không tìm thấy hợp đồng phù hợp.</p>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function () { lucide.createIcons(); });</script>
 </body>
 </html>
