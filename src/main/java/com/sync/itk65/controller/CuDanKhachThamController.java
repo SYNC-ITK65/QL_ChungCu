@@ -28,7 +28,7 @@ public class CuDanKhachThamController {
     @GetMapping
     public String trangKhachTham(HttpSession session, Model model,
                                  @RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "5") int size) {
+                                 @RequestParam(defaultValue = "10") int size) {
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
         if (user == null) return "redirect:/login";
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
