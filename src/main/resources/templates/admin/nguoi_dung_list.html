@@ -155,11 +155,11 @@
                             <td class="p-4" th:text="${nd.email}"></td>
                             <td class="p-4 font-mono" th:text="${nd.soDienThoai}"></td>
                             <td class="p-4">
-                                <span th:if="${nd.vaiTro == 1}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20" th:text="#{nd.form.admin}">Admin</span>
-                                <span th:if="${nd.vaiTro == 2}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{nd.form.quan_ly}">Quản lý</span>
-                                <span th:if="${nd.vaiTro == 3}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{hd.form.cu_dan_label}">Cư dân</span>
-                                <span th:if="${nd.vaiTro == 4}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{nd.form.le_tan}">Lễ tân</span>
-                                <span th:if="${nd.vaiTro == 5}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{nd.form.bao_ve}">Bảo vệ</span>
+                                <span th:if="${nd.vaiTro == 1}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 whitespace-nowrap" th:text="#{nd.form.admin}">Admin</span>
+                                <span th:if="${nd.vaiTro == 2}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap" th:text="#{nd.form.quan_ly}">Quản lý</span>
+                                <span th:if="${nd.vaiTro == 3}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 whitespace-nowrap" th:text="#{hd.form.cu_dan_label}">Cư dân</span>
+                                <span th:if="${nd.vaiTro == 4}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap" th:text="#{nd.form.le_tan}">Lễ tân</span>
+                                <span th:if="${nd.vaiTro == 5}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-slate-500/10 text-slate-400 border border-slate-500/20 whitespace-nowrap" th:text="#{nd.form.bao_ve}">Bảo vệ</span>
                             </td>
                             <td class="p-4 text-right">
                                 <!-- Chỉ hiện nút Sửa/Xóa cho Admin (1), Quản lý (2), Lễ tân (4), Bảo vệ (5) -->
