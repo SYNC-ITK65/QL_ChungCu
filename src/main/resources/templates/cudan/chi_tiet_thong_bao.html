@@ -3,106 +3,138 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${thongBao.tieuDe}"></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        .markdown-content img {
+        body {
+            background-color: #0B0F17;
+            color: #cbd5e1;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Styling for Rich Text/Summernote Content inside Dark Theme */
+        .rich-text-content img {
             max-width: 100%;
             height: auto;
-            border-radius: 8px;
-            margin: 1rem 0;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border: 1px solid #242B3D;
         }
 
-        .markdown-content h1,
-        .markdown-content h2,
-        .markdown-content h3 {
-            margin-top: 1.5rem;
+        .rich-text-content h1,
+        .rich-text-content h2,
+        .rich-text-content h3,
+        .rich-text-content h4 {
+            color: #ffffff;
+            margin-top: 1.75rem;
             margin-bottom: 1rem;
-            font-weight: bold;
+            font-weight: 700;
         }
 
-        .markdown-content p {
-            line-height: 1.6;
-            margin-bottom: 1rem;
+        .rich-text-content h1 { font-size: 1.5rem; }
+        .rich-text-content h2 { font-size: 1.35rem; }
+        .rich-text-content h3 { font-size: 1.2rem; }
+
+        .rich-text-content p {
+            line-height: 1.75;
+            margin-bottom: 1.25rem;
+            color: #cbd5e1;
         }
 
-        .markdown-content blockquote {
-            border-left: 4px solid #0d6efd;
-            padding-left: 1rem;
-            color: #6c757d;
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
+        .rich-text-content blockquote {
+            border-left: 4px solid #0ea5e9;
+            padding: 0.75rem 1rem;
+            color: #94a3b8;
+            background-color: #0B0F17;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
         }
 
-        .back-btn {
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            font-weight: 500;
-            color: #6c757d;
-            transition: color 0.2s;
+        .rich-text-content ul, .rich-text-content ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+            color: #cbd5e1;
         }
 
-        .back-btn:hover {
-            color: #0d6efd;
+        .rich-text-content ul {
+            list-style-type: disc;
+        }
+
+        .rich-text-content ol {
+            list-style-type: decimal;
+        }
+        
+        .rich-text-content a {
+            color: #0ea5e9;
+            text-decoration: underline;
+        }
+        
+        .rich-text-content a:hover {
+            color: #38bdf8;
         }
     </style>
 </head>
 
-<body class="d-flex bg-light">
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <!-- Resident Sidebar -->
+    <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
-    <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-center">
+        <div class="w-full max-w-4xl">
+            <!-- Back Button Navigation -->
+            <div class="mb-6">
+                <!-- Back to newsboard -->
+                <a th:if="${thongBao.loai == 1}" th:href="@{/cudan/thong-bao/bang-tin}" 
+                   class="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-brand-400 transition font-medium">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span th:text="#{user.quay_lai_tin_tuc}">Quay lại Bảng tin chung</span>
+                </a>
+                <!-- Back to handbook -->
+                <a th:if="${thongBao.loai == 2}" th:href="@{/cudan/thong-bao/cam-nang}" 
+                   class="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-brand-400 transition font-medium">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span th:text="#{user.quay_lai_cam_nang}">Quay lại Cẩm nang</span>
+                </a>
+            </div>
 
-    <div class="container p-5">
-        <div class="mb-4">
-            <!-- Nút quay lại dựa theo loại -->
-            <a th:if="${thongBao.loai == 1}" th:href="@{/cudan/thong-bao/bang-tin}" class="back-btn mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-arrow-left me-1" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-                </svg> <span th:text="#{user.quay_lai_tin_tuc}">Quay lại Bảng tin chung</span>
-            </a>
-            <a th:if="${thongBao.loai == 2}" th:href="@{/cudan/thong-bao/cam-nang}" class="back-btn mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-arrow-left me-1" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-                </svg> <span th:text="#{user.quay_lai_cam_nang}">Quay lại Cẩm nang</span>
-            </a>
-        </div>
-
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span th:if="${thongBao.loai == 1}" class="badge bg-info text-dark rounded-pill px-3 py-2" th:text="#{tb.loai.tin_tuc}">Bảng tin
-                        chung</span>
-                    <span th:if="${thongBao.loai == 2}" class="badge bg-success rounded-pill px-3 py-2" th:text="#{tb.loai.cam_nang}">Cẩm nang</span>
-                    <span class="text-muted"><i class="bi bi-calendar3 me-1"></i> <span
-                            th:text="${#temporals.format(thongBao.ngayDang, 'dd/MM/yyyy HH:mm')}"></span></span>
+            <!-- Article Details Card -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-10 shadow-2xl">
+                <!-- Badges & Date -->
+                <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-darkborder">
+                    <div>
+                        <span th:if="${thongBao.loai == 1}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{tb.loai.tin_tuc}">Bảng tin chung</span>
+                        <span th:if="${tb.loai == 2 || thongBao.loai == 2}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{tb.loai.cam_nang}">Cẩm nang</span>
+                    </div>
+                    <span class="text-xs text-slate-500 flex items-center gap-1.5">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        <span th:text="${#temporals.format(thongBao.ngayDang, 'dd/MM/yyyy HH:mm')}"></span>
+                    </span>
                 </div>
 
-                <h1 class="fw-bold text-dark mb-4 pb-3 border-bottom" th:text="${thongBao.tieuDe}"></h1>
+                <!-- Article Title -->
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-8 leading-tight" 
+                    th:text="${thongBao.tieuDe}"></h1>
 
-                <!-- Hiển thị nội dung HTML trực tiếp -->
+                <!-- Article Rendered Content -->
                 <div class="rich-text-content" th:utext="${thongBao.noiDung}"></div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-

@@ -3,174 +3,252 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{cd.form.them_tieude}">Thêm mới cư dân</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="d-flex">
-        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-        <div class="flex-grow-1 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 th:text="${cuDan.id != null} ? #{cd.form.sua_tieude} : #{cd.form.them_tieude}">Thêm mới Cư Dân</h2>
-                <a th:href="@{/admin/cu-dan}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> <span th:text="#{cd.form.quay_lai}">Quay lại danh sách</span>
-                </a>
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
+        <!-- Header -->
+        <div class="w-full max-w-4xl flex items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" 
+                    th:text="${cuDan.id != null} ? #{cd.form.sua_tieude} : #{cd.form.them_tieude}">
+                    Thêm mới Cư Dân
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">Quản lý hồ sơ cư trú và cấp quyền truy cập ứng dụng cư dân</p>
+            </div>
+            <a th:href="@{/admin/cu-dan}" 
+               class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span th:text="#{cd.form.quay_lai}">Quay lại danh sách</span>
+            </a>
+        </div>
+
+        <form th:action="@{/admin/cu-dan/luu}" th:object="${cuDan}" method="post" class="w-full max-w-4xl space-y-6">
+            <!-- Giữ lại ID khi sửa -->
+            <input type="hidden" th:field="*{id}" th:if="${cuDan.id != null}">
+
+            <!-- Card: Thông tin cá nhân -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
+                <h3 class="text-sm font-bold text-white mb-6 flex items-center gap-2 pb-3 border-b border-darkborder">
+                    <i data-lucide="user" class="w-4 h-4 text-brand-400"></i>
+                    <span th:text="#{cd.form.tt_ca_nhan}">Thông tin cá nhân</span>
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Họ Tên -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.ten}">Họ Tên</label>
+                        <input type="text" th:field="*{hoTen}" required th:placeholder="#{cd.form.ten_goi_y}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('hoTen')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{hoTen}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Số Điện Thoại -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.sdt}">Số điện thoại</label>
+                        <input type="text" th:field="*{soDienThoai}" required th:placeholder="#{cd.form.sdt_goi_y}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('soDienThoai')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{soDienThoai}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Tên Đăng Nhập -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.tk}">Tên đăng nhập (Tài khoản)</label>
+                        <input type="text" th:field="*{tenDangNhap}" required th:placeholder="#{cd.form.tk_goi_y}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('tenDangNhap')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{tenDangNhap}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.email}">Email</label>
+                        <input type="email" th:field="*{email}" required th:placeholder="#{cd.form.email_goi_y}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('email')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{email}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Ngày Sinh -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.ngay_sinh}">Ngày Sinh</label>
+                        <input type="date" th:field="*{ngaySinh}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('ngaySinh')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{ngaySinh}"></span>
+                        </div>
+                    </div>
+
+                    <!-- CCCD / CMND -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.cccd}">CCCD / CMND</label>
+                        <input type="text" th:field="*{cccd}" maxlength="12" th:placeholder="#{cd.form.cccd_goi_y}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('cccd')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{cccd}"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <form th:action="@{/admin/cu-dan/luu}" th:object="${cuDan}" method="post">
-                <!-- Giữ lại ID khi sửa -->
-                <input type="hidden" th:field="*{id}" th:if="${cuDan.id != null}">
+            <!-- Card: Thông tin cư trú -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
+                <h3 class="text-sm font-bold text-white mb-6 flex items-center gap-2 pb-3 border-b border-darkborder">
+                    <i data-lucide="home" class="w-4 h-4 text-brand-400"></i>
+                    <span th:text="#{cd.form.tt_cu_tru}">Thông tin cư trú</span>
+                </h3>
 
-                <!-- Card: Thông tin cá nhân -->
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-primary bg-gradient text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-person-circle"></i>
-                            <span th:text="#{cd.form.tt_ca_nhan}">Thông tin cá nhân</span>
-                        </h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Căn Hộ -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.can_ho}">Căn Hộ</label>
+                        <select th:field="*{canHo.id}" required
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                            <option value="" disabled selected th:text="#{cd.form.can_ho_chon}">-- Chọn căn hộ --</option>
+                            <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|#{tb.ui.phong} ${ch.maCanHo}|"></option>
+                        </select>
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('canHo')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{canHo}"></span>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" th:field="*{hoTen}" class="form-control" id="hoTen"
-                                        th:classappend="${#fields.hasErrors('hoTen')} ? 'is-invalid' : ''"
-                                        required th:placeholder="#{cd.form.ten_goi_y}">
-                                    <label for="hoTen" th:text="#{cd.form.ten}">Họ Tên</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('hoTen')}" th:errors="*{hoTen}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" th:field="*{soDienThoai}" class="form-control" id="soDienThoai"
-                                        th:classappend="${#fields.hasErrors('soDienThoai')} ? 'is-invalid' : ''"
-                                        required th:placeholder="#{cd.form.sdt_goi_y}">
-                                    <label for="soDienThoai" th:text="#{cd.form.sdt}">Số điện thoại</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('soDienThoai')}" th:errors="*{soDienThoai}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" th:field="*{tenDangNhap}" class="form-control" id="tenDangNhap"
-                                        th:classappend="${#fields.hasErrors('tenDangNhap')} ? 'is-invalid' : ''"
-                                        required th:placeholder="#{cd.form.tk_goi_y}">
-                                    <label for="tenDangNhap" th:text="#{cd.form.tk}">Tên đăng nhập (Tài khoản)</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('tenDangNhap')}" th:errors="*{tenDangNhap}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" th:field="*{email}" class="form-control" id="email"
-                                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
-                                        required th:placeholder="#{cd.form.email_goi_y}">
-                                    <label for="email" th:text="#{cd.form.email}">Email</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="date" th:field="*{ngaySinh}" class="form-control" id="ngaySinh"
-                                        th:classappend="${#fields.hasErrors('ngaySinh')} ? 'is-invalid' : ''">
-                                    <label for="ngaySinh" th:text="#{cd.form.ngay_sinh}">Ngày Sinh</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" th:field="*{cccd}" class="form-control" id="cccd" maxlength="12"
-                                        th:classappend="${#fields.hasErrors('cccd')} ? 'is-invalid' : ''"
-                                        th:placeholder="#{cd.form.cccd_goi_y}">
-                                    <label for="cccd" th:text="#{cd.form.cccd}">CCCD / CMND</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('cccd')}" th:errors="*{cccd}"></div>
-                                </div>
-                            </div>
+
+                    <!-- Mối Quan Hệ -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{cd.form.qh}">Mối Quan Hệ</label>
+                        <select th:field="*{moiQuanHe}" required
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                            <option value="Chủ Hộ" th:text="#{cd.qh.chu_ho}">Chủ Hộ</option>
+                            <option value="Vợ/Chồng" th:text="#{cd.qh.vo_chong}">Vợ/Chồng</option>
+                            <option value="Con cái" th:text="#{cd.qh.con}">Con cái</option>
+                            <option value="Người thân" th:text="#{cd.qh.nguoi_than}">Người thân</option>
+                            <option value="Người thuê" th:text="#{cd.qh.nguoi_thue}">Người thuê</option>
+                        </select>
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('moiQuanHe')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{moiQuanHe}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Trạng Thái -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{chung.trang_thai}">Trạng Thái</label>
+                        <select th:field="*{trangThai}" required
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                            <option value="Đang Ở" th:text="#{cd.tt.dang_o}">Đang Ở</option>
+                            <option value="Chưa Đến" th:text="#{cd.tt.chua_den}">Chưa Đến</option>
+                        </select>
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('trangThai')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{trangThai}"></span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Card: Thông tin cư trú -->
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-info bg-gradient text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-house-heart"></i>
-                            <span th:text="#{cd.form.tt_cu_tru}">Thông tin cư trú</span>
-                        </h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-4">
-                            <div class="col-md-12">
-                                <div class="form-floating">
-                                    <select th:field="*{canHo.id}" class="form-select" id="canHoId" required
-                                        th:classappend="${#fields.hasErrors('canHo')} ? 'is-invalid' : ''">
-                                        <option value="" disabled selected th:text="#{cd.form.can_ho_chon}">-- Chọn căn hộ --</option>
-                                        <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="|#{tb.ui.phong} ${ch.maCanHo}|"></option>
-                                    </select>
-                                    <label for="canHoId" th:text="#{cd.form.can_ho}">Căn Hộ</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('canHo')}" th:errors="*{canHo}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select th:field="*{moiQuanHe}" class="form-select" id="moiQuanHe" required
-                                        th:classappend="${#fields.hasErrors('moiQuanHe')} ? 'is-invalid' : ''">
-                                        <option value="Chủ Hộ" th:text="#{cd.qh.chu_ho}">Chủ Hộ</option>
-                                        <option value="Vợ/Chồng" th:text="#{cd.qh.vo_chong}">Vợ/Chồng</option>
-                                        <option value="Con cái" th:text="#{cd.qh.con}">Con cái</option>
-                                        <option value="Người thân" th:text="#{cd.qh.nguoi_than}">Người thân</option>
-                                        <option value="Người thuê" th:text="#{cd.qh.nguoi_thue}">Người thuê</option>
-                                    </select>
-                                    <label for="moiQuanHe" th:text="#{cd.form.qh}">Mối Quan Hệ</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('moiQuanHe')}" th:errors="*{moiQuanHe}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select th:field="*{trangThai}" class="form-select" id="trangThai" required
-                                        th:classappend="${#fields.hasErrors('trangThai')} ? 'is-invalid' : ''">
-                                        <option value="Đang Ở" th:text="#{cd.tt.dang_o}">Đang Ở</option>
-                                        <option value="Chưa Đến" th:text="#{cd.tt.chua_den}">Chưa Đến</option>
-                                    </select>
-                                    <label for="trangThai" th:text="#{chung.trang_thai}">Trạng Thái</label>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('trangThai')}" th:errors="*{trangThai}"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Buttons -->
+            <div class="flex items-center gap-3 pt-4 border-t border-darkborder justify-end">
+                <a th:href="@{/admin/cu-dan}" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition" th:text="#{cd.form.quay_lai}">Quay lại danh sách</a>
+                <button type="submit" 
+                        class="px-6 py-3 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span th:text="#{cd.form.nut_luu}">Lưu cư dân &amp; Tạo tài khoản</span>
+                </button>
+            </div>
+        </form>
+    </main>
 
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-check-lg"></i> <span th:text="#{cd.form.nut_luu}">Lưu cư dân &amp; Tạo tài khoản</span>
-                    </button>
-                    <a th:href="@{/admin/cu-dan}" class="btn btn-outline-secondary btn-lg" th:text="#{cd.form.quay_lai}">Quay lại danh sách</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    <!-- JS dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
             var thongBaoThanhCong = /*[[${thongBaoThanhCong != null ? (#messages.msgOrNull(thongBaoThanhCong) != null ? #messages.msg(thongBaoThanhCong) : thongBaoThanhCong) : null}]]*/ null;
             var thongBaoLoi = /*[[${thongBaoLoi != null ? (#messages.msgOrNull(thongBaoLoi) != null ? #messages.msg(thongBaoLoi) : thongBaoLoi) : null}]]*/ null;
             var successMessage = /*[[${successMessage != null ? (#messages.msgOrNull(successMessage) != null ? #messages.msg(successMessage) : successMessage) : null}]]*/ null;
             var errorMessage = /*[[${errorMessage != null ? (#messages.msgOrNull(errorMessage) != null ? #messages.msg(errorMessage) : errorMessage) : null}]]*/ null;
 
+            // Custom SweetAlert dark styling configurations
+            const swalDarkConfig = {
+                background: '#161B26',
+                color: '#E2E8F0',
+                confirmButtonColor: '#0ea5e9',
+                cancelButtonColor: '#334155'
+            };
+
             if (thongBaoThanhCong) {
-                Swal.fire({ icon: 'success', title: 'Thành công!', text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+                Swal.fire({ ...swalDarkConfig, icon: 'success', title: 'Thành công!', text: thongBaoThanhCong, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
             }
             if (successMessage) {
-                Swal.fire({ icon: 'success', title: 'Thành công!', text: successMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
+                Swal.fire({ ...swalDarkConfig, icon: 'success', title: 'Thành công!', text: successMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true });
             }
             if (thongBaoLoi) {
-                Swal.fire({ icon: 'error', title: 'Lỗi!', text: thongBaoLoi, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+                Swal.fire({ ...swalDarkConfig, icon: 'error', title: 'Lỗi!', text: thongBaoLoi, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
             }
             if (errorMessage) {
-                Swal.fire({ icon: 'error', title: 'Lỗi!', text: errorMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
+                Swal.fire({ ...swalDarkConfig, icon: 'error', title: 'Lỗi!', text: errorMessage, toast: true, position: 'top-end', showConfirmButton: false, timer: 5000, timerProgressBar: true });
             }
         });
     </script>

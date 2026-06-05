@@ -3,77 +3,131 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{${tieuDeTrangKey}}"></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .news-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
         }
-
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-            color: inherit;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-
-        .news-date {
-            font-size: 0.85rem;
-            color: #6c757d;
+        ::-webkit-scrollbar-track {
+            background: #111827;
         }
-
-        .news-excerpt {
-            color: #495057;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
         }
     </style>
 </head>
 
-<body class="d-flex bg-light">
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <!-- Resident Sidebar -->
+    <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
-    <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
-
-    <div class="container p-5">
-        <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-primary border-3">
-            <h2 class="text-primary fw-bold m-0" th:text="#{${tieuDeTrangKey}}"></h2>
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+        <!-- Header -->
+        <div class="mb-8 border-b border-darkborder pb-4 flex items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{${tieuDeTrangKey}}">Bảng tin</h1>
+                <p class="text-sm text-slate-400 mt-1">Thông báo nội bộ, hoạt động cộng đồng và thông tin vận hành từ Ban Quản Lý</p>
+            </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-2 g-4" th:if="${not #lists.isEmpty(danhSach)}">
-            <div class="col" th:each="tb : ${danhSach}">
+        <!-- News list grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl" th:if="${not #lists.isEmpty(danhSach)}">
+            <div th:each="tb : ${danhSach}">
                 <a th:href="@{/cudan/thong-bao/chi-tiet/{id}(id=${tb.id})}"
-                    class="card h-100 shadow-sm border-0 news-card rounded-4">
-                    <div class="card-body p-4">
-                        <span th:if="${tb.loai == 1}" class="badge bg-info text-dark mb-2 rounded-pill px-3" th:text="#{tb.loai.tin_tuc}">Bảng tin
-                            chung</span>
-                        <span th:if="${tb.loai == 2}" class="badge bg-success text-white mb-2 rounded-pill px-3" th:text="#{tb.loai.cam_nang}">Cẩm
-                            nang</span>
-                        <h5 class="card-title fw-bold text-dark mb-2" th:text="${tb.tieuDe}"></h5>
-                        <div class="news-date mb-3">
-                            <i class="bi bi-calendar-event me-1"></i>
+                   class="bg-darkcard border border-darkborder hover:border-brand-500/30 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between h-full group cursor-pointer">
+                    <div>
+                        <!-- Badges -->
+                        <div class="mb-4">
+                            <span th:if="${tb.loai == 1}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{tb.loai.tin_tuc}">Bảng tin chung</span>
+                            <span th:if="${tb.loai == 2}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{tb.loai.cam_nang}">Cẩm nang</span>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h3 class="text-base font-bold text-white group-hover:text-brand-400 transition line-clamp-2 mb-2 leading-snug" th:text="${tb.tieuDe}"></h3>
+                        
+                        <!-- Date -->
+                        <div class="text-[11px] text-slate-500 flex items-center gap-1.5 mb-4">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
                             <span th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy HH:mm')}"></span>
                         </div>
-                        <div class="card-text news-excerpt" th:text="${tb.noiDung.replaceAll('<[^>]*>', '')}"></div>
+
+                        <!-- Excerpt -->
+                        <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed" 
+                           th:text="${tb.noiDung.replaceAll('<[^>]*>', '')}"></p>
+                    </div>
+                    
+                    <!-- Readmore Indicator -->
+                    <div class="mt-6 pt-4 border-t border-darkborder/50 flex items-center justify-between text-xs text-brand-500 font-semibold group-hover:text-brand-400">
+                        <span>Chi tiết bài viết</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition"></i>
                     </div>
                 </a>
             </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(danhSach)}" class="text-center py-5">
-            <div class="text-muted fs-5" th:text="#{user.bt.trong}">Hiện chưa có bài viết nào trong chuyên mục này.</div>
+        <!-- Empty Placeholder -->
+        <div th:if="${#lists.isEmpty(danhSach)}" class="text-center py-16 bg-darkcard border border-darkborder border-dashed rounded-2xl max-w-6xl">
+            <div class="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-darkborder">
+                <i data-lucide="inbox" class="w-6 h-6 text-slate-500"></i>
+            </div>
+            <p class="text-slate-400 text-sm font-medium" th:text="#{user.bt.trong}">Hiện chưa có bài viết nào trong chuyên mục này.</p>
         </div>
 
-        <!-- Phân trang -->
-        <div th:replace="~{fragments/pagination :: paging('/cudan/thong-bao/bang-tin', '')}"></div>
-    </div>
+        <!-- Pagination fragment invocation -->
+        <div th:replace="~{fragments/pagination :: paging('/cudan/thong-bao/bang-tin', '')}" class="max-w-6xl mt-8"></div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>

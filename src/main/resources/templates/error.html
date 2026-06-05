@@ -1,53 +1,99 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Có lỗi xảy ra | Hệ thống quản lý chung cư</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
         }
-        .error-card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            max-width: 500px;
-            width: 100%;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-        .error-icon {
-            font-size: 4rem;
-            color: #dc3545;
+        ::-webkit-scrollbar-track {
+            background: #111827;
         }
-        .error-status {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #6c757d;
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
         }
     </style>
 </head>
-<body>
-    <div class="container p-4">
-        <div class="card error-card mx-auto text-center p-4">
-            <div class="card-body">
-                <div class="error-icon mb-3">⚠️</div>
-                <h1 class="card-title text-danger fw-bold mb-2">Đã Xảy Ra Lỗi!</h1>
-                <div class="error-status mb-4" th:text="'Mã lỗi: ' + ${status}">Mã lỗi: 500</div>
-                <p class="card-text text-secondary mb-4 fs-5" th:text="${message}">Đã xảy ra lỗi ngoài ý muốn trên hệ thống.</p>
-                <div class="d-grid gap-2">
-                    <button onclick="history.back()" class="btn btn-primary btn-lg rounded-pill">Quay Lại</button>
-                    <a th:href="@{/}" class="btn btn-outline-secondary rounded-pill">Về Trang Chủ</a>
-                </div>
-            </div>
+<body class="bg-darkbg text-slate-200 antialiased font-sans min-h-screen flex items-center justify-center p-4">
+    <div class="bg-darkcard border border-darkborder max-w-md w-full rounded-3xl p-6 md:p-10 text-center space-y-6 shadow-2xl relative overflow-hidden">
+        <!-- Glow effect in background -->
+        <div class="absolute -right-16 -top-16 w-32 h-32 bg-red-500/10 rounded-full blur-2xl"></div>
+
+        <div class="w-16 h-16 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto shadow-lg shadow-red-500/15">
+            <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+        </div>
+
+        <div class="space-y-2">
+            <h1 class="text-xl font-bold text-white">Đã Xảy Ra Lỗi!</h1>
+            <div class="inline-flex bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl py-1 px-3 text-[10px] font-mono" th:text="'Mã lỗi: ' + ${status}">Mã lỗi: 500</div>
+        </div>
+
+        <p class="text-xs text-slate-400 leading-relaxed px-2" th:text="${message}">Đã xảy ra lỗi ngoài ý muốn trên hệ thống.</p>
+
+        <div class="flex flex-col gap-3 pt-2">
+            <button onclick="history.back()" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-semibold text-xs transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay Lại
+            </button>
+            <a th:href="@{/}" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl font-semibold text-xs transition block">
+                Về Trang Chủ
+            </a>
+        </div>
+        
+        <div class="text-[10px] text-slate-500 text-center border-t border-darkborder pt-4">
+            Hotline Hỗ Trợ BQL: 1800 9999
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>

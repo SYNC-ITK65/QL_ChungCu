@@ -1,84 +1,172 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{tb.ds.tieude}">Danh sách Thông báo &amp; Cẩm nang</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="d-flex">
-        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-        <div class="flex-grow-1 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-                <h2 th:text="#{tb.ds.tieude}">Quản lý Thông báo &amp; Cẩm nang</h2>
-                <a th:href="@{/admin/thong-bao/tao-moi}" class="btn btn-primary" th:text="#{chung.them}">+ Tạo mới</a>
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+        <!-- Title and Top Actions -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{tb.ds.tieude}">Quản lý Thông báo &amp; Cẩm nang</h1>
+                <p class="text-sm text-slate-400 mt-1">Đăng tin tức chung, hướng dẫn cư dân và tài liệu cẩm nang</p>
             </div>
-
-            <!-- Form Tìm kiếm & Lọc -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <form th:action="@{/admin/thong-bao}" method="GET" class="row g-3">
-                        <div class="col-md-5">
-                            <label class="form-label fw-bold" th:text="#{tb.ds.tieu_de_thong_bao}">Tiêu đề thông báo</label>
-                            <input type="text" name="tuKhoa" class="form-control" th:value="${tuKhoa}" placeholder="Nhập tiêu đề cần tìm..." th:placeholder="#{tb.ds.nhap_tieu_de_can_tim}">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold" th:text="#{tb.ds.phan_loai}">Phân loại</label>
-                            <select name="loai" class="form-select">
-                                <option value="" th:text="#{tb.ds.tat_ca_loai}">-- Tất cả loại --</option>
-                                <option value="1" th:selected="${loai == 1}" th:text="#{tb.loai.tin_tuc}">Bảng tin chung</option>
-                                <option value="2" th:selected="${loai == 2}" th:text="#{tb.ds.cam_nang_cu_dan}">Cẩm nang cư dân</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-search"></i><span th:text="#{tb.ds.loc_thong_bao}" th:remove="tag"> Lọc thông báo
-                            </span></button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <table class="table table-striped table-hover border no-paging">
-                <thead class="table-dark">
-                    <tr>
-                        <th style="width: 5%" th:text="#{chung.id}">ID</th>
-                        <th style="width: 40%" th:text="#{tb.ds.bang_tieude}">Tiêu đề</th>
-                        <th style="width: 15%" th:text="#{tb.ds.bang_loai}">Loại</th>
-                        <th style="width: 20%" th:text="#{tb.ds.bang_ngay}">Ngày đăng</th>
-                        <th style="width: 20%" th:text="#{chung.hanh_dong}">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="tb : ${danhSachThongBao}">
-                        <td th:text="${tb.id}"></td>
-                        <td th:text="${tb.tieuDe}"></td>
-                        <td>
-                            <span th:if="${tb.loai == 1}" class="badge bg-info text-dark" th:text="#{tb.loai.tin_tuc}">Bảng tin chung</span>
-                            <span th:if="${tb.loai == 2}" class="badge bg-success" th:text="#{tb.loai.cam_nang}">Cẩm nang</span>
-                        </td>
-                        <td th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy HH:mm')}"></td>
-                        <td>
-                            <a th:href="@{/admin/thong-bao/sua/{id}(id=${tb.id})}" class="btn btn-sm btn-warning" th:text="#{chung.sua}">Sửa</a>
-                            <a th:href="@{/admin/thong-bao/xoa/{id}(id=${tb.id})}" class="btn btn-sm btn-danger" th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" th:text="#{chung.xoa}">Xóa</a>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(danhSachThongBao)}">
-                        <td colspan="5" class="text-center text-muted" th:text="#{tb.ds.trong}">Chưa có thông báo nào phù hợp!</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div th:replace="~{fragments/pagination :: paging('/admin/thong-bao', 'tuKhoa=' + (${tuKhoa} ?: '') + '&amp;loai=' + (${loai} ?: ''))}"></div>
-
-            <!-- Dùng fragment Datatable chung -->
-            <div th:replace="~{fragments/datatable :: scripts}"></div>
+            <a th:href="@{/admin/thong-bao/tao-moi}" 
+               class="px-4 py-2 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-brand-500/10">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span th:text="#{chung.them}">+ Tạo mới</span>
+            </a>
         </div>
-    </div>
+
+        <!-- Filter Card -->
+        <div class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-sm mb-8">
+            <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                <i data-lucide="filter" class="w-4 h-4 text-brand-400"></i>
+                <span>Bộ lọc bài viết</span>
+            </h3>
+            <form th:action="@{/admin/thong-bao}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <!-- Tiêu đề -->
+                <div class="md:col-span-5">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{tb.ds.tieu_de_thong_bao}">Tiêu đề thông báo</label>
+                    <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition" 
+                           placeholder="Nhập tiêu đề cần tìm..." th:placeholder="#{tb.ds.nhap_tieu_de_can_tim}">
+                </div>
+                <!-- Phân loại -->
+                <div class="md:col-span-4">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{tb.ds.phan_loai}">Phân loại</label>
+                    <select name="loai" class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option value="" th:text="#{tb.ds.tat_ca_loai}">-- Tất cả loại --</option>
+                        <option value="1" th:selected="${loai == 1}" th:text="#{tb.loai.tin_tuc}">Bảng tin chung</option>
+                        <option value="2" th:selected="${loai == 2}" th:text="#{tb.ds.cam_nang_cu_dan}">Cẩm nang cư dân</option>
+                    </select>
+                </div>
+                <!-- Submit -->
+                <div class="md:col-span-3 flex items-end">
+                    <button type="submit" 
+                            class="w-full py-2.5 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-lg shadow-brand-500/10">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <span th:text="#{tb.ds.loc_thong_bao}">Lọc thông báo</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Table View -->
+        <div class="bg-darkcard border border-darkborder rounded-2xl overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="table w-full border-collapse text-left text-xs text-slate-300 no-paging">
+                    <thead>
+                        <tr class="bg-darkbg/50 border-b border-darkborder">
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" style="width: 8%" th:text="#{chung.id}">ID</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" style="width: 42%" th:text="#{tb.ds.bang_tieude}">Tiêu đề</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" style="width: 15%" th:text="#{tb.ds.bang_loai}">Loại</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" style="width: 20%" th:text="#{tb.ds.bang_ngay}">Ngày đăng</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider text-right" style="width: 15%" th:text="#{chung.hanh_dong}">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-darkborder">
+                        <tr th:each="tb : ${danhSachThongBao}" class="hover:bg-slate-800/20 transition">
+                            <td class="p-4 font-semibold text-white" th:text="${tb.id}"></td>
+                            <td class="p-4 font-medium text-white truncate max-w-xs" th:text="${tb.tieuDe}"></td>
+                            <td class="p-4">
+                                <span th:if="${tb.loai == 1}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{tb.loai.tin_tuc}">Bảng tin chung</span>
+                                <span th:if="${tb.loai == 2}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{tb.loai.cam_nang}">Cẩm nang</span>
+                            </td>
+                            <td class="p-4 text-slate-400 font-mono" th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td class="p-4 text-right">
+                                <div class="inline-flex items-center gap-1.5">
+                                    <a th:href="@{/admin/thong-bao/sua/{id}(id=${tb.id})}" 
+                                       class="px-2.5 py-1 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 text-[11px] font-semibold rounded-lg transition" 
+                                       th:text="#{chung.sua}">Sửa</a>
+                                    <a th:href="@{/admin/thong-bao/xoa/{id}(id=${tb.id})}" 
+                                       class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-semibold rounded-lg transition" 
+                                       th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" th:text="#{chung.xoa}">Xóa</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(danhSachThongBao)}">
+                            <td colspan="5" class="p-8 text-center text-slate-500" th:text="#{tb.ds.trong}">Chưa có thông báo nào phù hợp!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div th:replace="~{fragments/pagination :: paging('/admin/thong-bao', 'tuKhoa=' + (${tuKhoa} ?: '') + '&amp;loai=' + (${loai} ?: ''))}"></div>
+    </main>
+
+    <!-- Global datatable script includes (keeps table css overrides active) -->
+    <div th:replace="~{fragments/datatable :: scripts}"></div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>

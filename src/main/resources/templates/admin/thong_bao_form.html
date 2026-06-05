@@ -3,124 +3,277 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{tb.form.tieude}">Form Thông báo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Summernote Lite CSS -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+
+        /* Select2 Dark Mode overrides */
+        .select2-container--default .select2-selection--multiple {
+            background-color: #0B0F17 !important;
+            border: 1px solid #242B3D !important;
+            border-radius: 0.75rem !important;
+            min-height: 42px !important;
+            padding: 2px 6px !important;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #161B26 !important;
+            border: 1px solid #242B3D !important;
+            color: #E2E8F0 !important;
+            border-radius: 0.5rem !important;
+            padding: 2px 8px !important;
+            font-size: 11px !important;
+            margin-top: 4px !important;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #ef4444 !important;
+            margin-right: 6px !important;
+        }
+        .select2-dropdown {
+            background-color: #161B26 !important;
+            border: 1px solid #242B3D !important;
+            color: #E2E8F0 !important;
+            border-radius: 0.75rem !important;
+            overflow: hidden !important;
+        }
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #0ea5e9 !important;
+        }
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #242B3D !important;
+        }
+        .select2-container--default .select2-search--inline .select2-search__field {
+            color: white !important;
+            font-size: 12px !important;
+        }
+
+        /* Summernote Dark Mode adjustments */
+        .note-editor.note-frame {
+            border: 1px solid #242B3D !important;
+            background-color: #161B26 !important;
+            color: #E2E8F0 !important;
+            border-radius: 0.75rem !important;
+            overflow: hidden !important;
+        }
+        .note-editor.note-frame .note-statusbar {
+            background-color: #0B0F17 !important;
+            border-top: 1px solid #242B3D !important;
+        }
+        .note-editor.note-frame .note-editing-area {
+            background-color: #ffffff !important;
+            color: #000000 !important; /* Keep edit area light for readability while writing content */
+        }
+        .note-toolbar {
+            background-color: #0B0F17 !important;
+            border-bottom: 1px solid #242B3D !important;
+            color: #E2E8F0 !important;
+        }
+        .note-btn {
+            background-color: #161B26 !important;
+            border: 1px solid #242B3D !important;
+            color: #CBD5E1 !important;
+        }
+        .note-btn:hover {
+            background-color: #242B3D !important;
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="d-flex">
-        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-        <div class="flex-grow-1 p-4">
-            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-                <span th:text="${errorMessage}"></span>
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
+        <!-- Header -->
+        <div class="w-full max-w-5xl flex items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" 
+                    th:text="${thongBao.id == null} ? #{tb.form.them_tieude} : #{tb.form.sua_tieude}">
+                    Form Thông báo
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">Soạn thảo bài viết, tin tức chung hoặc cẩm nang cư dân</p>
             </div>
+            <a th:href="@{/admin/thong-bao}" 
+               class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span th:text="#{chung.huy}">Hủy bỏ</span>
+            </a>
+        </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0" th:text="${thongBao.id == null} ? #{tb.form.them_tieude} : #{tb.form.sua_tieude}"></h4>
+        <!-- Alert Message -->
+        <div th:if="${errorMessage}" class="w-full max-w-5xl mb-6 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl flex items-center gap-3 shadow-lg" role="alert">
+            <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="text-sm font-medium" th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Form Card -->
+        <div class="w-full max-w-5xl bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
+            <form th:action="@{/admin/thong-bao/luu}" th:object="${thongBao}" method="post" class="space-y-6">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Tiêu đề -->
+                    <div class="md:col-span-8">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{tb.form.tieude}">Tiêu đề</label>
+                        <input type="text" th:field="*{tieuDe}" required th:placeholder="#{tb.form.tieude_goi_y}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('tieuDe')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{tieuDe}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Loại bài viết -->
+                    <div class="md:col-span-4">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{tb.form.loai}">Loại bài viết</label>
+                        <select th:field="*{loai}" 
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                            <option value="1" th:text="#{tb.loai.tin_tuc}">📢 Bảng tin chung</option>
+                            <option value="2" th:text="#{tb.loai.cam_nang}">📚 Cẩm nang cư dân</option>
+                        </select>
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('loai')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{loai}"></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form th:action="@{/admin/thong-bao/luu}" th:object="${thongBao}" method="post">
-                        <input type="hidden" th:field="*{id}">
 
-                        <div class="row">
-                            <div class="col-md-9">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold" th:text="#{tb.form.tieude}">Tiêu đề</label>
-                                    <input type="text" class="form-control form-control-lg" th:field="*{tieuDe}" required th:placeholder="#{tb.form.tieude_goi_y}">
-                                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('tieuDe')}" th:errors="*{tieuDe}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold" th:text="#{tb.form.loai}">Loại bài viết</label>
-                                    <select class="form-select" th:field="*{loai}">
-                                        <option value="1" th:text="#{tb.loai.tin_tuc}">📢 Bảng tin chung</option>
-                                        <option value="2" th:text="#{tb.loai.cam_nang}">📚 Cẩm nang cư dân</option>
-                                    </select>
-                                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('loai')}" th:errors="*{loai}"></div>
-                                </div>
-                            </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Đối tượng -->
+                    <div class="md:col-span-4">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{tb.form.doi_tuong}">Đối tượng nhận thông báo</label>
+                        <select th:field="*{doiTuongGui}" id="doiTuongGui" onchange="toggleDoiTuongInput()"
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                            <option value="ALL" th:text="#{tb.dt.tat_ca}">Gửi cho tất cả (Mặc định)</option>
+                            <option value="HO_GIA_DINH" th:text="#{tb.dt.ho_dan}">Gửi theo một hộ cụ thể</option>
+                            <option value="NHIEU_HO" th:text="#{tb.dt.nhieu_ho}">Gửi theo nhiều hộ</option>
+                            <option value="TANG" th:text="#{tb.dt.tang}">Gửi theo tầng</option>
+                        </select>
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('doiTuongGui')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                            <span th:errors="*{doiTuongGui}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Khung Đối tượng cụ thể (Ẩn/Hiện) -->
+                    <div class="md:col-span-8 hidden" id="khungDoiTuong">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 text-brand-400" id="nhanDoiTuong" th:text="#{tb.form.ds_tang}">Phân cách các hộ/tầng bằng dấu phẩy</label>
+                        <input type="hidden" id="giaTriDoiTuongText" th:field="*{giaTriDoiTuong}">
+
+                        <!-- Select apartment (Select2 multiple) -->
+                        <div id="canHoSelectContainer" class="hidden">
+                            <select id="chonCanHo" multiple="multiple" class="w-full">
+                                <option th:each="ch : ${danhSachCanHo}" 
+                                        th:value="${ch.maCanHo}" 
+                                        th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
+                                </option>
+                            </select>
                         </div>
                         
-                        <div class="row mb-2">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold" th:text="#{tb.form.doi_tuong}">Đối tượng nhận thông báo</label>
-                                    <select class="form-select" th:field="*{doiTuongGui}" id="doiTuongGui" onchange="toggleDoiTuongInput()">
-                                        <option value="ALL" th:text="#{tb.dt.tat_ca}">Gửi cho tất cả (Mặc định)</option>
-                                        <option value="HO_GIA_DINH" th:text="#{tb.dt.ho_dan}">Gửi theo một hộ cụ thể</option>
-                                        <option value="NHIEU_HO" th:text="#{tb.dt.nhieu_ho}">Gửi theo nhiều hộ</option>
-                                        <option value="TANG" th:text="#{tb.dt.tang}">Gửi theo tầng</option>
-                                    </select>
-                                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('doiTuongGui')}" th:errors="*{doiTuongGui}"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-8" id="khungDoiTuong" style="display: none;">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-primary" id="nhanDoiTuong" th:text="#{tb.form.ds_tang}">Phân cách các hộ/tầng bằng dấu phẩy</label>
-                                    <input type="hidden" id="giaTriDoiTuongText" th:field="*{giaTriDoiTuong}">
-                                    
-                                    <!-- Container for apartment selection -->
-                                    <div id="canHoSelectContainer" style="display: none;">
-                                        <select class="form-select" id="chonCanHo" multiple="multiple" style="width: 100%;">
-                                            <option th:each="ch : ${danhSachCanHo}" 
-                                                    th:value="${ch.maCanHo}" 
-                                                    th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
-                                            </option>
-                                        </select>
-                                    </div>
-                                    
-                                    <!-- Container for floor text input -->
-                                    <div id="tangInputContainer" style="display: none;">
-                                        <input type="text" class="form-control form-control-lg" id="nhapTang" th:placeholder="#{tb.form.ds_tang_goi_y}">
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Input for floors -->
+                        <div id="tangInputContainer" class="hidden">
+                            <input type="text" class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition" 
+                                   id="nhapTang" th:placeholder="#{tb.form.ds_tang_goi_y}">
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold" th:text="#{tb.form.noi_dung}">Nội dung chi tiết</label>
-                            <textarea class="form-control" th:field="*{noiDung}" id="noiDung" rows="15"></textarea>
-                            <div class="text-danger mt-1" th:if="${#fields.hasErrors('noiDung')}" th:errors="*{noiDung}"></div>
-                        </div>
-
-                        <div class="card bg-light mb-3">
-                            <div class="card-body py-2">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="bi bi-save me-1"></i> <span th:text="#{tb.form.nut_luu}">Lưu bài viết</span>
-                                    </button>
-                                    <a th:href="@{/admin/thong-bao}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-x-circle me-1"></i> <span th:text="#{chung.huy}">Hủy bỏ</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- jQuery & Select2 -->
+                <!-- Nội dung chi tiết (Summernote WYSIWYG) -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{tb.form.noi_dung}">Nội dung chi tiết</label>
+                    <textarea th:field="*{noiDung}" id="noiDung" class="w-full" rows="15"></textarea>
+                    <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('noiDung')}">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                        <span th:errors="*{noiDung}"></span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3 pt-6 border-t border-darkborder justify-end">
+                    <a th:href="@{/admin/thong-bao}" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition" th:text="#{chung.huy}">Hủy bỏ</a>
+                    <button type="submit" 
+                            class="px-6 py-3 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span th:text="#{tb.form.nut_luu}">Lưu bài viết</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- jQuery & Select2 Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <!-- Summernote Lite JS -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 
     <script th:inline="javascript">
         $(document).ready(function() {
-            // Khởi tạo Summernote WYSIWYG trên textarea #noiDung
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
+            // Initialize Summernote WYSIWYG
             $('#noiDung').summernote({
-                height: 300,
+                height: 350,
                 placeholder: [[#{tb.form.soan_thao_noi_dung}]],
                 tabsize: 2,
                 toolbar: [
@@ -136,25 +289,25 @@
                 ]
             });
 
-            // Khởi tạo Select2 cho chọn căn hộ
+            // Initialize Select2
             $('#chonCanHo').select2({
                 placeholder: [[#{tb.form.chon_can_ho}]],
                 allowClear: true,
                 width: '100%'
             });
 
-            // Update hidden input when select changes
+            // Sync Select2 values to hidden input
             $('#chonCanHo').on('change', function() {
                 var vals = $(this).val();
                 $('#giaTriDoiTuongText').val(vals ? vals.join(', ') : '');
             });
 
-            // Update hidden input when tang text changes
+            // Sync floor input value to hidden input
             $('#nhapTang').on('input', function() {
                 $('#giaTriDoiTuongText').val($(this).val());
             });
 
-            // Initialize values dynamically based on old value if editing
+            // Init values if editing
             initOldValues();
         });
 
@@ -170,18 +323,17 @@
             if (!selectObj) selectObj = "ALL";
 
             if (selectObj === "ALL") {
-                inputContainer.style.display = "none";
-                // Clear state when swapping
+                inputContainer.classList.add("hidden");
                 txtInput.value = "";
                 $('#chonCanHo').val(null).trigger('change');
                 $('#nhapTang').val("");
             } else {
-                inputContainer.style.display = "block";
+                inputContainer.classList.remove("hidden");
                 
                 if (selectObj === "HO_GIA_DINH" || selectObj === "NHIEU_HO") {
                     labelObj.innerText = selectObj === "HO_GIA_DINH" ? [[#{tb.form.chon_1_ho_gia_dinh}]] : [[#{tb.form.chon_nhieu_ho_gia_dinh}]];
-                    canHoContainer.style.display = "block";
-                    tangContainer.style.display = "none";
+                    canHoContainer.classList.remove("hidden");
+                    tangContainer.classList.add("hidden");
                     
                     if (selectObj === "HO_GIA_DINH") {
                         $('#chonCanHo').select2({ maximumSelectionLength: 1, width: '100%' });
@@ -189,15 +341,12 @@
                         $('#chonCanHo').select2({ maximumSelectionLength: 0, width: '100%' });
                     }
                     
-                    // Trigger change to sync values
                     var vals = $('#chonCanHo').val();
                     txtInput.value = vals ? vals.join(', ') : '';
                 } else if (selectObj === "TANG") {
                     labelObj.innerText = [[#{tb.form.ds_tang_nhan}]];
-                    canHoContainer.style.display = "none";
-                    tangContainer.style.display = "block";
-                    
-                    // Trigger sync
+                    canHoContainer.classList.add("hidden");
+                    tangContainer.classList.remove("hidden");
                     txtInput.value = $('#nhapTang').val();
                 }
             }
@@ -222,23 +371,28 @@
             
             $('form').on('submit', function(e) {
                 var selectObj = $("#doiTuongGui").val();
+                const swalDarkConfig = {
+                    background: '#161B26',
+                    color: '#E2E8F0',
+                    confirmButtonColor: '#0ea5e9'
+                };
+
                 if (selectObj === "HO_GIA_DINH" || selectObj === "NHIEU_HO") {
                     var vals = $('#chonCanHo').val();
                     if (!vals || vals.length === 0) {
                         e.preventDefault();
-                        Swal.fire({ icon: 'warning', title: 'Thiếu thông tin', text: 'Vui lòng chọn ít nhất 1 căn hộ!' });
+                        Swal.fire({ ...swalDarkConfig, icon: 'warning', title: 'Thiếu thông tin', text: 'Vui lòng chọn ít nhất 1 căn hộ!' });
                     }
                 } else if (selectObj === "TANG") {
                     var val = $('#nhapTang').val();
                     if (!val || val.trim() === '') {
                         e.preventDefault();
-                        Swal.fire({ icon: 'warning', title: 'Thiếu thông tin', text: 'Vui lòng nhập tầng!' });
+                        Swal.fire({ ...swalDarkConfig, icon: 'warning', title: 'Thiếu thông tin', text: 'Vui lòng nhập tầng!' });
                     }
                 }
             });
         });
     </script>
-
 </body>
 
 </html>
