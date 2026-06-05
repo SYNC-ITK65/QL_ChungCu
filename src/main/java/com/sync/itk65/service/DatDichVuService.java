@@ -51,12 +51,7 @@ public class DatDichVuService {
         datDichVuRepository.save(donDat);
     }
 
-    public void huyDuyetDonDatDichVu(Long id) {
-        DatDichVu donDat = datDichVuRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn đặt dịch vụ ID: " + id));
-        donDat.setTrangThai("Hủy duyệt");
-        datDichVuRepository.save(donDat);
-    }
+
 
     public void suaLaiTrangThaiChoDuyet(Long id) {
         DatDichVu donDat = datDichVuRepository.findById(id)
@@ -100,7 +95,7 @@ public class DatDichVuService {
         if (trangThai == null || trangThai.isBlank()) return "Chờ duyệt";
         String raw = trangThai.trim();
         String normalized = boDau(raw).toLowerCase();
-        if (normalized.contains("huy") && normalized.contains("duyet")) return "Hủy duyệt";
+
         if (normalized.contains("tu choi")) return "Từ chối";
         if ((normalized.contains("cho") && normalized.contains("duyet")) || normalized.contains("dang ky moi")) return "Chờ duyệt";
         if (normalized.contains("da") && normalized.contains("duyet")) return "Đã duyệt";

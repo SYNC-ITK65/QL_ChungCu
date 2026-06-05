@@ -1,88 +1,174 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
+?<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{kh.form.them_tieude}">Ghi nhận đơn thư mới</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
         }
-        .main-content {
-            flex-grow: 1;
-            padding: 40px;
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-        .form-card {
-            max-width: 600px;
-            margin: auto;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
         }
     </style>
 </head>
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-<body>
+    <!-- Global Sidebar -->
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <div class="main-content">
-        <div class="card form-card">
-            <div class="card-header bg-primary text-white text-center py-3">
-                <h4 class="mb-0" th:text="${kienHang.id != null} ? #{kh.form.sua_tieude} : #{kh.form.them_tieude}">📦 Ghi nhận bưu phẩm mới</h4>
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="${kienHang.id != null} ? #{kh.form.sua_tieude} : #{kh.form.them_tieude}">Ghi nhận bưu phẩm mới</span>
             </div>
-            <div class="card-body p-4">
-                <form th:action="@{/admin/kien-hang/luu}" th:object="${kienHang}" method="POST">
-                    <!-- Giữ lại ID khi sửa -->
-                    <input type="hidden" th:field="*{id}">
-                    <div class="mb-4">
-                        <label class="form-label fw-bold" th:text="#{kh.form.chon_can}">1. Chọn Căn hộ nhận</label>
-                        <select class="form-select" th:field="*{canHo.id}" required>
-                            <option value="" th:text="#{kh.form.chon_can_goi_y}">-- Chọn mã căn hộ --</option>
-                            <option th:each="ch : ${danhSachCanHo}" 
-                                    th:value="${ch.id}" 
-                                    th:text="${ch.maCanHo}"></option>
-                        </select>
-                        <div class="form-text" th:text="#{kh.form.chon_can_hint}">Bưu phẩm sẽ được thông báo đến cư dân thuộc căn hộ này.</div>
-                    </div>
+        </header>
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold" th:text="#{kh.form.nguoi_gui}">2. Người gửi / Đơn vị giao</label>
-                        <input type="text" class="form-control" th:field="*{nguoiGui}" 
-                               th:placeholder="#{kh.form.nguoi_gui_goi_y}" required>
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-3xl mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div class="flex items-center gap-3">
+                    <a th:href="@{/admin/kien-hang}" class="p-2 bg-darkcard border border-darkborder hover:border-brand-500 hover:text-brand-400 text-slate-400 rounded-xl transition group">
+                        <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
+                    </a>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                            <i data-lucide="package-plus" class="w-6 h-6 text-brand-500"></i>
+                            <span th:text="${kienHang.id != null} ? #{kh.form.sua_tieude} : #{kh.form.them_tieude}">Ghi nhận bưu phẩm mới</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Lưu trữ thông tin gói hàng chờ cư dân đến nhận</p>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold" th:text="#{kh.form.nguoi_nhan}">3. Tên người nhận trên gói hàng</label>
-                        <input type="text" class="form-control" th:field="*{nguoiNhan}" 
-                               th:placeholder="#{kh.form.nguoi_nhan_goi_y}" required>
-                    </div>
-
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg shadow">
-                            <i class="bi bi-save"></i> <span th:text="#{kh.form.nut_luu}">Lưu thông tin</span>
-                        </button>
-                        <a th:href="@{/admin/kien-hang}" class="btn btn-light" th:text="#{chung.huy}">Hủy bỏ</a>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+
+            <!-- Form Card -->
+            <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20">
+                <div class="p-6 md:p-8">
+                    <form th:action="@{/admin/kien-hang/luu}" th:object="${kienHang}" method="POST" class="space-y-6">
+                        <!-- Giữ lại ID khi sửa -->
+                        <input type="hidden" th:field="*{id}">
+                        
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-300 block">
+                                <span th:text="#{kh.form.chon_can}">Chọn Căn hộ nhận</span>
+                            </label>
+                            <select th:field="*{canHo.id}" required class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)]">
+                                <option value="" th:text="#{kh.form.chon_can_goi_y}">-- Chọn mã căn hộ --</option>
+                                <option th:each="ch : ${danhSachCanHo}" 
+                                        th:value="${ch.id}" 
+                                        th:text="${ch.maCanHo}"></option>
+                            </select>
+                            <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
+                                <i data-lucide="info" class="w-3.5 h-3.5"></i> <span th:text="#{kh.form.chon_can_hint}">Bưu phẩm sẽ được thông báo đến cư dân thuộc căn hộ này.</span>
+                            </p>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-300 block">
+                                <span th:text="#{kh.form.nguoi_gui}">Người gửi / Đơn vị giao</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="truck" class="w-4 h-4"></i></span>
+                                <input type="text" th:field="*{nguoiGui}" required th:placeholder="#{kh.form.nguoi_gui_goi_y}" placeholder="VD: Shopee, GHTK, Viettel Post..."
+                                       class="w-full bg-darkbg border border-darkborder rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:shadow-[0_0_0_1px_rgba(16,185,129,0.2)] transition">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-300 block">
+                                <span th:text="#{kh.form.nguoi_nhan}">Tên người nhận trên gói hàng</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="user" class="w-4 h-4"></i></span>
+                                <input type="text" th:field="*{nguoiNhan}" required th:placeholder="#{kh.form.nguoi_nhan_goi_y}" placeholder="VD: Nguyễn Văn A"
+                                       class="w-full bg-darkbg border border-darkborder rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 focus:shadow-[0_0_0_1px_rgba(245,158,11,0.2)] transition">
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-darkborder flex flex-col sm:flex-row justify-end gap-3">
+                            <a th:href="@{/admin/kien-hang}" class="py-3 px-6 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-bold transition text-center flex items-center justify-center">
+                                <span th:text="#{chung.huy}">Hủy bỏ</span>
+                            </a>
+                            <button type="submit" class="py-3 px-8 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
+                                <i data-lucide="save" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                                <span th:text="#{kh.form.nut_luu}">Lưu thông tin</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
 
