@@ -113,7 +113,7 @@
                 <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-darkborder">
                     <div>
                         <span th:if="${thongBao.loai == 1}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{tb.loai.tin_tuc}">Bảng tin chung</span>
-                        <span th:if="${tb.loai == 2 || thongBao.loai == 2}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{tb.loai.cam_nang}">Cẩm nang</span>
+                        <span th:if="${thongBao.loai == 2}" class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{tb.loai.cam_nang}">Cẩm nang</span>
                     </div>
                     <span class="text-xs text-slate-500 flex items-center gap-1.5">
                         <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
