@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{duyet.ui.duyet_yeu_cau}">Duyệt Yêu Cầu</title>
+    <title th:text="#{duyet.ui.duyet_yeu_cau}">Duyá»‡t YÃªu Cáº§u</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -74,7 +74,7 @@
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
     <!-- MAIN CONTENT AREA -->
-    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+    <div class="flex-1 flex flex-col min-h-screen">
         
         <!-- TOP HEADER BAR FOR MOBILE (Contains Sidebar Toggle) -->
         <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
@@ -82,7 +82,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{duyet.ui.duyet_yeu_cau}">Duyệt Yêu Cầu</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{duyet.ui.duyet_yeu_cau}">Duyá»‡t YÃªu Cáº§u</span>
             </div>
         </header>
 
@@ -93,39 +93,39 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="clipboard-check" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="#{duyet.ui.quan_ly_yeu_cau_le}">Quản Lý Yêu Cầu Lễ Tân</span>
+                        <span th:text="#{duyet.ui.quan_ly_yeu_cau_le}">Quáº£n LÃ½ YÃªu Cáº§u Lá»… TÃ¢n</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{duyet.ui.duyet_yeu_cau}">Duyệt yêu cầu</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{duyet.ui.duyet_yeu_cau}">Duyá»‡t yÃªu cáº§u</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/duyet-yeu-cau/xuat-excel(tuKhoa=${tuKhoa}, trangThai=${trangThai})}" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-emerald-500/20 flex items-center gap-2">
-                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> <span th:text="#{chung.xuat_excel}">Xuáº¥t Excel</span>
                     </a>
                 </div>
             </div>
 
-            <!-- Form Tìm kiếm & Lọc -->
+            <!-- Form TÃ¬m kiáº¿m & Lá»c -->
             <div class="bg-darkcard p-5 rounded-2xl border border-darkborder mb-6 shadow-lg shadow-black/20">
                 <form th:action="@{/admin/duyet-yeu-cau}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                     <div class="md:col-span-5 space-y-1.5">
-                        <label class="text-xs font-semibold text-slate-300" th:text="#{duyet.ui.tim_kiem_khach}">Tìm kiếm khách</label>
+                        <label class="text-xs font-semibold text-slate-300" th:text="#{duyet.ui.tim_kiem_khach}">TÃ¬m kiáº¿m khÃ¡ch</label>
                         <div class="relative">
                             <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="search" class="w-4 h-4"></i></span>
-                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" th:placeholder="#{duyet.ui.nhap_ten_khach_hoac}" placeholder="Nhập tên khách hoặc CMND/CCCD..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                            <input type="text" name="tuKhoa" th:value="${tuKhoa}" th:placeholder="#{duyet.ui.nhap_ten_khach_hoac}" placeholder="Nháº­p tÃªn khÃ¡ch hoáº·c CMND/CCCD..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
                         </div>
                     </div>
                     <div class="md:col-span-4 space-y-1.5">
-                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</label>
+                        <label class="text-xs font-semibold text-slate-300" th:text="#{hdon.ds.bang_trang_thai}">Tráº¡ng thÃ¡i</label>
                         <select name="trangThai" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-3.5 text-xs text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
-                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Tất cả trạng thái --</option>
-                            <option value="Chờ duyệt" th:selected="${trangThai == 'Chờ duyệt'}" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</option>
-                            <option value="Đã duyệt" th:selected="${trangThai == 'Đã duyệt'}" th:text="#{dv.ds.da_duyet}">Đã duyệt</option>
-                            <option value="Không duyệt" th:selected="${trangThai == 'Không duyệt'}" th:text="#{duyet.ui.khong_duyet}">Không duyệt</option>
+                            <option value="" th:text="#{duyet.ui.tat_ca_trang_thai}">-- Táº¥t cáº£ tráº¡ng thÃ¡i --</option>
+                            <option value="Chá» duyá»‡t" th:selected="${trangThai == 'Chá» duyá»‡t'}" th:text="#{dv.ds.cho_duyet}">Chá» duyá»‡t</option>
+                            <option value="ÄÃ£ duyá»‡t" th:selected="${trangThai == 'ÄÃ£ duyá»‡t'}" th:text="#{dv.ds.da_duyet}">ÄÃ£ duyá»‡t</option>
+                            <option value="KhÃ´ng duyá»‡t" th:selected="${trangThai == 'KhÃ´ng duyá»‡t'}" th:text="#{duyet.ui.khong_duyet}">KhÃ´ng duyá»‡t</option>
                         </select>
                     </div>
                     <div class="md:col-span-3 flex items-end">
                         <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
-                            <i data-lucide="filter" class="w-4 h-4"></i> <span th:text="#{duyet.ui.loc_yeu_cau}">Lọc yêu cầu</span>
+                            <i data-lucide="filter" class="w-4 h-4"></i> <span th:text="#{duyet.ui.loc_yeu_cau}">Lá»c yÃªu cáº§u</span>
                         </button>
                     </div>
                 </form>
@@ -136,7 +136,7 @@
                 <div class="p-4 border-b border-darkborder flex items-center justify-between bg-[#111622]">
                     <h3 class="text-sm font-bold text-white flex items-center gap-2">
                         <i data-lucide="users" class="w-4.5 h-4.5 text-brand-400"></i>
-                        <span th:text="#{duyet.ui.danh_sach_khach_tham}">Danh Sách Khách Thăm</span>
+                        <span th:text="#{duyet.ui.danh_sach_khach_tham}">Danh SÃ¡ch KhÃ¡ch ThÄƒm</span>
                     </h3>
                 </div>
                 
@@ -144,13 +144,13 @@
                     <table class="w-full text-left text-xs whitespace-nowrap">
                         <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
                             <tr>
-                                <th class="px-4 py-3" th:text="#{hd.form.cu_dan_label}">Cư dân</th>
-                                <th class="px-4 py-3" th:text="#{duyet.ui.khach}">Khách</th>
-                                <th class="px-4 py-3" th:text="#{duyet.ui.tg_den}">TG Đến</th>
-                                <th class="px-4 py-3" th:text="#{duyet.ui.tg_di}">TG Đi</th>
-                                <th class="px-4 py-3" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
-                                <th class="px-4 py-3" th:text="#{duyet.ui.tg_duyet}">TG Duyệt</th>
-                                <th class="px-4 py-3 text-center" th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
+                                <th class="px-4 py-3" th:text="#{hd.form.cu_dan_label}">CÆ° dÃ¢n</th>
+                                <th class="px-4 py-3" th:text="#{duyet.ui.khach}">KhÃ¡ch</th>
+                                <th class="px-4 py-3" th:text="#{duyet.ui.tg_den}">TG Äáº¿n</th>
+                                <th class="px-4 py-3" th:text="#{duyet.ui.tg_di}">TG Äi</th>
+                                <th class="px-4 py-3" th:text="#{hdon.ds.bang_trang_thai}">Tráº¡ng thÃ¡i</th>
+                                <th class="px-4 py-3" th:text="#{duyet.ui.tg_duyet}">TG Duyá»‡t</th>
+                                <th class="px-4 py-3 text-center" th:text="#{hdon.ds.bang_hanh_dong}">HÃ nh Ä‘á»™ng</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-darkborder text-slate-300">
@@ -160,23 +160,23 @@
                                 <td class="px-4 py-3 text-slate-400" th:text="${#temporals.format(k.thoiGianDuKien, 'dd-MM HH:mm')}"></td>
                                 <td class="px-4 py-3 text-slate-400" th:text="${k.ngayDi != null ? #temporals.format(k.ngayDi, 'dd-MM HH:mm') : '-'}"></td>
                                 <td class="px-4 py-3">
-                                    <span th:if="${k.trangThai == 'Chờ duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
-                                    <span th:if="${k.trangThai == 'Đã duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{dv.ds.da_duyet}">Đã duyệt</span>
-                                    <span th:if="${k.trangThai == 'Không duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{duyet.ui.khong_duyet}">Không duyệt</span>
+                                    <span th:if="${k.trangThai == 'Chá» duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{dv.ds.cho_duyet}">Chá» duyá»‡t</span>
+                                    <span th:if="${k.trangThai == 'ÄÃ£ duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{dv.ds.da_duyet}">ÄÃ£ duyá»‡t</span>
+                                    <span th:if="${k.trangThai == 'KhÃ´ng duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{duyet.ui.khong_duyet}">KhÃ´ng duyá»‡t</span>
                                 </td>
                                 <td class="px-4 py-3 text-slate-400" th:text="${k.thoiGianDuyet != null ? #temporals.format(k.thoiGianDuyet, 'dd-MM-yyyy HH:mm') : '-'}"></td>
                                 <td class="px-4 py-3 text-center">
-                                    <div th:if="${k.trangThai == 'Chờ duyệt'}" class="flex items-center justify-center gap-2">
+                                    <div th:if="${k.trangThai == 'Chá» duyá»‡t'}" class="flex items-center justify-center gap-2">
                                         <a th:href="@{/admin/duyet-yeu-cau/khach-tham/{id}/duyet(id=${k.id})}" class="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-semibold transition flex items-center gap-1">
-                                            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> <span th:text="#{dv.ds.duyet}">Duyệt</span>
+                                            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> <span th:text="#{dv.ds.duyet}">Duyá»‡t</span>
                                         </a>
                                         <a th:href="@{/admin/duyet-yeu-cau/khach-tham/{id}/khong-duyet(id=${k.id})}" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-xs font-semibold transition flex items-center gap-1">
-                                            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> <span th:text="#{dv.ds.tu_choi}">Từ chối</span>
+                                            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> <span th:text="#{dv.ds.tu_choi}">Tá»« chá»‘i</span>
                                         </a>
                                     </div>
-                                    <div th:if="${k.trangThai != 'Chờ duyệt'}" class="flex items-center justify-center gap-2">
+                                    <div th:if="${k.trangThai != 'Chá» duyá»‡t'}" class="flex items-center justify-center gap-2">
                                         <a th:href="@{/admin/duyet-yeu-cau/khach-tham/{id}/cho-duyet(id=${k.id})}" th:onclick="|return confirm('#{duyet.ui.xac_nhan_hoan_tac}')|" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg text-xs font-semibold transition flex items-center gap-1">
-                                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> <span th:text="#{duyet.ui.hoan_tac}">Hoàn tác</span>
+                                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> <span th:text="#{duyet.ui.hoan_tac}">HoÃ n tÃ¡c</span>
                                         </a>
                                     </div>
                                 </td>
@@ -185,7 +185,7 @@
                                 <td colspan="7" class="px-4 py-8 text-center text-slate-500">
                                     <div class="flex flex-col items-center justify-center gap-2">
                                         <i data-lucide="search-x" class="w-8 h-8 text-slate-600 mb-1"></i>
-                                        <span th:text="#{duyet.ui.khong_tim_thay_yeu_c}">Không tìm thấy yêu cầu nào phù hợp.</span>
+                                        <span th:text="#{duyet.ui.khong_tim_thay_yeu_c}">KhÃ´ng tÃ¬m tháº¥y yÃªu cáº§u nÃ o phÃ¹ há»£p.</span>
                                     </div>
                                 </td>
                             </tr>

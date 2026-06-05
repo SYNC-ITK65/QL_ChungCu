@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{pt.ui.phuong_tien_cua_toi}">Phương Tiện Của Tôi</title>
+    <title th:text="#{pt.ui.phuong_tien_cua_toi}">PhÆ°Æ¡ng Tiá»‡n Cá»§a TÃ´i</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -87,7 +87,7 @@
     <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
     <!-- MAIN CONTENT AREA -->
-    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+    <div class="flex-1 flex flex-col min-h-screen">
         
         <!-- TOP HEADER BAR FOR MOBILE -->
         <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
@@ -95,7 +95,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pt.ui.phuong_tien_cua_toi}">Phương Tiện Của Tôi</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{pt.ui.phuong_tien_cua_toi}">PhÆ°Æ¡ng Tiá»‡n Cá»§a TÃ´i</span>
             </div>
         </header>
 
@@ -107,9 +107,9 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="car" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="#{pt.ui.quan_ly_xe_cua_can}">Quản Lý Xe Của Căn Hộ</span>
+                        <span th:text="#{pt.ui.quan_ly_xe_cua_can}">Quáº£n LÃ½ Xe Cá»§a CÄƒn Há»™</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{pt.ui.phuong_tien_cua_toi}">Đăng ký và quản lý phương tiện cá nhân</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{pt.ui.phuong_tien_cua_toi}">ÄÄƒng kÃ½ vÃ  quáº£n lÃ½ phÆ°Æ¡ng tiá»‡n cÃ¡ nhÃ¢n</p>
                 </div>
             </div>
 
@@ -133,20 +133,20 @@
             <!-- 2-Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 
-                <!-- Col 1: Form Đăng ký -->
+                <!-- Col 1: Form ÄÄƒng kÃ½ -->
                 <div class="lg:col-span-4">
                     <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20">
                         <div class="p-5 border-b border-darkborder bg-[#111622]">
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
                                 <i data-lucide="plus-circle" class="w-4.5 h-4.5 text-brand-400"></i>
-                                <span th:text="#{pt.ui.gui_yeu_cau_dang_ky}">Gửi yêu cầu đăng ký xe</span>
+                                <span th:text="#{pt.ui.gui_yeu_cau_dang_ky}">Gá»­i yÃªu cáº§u Ä‘Äƒng kÃ½ xe</span>
                             </h3>
                         </div>
                         <div class="p-5">
                             <form th:action="@{/cudan/phuong-tien/luu}" th:object="${xeMoi}" method="post" enctype="multipart/form-data" class="space-y-4">
                                 
                                 <div class="space-y-1.5">
-                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.bien_so_xe}">Biển số xe:</label>
+                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.bien_so_xe}">Biá»ƒn sá»‘ xe:</label>
                                     <input type="text" th:field="*{bienSoXe}" th:placeholder="#{pt.ui.vd_59a_123_45}" placeholder="VD: 59A-123.45" 
                                            class="w-full bg-darkbg border rounded-xl py-2 px-3 text-sm text-white placeholder-slate-600 focus:outline-none transition uppercase"
                                            th:classappend="${#fields.hasErrors('bienSoXe')} ? 'border-red-500 focus:border-red-500' : 'border-darkborder focus:border-brand-500'">
@@ -154,67 +154,67 @@
                                 </div>
 
                                 <div class="space-y-1.5">
-                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.loai_xe}">Loại xe:</label>
+                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.loai_xe}">Loáº¡i xe:</label>
                                     <select th:field="*{loaiXe}" 
                                             class="w-full bg-darkbg border rounded-xl py-2 px-3 text-sm text-white focus:outline-none transition appearance-none cursor-pointer"
                                             th:classappend="${#fields.hasErrors('loaiXe')} ? 'border-red-500 focus:border-red-500' : 'border-darkborder focus:border-brand-500'">
-                                        <option value="">-- Chọn loại xe --</option>
-                                        <option value="Xe máy" th:text="#{pt.ui.xe_may}">Xe máy</option>
-                                        <option value="Ô tô" th:text="#{pt.ui.o_to}">Ô tô</option>
-                                        <option value="Xe đạp" th:text="#{pt.ui.xe_dap}">Xe đạp</option>
+                                        <option value="">-- Chá»n loáº¡i xe --</option>
+                                        <option value="Xe mÃ¡y" th:text="#{pt.ui.xe_may}">Xe mÃ¡y</option>
+                                        <option value="Ã” tÃ´" th:text="#{pt.ui.o_to}">Ã” tÃ´</option>
+                                        <option value="Xe Ä‘áº¡p" th:text="#{pt.ui.xe_dap}">Xe Ä‘áº¡p</option>
                                     </select>
                                     <div class="text-[10px] text-red-400 font-semibold" th:if="${#fields.hasErrors('loaiXe')}" th:errors="*{loaiXe}"></div>
                                 </div>
 
                                 <div class="space-y-1.5">
-                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.mau_sac}">Màu sắc:</label>
-                                    <input type="text" th:field="*{mauXe}" placeholder="VD: Đen nhám..." 
+                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.mau_sac}">MÃ u sáº¯c:</label>
+                                    <input type="text" th:field="*{mauXe}" placeholder="VD: Äen nhÃ¡m..." 
                                            class="w-full bg-darkbg border rounded-xl py-2 px-3 text-sm text-white placeholder-slate-600 focus:outline-none transition"
                                            th:classappend="${#fields.hasErrors('mauXe')} ? 'border-red-500 focus:border-red-500' : 'border-darkborder focus:border-brand-500'">
                                     <div class="text-[10px] text-red-400 font-semibold" th:if="${#fields.hasErrors('mauXe')}" th:errors="*{mauXe}"></div>
                                 </div>
 
                                 <div class="space-y-1.5">
-                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.hinh_anh_xe}">Hình ảnh xe:</label>
+                                    <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.hinh_anh_xe}">HÃ¬nh áº£nh xe:</label>
                                     <input type="file" name="fileImage" accept="image/*" 
                                            class="w-full bg-darkbg border rounded-xl py-2 px-3 text-xs text-slate-300 focus:outline-none transition file:border-none file:mr-3"
                                            th:classappend="${#fields.hasErrors('hinhAnh')} ? 'border-red-500 focus:border-red-500' : 'border-darkborder focus:border-brand-500'">
                                     <div class="text-[10px] text-red-400 font-semibold" th:if="${#fields.hasErrors('hinhAnh')}" th:errors="*{hinhAnh}"></div>
-                                    <p class="text-[10px] text-slate-500 mt-1" th:text="#{pt.ui.hinh_anh_xe_help}">Tải lên ảnh của phương tiện để làm căn cứ duyệt (giới hạn 2MB).</p>
+                                    <p class="text-[10px] text-slate-500 mt-1" th:text="#{pt.ui.hinh_anh_xe_help}">Táº£i lÃªn áº£nh cá»§a phÆ°Æ¡ng tiá»‡n Ä‘á»ƒ lÃ m cÄƒn cá»© duyá»‡t (giá»›i háº¡n 2MB).</p>
                                 </div>
 
                                 <div class="pt-3">
                                     <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
-                                        <i data-lucide="send" class="w-4 h-4"></i> <span th:text="#{pt.ui.gui_yeu_cau_dang_ky1}">Gửi yêu cầu đăng ký</span>
+                                        <i data-lucide="send" class="w-4 h-4"></i> <span th:text="#{pt.ui.gui_yeu_cau_dang_ky1}">Gá»­i yÃªu cáº§u Ä‘Äƒng kÃ½</span>
                                     </button>
                                 </div>
                                 <div class="text-[10px] text-amber-500/80 text-center flex items-center justify-center gap-1 mt-2">
-                                    <i data-lucide="info" class="w-3 h-3"></i> <span th:text="#{pt.ui.xe_sau_khi_dang_ky}">* Xe sau khi đăng ký cần chờ BQL duyệt mới được tính hợp lệ.</span>
+                                    <i data-lucide="info" class="w-3 h-3"></i> <span th:text="#{pt.ui.xe_sau_khi_dang_ky}">* Xe sau khi Ä‘Äƒng kÃ½ cáº§n chá» BQL duyá»‡t má»›i Ä‘Æ°á»£c tÃ­nh há»£p lá»‡.</span>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
 
-                <!-- Col 2: Danh sách xe -->
+                <!-- Col 2: Danh sÃ¡ch xe -->
                 <div class="lg:col-span-8">
                     <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20 flex flex-col h-full">
                         <div class="p-5 border-b border-darkborder bg-[#111622] flex items-center justify-between">
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
                                 <i data-lucide="list" class="w-4.5 h-4.5 text-brand-400"></i>
-                                <span th:text="#{pt.ui.xe_cua_can_ho_ban}">Xe của căn hộ bạn</span>
+                                <span th:text="#{pt.ui.xe_cua_can_ho_ban}">Xe cá»§a cÄƒn há»™ báº¡n</span>
                             </h3>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs whitespace-nowrap">
                                 <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
                                     <tr>
-                                        <th class="px-5 py-3" th:text="#{hdon.chitiet.bien_so}">Biển Số</th>
-                                        <th class="px-5 py-3" th:text="#{hdon.chitiet.loai_xe}">Loại Xe</th>
-                                        <th class="px-5 py-3" th:text="#{pt.ui.mau_xe}">Màu Xe</th>
-                                        <th class="px-5 py-3">Hình ảnh</th>
-                                        <th class="px-5 py-3" th:text="#{hdon.ds.bang_trang_thai}">Trạng Thái</th>
-                                        <th class="px-5 py-3 text-center" th:text="#{dv.ds.thao_tac}">Thao tác</th>
+                                        <th class="px-5 py-3" th:text="#{hdon.chitiet.bien_so}">Biá»ƒn Sá»‘</th>
+                                        <th class="px-5 py-3" th:text="#{hdon.chitiet.loai_xe}">Loáº¡i Xe</th>
+                                        <th class="px-5 py-3" th:text="#{pt.ui.mau_xe}">MÃ u Xe</th>
+                                        <th class="px-5 py-3">HÃ¬nh áº£nh</th>
+                                        <th class="px-5 py-3" th:text="#{hdon.ds.bang_trang_thai}">Tráº¡ng ThÃ¡i</th>
+                                        <th class="px-5 py-3 text-center" th:text="#{dv.ds.thao_tac}">Thao tÃ¡c</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-darkborder text-slate-300">
@@ -226,20 +226,20 @@
                                         <td class="px-5 py-3 text-slate-400" th:text="${xe.mauXe}"></td>
                                         <td class="px-5 py-3">
                                             <a th:if="${xe.hinhAnh != null}" th:href="${xe.hinhAnh}" target="_blank" class="block w-12 h-8 rounded-md overflow-hidden border border-slate-700 hover:border-brand-500 transition">
-                                                <img th:src="${xe.hinhAnh}" alt="Ảnh xe" class="w-full h-full object-cover"/>
+                                                <img th:src="${xe.hinhAnh}" alt="áº¢nh xe" class="w-full h-full object-cover"/>
                                             </a>
-                                            <span th:if="${xe.hinhAnh == null}" class="text-[10px] text-slate-500 italic">Không có ảnh</span>
+                                            <span th:if="${xe.hinhAnh == null}" class="text-[10px] text-slate-500 italic">KhÃ´ng cÃ³ áº£nh</span>
                                         </td>
                                         <td class="px-5 py-3">
-                                            <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{pt.ui.dang_cho_bql_duyet}">⏳ Đang chờ BQL duyệt</span>
-                                            <span th:if="${xe.trangThai == 'Đã duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{pt.ui.da_duyet}">✅ Đã duyệt</span>
-                                            <span th:if="${xe.trangThai == 'Từ chối'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{pt.ui.tu_choi}">❌ Từ chối</span>
-                                            <span th:if="${xe.trangThai == 'Hủy duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{pt.ui.huy_duyet}">🚫 Hủy duyệt</span>
-                                            <span th:if="${xe.trangThai != null &amp;&amp; xe.trangThai != 'Chờ duyệt' &amp;&amp; xe.trangThai != 'Đăng ký mới' &amp;&amp; xe.trangThai != 'Đã duyệt' &amp;&amp; xe.trangThai != 'Từ chối' &amp;&amp; xe.trangThai != 'Hủy duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${xe.trangThai}">Trạng thái khác</span>
+                                            <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chá» duyá»‡t' || xe.trangThai == 'ÄÄƒng kÃ½ má»›i'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{pt.ui.dang_cho_bql_duyet}">â³ Äang chá» BQL duyá»‡t</span>
+                                            <span th:if="${xe.trangThai == 'ÄÃ£ duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{pt.ui.da_duyet}">âœ… ÄÃ£ duyá»‡t</span>
+                                            <span th:if="${xe.trangThai == 'Tá»« chá»‘i'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20" th:text="#{pt.ui.tu_choi}">âŒ Tá»« chá»‘i</span>
+                                            <span th:if="${xe.trangThai == 'Há»§y duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{pt.ui.huy_duyet}">ðŸš« Há»§y duyá»‡t</span>
+                                            <span th:if="${xe.trangThai != null &amp;&amp; xe.trangThai != 'Chá» duyá»‡t' &amp;&amp; xe.trangThai != 'ÄÄƒng kÃ½ má»›i' &amp;&amp; xe.trangThai != 'ÄÃ£ duyá»‡t' &amp;&amp; xe.trangThai != 'Tá»« chá»‘i' &amp;&amp; xe.trangThai != 'Há»§y duyá»‡t'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700" th:text="${xe.trangThai}">Tráº¡ng thÃ¡i khÃ¡c</span>
                                         </td>
                                         <td class="px-5 py-3 text-center">
                                             <a th:href="@{/cudan/phuong-tien/xoa/{id}(id=${xe.id})}" th:onclick="|return confirm('#{pt.ui.xac_nhan_huy_dang_ky}')|" class="px-2.5 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-[11px] font-semibold transition flex items-center justify-center gap-1" th:title="#{pt.ui.huy_xoa}">
-                                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> <span th:text="#{pt.ui.huy_xoa}">Hủy/Xóa</span>
+                                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> <span th:text="#{pt.ui.huy_xoa}">Há»§y/XÃ³a</span>
                                             </a>
                                         </td>
                                     </tr>
@@ -247,7 +247,7 @@
                                         <td colspan="6" class="px-5 py-8 text-center text-slate-500">
                                             <div class="flex flex-col items-center justify-center gap-2">
                                                 <i data-lucide="car-front" class="w-8 h-8 text-slate-600 mb-1"></i>
-                                                <span>Bạn chưa đăng ký phương tiện nào.</span>
+                                                <span>Báº¡n chÆ°a Ä‘Äƒng kÃ½ phÆ°Æ¡ng tiá»‡n nÃ o.</span>
                                             </div>
                                         </td>
                                     </tr>

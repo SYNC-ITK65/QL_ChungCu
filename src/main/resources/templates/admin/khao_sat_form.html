@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{ks.form.sua_khao_sat}">Sửa Khảo Sát</title>
+    <title th:text="#{ks.form.sua_khao_sat}">Sá»­a Kháº£o SÃ¡t</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -70,7 +70,7 @@
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
     <!-- MAIN CONTENT AREA -->
-    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+    <div class="flex-1 flex flex-col min-h-screen">
         
         <!-- TOP HEADER BAR FOR MOBILE -->
         <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
@@ -90,13 +90,13 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="edit-3" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="${khaoSat.id == null} ? #{ks.form.them_tieude} : #{ks.form.sua_tieude}">Thêm / Sửa Khảo Sát</span>
+                        <span th:text="${khaoSat.id == null} ? #{ks.form.them_tieude} : #{ks.form.sua_tieude}">ThÃªm / Sá»­a Kháº£o SÃ¡t</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">Thiết lập thông tin và các phương án khảo sát</p>
+                    <p class="text-xs text-slate-400 mt-1">Thiáº¿t láº­p thÃ´ng tin vÃ  cÃ¡c phÆ°Æ¡ng Ã¡n kháº£o sÃ¡t</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/khao-sat}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">
-                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{hdon.form.nut_huy}">Hủy</span>
+                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{hdon.form.nut_huy}">Há»§y</span>
                     </a>
                 </div>
             </div>
@@ -114,9 +114,9 @@
                 <div class="flex items-start gap-3">
                     <i data-lucide="shield-alert" class="w-5 h-5 mt-0.5"></i>
                     <div>
-                        <span th:text="#{ks.form.khao_sat_nay_da_co}" th:remove="tag">Khảo sát này đã có </span>
-                        <strong><span th:text="${khaoSat.tongSoVote}" th:remove="tag"></span> <span th:text="#{ks.chitiet.luot}" th:remove="tag">lượt</span></strong>
-                        <span th:text="#{ks.form.he_thong_da_khoa_ch}" th:remove="tag">. Hệ thống đã khóa chức năng chỉnh sửa các phương án để bảo vệ dữ liệu!</span>
+                        <span th:text="#{ks.form.khao_sat_nay_da_co}" th:remove="tag">Kháº£o sÃ¡t nÃ y Ä‘Ã£ cÃ³ </span>
+                        <strong><span th:text="${khaoSat.tongSoVote}" th:remove="tag"></span> <span th:text="#{ks.chitiet.luot}" th:remove="tag">lÆ°á»£t</span></strong>
+                        <span th:text="#{ks.form.he_thong_da_khoa_ch}" th:remove="tag">. Há»‡ thá»‘ng Ä‘Ã£ khÃ³a chá»©c nÄƒng chá»‰nh sá»­a cÃ¡c phÆ°Æ¡ng Ã¡n Ä‘á»ƒ báº£o vá»‡ dá»¯ liá»‡u!</span>
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                         <!-- Title -->
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="type" class="w-4 h-4 text-brand-400"></i> <span th:text="#{ks.form.tieu_de_khao_sat}">Tiêu đề khảo sát *</span>
+                                <i data-lucide="type" class="w-4 h-4 text-brand-400"></i> <span th:text="#{ks.form.tieu_de_khao_sat}">TiÃªu Ä‘á» kháº£o sÃ¡t *</span>
                             </label>
                             <input type="text" th:field="*{tieuDe}" class="w-full bg-darkbg border rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none transition"
                                    th:classappend="${#fields.hasErrors('tieuDe')} ? 'border-red-500 focus:border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.2)]' : 'border-darkborder focus:border-brand-500 focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)]'">
@@ -142,7 +142,7 @@
                         <!-- Description -->
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="align-left" class="w-4 h-4 text-brand-400"></i> <span th:text="#{dv.ds.mo_ta}">Mô tả</span>
+                                <i data-lucide="align-left" class="w-4 h-4 text-brand-400"></i> <span th:text="#{dv.ds.mo_ta}">MÃ´ táº£</span>
                             </label>
                             <textarea th:field="*{moTa}" rows="3" class="w-full bg-darkbg border rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none transition resize-none"
                                       th:classappend="${#fields.hasErrors('moTa')} ? 'border-red-500 focus:border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.2)]' : 'border-darkborder focus:border-brand-500 focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)]'"></textarea>
@@ -155,7 +155,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                    <i data-lucide="calendar-plus" class="w-4 h-4 text-emerald-400"></i> <span th:text="#{ks.form.thoi_gian_bat_dau}">Thời gian bắt đầu *</span>
+                                    <i data-lucide="calendar-plus" class="w-4 h-4 text-emerald-400"></i> <span th:text="#{ks.form.thoi_gian_bat_dau}">Thá»i gian báº¯t Ä‘áº§u *</span>
                                 </label>
                                 <input type="datetime-local" th:field="*{thoiGianBatDau}" th:readonly="${khaoSat.id != null}" 
                                        class="w-full bg-darkbg border rounded-xl py-3 px-4 text-sm text-white focus:outline-none transition"
@@ -166,7 +166,7 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                    <i data-lucide="calendar-off" class="w-4 h-4 text-rose-400"></i> <span th:text="#{ks.form.thoi_gian_ket_thuc}">Thời gian kết thúc *</span>
+                                    <i data-lucide="calendar-off" class="w-4 h-4 text-rose-400"></i> <span th:text="#{ks.form.thoi_gian_ket_thuc}">Thá»i gian káº¿t thÃºc *</span>
                                 </label>
                                 <input type="datetime-local" th:field="*{thoiGianKetThuc}" 
                                        class="w-full bg-darkbg border rounded-xl py-3 px-4 text-sm text-white focus:outline-none transition"
@@ -182,7 +182,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h5 class="text-sm font-bold text-white flex items-center gap-2">
                                 <i data-lucide="list-checks" class="w-4.5 h-4.5 text-brand-400"></i>
-                                <span th:text="#{ks.form.cac_phuong_an_binh_c}">Các phương án bình chọn</span>
+                                <span th:text="#{ks.form.cac_phuong_an_binh_c}">CÃ¡c phÆ°Æ¡ng Ã¡n bÃ¬nh chá»n</span>
                             </h5>
                         </div>
 
@@ -214,17 +214,17 @@
 
                         <div class="pt-2">
                             <button th:if="${khaoSat.tongSoVote == 0}" type="button" class="py-2.5 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-bold transition flex items-center gap-2 border-dashed" onclick="themPhuongAn()">
-                                <i data-lucide="plus" class="w-4 h-4"></i> <span th:text="#{ks.form.them_phuong_an}">Thêm phương án</span>
+                                <i data-lucide="plus" class="w-4 h-4"></i> <span th:text="#{ks.form.them_phuong_an}">ThÃªm phÆ°Æ¡ng Ã¡n</span>
                             </button>
                         </div>
 
                         <div class="pt-8 border-t border-darkborder flex flex-col sm:flex-row justify-end gap-3">
                             <a th:href="@{/admin/khao-sat}" class="py-3 px-6 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-bold transition text-center flex items-center justify-center">
-                                <span th:text="#{hdon.form.nut_huy}">Hủy</span>
+                                <span th:text="#{hdon.form.nut_huy}">Há»§y</span>
                             </a>
                             <button type="submit" class="py-3 px-8 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
                                 <i data-lucide="save" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
-                                <span th:text="#{ks.form.luu_du_lieu}">Lưu Dữ Liệu</span>
+                                <span th:text="#{ks.form.luu_du_lieu}">LÆ°u Dá»¯ Liá»‡u</span>
                             </button>
                         </div>
                     </form>
@@ -241,12 +241,12 @@
             }
         });
 
-        // Lấy số lượng phương án hiện tại để đánh index cho đúng (giúp Spring Boot map được dữ liệu)
+        // Láº¥y sá»‘ lÆ°á»£ng phÆ°Æ¡ng Ã¡n hiá»‡n táº¡i Ä‘á»ƒ Ä‘Ã¡nh index cho Ä‘Ãºng (giÃºp Spring Boot map Ä‘Æ°á»£c dá»¯ liá»‡u)
         let luaChonIndex = /*[[${khaoSat.danhSachLuaChon != null ? khaoSat.danhSachLuaChon.size() : 0}]]*/ 0;
 
         function themPhuongAn() {
             const container = document.getElementById('phuongAnContainer');
-            const placeholderText = /*[[#{ks.form.nhap_ten_phuong_an}]]*/ 'Nhập tên phương án';
+            const placeholderText = /*[[#{ks.form.nhap_ten_phuong_an}]]*/ 'Nháº­p tÃªn phÆ°Æ¡ng Ã¡n';
             const html = `
                 <div class="phuong-an-item">
                     <div class="flex gap-2 items-start">
@@ -269,11 +269,11 @@
         }
 
         function xoaPhuongAn(btn) {
-            // Yêu cầu ít nhất 2 phương án
+            // YÃªu cáº§u Ã­t nháº¥t 2 phÆ°Æ¡ng Ã¡n
             if (document.querySelectorAll('.phuong-an-item').length > 2) {
                 btn.closest('.phuong-an-item').remove();
             } else {
-                alert(/*[[#{ks.form.it_nhat_2_phuong_an}]]*/ "Khảo sát phải có ít nhất 2 phương án");
+                alert(/*[[#{ks.form.it_nhat_2_phuong_an}]]*/ "Kháº£o sÃ¡t pháº£i cÃ³ Ã­t nháº¥t 2 phÆ°Æ¡ng Ã¡n");
             }
         }
     </script>

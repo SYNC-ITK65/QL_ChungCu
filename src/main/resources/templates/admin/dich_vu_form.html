@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{dv.form.thong_tin_dich_vu}">Thông tin Dịch vụ</title>
+    <title th:text="#{dv.form.thong_tin_dich_vu}">ThÃ´ng tin Dá»‹ch vá»¥</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -71,7 +71,7 @@
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
     <!-- MAIN CONTENT AREA -->
-    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+    <div class="flex-1 flex flex-col min-h-screen">
         
         <!-- TOP HEADER BAR FOR MOBILE -->
         <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
@@ -79,7 +79,7 @@
                 <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{dv.form.thong_tin_dich_vu}">Thông tin Dịch vụ</span>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{dv.form.thong_tin_dich_vu}">ThÃ´ng tin Dá»‹ch vá»¥</span>
             </div>
         </header>
 
@@ -91,13 +91,13 @@
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
                         <i data-lucide="settings-2" class="w-6 h-6 text-brand-500"></i>
-                        <span th:text="${dichVu.id == null} ? #{dv.form.them_tieude} : #{dv.form.sua_tieude}">Thêm Dịch Vụ Mới</span>
+                        <span th:text="${dichVu.id == null} ? #{dv.form.them_tieude} : #{dv.form.sua_tieude}">ThÃªm Dá»‹ch Vá»¥ Má»›i</span>
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.form.thong_tin_dich_vu}">Cập nhật thông tin chi tiết dịch vụ nội khu</p>
+                    <p class="text-xs text-slate-400 mt-1" th:text="#{dv.form.thong_tin_dich_vu}">Cáº­p nháº­t thÃ´ng tin chi tiáº¿t dá»‹ch vá»¥ ná»™i khu</p>
                 </div>
                 <div class="flex gap-2">
                     <a th:href="@{/admin/dich-vu}" class="px-4 py-2 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-medium transition flex items-center gap-2">
-                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{dv.form.huy_bo}">Hủy Bỏ</span>
+                        <i data-lucide="corner-up-left" class="w-4 h-4"></i> <span th:text="#{dv.form.huy_bo}">Há»§y Bá»</span>
                     </a>
                 </div>
             </div>
@@ -110,19 +110,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="tag" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.ten_dich_vu}">Tên Dịch Vụ</span> <span class="text-red-400">*</span>
+                                <i data-lucide="tag" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.ten_dich_vu}">TÃªn Dá»‹ch Vá»¥</span> <span class="text-red-400">*</span>
                             </label>
-                            <input type="text" th:field="*{ten}" required th:placeholder="#{dv.form.vi_du_tien_nuoc}" placeholder="Ví dụ: Tiền nước" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                            <input type="text" th:field="*{ten}" required th:placeholder="#{dv.form.vi_du_tien_nuoc}" placeholder="VÃ­ dá»¥: Tiá»n nÆ°á»›c" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
                         </div>
                         
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="layers" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.loai_dich_vu}">Loại Dịch Vụ</span> <span class="text-red-400">*</span>
+                                <i data-lucide="layers" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.loai_dich_vu}">Loáº¡i Dá»‹ch Vá»¥</span> <span class="text-red-400">*</span>
                             </label>
                             <select th:field="*{loai}" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
-                                <option value="Cơ bản" th:text="#{dv.form.co_ban_dien_nuoc}">Cơ bản (Điện/Nước)</option>
-                                <option value="Cố định" th:text="#{dv.form.co_dinh_quan_ly_phi}">Cố định (Quản lý/Phí rác)</option>
-                                <option value="Tự chọn" th:text="#{dv.form.tu_chon_be_boi_gym}">Tự chọn (Bể bơi/Gym)</option>
+                                <option value="CÆ¡ báº£n" th:text="#{dv.form.co_ban_dien_nuoc}">CÆ¡ báº£n (Äiá»‡n/NÆ°á»›c)</option>
+                                <option value="Cá»‘ Ä‘á»‹nh" th:text="#{dv.form.co_dinh_quan_ly_phi}">Cá»‘ Ä‘á»‹nh (Quáº£n lÃ½/PhÃ­ rÃ¡c)</option>
+                                <option value="Tá»± chá»n" th:text="#{dv.form.tu_chon_be_boi_gym}">Tá»± chá»n (Bá»ƒ bÆ¡i/Gym)</option>
                             </select>
                         </div>
                     </div>
@@ -130,32 +130,32 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="banknote" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.don_gia}">Đơn Giá</span> <span class="text-red-400">*</span>
+                                <i data-lucide="banknote" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.don_gia}">ÄÆ¡n GiÃ¡</span> <span class="text-red-400">*</span>
                             </label>
                             <input type="number" step="0.01" th:field="*{donGia}" required placeholder="0.00" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-emerald-400 font-medium placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
                         </div>
                         
                         <div class="space-y-2">
                             <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="scale" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.don_vi_tinh}">Đơn Vị Tính</span> <span class="text-red-400">*</span>
+                                <i data-lucide="scale" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.don_vi_tinh}">ÄÆ¡n Vá»‹ TÃ­nh</span> <span class="text-red-400">*</span>
                             </label>
-                            <input type="text" th:field="*{donViTinh}" required th:placeholder="#{dv.form.vi_du_kwh_m3_thang}" placeholder="Ví dụ: kWh, m3, Tháng" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+                            <input type="text" th:field="*{donViTinh}" required th:placeholder="#{dv.form.vi_du_kwh_m3_thang}" placeholder="VÃ­ dá»¥: kWh, m3, ThÃ¡ng" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
                         </div>
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
-                            <i data-lucide="align-left" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.mo_ta_chi_tiet}">Mô Tả Chi Tiết</span>
+                            <i data-lucide="align-left" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.mo_ta_chi_tiet}">MÃ´ Táº£ Chi Tiáº¿t</span>
                         </label>
-                        <textarea th:field="*{moTa}" rows="4" th:placeholder="#{dv.form.nhap_ghi_chu_them_ve}" placeholder="Nhập ghi chú thêm về dịch vụ..." class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition resize-none"></textarea>
+                        <textarea th:field="*{moTa}" rows="4" th:placeholder="#{dv.form.nhap_ghi_chu_them_ve}" placeholder="Nháº­p ghi chÃº thÃªm vá» dá»‹ch vá»¥..." class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition resize-none"></textarea>
                     </div>
 
                     <div class="pt-4 flex flex-col sm:flex-row gap-3 border-t border-darkborder">
                         <button type="submit" class="flex-1 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
-                            <i data-lucide="save" class="w-5 h-5"></i> <span th:text="#{dv.form.luu_dich_vu}">Lưu Dịch Vụ</span>
+                            <i data-lucide="save" class="w-5 h-5"></i> <span th:text="#{dv.form.luu_dich_vu}">LÆ°u Dá»‹ch Vá»¥</span>
                         </button>
                         <a th:href="@{/admin/dich-vu}" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 text-center">
-                            <i data-lucide="x" class="w-5 h-5"></i> <span th:text="#{dv.form.huy_bo}">Hủy Bỏ</span>
+                            <i data-lucide="x" class="w-5 h-5"></i> <span th:text="#{dv.form.huy_bo}">Há»§y Bá»</span>
                         </a>
                     </div>
                 </form>

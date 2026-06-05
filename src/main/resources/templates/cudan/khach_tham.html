@@ -1,161 +1,363 @@
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+﻿<!DOCTYPE html>
+<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{kt.ui.dang_ky_khach_tham}">Đăng ký Khách Thăm</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{kt.ui.dang_ky_khach_tham}">ÄÄƒng kÃ½ KhÃ¡ch ThÄƒm</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+        /* Modal transition styles */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 300ms ease-out, transform 300ms ease-out;
+        }
+        .modal-leave {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-leave-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 200ms ease-in, transform 200ms ease-in;
+        }
+        /* Style for datetime-local in dark mode */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body>
-<div class="d-flex">
-    <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
+<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
 
-    <div class="main-content p-4 w-100 bg-light">
-        <h2 class="mb-4" th:text="#{kt.ui.quan_ly_dang_ky_kha}">📝 Quản Lý Đăng Ký Khách Thăm</h2>
+    <!-- Global Sidebar -->
+    <div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
 
-        <div th:if="${thongBaoThanhCong}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <span th:text="${thongBaoThanhCong}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div th:if="${thongBaoLoi}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <span th:text="${thongBaoLoi}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-h-screen">
+        
+        <!-- TOP HEADER BAR FOR MOBILE -->
+        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{kt.ui.dang_ky_khach_tham}">ÄÄƒng kÃ½ KhÃ¡ch ThÄƒm</span>
+            </div>
+        </header>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0" th:text="#{kt.ui.dang_ky_khach_moi}">Đăng ký khách mới</h5>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/cudan/khach-tham/luu}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold"><span th:text="#{kt.ui.ten_khach_tham}" th:remove="tag">Tên khách thăm </span><span class="text-danger">*</span></label>
-                                <input type="text" name="tenKhach" class="form-control" th:value="${oldTenKhach}" placeholder="Vd: Lê A..." required th:placeholder="#{kt.ui.nhap_ten_khach}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" th:text="|#{chung.cccd} *|">CMND/CCCD *</label>
-                                <input type="text" name="cmnd" class="form-control" th:value="${oldCmnd}" placeholder="Nhập 9 hoặc 12 số..." required th:placeholder="#{kt.ui.nhap_so_cmnd_cccd}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" th:text="#{kt.ui.bien_so_xe}">Biển số xe</label>
-                                <input type="text" name="bienSoXe" class="form-control" th:value="${oldBienSo}" placeholder="Vd: 51A-123.45" th:placeholder="#{kt.ui.mau_bien_so}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold"><span th:text="#{kt.ui.thoi_gian_du_kien_de}" th:remove="tag">Thời gian dự kiến đến </span><span class="text-danger">*</span></label>
-                                <input type="datetime-local" name="thoiGianDuKien" th:value="${oldThoiGian}" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold"><span th:text="#{kt.ui.thoi_gian_du_kien_di}" th:remove="tag">Thời gian dự kiến đi </span><span class="text-danger">*</span></label>
-                                <input type="datetime-local" name="ngayDi" th:value="${oldNgayDi}" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 fw-bold" th:text="#{kt.ui.gui_dang_ky}">Gửi đăng ký</button>
-                        </form>
-                    </div>
-                </div>
+        <!-- MAIN SCROLLABLE WRAPPER -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto flex flex-col justify-start">
+            
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="users" class="w-6 h-6 text-brand-500"></i>
+                    <span th:text="#{kt.ui.quan_ly_dang_ky_kha}">Quáº£n LÃ½ ÄÄƒng KÃ½ KhÃ¡ch ThÄƒm</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">ÄÄƒng kÃ½ vÃ  theo dÃµi khÃ¡ch Ä‘áº¿n thÄƒm cÄƒn há»™ cá»§a báº¡n</p>
             </div>
 
-            <div class="col-md-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-secondary text-white">
-                        <h5 class="mb-0" th:text="#{kt.ui.lich_su_dang_ky_khac}">Lịch sử đăng ký khách thăm</h5>
+            <!-- Notifications -->
+            <div th:if="${thongBaoThanhCong}" class="mb-6 flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    <strong th:text="${thongBaoThanhCong}"></strong>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-emerald-400 hover:text-emerald-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            
+            <div th:if="${thongBaoLoi}" class="mb-6 flex items-center justify-between p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm font-medium shadow-lg shadow-black/20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                    <strong th:text="${thongBaoLoi}"></strong>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-32">
+                
+                <!-- COLUMN 1: Form ÄÄƒng kÃ½ -->
+                <div class="xl:col-span-4">
+                    <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20 sticky top-24">
+                        <div class="p-5 border-b border-darkborder bg-[#111622]">
+                            <h5 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="user-plus" class="w-4.5 h-4.5 text-brand-400"></i>
+                                <span th:text="#{kt.ui.dang_ky_khach_moi}">ÄÄƒng kÃ½ khÃ¡ch má»›i</span>
+                            </h5>
+                        </div>
+                        
+                        <div class="p-5 md:p-6">
+                            <form th:action="@{/cudan/khach-tham/luu}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;" class="space-y-4">
+                                
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-semibold text-slate-300 block">
+                                        <span th:text="#{kt.ui.ten_khach_tham}" th:remove="tag">TÃªn khÃ¡ch thÄƒm </span> <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input type="text" name="tenKhach" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition" th:value="${oldTenKhach}" placeholder="Vd: LÃª A..." required th:placeholder="#{kt.ui.nhap_ten_khach}">
+                                </div>
+                                
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-semibold text-slate-300 block">
+                                        <span th:text="#{chung.cccd}">CMND/CCCD</span> <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input type="text" name="cmnd" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition" th:value="${oldCmnd}" placeholder="Nháº­p 9 hoáº·c 12 sá»‘..." required th:placeholder="#{kt.ui.nhap_so_cmnd_cccd}">
+                                </div>
+                                
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-semibold text-slate-300 block" th:text="#{kt.ui.bien_so_xe}">Biá»ƒn sá»‘ xe</label>
+                                    <input type="text" name="bienSoXe" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition" th:value="${oldBienSo}" placeholder="Vd: 51A-123.45" th:placeholder="#{kt.ui.mau_bien_so}">
+                                </div>
+                                
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-semibold text-slate-300 block">
+                                        <span th:text="#{kt.ui.thoi_gian_du_kien_de}" th:remove="tag">Thá»i gian dá»± kiáº¿n Ä‘áº¿n </span> <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input type="datetime-local" name="thoiGianDuKien" th:value="${oldThoiGian}" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition" required>
+                                </div>
+                                
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-semibold text-slate-300 block">
+                                        <span th:text="#{kt.ui.thoi_gian_du_kien_di}" th:remove="tag">Thá»i gian dá»± kiáº¿n Ä‘i </span> <span class="text-rose-500">*</span>
+                                    </label>
+                                    <input type="datetime-local" name="ngayDi" th:value="${oldNgayDi}" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition" required>
+                                </div>
+                                
+                                <div class="pt-3">
+                                    <button type="submit" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold transition-all duration-300 shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 group">
+                                        <i data-lucide="send" class="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                                        <span th:text="#{kt.ui.gui_dang_ky}">Gá»­i Ä‘Äƒng kÃ½</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-body p-0">
-                        <table class="table table-hover table-bordered mb-0 text-center align-middle no-paging">
-                            <thead class="table-light">
-                            <tr>
-                                <th th:text="#{kt.ui.ten_khach}">Tên khách</th>
-                                <th th:text="#{chung.cccd}">CMND/CCCD</th>
-                                <th th:text="#{kt.ui.bien_so_xe}">Biển số xe</th>
-                                <th th:text="#{kt.ui.tg_du_kien_den}">TG Dự kiến đến</th>
-                                <th th:text="#{kt.ui.tg_du_kien_di}">TG Dự kiến đi</th>
-                                <th th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
-                                <th th:text="#{hdon.ds.bang_hanh_dong}">Hành động</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="khach : ${lichSuKhach}">
-                                <td th:text="${khach.tenKhach}"></td>
-                                <td th:text="${khach.cmnd}"></td>
-                                <td th:text="${khach.bienSoXe}"></td>
-                                <td th:text="${#temporals.format(khach.thoiGianDuKien, 'dd-MM-yyyy HH:mm')}"></td>
-                                <td th:text="${khach.ngayDi != null ? #temporals.format(khach.ngayDi, 'dd-MM-yyyy HH:mm') : '-'}"></td>
+                </div>
 
-                                <td>
-                                    <span class="badge" th:classappend="${khach.trangThai == 'Đã duyệt' ? 'bg-success' : (khach.trangThai == 'Không duyệt' ? 'bg-danger' : 'bg-warning text-dark')}">
-                                        <th:block th:if="${khach.trangThai == 'Chờ duyệt'}" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</th:block>
-                                        <th:block th:if="${khach.trangThai == 'Đã duyệt'}" th:text="#{dv.ds.da_duyet}">Đã duyệt</th:block>
-                                        <th:block th:if="${khach.trangThai == 'Không duyệt'}" th:text="#{duyet.ui.khong_duyet}">Không duyệt</th:block>
-                                    </span>
-                                </td>
+                <!-- COLUMN 2: Lá»‹ch sá»­ -->
+                <div class="xl:col-span-8">
+                    <div class="bg-darkcard rounded-3xl border border-darkborder overflow-hidden shadow-lg shadow-black/20 flex flex-col h-full">
+                        <div class="p-5 border-b border-darkborder bg-[#111622] flex items-center justify-between">
+                            <h5 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="history" class="w-4.5 h-4.5 text-brand-400"></i>
+                                <span th:text="#{kt.ui.lich_su_dang_ky_khac}">Lá»‹ch sá»­ Ä‘Äƒng kÃ½ khÃ¡ch thÄƒm</span>
+                            </h5>
+                        </div>
+                        
+                        <div class="overflow-x-auto flex-grow">
+                            <table class="w-full text-left text-xs whitespace-nowrap">
+                                <thead class="bg-[#111622] text-slate-400 border-b border-darkborder uppercase tracking-wider text-[10px] font-semibold">
+                                    <tr>
+                                        <th class="px-5 py-3" th:text="#{kt.ui.ten_khach}">TÃªn khÃ¡ch</th>
+                                        <th class="px-4 py-3" th:text="#{chung.cccd}">CMND/CCCD</th>
+                                        <th class="px-4 py-3" th:text="#{kt.ui.bien_so_xe}">Biá»ƒn sá»‘ xe</th>
+                                        <th class="px-4 py-3" th:text="#{kt.ui.tg_du_kien_den}">TG Dá»± kiáº¿n Ä‘áº¿n</th>
+                                        <th class="px-4 py-3" th:text="#{kt.ui.tg_du_kien_di}">TG Dá»± kiáº¿n Ä‘i</th>
+                                        <th class="px-4 py-3" th:text="#{hdon.ds.bang_trang_thai}">Tráº¡ng thÃ¡i</th>
+                                        <th class="px-5 py-3 text-right" th:text="#{hdon.ds.bang_hanh_dong}">HÃ nh Ä‘á»™ng</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-darkborder text-slate-300">
+                                    <tr th:each="khach : ${lichSuKhach}" class="hover:bg-slate-800/30 transition">
+                                        <td class="px-5 py-3 font-bold text-brand-400" th:text="${khach.tenKhach}"></td>
+                                        <td class="px-4 py-3 font-mono text-slate-400" th:text="${khach.cmnd}"></td>
+                                        <td class="px-4 py-3 text-white font-medium">
+                                            <span th:if="${khach.bienSoXe != null && !khach.bienSoXe.isEmpty()}" class="px-2 py-0.5 border border-slate-600 rounded bg-slate-800 text-[10px]" th:text="${khach.bienSoXe}"></span>
+                                            <span th:if="${khach.bienSoXe == null || khach.bienSoXe.isEmpty()}" class="text-slate-600">-</span>
+                                        </td>
+                                        <td class="px-4 py-3 text-emerald-400" th:text="${#temporals.format(khach.thoiGianDuKien, 'dd-MM-yyyy HH:mm')}"></td>
+                                        <td class="px-4 py-3 text-amber-400" th:text="${khach.ngayDi != null ? #temporals.format(khach.ngayDi, 'dd-MM-yyyy HH:mm') : '-'}"></td>
+                                        
+                                        <td class="px-4 py-3">
+                                            <span th:classappend="${khach.trangThai == 'ÄÃ£ duyá»‡t' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : (khach.trangThai == 'KhÃ´ng duyá»‡t' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20')}" class="px-2.5 py-1 rounded-md text-[10px] font-bold border">
+                                                <th:block th:if="${khach.trangThai == 'Chá» duyá»‡t'}" th:text="#{dv.ds.cho_duyet}">Chá» duyá»‡t</th:block>
+                                                <th:block th:if="${khach.trangThai == 'ÄÃ£ duyá»‡t'}" th:text="#{dv.ds.da_duyet}">ÄÃ£ duyá»‡t</th:block>
+                                                <th:block th:if="${khach.trangThai == 'KhÃ´ng duyá»‡t'}" th:text="#{duyet.ui.khong_duyet}">KhÃ´ng duyá»‡t</th:block>
+                                            </span>
+                                        </td>
+                                        
+                                        <td class="px-5 py-3 text-right">
+                                            <div class="flex items-center justify-end gap-1.5" th:if="${khach.trangThai == 'Chá» duyá»‡t'}">
+                                                <button type="button" th:onclick="'openModal(\'modalSuaKhach' + ${khach.id} + '\')'" class="inline-flex items-center justify-center w-7 h-7 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 rounded-lg transition" th:title="#{hdon.ds.nut_sua}">
+                                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                                <a th:href="@{/cudan/khach-tham/xoa/{id}(id=${khach.id})}" th:onclick="|return confirm('#{kt.ui.xac_nhan_huy}')|" class="inline-flex items-center justify-center w-7 h-7 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-lg transition" th:title="#{hdon.form.nut_huy}">
+                                                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                                </a>
+                                            </div>
+                                            
+                                            <!-- Custom Modal Sá»­a khÃ¡ch -->
+                                            <div th:id="'modalSuaKhach' + ${khach.id}" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                                                <!-- Overlay -->
+                                                <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" aria-hidden="true" th:onclick="'closeModal(\'modalSuaKhach' + ${khach.id} + '\')'"></div>
 
-                                <td>
-                                    <th:block th:if="${khach.trangThai == 'Chờ duyệt'}">
-                                        <button type="button" class="btn btn-sm btn-primary fw-bold px-2 mb-1" data-bs-toggle="modal" th:data-bs-target="'#modalSuaKhach' + ${khach.id}" th:text="#{hdon.ds.nut_sua}">Sửa</button>
-                                        <a th:href="@{/cudan/khach-tham/xoa/{id}(id=${khach.id})}" class="btn btn-sm btn-danger fw-bold px-2 mb-1" th:onclick="|return confirm('#{kt.ui.xac_nhan_huy}')|" th:text="#{hdon.form.nut_huy}">Hủy</a>
-                                    </th:block>
-                                    <!-- Modal sửa khách -->
-                                    <div class="modal fade" th:id="'modalSuaKhach' + ${khach.id}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <form th:action="@{/cudan/khach-tham/sua}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
-                                                <div class="modal-content">
-                                                    <div class="modal-header bg-primary text-white">
-                                                        <h5 class="modal-title" th:text="#{kt.ui.sua_thong_tin_khach}">Sửa thông tin khách thăm</h5>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body text-start">
-                                                        <input type="hidden" name="id" th:value="${khach.id}">
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold" th:text="#{kt.ui.ten_khach}">Tên khách</label>
-                                                            <input type="text" name="tenKhach" class="form-control" th:value="${khach.tenKhach}" required>
+                                                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                                                    <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                                                        <!-- Modal Panel -->
+                                                        <div class="relative transform overflow-hidden rounded-3xl bg-darkcard border border-darkborder text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                                                            <form th:action="@{/cudan/khach-tham/sua}" method="post" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
+                                                                <input type="hidden" name="id" th:value="${khach.id}">
+                                                                
+                                                                <div class="px-6 py-4 border-b border-darkborder bg-[#111622] flex items-center justify-between">
+                                                                    <h3 class="text-base font-bold text-white flex items-center gap-2" th:text="#{kt.ui.sua_thong_tin_khach}">Sá»­a thÃ´ng tin khÃ¡ch thÄƒm</h3>
+                                                                    <button type="button" th:onclick="'closeModal(\'modalSuaKhach' + ${khach.id} + '\')'" class="text-slate-400 hover:text-white transition">
+                                                                        <i data-lucide="x" class="w-5 h-5"></i>
+                                                                    </button>
+                                                                </div>
+                                                                
+                                                                <div class="px-6 py-5 space-y-4">
+                                                                    <div class="space-y-1.5">
+                                                                        <label class="text-xs font-semibold text-slate-300 block" th:text="#{kt.ui.ten_khach}">TÃªn khÃ¡ch</label>
+                                                                        <input type="text" name="tenKhach" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition" th:value="${khach.tenKhach}" required>
+                                                                    </div>
+                                                                    
+                                                                    <div class="space-y-1.5">
+                                                                        <label class="text-xs font-semibold text-slate-300 block" th:text="#{chung.cccd}">CMND/CCCD</label>
+                                                                        <input type="text" name="cmnd" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition" th:value="${khach.cmnd}" required>
+                                                                    </div>
+                                                                    
+                                                                    <div class="space-y-1.5">
+                                                                        <label class="text-xs font-semibold text-slate-300 block" th:text="#{kt.ui.bien_so_xe}">Biá»ƒn sá»‘ xe</label>
+                                                                        <input type="text" name="bienSoXe" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition" th:value="${khach.bienSoXe}">
+                                                                    </div>
+                                                                    
+                                                                    <div class="space-y-1.5">
+                                                                        <label class="text-xs font-semibold text-slate-300 block" th:text="#{kt.ui.thoi_gian_du_kien_de}">Thá»i gian dá»± kiáº¿n Ä‘áº¿n</label>
+                                                                        <input type="datetime-local" name="thoiGianDuKien" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition" th:value="${khach.thoiGianDuKien}" required>
+                                                                    </div>
+                                                                    
+                                                                    <div class="space-y-1.5">
+                                                                        <label class="text-xs font-semibold text-slate-300 block" th:text="#{kt.ui.thoi_gian_du_kien_di}">Thá»i gian dá»± kiáº¿n Ä‘i</label>
+                                                                        <input type="datetime-local" name="ngayDi" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition" th:value="${khach.ngayDi}" required>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="px-6 py-4 border-t border-darkborder bg-[#111622] flex items-center justify-end gap-3">
+                                                                    <button type="button" th:onclick="'closeModal(\'modalSuaKhach' + ${khach.id} + '\')'" class="py-2 px-4 bg-transparent hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-lg text-xs font-bold transition" th:text="#{tttv.ds.dong}">ÄÃ³ng</button>
+                                                                    <button type="submit" class="py-2 px-5 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold transition shadow-lg shadow-brand-500/25" th:text="#{hdon.ui.luu_thay_doi}">LÆ°u thay Ä‘á»•i</button>
+                                                                </div>
+                                                            </form>
                                                         </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold" th:text="#{chung.cccd}">CMND/CCCD</label>
-                                                            <input type="text" name="cmnd" class="form-control" th:value="${khach.cmnd}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold" th:text="#{kt.ui.bien_so_xe}">Biển số xe</label>
-                                                            <input type="text" name="bienSoXe" class="form-control" th:value="${khach.bienSoXe}">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold" th:text="#{kt.ui.thoi_gian_du_kien_de}">Thời gian dự kiến đến</label>
-                                                            <input type="datetime-local" name="thoiGianDuKien" class="form-control" th:value="${khach.thoiGianDuKien}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold" th:text="#{kt.ui.thoi_gian_du_kien_di}">Thời gian dự kiến đi</label>
-                                                            <input type="datetime-local" name="ngayDi" class="form-control" th:value="${khach.ngayDi}" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{tttv.ds.dong}">Đóng</button>
-                                                        <button type="submit" class="btn btn-primary" th:text="#{hdon.ui.luu_thay_doi}">Lưu thay đổi</button>
                                                     </div>
                                                 </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(lichSuKhach)}">
-                                <td colspan="6" class="text-center text-muted py-3" th:text="#{kt.ui.chua_co_du_lieu_dang}">Chưa có dữ liệu đăng ký khách thăm nào.</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(lichSuKhach)}">
+                                        <td colspan="7" class="px-5 py-8 text-center text-slate-500">
+                                            <div class="flex flex-col items-center justify-center gap-2">
+                                                <i data-lucide="users" class="w-8 h-8 text-slate-600 mb-1 opacity-50"></i>
+                                                <span th:text="#{kt.ui.chua_co_du_lieu_dang}">ChÆ°a cÃ³ dá»¯ liá»‡u Ä‘Äƒng kÃ½ khÃ¡ch thÄƒm nÃ o.</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         
-                        <!-- Fragment Phân trang -->
-                        <div th:replace="~{fragments/pagination :: paging('/cudan/khach-tham', '')}"></div>
-                        
+                        <div class="p-4 border-t border-darkborder bg-[#111622]">
+                            <!-- Fragment PhÃ¢n trang -->
+                            <div th:replace="~{fragments/pagination :: paging('/cudan/khach-tham', '')}"></div>
+                        </div>
                     </div>
                 </div>
+
             </div>
-
-        </div>
+        </main>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Dùng fragment Datatable chung -->
+    <!-- Script chung -->
     <div th:replace="~{fragments/datatable :: scripts}"></div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+
+        // Custom Modal Logic
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('hidden');
+            // Adding small timeout to allow display:block to apply before animating opacity
+            setTimeout(() => {
+                modal.querySelector('.backdrop-blur-sm').classList.add('opacity-100');
+                const panel = modal.querySelector('.transform');
+                panel.classList.remove('scale-95', 'opacity-0');
+                panel.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const panel = modal.querySelector('.transform');
+            
+            modal.querySelector('.backdrop-blur-sm').classList.remove('opacity-100');
+            panel.classList.remove('scale-100', 'opacity-100');
+            panel.classList.add('scale-95', 'opacity-0');
+            
+            // Wait for transition to finish before hiding
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
 </body>
 </html>
