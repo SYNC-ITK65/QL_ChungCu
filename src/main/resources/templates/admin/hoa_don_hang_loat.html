@@ -2,453 +2,256 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{hdon.batch.title}">Tạo Hóa Đơn Hàng Loạt</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            darkMode:'class',
+            theme:{ extend:{ fontFamily:{sans:['Inter','sans-serif']}, colors:{brand:{500:'#0ea5e9',400:'#38bdf8',600:'#0284c7'},darkbg:'#0B0F17',darkcard:'#161B26',darkborder:'#242B3D'} } }
+        }
+    </script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6fb; }
-
-        /* ── HERO CARD ── */
-        .hero-card {
-            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
-            border-radius: 18px;
-            color: #fff;
-            padding: 2rem 2.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(26,115,232,.25);
-        }
-        .hero-card h2 { font-weight: 700; font-size: 1.6rem; margin-bottom: .3rem; }
-        .hero-card p  { opacity: .85; margin: 0; font-size: .93rem; }
-
-        /* ── FORM CARD ── */
-        .form-card {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 2px 16px rgba(0,0,0,.08);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        .form-card .section-title {
-            font-size: .8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #6c757d;
-            margin-bottom: 1rem;
-        }
-        .form-control, .form-select {
-            border-radius: 10px;
-            padding: .55rem 1rem;
-        }
-        .form-label { font-weight: 600; font-size: .9rem; color: #344054; }
-
-        /* Hint badge dưới input */
-        .input-hint {
-            font-size: .78rem;
-            color: #6c757d;
-            margin-top: .25rem;
-        }
-
-        /* ── STAT BOXES ── */
-        .stat-boxes { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .stat-box {
-            flex: 1; min-width: 140px;
-            border-radius: 14px;
-            padding: 1.2rem 1.5rem;
-            color: #fff;
-            display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,.12);
-        }
-        .stat-box .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
-        .stat-box .stat-lbl { font-size: .78rem; opacity: .9; margin-top: .2rem; }
-        .stat-box.success { background: linear-gradient(135deg,#2ecc71,#27ae60); }
-        .stat-box.warning { background: linear-gradient(135deg,#f39c12,#e67e22); }
-        .stat-box.danger  { background: linear-gradient(135deg,#e74c3c,#c0392b); }
-        .stat-box.total   { background: linear-gradient(135deg,#667eea,#764ba2); }
-
-        /* ── RESULT TABLE ── */
-        .result-table-card {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 2px 16px rgba(0,0,0,.08);
-            overflow: hidden;
-        }
-        .result-table-card .card-header {
-            background: linear-gradient(135deg,#f8f9fa,#e9ecef);
-            font-weight: 700;
-            padding: .9rem 1.5rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .table-result th  { background: #f1f3f5; font-size: .83rem; font-weight: 700;
-                             text-transform: uppercase; letter-spacing: .05em; color:#495057; }
-        .table-result td  { font-size: .88rem; vertical-align: middle; }
-        .badge-skip       { background: #fff3cd; color:#856404; border: 1px solid #ffc107;
-                             border-radius: 20px; padding: .25rem .7rem; font-size: .8rem; font-weight:600; }
-        .badge-err        { background: #fde8e8; color:#b02a37; border: 1px solid #f5c6cb;
-                             border-radius: 20px; padding: .25rem .7rem; font-size: .8rem; font-weight:600; }
-        .badge-ok         { background: #d1e7dd; color:#0a3622; border: 1px solid #a3cfbb;
-                             border-radius: 20px; padding: .25rem .7rem; font-size: .8rem; font-weight:600; }
-
-        /* Collapsible detail */
-        .detail-toggle { cursor: pointer; color: #1a73e8; text-decoration: underline;
-                         font-size: .8rem; user-select: none; }
-
-        /* ── ALERT CUSTOM ── */
-        .alert-info-custom {
-            background: #e8f0fe; border-left: 4px solid #1a73e8;
-            border-radius: 10px; padding: 1rem 1.25rem;
-            font-size: .88rem; color: #1c3c6b;
-        }
-        .alert-info-custom ul { margin: .5rem 0 0; padding-left: 1.2rem; }
-
-        /* ── SUBMIT BUTTON ── */
-        .btn-submit-main {
-            background: linear-gradient(135deg, #1a73e8, #0d47a1);
-            color: #fff; border: none; border-radius: 10px;
-            padding: .65rem 2rem; font-weight: 700; font-size: 1rem;
-            transition: all .2s;
-            box-shadow: 0 4px 12px rgba(26,115,232,.3);
-        }
-        .btn-submit-main:hover {
-            background: linear-gradient(135deg, #1557b0, #083291);
-            color: #fff; transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(26,115,232,.4);
-        }
-        .btn-submit-main:active { transform: translateY(0); }
-
-        /* Spinner overlay khi submit */
-        #loadingOverlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(255,255,255,.7); backdrop-filter: blur(3px);
-            z-index: 9999; align-items: center; justify-content: center;
-        }
-        #loadingOverlay.show { display: flex; }
+        body { background-color:#0B0F17; color:#E2E8F0; font-family:'Inter',sans-serif; }
+        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#111827}::-webkit-scrollbar-thumb{background:#374151;border-radius:3px}
+        #loadingOverlay{display:none;position:fixed;inset:0;background:rgba(11,15,23,.8);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center}
+        #loadingOverlay.show{display:flex}
     </style>
 </head>
-<body>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
 
 <!-- Loading overlay -->
 <div id="loadingOverlay">
     <div class="text-center">
-        <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status"></div>
-        <div class="mt-3 fw-semibold text-primary" th:text="#{hdon.batch.loading_text}">Đang tạo hóa đơn, vui lòng chờ…</div>
+        <svg class="w-12 h-12 animate-spin text-brand-400 mx-auto" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+        </svg>
+        <p class="mt-4 font-semibold text-brand-400" th:text="#{hdon.batch.loading_text}">Đang tạo hóa đơn, vui lòng chờ…</p>
     </div>
 </div>
 
-<div class="d-flex">
-    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<div th:replace="fragments/sidebar :: menu-trai"></div>
 
-    <div class="container-fluid p-4" style="max-width: 1100px;">
+<main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{hdon.batch.title}">Tạo Hóa Đơn Hàng Loạt</h1>
+            <p class="text-sm text-slate-400 mt-1" th:text="#{hdon.batch.hero_desc}">Tự động tạo hóa đơn cho tất cả căn hộ trong tháng được chọn.</p>
+        </div>
+        <a th:href="@{/admin/hoa-don}"
+           class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-darkborder text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span th:text="#{hdon.batch.btn_back}">Quay lại</span>
+        </a>
+    </div>
 
-        <!-- HERO -->
-        <div class="hero-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <!-- Lỗi -->
+    <div th:if="${errorMessage}" class="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-sm flex items-start gap-2">
+        <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0 mt-0.5"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Form chọn tháng -->
+    <div class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-sm mb-8">
+        <h3 class="text-sm font-bold text-white mb-5 flex items-center gap-2">
+            <i data-lucide="calendar" class="w-4 h-4 text-brand-400"></i>
+            <span th:text="#{hdon.batch.select_month_section}">Chọn tháng cần tạo hóa đơn</span>
+        </h3>
+
+        <!-- Info -->
+        <div class="mb-6 p-4 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl text-xs leading-relaxed">
+            <p class="font-semibold flex items-center gap-1.5 mb-2"><i data-lucide="info" class="w-4 h-4"></i><span th:text="#{hdon.batch.info_auto_title}">Thông tin tự động:</span></p>
+            <ul class="space-y-1 list-disc list-inside text-blue-300">
+                <li><strong th:text="#{hdon.batch.info_issue_date_label}">Ngày phát hành</strong>: <strong class="text-white" th:text="${ngayPhatHanhAuto}">hôm nay</strong></li>
+                <li><strong th:text="#{hdon.batch.due_date_label}">Hạn thanh toán</strong>: <strong class="text-white" th:text="${ngayDenHanAuto}">7 ngày sau</strong></li>
+                <li th:text="#{hdon.batch.info_no_index_desc}">Căn hộ chưa có chỉ số sẽ bị bỏ qua.</li>
+                <li th:text="#{hdon.batch.info_exist_desc}">Căn hộ đã có hóa đơn trong tháng sẽ bỏ qua tự động.</li>
+            </ul>
+        </div>
+
+        <form th:action="@{/admin/hoa-don/tao-hang-loat}" method="post" id="batchForm">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div>
-                    <h2><i class="bi bi-receipt-cutoff me-2"></i><span th:text="#{hdon.batch.title}" th:remove="tag">Tạo Hóa Đơn Hàng Loạt</span></h2>
-                    <p th:text="#{hdon.batch.hero_desc}">Hệ thống sẽ tự động tạo hóa đơn cho tất cả căn hộ trong tháng được chọn. Căn hộ đã có hóa đơn tháng đó sẽ được bỏ qua (không tạo trùng).</p>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"><span th:text="#{hdon.batch.month_to_create}">Tháng</span> <span class="text-rose-400">*</span></label>
+                    <select name="thang" id="selectThang"
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option th:each="t : ${#numbers.sequence(1,12)}" th:value="${t}"
+                                th:text="|Tháng ${t}|" th:selected="${t == thangHienTai}"></option>
+                    </select>
                 </div>
-                <a th:href="@{/admin/hoa-don}" class="btn btn-outline-light btn-sm align-self-start">
-                    <i class="bi bi-arrow-left me-1"></i> <span th:text="#{hdon.batch.btn_back}">Quay lại</span>
-                </a>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"><span th:text="#{chung.nam}">Năm</span> <span class="text-rose-400">*</span></label>
+                    <input type="number" name="nam" id="selectNam" th:value="${namHienTai}" min="2020" max="2100"
+                           class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition">
+                </div>
+                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex flex-col justify-center">
+                    <p class="text-xs text-slate-400 mb-1" th:text="#{hdon.batch.issue_date_auto}">Ngày phát hành</p>
+                    <p class="font-bold text-emerald-400" th:text="${ngayPhatHanhAuto}">Hôm nay</p>
+                </div>
+                <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex flex-col justify-center">
+                    <p class="text-xs text-slate-400 mb-1" th:text="#{hdon.batch.due_date_auto}">Hạn thanh toán</p>
+                    <p class="font-bold text-amber-400" th:text="${ngayDenHanAuto}">+7 ngày</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 pt-4 border-t border-darkborder">
+                <button type="submit" id="btnSubmit" onclick="document.getElementById('loadingOverlay').classList.add('show')"
+                        class="px-6 py-3 bg-brand-500 hover:bg-brand-400 text-white text-sm font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/20">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                    <span th:text="#{hdon.batch.title}">Tạo Hóa Đơn Hàng Loạt</span>
+                </button>
+                <a th:href="@{/admin/hoa-don}"
+                   class="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition"
+                   th:text="#{chung.huy}">Hủy</a>
+                <span class="ml-auto text-xs text-slate-500 flex items-center gap-1">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span th:text="#{hdon.batch.exist_no_overwrite}">Hóa đơn đã tồn tại sẽ không bị ghi đè</span>
+                </span>
+            </div>
+        </form>
+    </div>
+
+    <!-- Kết quả batch -->
+    <div th:if="${ketQua != null}">
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-5 text-center">
+                <p class="text-3xl font-extrabold text-white" th:text="${ketQua.tongCanHo}">0</p>
+                <p class="text-xs text-slate-400 mt-1" th:text="#{hdon.batch.stat.total_apartments}">Tổng căn hộ</p>
+            </div>
+            <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 text-center">
+                <p class="text-3xl font-extrabold text-emerald-400" th:text="${ketQua.soThanhCong}">0</p>
+                <p class="text-xs text-emerald-300 mt-1" th:text="#{hdon.batch.stat.success}">Tạo thành công</p>
+            </div>
+            <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 text-center">
+                <p class="text-3xl font-extrabold text-amber-400" th:text="${ketQua.soBoQua}">0</p>
+                <p class="text-xs text-amber-300 mt-1" th:text="#{hdon.batch.stat.skipped}">Bỏ qua (đã có)</p>
+            </div>
+            <div class="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-5 text-center">
+                <p class="text-3xl font-extrabold text-rose-400" th:text="${ketQua.soLoi}">0</p>
+                <p class="text-xs text-rose-300 mt-1" th:text="#{hdon.batch.stat.error}">Không tạo được</p>
             </div>
         </div>
 
-        <!-- LỖI TOÀN CỤC (validation trước khi chạy batch) -->
-        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
-            <i class="bi bi-exclamation-circle-fill me-2"></i>
-            <strong th:text="#{chung.loi}">Lỗi:</strong>
-            <span th:text="${errorMessage}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <!-- FORM NHẬP LIỆU -->
-        <div class="form-card">
-            <div class="section-title"><i class="bi bi-calendar3 me-1"></i> <span th:text="#{hdon.batch.select_month_section}" th:remove="tag">Chọn tháng cần tạo hóa đơn</span></div>
-
-            <!-- Thông tin ngày tự động -->
-            <div class="alert-info-custom mb-4">
-                <strong><i class="bi bi-info-circle me-1"></i> <span th:text="#{hdon.batch.info_auto_title}" th:remove="tag">Thông tin tự động:</span></strong>
-                <ul>
-                    <li><strong th:text="#{hdon.batch.info_issue_date_label}">Ngày phát hành</strong>: <span th:text="#{hdon.batch.info_issue_date_desc_1}">Tự động là</span> <strong th:text="${ngayPhatHanhAuto}">hôm nay</strong><span th:text="#{hdon.batch.info_issue_date_desc_2}"> (ngày tạo hóa đơn).</span></li>
-                    <li><strong th:text="#{hdon.batch.due_date_label}">Hạn thanh toán</strong>: <strong th:text="${ngayDenHanAuto}">7 ngày sau</strong><span th:text="#{hdon.batch.info_due_date_desc_2}"> (7 ngày sau ngày phát hành).</span></li>
-                    <li><strong th:text="#{hdon.batch.info_penalty_label}">Tiền phạt</strong>: <span th:text="#{hdon.batch.info_penalty_desc}">Quá hạn sẽ bị phạt 0.5%/ngày trên tổng tiền hóa đơn.</span></li>
-                    <li th:text="#{hdon.batch.info_no_index_desc}">Căn hộ chưa có chỉ số điện nước trong tháng sẽ bị bỏ qua (ghi vào cột lỗi).</li>
-                    <li th:text="#{hdon.batch.info_exist_desc}">Căn hộ đã có hóa đơn trong tháng sẽ được bỏ qua tự động.</li>
-                </ul>
+        <!-- Kết quả chi tiết -->
+        <div class="bg-darkcard border border-darkborder rounded-2xl overflow-hidden shadow-sm mb-6">
+            <div class="px-5 py-4 border-b border-darkborder flex items-center justify-between">
+                <span class="text-sm font-bold text-white flex items-center gap-2">
+                    <i data-lucide="clipboard-list" class="w-4 h-4 text-brand-400"></i>
+                    <span th:text="#{hdon.batch.result.title}">Kết quả tháng</span>
+                    <span class="text-brand-400 font-extrabold" th:text="${thang + '/' + nam}">6/2026</span>
+                </span>
+                <a th:href="@{/admin/hoa-don(thang=${thang},nam=${nam})}"
+                   class="px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 text-xs font-semibold rounded-lg transition"
+                   th:text="#{hdon.batch.result.btn_view}">Xem hóa đơn tháng này</a>
             </div>
 
-            <form th:action="@{/admin/hoa-don/tao-hang-loat}" method="post" id="batchForm">
-                <div class="row g-4 align-items-end">
-                    <div class="col-md-3">
-                        <label class="form-label"><span th:text="#{hdon.batch.month_to_create}" th:remove="tag">Tháng muốn tạo</span> <span class="text-danger">*</span></label>
-                        <select name="thang" id="selectThang" class="form-select">
-                            <option th:each="t : ${#numbers.sequence(1,12)}"
-                                    th:value="${t}"
-                                    th:text="|#{chung.thang_option} ${t}|"
-                                    th:selected="${t == thangHienTai}">
-                            </option>
-                        </select>
-                        <div class="input-hint" th:text="#{hdon.batch.month_to_create}">Tháng cần tạo hóa đơn</div>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label"><span th:text="#{chung.nam}" th:remove="tag">Năm</span> <span class="text-danger">*</span></label>
-                        <input type="number" name="nam" id="selectNam" class="form-control"
-                               th:value="${namHienTai}" min="2020" max="2100">
-                    </div>
-                    <div class="col-md-3">
-                        <div class="p-3 rounded-3" style="background:#f0fff4; border:1px solid #a3cfbb;">
-                            <div class="small text-muted mb-1"><i class="bi bi-calendar-check me-1"></i><span th:text="#{hdon.batch.issue_date_auto}" th:remove="tag">Ngày phát hành (tự động)</span></div>
-                            <div class="fw-bold text-success" th:text="${ngayPhatHanhAuto}">Hôm nay</div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="p-3 rounded-3" style="background:#fff8e1; border:1px solid #ffc107;">
-                            <div class="small text-muted mb-1"><i class="bi bi-alarm me-1"></i><span th:text="#{hdon.batch.due_date_auto}" th:remove="tag">Hạn thanh toán (tự động)</span></div>
-                            <div class="fw-bold text-warning" th:text="${ngayDenHanAuto}">+7 ngày</div>
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="my-4">
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <button type="submit" class="btn-submit-main" id="btnSubmit"
-                            onclick="document.getElementById('loadingOverlay').classList.add('show')">
-                        <i class="bi bi-lightning-fill me-2"></i><span th:text="#{hdon.batch.title}" th:remove="tag">Tạo Hóa Đơn Hàng Loạt</span>
-                    </button>
-                    <a th:href="@{/admin/hoa-don}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle me-1"></i><span th:text="#{chung.huy}" th:remove="tag">Hủy</span>
-                    </a>
-                    <div class="text-muted small ms-auto">
-                        <i class="bi bi-shield-check me-1 text-success"></i>
-                        <span th:text="#{hdon.batch.exist_no_overwrite}" th:remove="tag">Hóa đơn đã tồn tại sẽ không bị ghi đè</span>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-
-        <!-- KẾT QUẢ SAU KHI CHẠY BATCH -->
-        <div th:if="${ketQua != null}">
-
-            <!-- THỐNG KÊ -->
-            <div class="stat-boxes">
-                <div class="stat-box total">
-                    <div class="stat-num" th:text="${ketQua.tongCanHo}">0</div>
-                    <div class="stat-lbl" th:text="#{hdon.batch.stat.total_apartments}">Tổng căn hộ</div>
-                </div>
-                <div class="stat-box success">
-                    <div class="stat-num" th:text="${ketQua.soThanhCong}">0</div>
-                    <div class="stat-lbl" th:text="#{hdon.batch.stat.success}">Tạo thành công</div>
-                </div>
-                <div class="stat-box warning">
-                    <div class="stat-num" th:text="${ketQua.soBoQua}">0</div>
-                    <div class="stat-lbl" th:text="#{hdon.batch.stat.skipped}">Bỏ qua (đã có)</div>
-                </div>
-                <div class="stat-box danger">
-                    <div class="stat-num" th:text="${ketQua.soLoi}">0</div>
-                    <div class="stat-lbl" th:text="#{hdon.batch.stat.error}">Không tạo được</div>
+            <!-- Thành công -->
+            <div th:if="${ketQua.soThanhCong > 0}" class="p-4 border-b border-darkborder">
+                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-400">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5 inline mr-1"></i>
+                    <span th:text="#{hdon.batch.result.success_msg_1}">Hệ thống đã tạo thành công</span>
+                    <strong th:text="${ketQua.soThanhCong}">0</strong>
+                    <span th:text="#{hdon.batch.result.success_msg_2}">hóa đơn mới.</span>
                 </div>
             </div>
 
-            <!-- TIÊU ĐỀ KẾT QUẢ -->
-            <div class="result-table-card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <span>
-                        <i class="bi bi-clipboard-data me-2 text-primary"></i>
-                        <span th:text="#{hdon.batch.result.title}" th:remove="tag">Kết quả tạo hóa đơn tháng</span>
-                        <span class="text-primary fw-bold"
-                              th:text="${thang + '/' + nam}">6/2026</span>
+            <!-- Bỏ qua -->
+            <div th:if="${!#lists.isEmpty(ketQua.danhSachBoQua)}" class="p-4 border-b border-darkborder">
+                <button onclick="toggleDetail('detailBoQua','iconBoQua')"
+                        class="flex items-center justify-between w-full text-xs font-semibold text-amber-400 mb-2">
+                    <span><i data-lucide="skip-forward" class="w-3.5 h-3.5 inline mr-1"></i>
+                        <span th:text="#{hdon.batch.result.skipped_prefix}">Bỏ qua – đã có hóa đơn (</span><span th:text="${ketQua.soBoQua}">0</span><span th:text="#{hdon.batch.result.skipped_suffix}"> căn hộ)</span>
                     </span>
-                    <a th:href="@{/admin/hoa-don(thang=${thang}, nam=${nam})}"
-                       class="btn btn-sm btn-primary">
-                        <i class="bi bi-eye me-1"></i><span th:text="#{hdon.batch.result.btn_view}" th:remove="tag">Xem hóa đơn tháng này</span>
-                    </a>
-                </div>
-
-                <!-- THÀNH CÔNG -->
-                <div th:if="${ketQua.soThanhCong > 0}" class="p-3 border-bottom">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold text-success">
-                            <i class="bi bi-check-circle-fill me-1"></i>
-                            <span th:text="#{hdon.batch.result.success_prefix}" th:remove="tag">Tạo thành công (</span><span th:text="${ketQua.soThanhCong}">0</span><span th:text="#{hdon.batch.result.success_suffix}" th:remove="tag"> hóa đơn)</span>
-                        </span>
-                    </div>
-                    <div class="alert alert-success py-2 px-3 rounded-3 mb-0 small">
-                        <span th:text="#{hdon.batch.result.success_msg_1}" th:remove="tag">Hệ thống đã tạo thành công </span><strong th:text="${ketQua.soThanhCong}">0</strong><span th:text="#{hdon.batch.result.success_msg_2}" th:remove="tag"> hóa đơn mới.</span>
-                        <span th:text="#{hdon.batch.result.issue_date}" th:remove="tag">Ngày phát hành:</span> <strong th:text="${#temporals.format(ngayPhatHanh, 'dd/MM/yyyy')}"></strong> –
-                        <span th:text="#{hdon.batch.result.due_date}" th:remove="tag">Ngày đến hạn:</span> <strong th:text="${#temporals.format(ngayDenHan, 'dd/MM/yyyy')}"></strong>.
-                    </div>
-                </div>
-
-                <!-- BỎ QUA (đã có hóa đơn) -->
-                <div th:if="${!#lists.isEmpty(ketQua.danhSachBoQua)}" class="p-3 border-bottom">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold text-warning">
-                            <i class="bi bi-skip-forward-fill me-1"></i>
-                            <span th:text="#{hdon.batch.result.skipped_prefix}" th:remove="tag">Bỏ qua – đã có hóa đơn (</span><span th:text="${ketQua.soBoQua}">0</span><span th:text="#{hdon.batch.result.skipped_suffix}" th:remove="tag"> căn hộ)</span>
-                        </span>
-                        <span class="detail-toggle" onclick="toggleDetail('detailBoQua')">
-                            <i class="bi bi-chevron-down" id="iconBoQua"></i> <span th:text="#{hdon.batch.result.btn_detail}" th:remove="tag">Chi tiết</span>
-                        </span>
-                    </div>
-                    <div id="detailBoQua" style="display:none;">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered table-result mb-0">
-                                <thead>
-                                    <tr>
-                                        <th style="width:50px">#</th>
-                                        <th th:text="#{hdon.batch.result.col_apartment_code}">Mã căn hộ</th>
-                                        <th th:text="#{hdon.batch.result.col_reason}">Lý do</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="item, stat : ${ketQua.danhSachBoQua}">
-                                        <td class="text-muted" th:text="${stat.count}"></td>
-                                        <td>
-                                            <span class="badge-skip" th:text="${item}"></span>
-                                        </td>
-                                        <td class="text-muted small" th:text="#{hdon.batch.result.skipped_reason}">Đã có hóa đơn trong tháng – bỏ qua</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LỖI -->
-                <div th:if="${!#lists.isEmpty(ketQua.danhSachLoi)}" class="p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-semibold text-danger">
-                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                            <span th:text="#{hdon.batch.result.error_prefix}" th:remove="tag">Không tạo được (</span><span th:text="${ketQua.soLoi}">0</span><span th:text="#{hdon.batch.result.error_suffix}" th:remove="tag"> căn hộ) – cần kiểm tra thủ công</span>
-                        </span>
-                        <span class="detail-toggle" onclick="toggleDetail('detailLoi')">
-                            <i class="bi bi-chevron-down" id="iconLoi"></i> <span th:text="#{hdon.batch.result.btn_detail}" th:remove="tag">Chi tiết</span>
-                        </span>
-                    </div>
-                    <div id="detailLoi">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered table-result mb-0">
-                                <thead>
-                                    <tr>
-                                        <th style="width:50px">#</th>
-                                        <th style="width:130px" th:text="#{hdon.batch.result.col_apartment_code}">Mã căn hộ</th>
-                                        <th th:text="#{hdon.batch.result.col_error_cause}">Nguyên nhân</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="item, stat : ${ketQua.danhSachLoi}">
-                                        <td class="text-muted" th:text="${stat.count}"></td>
-                                        <td>
-                                            <span class="badge-err"
-                                                  th:text="${#strings.substringBefore(item, ':')}"></span>
-                                        </td>
-                                        <td class="text-danger small"
-                                            th:text="${#strings.length(item) > #strings.indexOf(item,':') + 1 ?
-                                                       #strings.substringAfter(item, ': ') : item}">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="alert alert-warning mt-2 py-2 px-3 rounded-3 small mb-0">
-                            <i class="bi bi-lightbulb me-1"></i>
-                            <strong th:text="#{hdon.batch.result.suggestion_title}">Gợi ý:</strong> <span th:text="#{hdon.batch.result.suggestion_goto}" th:remove="tag">Vào</span>
-                            <a th:href="@{/admin/chi-so}" class="alert-link" th:text="#{hdon.batch.result.suggestion_link}">Quản lý &rarr; Chỉ số điện nước</a>
-                            <span th:text="#{hdon.batch.result.suggestion_text}" th:remove="tag">để ghi nhận chỉ số cho các căn hộ trên, sau đó quay lại tạo lại.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- KHÔNG CÓ GÌ -->
-                <div th:if="${ketQua.tongCanHo == 0}" class="p-4 text-center text-muted">
-                    <i class="bi bi-inbox fs-1"></i>
-                    <p class="mt-2" th:text="#{hdon.batch.result.no_apartments}">Không có căn hộ nào trong hệ thống.</p>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform" id="iconBoQua"></i>
+                </button>
+                <div id="detailBoQua" class="hidden overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead><tr class="border-b border-darkborder"><th class="py-2 text-left text-slate-400 font-semibold w-8">#</th><th class="py-2 text-left text-slate-400 font-semibold" th:text="#{hdon.batch.result.col_apartment_code}">Mã căn hộ</th><th class="py-2 text-left text-slate-400 font-semibold" th:text="#{hdon.batch.result.col_reason}">Lý do</th></tr></thead>
+                        <tbody class="divide-y divide-darkborder">
+                            <tr th:each="item, stat : ${ketQua.danhSachBoQua}">
+                                <td class="py-1.5 text-slate-500" th:text="${stat.count}"></td>
+                                <td class="py-1.5"><span class="px-2 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded text-[11px] font-semibold" th:text="${item}"></span></td>
+                                <td class="py-1.5 text-slate-400" th:text="#{hdon.batch.result.skipped_reason}">Đã có hóa đơn trong tháng</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-        </div><!-- /ketQua -->
-    </div><!-- /container -->
-</div><!-- /d-flex -->
+            <!-- Lỗi -->
+            <div th:if="${!#lists.isEmpty(ketQua.danhSachLoi)}" class="p-4">
+                <button onclick="toggleDetail('detailLoi','iconLoi')"
+                        class="flex items-center justify-between w-full text-xs font-semibold text-rose-400 mb-2">
+                    <span><i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline mr-1"></i>
+                        <span th:text="#{hdon.batch.result.error_prefix}">Không tạo được (</span><span th:text="${ketQua.soLoi}">0</span><span th:text="#{hdon.batch.result.error_suffix}"> căn hộ)</span>
+                    </span>
+                    <i data-lucide="chevron-up" class="w-4 h-4 transition-transform" id="iconLoi"></i>
+                </button>
+                <div id="detailLoi" class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead><tr class="border-b border-darkborder"><th class="py-2 text-left text-slate-400 font-semibold w-8">#</th><th class="py-2 text-left text-slate-400 font-semibold" th:text="#{hdon.batch.result.col_apartment_code}">Mã căn hộ</th><th class="py-2 text-left text-slate-400 font-semibold" th:text="#{hdon.batch.result.col_error_cause}">Nguyên nhân</th></tr></thead>
+                        <tbody class="divide-y divide-darkborder">
+                            <tr th:each="item, stat : ${ketQua.danhSachLoi}">
+                                <td class="py-1.5 text-slate-500" th:text="${stat.count}"></td>
+                                <td class="py-1.5"><span class="px-2 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded text-[11px] font-semibold" th:text="${#strings.substringBefore(item, ':')}"></span></td>
+                                <td class="py-1.5 text-rose-400" th:text="${#strings.length(item) > #strings.indexOf(item,':') + 1 ? #strings.substringAfter(item, ': ') : item}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-400">
+                        <i data-lucide="lightbulb" class="w-3.5 h-3.5 inline mr-1"></i>
+                        <strong th:text="#{hdon.batch.result.suggestion_title}">Gợi ý:</strong>
+                        <span th:text="#{hdon.batch.result.suggestion_goto}">Vào</span>
+                        <a th:href="@{/admin/chi-so}" class="underline font-semibold" th:text="#{hdon.batch.result.suggestion_link}">Quản lý Chỉ số điện nước</a>
+                        <span th:text="#{hdon.batch.result.suggestion_text}">để ghi nhận chỉ số, sau đó tạo lại.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Không có gì -->
+            <div th:if="${ketQua.tongCanHo == 0}" class="p-10 text-center text-slate-500">
+                <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2"></i>
+                <p th:text="#{hdon.batch.result.no_apartments}">Không có căn hộ nào trong hệ thống.</p>
+            </div>
+        </div>
+    </div>
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
-    const thangHienTai = /*[[${thangHienTai}]]*/ new Date().getMonth() + 1;
-    const namHienTai   = /*[[${namHienTai}]]*/ new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () { lucide.createIcons(); });
+    window.addEventListener('load', function () { document.getElementById('loadingOverlay').classList.remove('show'); });
 
-    // Ẩn loading overlay sau khi trang tải xong (tránh trường hợp bị kẹt)
-    window.addEventListener('load', function () {
-        document.getElementById('loadingOverlay').classList.remove('show');
-    });
-
-    // Client-side validation trước khi submit
     document.getElementById('batchForm').addEventListener('submit', function (e) {
         const thang = parseInt(document.getElementById('selectThang').value);
         const nam   = parseInt(document.getElementById('selectNam').value);
         const today = new Date();
         const thangChon = new Date(nam, thang - 1, 1);
-        const thangHienTaiDate = new Date(today.getFullYear(), today.getMonth(), 1);
-
-        if (thangChon > thangHienTaiDate) {
+        const thangNow  = new Date(today.getFullYear(), today.getMonth(), 1);
+        if (thangChon > thangNow) {
             e.preventDefault();
             document.getElementById('loadingOverlay').classList.remove('show');
-            
-            var titleFuture = /*[[#{hdon.batch.js.title_future}]]*/ 'Tháng tương lai';
-            var msgFuture = /*[[#{hdon.batch.js.msg_future}]]*/ 'Không thể tạo hóa đơn cho tháng ';
-            var msgFutureSuffix = /*[[#{hdon.batch.js.msg_future_suffix}]]*/ ' vì chưa đến!';
-            
-            Swal.fire({
-                icon: 'warning', title: titleFuture,
-                text: msgFuture + thang + '/' + nam + msgFutureSuffix,
-                confirmButtonColor: '#1a73e8'
-            });
-            return;
-        }
-        const thang3ThangTruoc = new Date(today.getFullYear(), today.getMonth() - 3, 1);
-        if (thangChon < thang3ThangTruoc) {
-            e.preventDefault();
-            document.getElementById('loadingOverlay').classList.remove('show');
-            
-            var titleOld = /*[[#{hdon.batch.js.title_old}]]*/ 'Tháng quá cũ';
-            var msgOld = /*[[#{hdon.batch.js.msg_old}]]*/ 'Không thể tạo hóa đơn cho tháng quá 3 tháng trước!';
-            
-            Swal.fire({
-                icon: 'warning', title: titleOld,
-                text: msgOld,
-                confirmButtonColor: '#1a73e8'
-            });
-            return;
+            var t = /*[[#{hdon.batch.js.title_future}]]*/ 'Tháng tương lai';
+            var m = /*[[#{hdon.batch.js.msg_future}]]*/ 'Không thể tạo hóa đơn cho tháng ';
+            var s = /*[[#{hdon.batch.js.msg_future_suffix}]]*/ ' vì chưa đến!';
+            Swal.fire({ icon:'warning', title:t, text:m+thang+'/'+nam+s, background:'#161B26', color:'#E2E8F0', confirmButtonColor:'#0ea5e9' });
         }
     });
 
-    // Toggle detail sections
-    function toggleDetail(id) {
+    function toggleDetail(id, iconId) {
         const el = document.getElementById(id);
+        const icon = document.getElementById(iconId);
         if (!el) return;
-        const visible = el.style.display !== 'none';
-        el.style.display = visible ? 'none' : 'block';
-        // cập nhật icon chevron
-        const iconMap = { detailBoQua: 'iconBoQua', detailLoi: 'iconLoi' };
-        const icon = document.getElementById(iconMap[id]);
-        if (icon) {
-            icon.className = visible ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
-        }
+        const hidden = el.classList.contains('hidden');
+        el.classList.toggle('hidden');
+        if (icon) icon.setAttribute('data-lucide', hidden ? 'chevron-up' : 'chevron-down');
+        lucide.createIcons();
     }
-
-    // Tự mở phần lỗi nếu có lỗi
-    document.addEventListener('DOMContentLoaded', function () {
-        const detailLoi = document.getElementById('detailLoi');
-        if (detailLoi) {
-            // Mặc định hiện danh sách lỗi
-            detailLoi.style.display = 'block';
-            const icon = document.getElementById('iconLoi');
-            if (icon) icon.className = 'bi bi-chevron-up';
-        }
-    });
 </script>
-
-
 </body>
 </html>

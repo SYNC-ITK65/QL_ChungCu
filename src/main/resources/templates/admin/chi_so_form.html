@@ -1,75 +1,122 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{cs.form.ghi_nhan_chi_so_moi}">Ghi nhận Chỉ số mới</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const year = today.getFullYear();
-            
-            // Định dạng dd/MM/yyyy để hiển thị
-            const displayDate = day + '/' + month + '/' + year;
-            // Định dạng yyyy-MM-dd để gửi về server
-            const serverDate = year + '-' + month + '-' + day;
-            
-            const displayInput = document.getElementById('ngayGhiNhanDisplay');
-            const hiddenInput = document.getElementById('ngayGhiNhanHidden');
-            
-            if (displayInput) {
-                displayInput.value = displayDate;
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 500: '#0ea5e9', 400: '#38bdf8', 600: '#0284c7' },
+                        darkbg: '#0B0F17', darkcard: '#161B26', darkborder: '#242B3D'
+                    }
+                }
             }
-            if (hiddenInput) {
-                hiddenInput.value = serverDate;
-            }
-        });
+        }
     </script>
+    <style>
+        body { background-color: #0B0F17; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+    </style>
 </head>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-<body>
-    <div class="d-flex">
-        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
+        <!-- Header -->
+        <div class="w-full max-w-2xl flex items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{cs.form.ghi_nhan_chi_so_dien}">Ghi Nhận Chỉ Số Điện Nước</h1>
+                <p class="text-sm text-slate-400 mt-1">Nhập chỉ số điện nước hàng tháng cho căn hộ</p>
+            </div>
+            <a th:href="@{/admin/chi-so}"
+               class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span th:text="#{chung.quay_lai}">Quay Lại</span>
+            </a>
+        </div>
 
-        <div class="container-fluid p-4">
-            <h2 th:text="#{cs.form.ghi_nhan_chi_so_dien}">Ghi Nhận Chỉ Số Điện Nước Hàng Tháng</h2>
-            <hr>
+        <!-- Form Card -->
+        <div class="w-full max-w-2xl bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
+            <form th:action="@{/admin/chi-so/luu}" th:object="${chiSo}" method="post" class="space-y-6">
 
-            <form th:action="@{/admin/chi-so/luu}" th:object="${chiSo}" method="post" style="max-width: 600px;">
-                <div class="mb-3">
-                    <label class="form-label" th:text="#{cs.form.ngay_ghi_nhan_chot_s}">Ngày Ghi Nhận (Chốt số)</label>
-                    <input type="text" class="form-control" id="ngayGhiNhanDisplay" readonly style="background-color: white;">
+                <!-- Ngày ghi nhận -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                           th:text="#{cs.form.ngay_ghi_nhan_chot_s}">Ngày Ghi Nhận (Chốt số)</label>
+                    <input type="text" id="ngayGhiNhanDisplay" readonly
+                           class="w-full bg-darkbg/50 border border-darkborder rounded-xl px-4 py-3 text-sm text-slate-300 cursor-not-allowed">
                     <input type="hidden" th:field="*{ngayGhiNhan}" id="ngayGhiNhanHidden">
+                    <p class="text-xs text-slate-500 mt-1">Ngày ghi nhận được tự động điền là hôm nay</p>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label" th:text="#{hdon.form.can_ho}">Căn Hộ</label>
-                    <select class="form-select" name="canHoId" required>
+                <!-- Căn hộ -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                           th:text="#{hdon.form.can_ho}">Căn Hộ</label>
+                    <select name="canHoId" required
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
                         <option value="" disabled selected th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ --</option>
-                        <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}" th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
+                        <option th:each="ch : ${danhSachCanHo}" th:value="${ch.id}"
+                                th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
                         </option>
                     </select>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label" th:text="#{cs.form.so_dien_kwh}">Số Điện (kWh)</label>
-                        <input type="number" step="0.1" class="form-control" th:field="*{dienTieuThu}" required>
+                <!-- Điện & Nước -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+                            <span th:text="#{cs.form.so_dien_kwh}">Số Điện (kWh)</span>
+                        </label>
+                        <input type="number" step="0.1" th:field="*{dienTieuThu}" required
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label" th:text="#{cs.form.so_nuoc_m3}">Số Nước (m3)</label>
-                        <input type="number" step="0.1" class="form-control" th:field="*{nuocTieuThu}" required>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i data-lucide="droplets" class="w-3.5 h-3.5 text-sky-400"></i>
+                            <span th:text="#{cs.form.so_nuoc_m3}">Số Nước (m³)</span>
+                        </label>
+                        <input type="number" step="0.1" th:field="*{nuocTieuThu}" required
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 transition">
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" th:text="#{cs.form.luu_chi_so}">Lưu Chỉ Số</button>
-                <a th:href="@{/admin/chi-so}" class="btn btn-secondary" th:text="#{hdon.form.nut_huy}">Hủy</a>
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 pt-4 border-t border-darkborder justify-end">
+                    <a th:href="@{/admin/chi-so}"
+                       class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition"
+                       th:text="#{hdon.form.nut_huy}">Hủy</a>
+                    <button type="submit"
+                            class="px-6 py-3 bg-brand-500 hover:bg-brand-400 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span th:text="#{cs.form.luu_chi_so}">Lưu Chỉ Số</span>
+                    </button>
+                </div>
             </form>
         </div>
-    </div>
-</body>
+    </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+            const today = new Date();
+            const d = String(today.getDate()).padStart(2, '0');
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const y = today.getFullYear();
+            const display = document.getElementById('ngayGhiNhanDisplay');
+            const hidden  = document.getElementById('ngayGhiNhanHidden');
+            if (display) display.value = d + '/' + m + '/' + y;
+            if (hidden)  hidden.value  = y + '-' + m + '-' + d;
+        });
+    </script>
+</body>
 </html>

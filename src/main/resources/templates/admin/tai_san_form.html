@@ -1,83 +1,113 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{ts.form.them_tieude}">Thông tin Tài Sản</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = { darkMode:'class', theme:{ extend:{ fontFamily:{sans:['Inter','sans-serif']}, colors:{brand:{500:'#0ea5e9',400:'#38bdf8',600:'#0284c7'},darkbg:'#0B0F17',darkcard:'#161B26',darkborder:'#242B3D'} } } }
+    </script>
+    <style>body{background-color:#0B0F17;color:#E2E8F0;font-family:'Inter',sans-serif;}</style>
 </head>
-
-<body>
-    <div class="d-flex">
-        <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
-        <div class="flex-grow-1 p-4">
-            <h2 class="mb-4" th:text="${taiSan.id == null} ? #{ts.form.them_tieude} : #{ts.form.sua_tieude}">Thông tin
-                Tài Sản</h2>
-
-            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-                <span th:text="${errorMessage}"></span>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
+        <!-- Header -->
+        <div class="w-full max-w-2xl flex items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight"
+                    th:text="${taiSan.id == null} ? #{ts.form.them_tieude} : #{ts.form.sua_tieude}">Thêm Tài Sản</h1>
+                <p class="text-sm text-slate-400 mt-1">Quản lý thông tin tài sản tòa nhà</p>
             </div>
+            <a th:href="@{/admin/tai-san}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span th:text="#{chung.quay_lai}">Quay Lại</span>
+            </a>
+        </div>
 
-            <form th:action="@{/admin/tai-san/save}" th:object="${taiSan}" method="post">
+        <div th:if="${errorMessage}" class="w-full max-w-2xl mb-4 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-sm" th:text="${errorMessage}"></div>
+
+        <div class="w-full max-w-2xl bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
+            <form th:action="@{/admin/tai-san/save}" th:object="${taiSan}" method="post" class="space-y-6">
                 <input type="hidden" th:field="*{id}">
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label" th:text="#{ts.form.ten}">Tên Tài Sản</label>
-                        <input type="text" class="form-control" th:field="*{tenTaiSan}" required>
-                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('tenTaiSan')}"
-                            th:errors="*{tenTaiSan}"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Tên tài sản -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ts.form.ten}">Tên Tài Sản</label>
+                        <input type="text" th:field="*{tenTaiSan}" required
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <p class="text-rose-400 text-xs mt-1 flex items-center gap-1" th:if="${#fields.hasErrors('tenTaiSan')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i><span th:errors="*{tenTaiSan}"></span>
+                        </p>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label" th:text="#{ts.form.ma}">Mã Tài Sản</label>
-                        <input type="text" class="form-control" th:field="*{maTaiSan}" required>
-                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('maTaiSan')}" th:errors="*{maTaiSan}">
-                        </div>
+                    <!-- Mã tài sản -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ts.form.ma}">Mã Tài Sản</label>
+                        <input type="text" th:field="*{maTaiSan}" required
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <p class="text-rose-400 text-xs mt-1 flex items-center gap-1" th:if="${#fields.hasErrors('maTaiSan')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i><span th:errors="*{maTaiSan}"></span>
+                        </p>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label" th:text="#{ts.form.vt}">Vị Trí</label>
-                        <input type="text" class="form-control" th:field="*{viTri}">
-                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('viTri')}" th:errors="*{viTri}"></div>
+                    <!-- Vị trí -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ts.form.vt}">Vị Trí</label>
+                        <input type="text" th:field="*{viTri}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <p class="text-rose-400 text-xs mt-1 flex items-center gap-1" th:if="${#fields.hasErrors('viTri')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i><span th:errors="*{viTri}"></span>
+                        </p>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label" th:text="#{ts.form.ngay_mua}">Ngày Mua</label>
-                        <input type="date" class="form-control" th:field="*{ngayMua}">
-                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('ngayMua')}" th:errors="*{ngayMua}">
-                        </div>
+                    <!-- Ngày mua -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ts.form.ngay_mua}">Ngày Mua</label>
+                        <input type="date" th:field="*{ngayMua}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition">
+                        <p class="text-rose-400 text-xs mt-1 flex items-center gap-1" th:if="${#fields.hasErrors('ngayMua')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i><span th:errors="*{ngayMua}"></span>
+                        </p>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label" th:text="#{ts.form.trang_thai}">Trạng Thái</label>
-                        <select class="form-select" th:field="*{tinhTrang}">
+                    <!-- Tình trạng -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ts.form.trang_thai}">Tình Trạng</label>
+                        <select th:field="*{tinhTrang}"
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
                             <option value="Hoạt động tốt" th:text="#{ts.tt.tot}">Hoạt động tốt</option>
                             <option value="Đang hỏng" th:text="#{ts.tt.hong}">Đang hỏng</option>
                             <option value="Chờ thanh lý" th:text="#{ts.tt.thanh_ly}">Chờ thanh lý</option>
                         </select>
-                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('tinhTrang')}"
-                            th:errors="*{tinhTrang}"></div>
+                        <p class="text-rose-400 text-xs mt-1 flex items-center gap-1" th:if="${#fields.hasErrors('tinhTrang')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i><span th:errors="*{tinhTrang}"></span>
+                        </p>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label" th:text="#{ts.form.chu_ky}">Chu Kỳ Bảo Trì (Tháng)</label>
-                        <input type="number" class="form-control" th:field="*{chuKyBaoTri}">
-                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('chuKyBaoTri')}"
-                            th:errors="*{chuKyBaoTri}"></div>
+                    <!-- Chu kỳ bảo trì -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ts.form.chu_ky}">Chu Kỳ Bảo Trì (Tháng)</label>
+                        <input type="number" th:field="*{chuKyBaoTri}"
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <p class="text-rose-400 text-xs mt-1 flex items-center gap-1" th:if="${#fields.hasErrors('chuKyBaoTri')}">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i><span th:errors="*{chuKyBaoTri}"></span>
+                        </p>
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-success px-4" th:text="#{chung.luu}">Lưu</button>
-                    <a th:href="@{/admin/tai-san}" class="btn btn-secondary px-4 ms-2" th:text="#{chung.huy}">Hủy</a>
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 pt-4 border-t border-darkborder justify-end">
+                    <a th:href="@{/admin/tai-san}" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition" th:text="#{chung.huy}">Hủy</a>
+                    <button type="submit" class="px-6 py-3 bg-brand-500 hover:bg-brand-400 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span th:text="#{chung.luu}">Lưu</span>
+                    </button>
                 </div>
             </form>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function () { lucide.createIcons(); });</script>
+</body>
 </html>

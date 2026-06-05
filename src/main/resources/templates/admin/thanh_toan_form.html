@@ -1,96 +1,195 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{tt.form.xac_nhan_thanh_toan}">Xác Nhận Thanh Toán</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 500: '#0ea5e9', 400: '#38bdf8', 600: '#0284c7' },
+                        darkbg: '#0B0F17', darkcard: '#161B26', darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0B0F17; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body>
-<div class="d-flex">
-    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-    <div class="container-fluid p-4">
-        <h2 th:text="#{tt.form.xac_nhan_thu_tien_ho}">Xác Nhận Thu Tiền Hóa Đơn</h2>
-        <hr>
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
 
-        <!-- Alert thông thường -->
-        <div th:if="${hoaDon.trangThaiThanhToan != 'Chờ duyệt'}" class="alert alert-info" style="max-width: 600px;">
-            <strong th:text="#{tt.form.thong_tin_hoa_don}">Thông tin Hóa Đơn:</strong><br><span th:text="#{tt.form.can_ho}" th:remove="tag">
-            - Căn hộ: </span><span th:text="${hoaDon.canHo?.maCanHo}"></span><br><span th:text="#{tt.form.ngay_phat_hanh}" th:remove="tag">
-            - Ngày phát hành: </span><span th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}"></span><br><span th:text="#{tt.form.tong_tien_phai_thu}" th:remove="tag">
-            - Tổng tiền hóa đơn: </span><strong class="text-danger" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong>
-            <div th:if="${daysLate != null and daysLate > 0}" class="mt-2">
-                <div class="alert alert-warning mb-0">
-                    <strong>Quá hạn:</strong>
-                    <span th:text="|${daysLate} ngày|">0 ngày</span><br>
-                    <strong>Phí trễ hạn:</strong>
-                    <span class="text-danger" th:text="|${#numbers.formatDecimal(lateFee, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</span><br>
-                    <strong>Tổng phải thu:</strong>
-                    <span class="text-danger" th:text="|${#numbers.formatDecimal(totalDue, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</span>
+        <!-- Header -->
+        <div class="w-full max-w-2xl flex items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{tt.form.xac_nhan_thu_tien_ho}">Xác Nhận Thu Tiền Hóa Đơn</h1>
+                <p class="text-sm text-slate-400 mt-1">Ghi nhận giao dịch thanh toán cho căn hộ</p>
+            </div>
+            <a th:href="@{/admin/hoa-don}"
+               class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span th:text="#{chung.quay_lai}">Quay Lại</span>
+            </a>
+        </div>
+
+        <!-- Thông tin hóa đơn (thanh toán thường) -->
+        <div th:if="${hoaDon.trangThaiThanhToan != 'Chờ duyệt'}"
+             class="w-full max-w-2xl mb-6 bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <i data-lucide="receipt" class="w-4 h-4 text-brand-400"></i>
+                <span th:text="#{tt.form.thong_tin_hoa_don}">Thông tin Hóa Đơn</span>
+            </h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                    <p class="text-xs text-slate-500 mb-1" th:text="#{tt.form.can_ho}">Căn hộ</p>
+                    <p class="font-bold text-white" th:text="${hoaDon.canHo?.maCanHo}">A1-01</p>
+                </div>
+                <div class="p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                    <p class="text-xs text-slate-500 mb-1" th:text="#{tt.form.ngay_phat_hanh}">Ngày phát hành</p>
+                    <p class="font-semibold text-white" th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}">01/10/2026</p>
+                </div>
+                <div class="col-span-2 p-3 bg-darkbg/50 rounded-xl border border-darkborder">
+                    <p class="text-xs text-slate-500 mb-1" th:text="#{tt.form.tong_tien_phai_thu}">Tổng tiền hóa đơn</p>
+                    <p class="text-xl font-extrabold text-emerald-400"
+                       th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1,850,000 VNĐ</p>
+                </div>
+            </div>
+            <!-- Cảnh báo quá hạn -->
+            <div th:if="${daysLate != null and daysLate > 0}"
+                 class="mt-4 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs space-y-2">
+                <div class="flex justify-between text-rose-400">
+                    <span class="font-semibold">⚠️ Quá hạn</span>
+                    <span th:text="|${daysLate} ngày|">0 ngày</span>
+                </div>
+                <div class="flex justify-between text-rose-400">
+                    <span>Phí trễ hạn (0.5%/ngày)</span>
+                    <span class="font-bold" th:text="|${#numbers.formatDecimal(lateFee, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</span>
+                </div>
+                <div class="flex justify-between text-white border-t border-rose-500/20 pt-2">
+                    <span class="font-bold">Tổng phải thu</span>
+                    <span class="font-extrabold text-rose-400" th:text="|${#numbers.formatDecimal(totalDue, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</span>
                 </div>
             </div>
         </div>
 
-        <!-- Alert khi duyệt thanh toán QR -->
-        <div th:if="${hoaDon.trangThaiThanhToan == 'Chờ duyệt'}" class="alert alert-warning" style="max-width: 600px;">
-            <strong><i class="bi bi-hourglass-split me-2"></i><span th:text="#{tt.form.duyet_thanh_toan_qr}" th:remove="tag">Duyệt Thanh Toán QR</span></strong><br><span th:text="#{tt.form.can_ho}" th:remove="tag">
-            - Căn hộ: </span><span th:text="${hoaDon.canHo?.maCanHo}"></span><br><span th:text="#{tt.form.ngay_phat_hanh}" th:remove="tag">
-            - Ngày phát hành: </span><span th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}"></span><br><span th:text="#{tt.form.tong_tien}" th:remove="tag">
-            - Tổng tiền: </span><strong class="text-danger" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></strong><br>
-            <small class="text-muted" th:text="#{tt.form.cu_dan_da_thanh_toan}">Cư dân đã thanh toán qua QR. Vui lòng kiểm tra sổ sách trước khi duyệt.</small>
+        <!-- Thông tin hóa đơn (duyệt QR) -->
+        <div th:if="${hoaDon.trangThaiThanhToan == 'Chờ duyệt'}"
+             class="w-full max-w-2xl mb-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 shadow-sm">
+            <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <i data-lucide="qr-code" class="w-4 h-4"></i>
+                <span th:text="#{tt.form.duyet_thanh_toan_qr}">Duyệt Thanh Toán QR</span>
+            </h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="p-3 bg-darkbg/50 rounded-xl border border-amber-500/10">
+                    <p class="text-xs text-slate-500 mb-1" th:text="#{tt.form.can_ho}">Căn hộ</p>
+                    <p class="font-bold text-white" th:text="${hoaDon.canHo?.maCanHo}">A1-01</p>
+                </div>
+                <div class="p-3 bg-darkbg/50 rounded-xl border border-amber-500/10">
+                    <p class="text-xs text-slate-500 mb-1" th:text="#{tt.form.ngay_phat_hanh}">Ngày phát hành</p>
+                    <p class="font-semibold text-white" th:text="${#temporals.format(hoaDon.ngayPhatHanh, 'dd/MM/yyyy')}">01/10/2026</p>
+                </div>
+                <div class="col-span-2 p-3 bg-darkbg/50 rounded-xl border border-amber-500/10">
+                    <p class="text-xs text-slate-500 mb-1" th:text="#{tt.form.tong_tien}">Tổng tiền</p>
+                    <p class="text-xl font-extrabold text-amber-400"
+                       th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1,850,000 VNĐ</p>
+                </div>
+            </div>
+            <p class="text-xs text-amber-300 mt-3" th:text="#{tt.form.cu_dan_da_thanh_toan}">Cư dân đã thanh toán qua QR. Vui lòng kiểm tra sổ sách trước khi duyệt.</p>
         </div>
 
-        <form th:action="@{/admin/thanh-toan/luu}" th:object="${thanhToan}" method="post" style="max-width: 600px;">
+        <!-- Form thu tiền -->
+        <div class="w-full max-w-2xl bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
+            <h3 class="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i>
+                <span>Thông tin Giao Dịch</span>
+            </h3>
+            <form th:action="@{/admin/thanh-toan/luu}" th:object="${thanhToan}" method="post" class="space-y-6" id="paymentForm">
+                <input type="hidden" th:field="*{hoaDon.id}">
 
-            <input type="hidden" th:field="*{hoaDon.id}">
+                <!-- Ngày thanh toán -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                           th:text="#{tt.form.ngay_thanh_toan}">Ngày Thanh Toán</label>
+                    <input type="date" th:field="*{ngayThanhToan}" required
+                           class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition">
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label" th:text="#{tt.form.ngay_thanh_toan}">Ngày Thanh Toán</label>
-                <input type="date" class="form-control" th:field="*{ngayThanhToan}" required>
-            </div>
+                <!-- Số tiền -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                           th:text="#{tt.form.so_tien_thuc_thu_vnd}">Số Tiền Thực Thu (VNĐ)</label>
+                    <input type="number" th:field="*{soTien}" required
+                           class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                    <p th:if="${totalDue != null}" class="text-xs text-slate-500 mt-1">
+                        Tổng phải thu (gồm trễ hạn nếu có):
+                        <strong class="text-white" th:text="|${#numbers.formatDecimal(totalDue, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</strong>
+                    </p>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label" th:text="#{tt.form.so_tien_thuc_thu_vnd}">Số Tiền Thực Thu (VNĐ)</label>
-                <input type="number" class="form-control" th:field="*{soTien}" required>
-                <small class="text-muted" th:if="${totalDue != null}">
-                    Tổng phải thu (gồm trễ hạn nếu có): <strong th:text="|${#numbers.formatDecimal(totalDue, 0, 'COMMA', 0, 'POINT')} VNĐ|">0 VNĐ</strong>
-                </small>
-            </div>
+                <!-- Phương thức -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                           th:text="#{tt.form.phuong_thuc_thanh_to}">Phương Thức Thanh Toán</label>
+                    <select th:field="*{phuongThuc}" required
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option value="Tiền mặt" th:text="#{tt.form.tien_mat}">Tiền mặt</option>
+                        <option value="Chuyển khoản" th:text="#{tt.form.chuyen_khoan_ngan_ha}">Chuyển khoản Ngân hàng</option>
+                        <option value="Chuyển khoản QR" th:text="#{tt.form.chuyen_khoan_qr}">Chuyển khoản QR</option>
+                        <option value="Quẹt thẻ" th:text="#{tt.form.quet_the_pos}">Quẹt thẻ (POS)</option>
+                        <option value="Ví điện tử (Momo/ZaloPay)" th:text="#{tt.form.vi_dien_tu_momo_zalo}">Ví điện tử (Momo/ZaloPay)</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label" th:text="#{tt.form.phuong_thuc_thanh_to}">Phương Thức Thanh Toán</label>
-                <select class="form-select" th:field="*{phuongThuc}" required>
-                    <option value="Tiền mặt" th:text="#{tt.form.tien_mat}">Tiền mặt</option>
-                    <option value="Chuyển khoản" th:text="#{tt.form.chuyen_khoan_ngan_ha}">Chuyển khoản Ngân hàng</option>
-                    <option value="Chuyển khoản QR" th:text="#{tt.form.chuyen_khoan_qr}">Chuyển khoản QR</option>
-                    <option value="Quẹt thẻ" th:text="#{tt.form.quet_the_pos}">Quẹt thẻ (POS)</option>
-                    <option value="Ví điện tử (Momo/ZaloPay)" th:text="#{tt.form.vi_dien_tu_momo_zalo}">Ví điện tử (Momo/ZaloPay)</option>
-                </select>
-            </div>
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 pt-4 border-t border-darkborder justify-end">
+                    <a th:href="@{/admin/hoa-don}"
+                       class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition"
+                       th:text="#{dv.form.huy_bo}">Hủy bỏ</a>
+                    <button type="submit" id="btnSubmit"
+                            class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-600/10">
+                        <span id="btnText" class="flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span th:text="#{tt.form.xac_nhan_da_thu_tien}">Xác nhận Đã Thu Tiền</span>
+                        </span>
+                        <span id="btnLoading" class="hidden items-center gap-2">
+                            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+                            <span th:text="#{tt.form.dang_xu_ly}">Đang xử lý...</span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
 
-            <button type="submit" class="btn btn-success" id="btnSubmit">
-                <span id="btnText" th:text="#{tt.form.xac_nhan_da_thu_tien}">Xác nhận Đã Thu Tiền</span>
-                <span id="btnLoading" class="d-none">
-                    <span class="spinner-border spinner-border-sm" role="status"></span><span th:text="#{tt.form.dang_xu_ly}" th:remove="tag">
-                    Đang xử lý...
-                </span></span>
-            </button>
-            <a th:href="@{/admin/hoa-don}" class="btn btn-secondary" th:text="#{dv.form.huy_bo}">Hủy bỏ</a>
-        </form>
-    </div>
-</div>
-
-<script>
-    // Chống double-click khi submit form
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const btn = document.getElementById('btnSubmit');
-        const btnText = document.getElementById('btnText');
-        const btnLoading = document.getElementById('btnLoading');
-
-        btn.disabled = true;
-        btnText.classList.add('d-none');
-        btnLoading.classList.remove('d-none');
-    });
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+            document.getElementById('paymentForm').addEventListener('submit', function () {
+                const btn = document.getElementById('btnSubmit');
+                const btnText = document.getElementById('btnText');
+                const btnLoading = document.getElementById('btnLoading');
+                btn.disabled = true;
+                btnText.classList.add('hidden');
+                btnLoading.classList.remove('hidden');
+                btnLoading.classList.add('flex');
+            });
+        });
+    </script>
 </body>
 </html>

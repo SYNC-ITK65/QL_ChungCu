@@ -2,71 +2,117 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{hdon.form.them_tieude}">Tạo Hóa Đơn Mới</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Tự động điền ngày hiện tại khi trang load
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            const ngayPhatHanhInput = document.querySelector('input[name="ngayPhatHanh"]');
-            if (ngayPhatHanhInput) {
-                ngayPhatHanhInput.value = today;
-            }
-        });
+        tailwind.config = {
+            darkMode:'class',
+            theme: { extend: { fontFamily:{sans:['Inter','sans-serif']}, colors:{brand:{500:'#0ea5e9',400:'#38bdf8',600:'#0284c7'},darkbg:'#0B0F17',darkcard:'#161B26',darkborder:'#242B3D'} } }
+        }
     </script>
+    <style>
+        body { background-color:#0B0F17; color:#E2E8F0; font-family:'Inter',sans-serif; }
+    </style>
 </head>
-<body>
-<div class="d-flex">
-    <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <div th:replace="fragments/sidebar :: menu-trai"></div>
 
-    <div class="container-fluid p-4">
-        <h2 th:text="#{hdon.form.them_tieude}">Tạo Hóa Đơn Mới</h2>
-        <hr>
-
-        <!-- Hiển thị lỗi nếu có -->
-        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-            <strong th:text="#{chung.loi}">Lỗi:</strong>
-            <div th:utext="${#strings.replace(errorMessage, '&#10;', '&lt;br&gt;')}"></div>
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full flex flex-col items-start">
+        <!-- Header -->
+        <div class="w-full max-w-2xl flex items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight" th:text="#{hdon.form.them_tieude}">Tạo Hóa Đơn Mới</h1>
+                <p class="text-sm text-slate-400 mt-1">Tạo hóa đơn mới cho căn hộ, hệ thống tự động tính toán các khoản phí</p>
+            </div>
+            <a th:href="@{/admin/hoa-don}"
+               class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span th:text="#{chung.quay_lai}">Quay Lại</span>
+            </a>
         </div>
 
-        <form th:action="@{/admin/hoa-don/luu}" method="post" style="max-width: 600px;" id="invoiceForm">
+        <!-- Error -->
+        <div th:if="${errorMessage}" class="w-full max-w-2xl mb-4 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-sm flex items-start gap-2">
+            <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0 mt-0.5"></i>
+            <div th:utext="${#strings.replace(errorMessage, T(java.lang.System).lineSeparator(), '&lt;br&gt;')}"></div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" th:text="#{hdon.form.ngay_phat_hanh}">Ngày Phát Hành</label>
-                    <input type="date" class="form-control" name="ngayPhatHanh" required readonly>
+        <!-- Form Card -->
+        <div class="w-full max-w-2xl bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
+            <form th:action="@{/admin/hoa-don/luu}" method="post" id="invoiceForm" class="space-y-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Ngày phát hành -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{hdon.form.ngay_phat_hanh}">Ngày Phát Hành</label>
+                        <input type="date" name="ngayPhatHanh" required readonly
+                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-not-allowed opacity-70">
+                    </div>
+
+                    <!-- Hạn thanh toán -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{hdon.form.han_thanh_toan}">Hạn Thanh Toán</label>
+                        <select name="soNgay" required
+                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                            <option value="7" th:text="#{hdon.form.han_7_ngay}">7 ngày</option>
+                            <option value="14" th:text="#{hdon.form.han_14_ngay}">14 ngày</option>
+                            <option value="30" th:text="#{hdon.form.han_30_ngay}">30 ngày</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" th:text="#{hdon.form.han_thanh_toan}">Hạn thanh toán</label>
-                    <select class="form-select" name="soNgay" required>
-                        <option value="7" th:text="#{hdon.form.han_7_ngay}">7 ngày</option>
-                        <option value="14" th:text="#{hdon.form.han_14_ngay}">14 ngày</option>
-                        <option value="30" th:text="#{hdon.form.han_30_ngay}">30 ngày</option>
+
+                <!-- Căn hộ -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{hdon.form.can_ho}">Chọn Căn Hộ</label>
+                    <select name="canHoId" required
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option value="" disabled selected th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ cần xuất hóa đơn --</option>
+                        <option th:each="ch : ${danhSachCanHo}"
+                                th:value="${ch.id}"
+                                th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
+                        </option>
                     </select>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label" th:text="#{hdon.form.can_ho}">Chọn Căn Hộ</label>
-                <select class="form-select" name="canHoId" required>
-                    <option value="" disabled selected th:text="#{hdon.form.can_ho_chon}">-- Chọn căn hộ cần xuất hóa đơn --</option>
-                    <option th:each="ch : ${danhSachCanHo}"
-                            th:value="${ch.id}"
-                            th:text="${ch.maCanHo} + ' (' + (${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}) + ')'">
-                    </option>
-                </select>
-            </div>
+                <!-- Info box -->
+                <div class="p-4 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl text-xs leading-relaxed">
+                    <p class="font-semibold flex items-center gap-1.5 mb-2">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                        Thông tin tự động
+                    </p>
+                    <ul class="space-y-1 list-disc list-inside text-blue-300">
+                        <li>Ngày phát hành được tự động điền là ngày hôm nay</li>
+                        <li>Các khoản phí (điện, nước, quản lý, xe) được tính tự động từ chỉ số và dịch vụ hiện tại</li>
+                    </ul>
+                </div>
 
-            <button type="submit" class="btn btn-success" th:text="#{hdon.form.nut_luu}">Tính tiền & Lưu Hóa Đơn</button>
-            <a th:href="@{/admin/hoa-don}" class="btn btn-secondary" th:text="#{hdon.form.nut_huy}">Hủy</a>
-        </form>
-    </div>
-</div>
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 pt-4 border-t border-darkborder justify-end">
+                    <a th:href="@{/admin/hoa-don}"
+                       class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition"
+                       th:text="#{hdon.form.nut_huy}">Hủy</a>
+                    <button type="submit"
+                            class="px-6 py-3 bg-brand-500 hover:bg-brand-400 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
+                        <i data-lucide="calculator" class="w-4 h-4"></i>
+                        <span th:text="#{hdon.form.nut_luu}">Tính tiền &amp; Lưu Hóa Đơn</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+            const today = new Date().toISOString().split('T')[0];
+            const input = document.querySelector('input[name="ngayPhatHanh"]');
+            if (input) input.value = today;
+        });
+    </script>
 </body>
 </html>
