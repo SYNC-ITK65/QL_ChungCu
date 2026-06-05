@@ -1,59 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{tb.ui.thong_tin_cua_toi}">Thông tin của tôi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body class="d-flex">
 
-<div th:replace="~{fragments/sidebar_cudan :: menu-cudan}"></div>
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <!-- Resident Sidebar -->
+    <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
 
-<div class="container p-5">
-    <h2 class="mb-4" th:text="#{tb.ui.thong_tin_ca_nhan_ca}">Thông tin cá nhân &amp; Căn hộ</h2>
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2" th:text="#{tb.ui.thong_tin_ca_nhan_ca}">
+                Thông tin cá nhân &amp; Căn hộ
+            </h1>
+            <p class="text-sm text-slate-400 mt-1">Thông tin chi tiết về cư dân đăng ký và tình trạng căn hộ trực thuộc</p>
+        </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0" th:text="#{tb.ui.thong_tin_cu_dan}">Thông tin Cư Dân</h5>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+            <!-- Card 1: Resident Personal Info -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-white mb-6 flex items-center gap-2 pb-3 border-b border-darkborder">
+                        <i data-lucide="user" class="w-4 h-4 text-brand-400"></i>
+                        <span th:text="#{tb.ui.thong_tin_cu_dan}">Thông tin Cư Dân</span>
+                    </h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium" th:text="#{tb.ui.ho_ten}">Họ Tên:</span>
+                            <span class="text-white font-bold" th:text="${cuDan.hoTen}"></span>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium" th:text="#{tb.ui.so_dien_thoai}">Số Điện Thoại:</span>
+                            <span class="text-white font-mono" th:text="${cuDan.soDienThoai}"></span>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium" th:text="#{chung.cccd}">CCCD:</span>
+                            <span class="text-white font-mono" th:text="${cuDan.cccd}"></span>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium" th:text="#{tb.ui.vai_tro}">Vai trò:</span>
+                            <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20" 
+                                  th:text="${cuDan.moiQuanHe}"></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p><strong th:text="#{tb.ui.ho_ten}">Họ Tên:</strong> <span th:text="${cuDan.hoTen}"></span></p>
-                    <p><strong th:text="#{tb.ui.so_dien_thoai}">Số Điện Thoại:</strong> <span th:text="${cuDan.soDienThoai}"></span></p>
-                    <p><strong th:text="#{chung.cccd}">CCCD:</strong> <span th:text="${cuDan.cccd}"></span></p>
-                    <p><strong th:text="#{tb.ui.vai_tro}">Vai trò:</strong> <span th:text="${cuDan.moiQuanHe}"></span></p>
+            </div>
+
+            <!-- Card 2: Apartment Info -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-white mb-6 flex items-center gap-2 pb-3 border-b border-darkborder">
+                        <i data-lucide="home" class="w-4 h-4 text-brand-400"></i>
+                        <span th:text="#{side.user.nhom_tt}">Thông tin Căn Hộ</span>
+                    </h3>
+                    
+                    <div th:if="${cuDan.canHo != null}" class="space-y-4 text-sm">
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium">Mã Phòng:</span>
+                            <span class="text-brand-400 font-bold text-base" th:text="${cuDan.canHo.maCanHo}"></span>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.tang}">Tầng:</span>
+                            <span class="text-white font-semibold" th:text="${cuDan.canHo.tang}"></span>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.dien_tich}">Diện tích:</span>
+                            <span class="text-white font-semibold" th:text="|${cuDan.canHo.dienTich} #{chung.don_vi_m2}|"></span>
+                        </div>
+                        <div class="flex items-center justify-between py-1 border-b border-darkborder/50">
+                            <span class="text-slate-400 font-medium" th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</span>
+                            <span class="text-white font-semibold" 
+                                  th:text="${cuDan.canHo.loaiHienThi != null ? #messages.msg(cuDan.canHo.loaiHienThi) : cuDan.canHo.loai}"></span>
+                        </div>
+                    </div>
+
+                    <div th:if="${cuDan.canHo == null}" 
+                         class="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center gap-2 shadow-lg" 
+                         th:text="#{tb.ui.ban_chua_duoc_phan_b}">
+                        Bạn chưa được phân bổ vào căn hộ nào. Vui lòng liên hệ Ban Quản Lý.
+                    </div>
                 </div>
             </div>
         </div>
+    </main>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0" th:text="#{side.user.nhom_tt}">Thông tin Căn Hộ</h5>
-                </div>
-                <div class="card-body" th:if="${cuDan.canHo != null}">
-                    <h4 class="text-primary"><span th:text="#{tb.ui.phong}" th:remove="tag">Phòng </span><span th:text="${cuDan.canHo.maCanHo}"></span></h4>
-                    <p><strong th:text="#{ch.chitiet.tang}">Tầng:</strong> <span th:text="${cuDan.canHo.tang}"></span></p>
-                    <p><strong th:text="#{ch.chitiet.dien_tich}">Diện tích:</strong> <span th:text="|${cuDan.canHo.dienTich} #{chung.don_vi_m2}|"></span></p>
-                    <p><strong th:text="#{ch.chitiet.loai_can_ho}">Loại căn hộ:</strong> <span th:text="${cuDan.canHo.loaiHienThi != null ? #messages.msg(cuDan.canHo.loaiHienThi) : cuDan.canHo.loai}"></span></p>
-                </div>
-                <div class="card-body text-danger" th:if="${cuDan.canHo == null}" th:text="#{tb.ui.ban_chua_duoc_phan_b}">
-                    Bạn chưa được phân bổ vào căn hộ nào. Vui lòng liên hệ Ban Quản Lý.
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-

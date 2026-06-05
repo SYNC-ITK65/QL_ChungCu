@@ -1,0 +1,247 @@
+DÀNH CHO: UI/UX DESIGNER
+DỰ ÁN: HỆ THỐNG QUẢN LÝ CHUNG CƯ TOÀN DIỆN (QL_CHUNGCU - SKYLINE RESIDENCE)
+TÀI LIỆU YÊU CẦU THÀNH PHẦN CHỨC NĂNG GIAO DIỆN (FUNCTIONAL UI SPECIFICATION)
+================================================================================
+
+Tài liệu này mô tả chi tiết các màn hình, thành phần thông tin, biểu mẫu (form), bảng dữ liệu (table), bộ lọc (filter) và các nút hành động (buttons) của hệ thống. Nhà thiết kế giao diện (UI Designer) được toàn quyền quyết định bố cục, hướng đặt thanh điều hướng, bảng màu và phong cách đồ họa (Light/Dark mode, hình ảnh, icon) sao cho đạt hiệu quả thẩm mỹ tốt nhất.
+
+--------------------------------------------------------------------------------
+1. PHÂN HỆ CÔNG CỘNG & TÀI KHOẢN
+--------------------------------------------------------------------------------
+
+A. TRANG CHỦ (index.html)
+   * Các khối thông tin cần hiển thị:
+     - Giới thiệu dự án: Tên tòa nhà, thông điệp truyền cảm hứng, giới thiệu ngắn về môi trường sống văn minh.
+     - Điểm nổi bật/Tiện ích: Các khu vực tiện ích như Gym, Hồ bơi, Sân thể thao, Công viên (mỗi tiện ích gồm tiêu đề ngắn, mô tả tính năng).
+     - Thông tin liên hệ: Địa chỉ, Số Hotline, Email hỗ trợ, các liên kết mạng xã hội của ban quản lý.
+   * Các nút hành động (Buttons):
+     - Nút dẫn tới Cổng đăng nhập hệ thống.
+     - Nút cuộn hoặc di chuyển đến phần giới thiệu chi tiết của tòa nhà.
+
+B. TRANG ĐĂNG NHẬP (login.html)
+   * Các khối chức năng:
+     - Khung nhập liệu tài khoản.
+     - Khu vực quảng bá: Trình chiếu hình ảnh/tin tức nổi bật hoặc hoạt động cộng đồng của chung cư.
+     - Khu vực hiển thị thông báo lỗi (như nhập sai thông tin, tài khoản bị khóa).
+   * Các trường thông tin nhập liệu (Inputs):
+     - Tên đăng nhập (Username).
+     - Mật khẩu (Password).
+   * Các nút hành động (Buttons):
+     - Nút gửi thông tin đăng nhập.
+     - Các nút chuyển đổi ngôn ngữ hệ thống (Tiếng Việt / English).
+
+C. TRANG ĐỔI MẬT KHẨU (doi-mat-khau.html)
+   * Các trường thông tin nhập liệu (Inputs):
+     - Mật khẩu hiện tại.
+     - Mật khẩu mới.
+     - Xác nhận mật khẩu mới.
+     - Công cụ kiểm tra độ bảo mật của mật khẩu mới (Password Strength indicator).
+   * Các nút hành động (Buttons):
+     - Nút xác nhận đổi mật khẩu.
+     - Nút hủy bỏ và quay lại trang trước.
+
+--------------------------------------------------------------------------------
+2. PHÂN HỆ CƠ DÂN (RESIDENT PORTAL)
+--------------------------------------------------------------------------------
+
+A. BẢNG TIN & THÔNG BÁO (bang_tin.html & chi_tiet_thong_bao.html)
+   * Bảng tin chung:
+     - Phân loại thông báo: Tab lọc thông báo (Thông báo khẩn cấp, Thông báo phí, Tin tức chung).
+     - Danh sách thẻ tin: Mỗi thẻ gồm Tiêu đề tin, Ngày đăng, Nội dung tóm tắt, Huy hiệu chỉ trạng thái (Đã đọc / Chưa đọc), Ảnh đại diện của tin (nếu có).
+     - Nút tương tác: Nút thích (like), nút mở rộng xem bình luận.
+   * Chi tiết thông báo:
+     - Tiêu đề thông báo đầy đủ, ngày giờ đăng, tên người đăng.
+     - Nội dung văn bản định dạng (Rich text).
+     - Danh sách tệp đính kèm/Hình ảnh gốc (cho phép nhấn vào để phóng to/tải về).
+     - Khu vực thảo luận: Ô viết phản hồi của cư dân và danh sách các bình luận trước đó.
+
+B. HÓA ĐƠN & THANH TOÁN (hoa_don_list.html, hoa_don_chi_tiet.html, thanh_toan_qr.html, thanh_toan_lich_su.html)
+   * Danh sách hóa đơn cư dân:
+     - Khối thông tin tổng hợp: Tổng số tiền nợ chưa thanh toán của căn hộ.
+     - Phân nhóm hóa đơn: Các tab phân loại (Hóa đơn chưa thanh toán, Hóa đơn đã thanh toán, Lịch sử tất cả giao dịch).
+     - Danh sách hóa đơn: Mã hóa đơn, Kỳ thanh toán (Tháng/Năm), Phân loại phí (Điện, Nước, Phí quản lý, Phí xe...), Tổng tiền, Hạn thanh toán, Trạng thái thanh toán.
+     - Nút hành động: Nút xem chi tiết hóa đơn, nút tiến hành thanh toán nhanh.
+   * Chi tiết hóa đơn:
+     - Bảng kê điện/nước: Chỉ số cũ, Chỉ số mới, Tiêu thụ thực tế, Đơn giá theo bậc thang, Thành tiền.
+     - Phí dịch vụ cố định: Tên dịch vụ, Diện tích hoặc Đơn giá cố định, Thành tiền.
+     - Tổng hợp tài chính: Tổng tiền chưa thuế, Thuế VAT, Số tiền giảm trừ hoặc phạt (nếu có), Tổng số tiền cuối cùng cần đóng.
+     - Nút hành động: Nút mở mã QR thanh toán, nút tải xuống hóa đơn (PDF).
+   * Màn hình thanh toán bằng mã QR:
+     - Ảnh QR Code động (tự động điền số tài khoản, số tiền và nội dung chuyển khoản).
+     - Khối thông tin chuyển khoản dạng chữ: Tên ngân hàng nhận, Số tài khoản nhận, Tên chủ tài khoản nhận, Số tiền chính xác, Nội dung chuyển khoản (để đối chiếu hoặc copy).
+     - Nút hành động: Nút tải ảnh QR về thiết bị, nút sao chép nhanh số tài khoản, nút xác nhận "Đã hoàn thành chuyển khoản".
+
+C. ĐĂNG KÝ TIỆN ÍCH NỘI KHU (dich_vu.html)
+   * Khối thông tin:
+     - Danh mục tiện ích: Thẻ giới thiệu Gym, Bể bơi, Sân thể thao, Phòng sinh hoạt cộng đồng (kèm giờ hoạt động, đơn giá nếu có).
+     - Lịch đặt chỗ trực quan: Trình hiển thị lịch theo ngày/tuần, các khung giờ trống/đã có người đặt.
+     - Form đăng ký sử dụng: Chọn tiện ích, chọn ngày sử dụng, chọn khung giờ đăng ký, số lượng người tham gia, ghi chú đặc biệt.
+     - Danh sách lịch sử đặt tiện ích: Tên tiện ích, Ngày/Giờ sử dụng, Phí dịch vụ, Trạng thái (Đang chờ duyệt, Đã chấp nhận, Bị từ chối kèm lý do).
+   * Các nút hành động (Buttons):
+     - Nút gửi form đăng ký đặt chỗ.
+     - Nút hủy yêu cầu đặt chỗ (chỉ hiển thị với yêu cầu chưa được ban quản lý xử lý).
+
+D. QUẢN LÝ KHÁCH THĂM (khach_tham.html)
+   * Khối chức năng:
+     - Form khai báo thông tin khách: Họ tên khách, Số điện thoại, Biển số phương tiện (nếu khách đi xe), Ngày/Giờ đến dự kiến, Thời gian lưu trú ước tính, Ghi chú.
+     - Danh sách lịch sử đăng ký khách: Tên khách, Thời gian đến, Trạng thái (Chờ đến, Đã vào chung cư, Đã rời đi).
+     - Mã thông hành khách (Visitor Pass): Khung hiển thị mã QR Code dùng làm thẻ thông hành của khách khi qua cổng bảo vệ.
+   * Các nút hành động (Buttons):
+     - Nút gửi yêu cầu đăng ký khách.
+     - Nút tải mã QR về máy/Chia sẻ mã QR trực tiếp.
+     - Nút hủy thông tin đăng ký khách.
+
+E. PHẢN ÁNH & KIẾN NGHỊ CỦA CƯ DÂN (phan_anh_form.html, phan_anh_list.html)
+   * Form gửi ý kiến phản ánh:
+     - Các trường thông tin: Phân nhóm sự cố (Điện, nước, vệ sinh, an ninh, thái độ nhân viên, lý do khác), Tiêu đề phản ánh, Mô tả nội dung sự cố chi tiết.
+     - Khung tải lên tệp đa phương tiện: Hỗ trợ kéo thả hình ảnh/video thực tế sự cố.
+   * Danh sách phản ánh đã gửi:
+     - Danh sách hiển thị: Tiêu đề phản ánh, Phân nhóm sự cố, Ngày gửi, Trạng thái (Mới gửi, Đang xử lý, Đã xử lý).
+     - Sơ đồ tiến trình (Timeline stepper): Hiển thị tiến độ từ khâu tiếp nhận, chỉ định kỹ thuật viên, tới khâu hoàn thành kèm hình ảnh nghiệm thu và phản hồi từ ban quản lý.
+   * Nút hành động (Buttons):
+     - Nút gửi phản ánh.
+     - Nút hủy phản ánh (nếu ban quản lý chưa tiếp nhận xử lý).
+     - Khu vực đánh giá mức độ hài lòng (theo số sao hoặc biểu cảm) sau khi sự cố được giải quyết.
+
+F. BƯU KIỆN & NHẬN HÀNG (kien_hang.html)
+   * Khối thông tin:
+     - Danh sách bưu kiện: Mã bưu kiện, Tên đơn vị chuyển phát, Tên người nhận trên bọc hàng, Ngày giờ lễ tân nhận hộ, Trạng thái (Chờ lấy, Đã nhận).
+     - Mã vạch/Barcode xác thực: Mã vạch hiển thị trực quan để cư dân đưa cho nhân viên lễ tân quét xác nhận lấy hàng.
+   * Nút hành động:
+     - Nút hiển thị nhanh mã vạch nhận hàng.
+
+G. THÔNG TIN CĂN HỘ & PHƯƠNG TIỆN (can_ho_detail.html, thong_tin.html, phuong-tien.html)
+   * Khối thông tin:
+     - Chi tiết căn hộ: Mã căn hộ, Tầng, Diện tích, Danh sách họ tên và vai trò của các thành viên sống chung (Chủ hộ, thành viên gia đình, khách thuê).
+     - Danh sách phương tiện đăng ký: Loại phương tiện (Ô tô, Xe máy, Xe điện), Biển số xe, Số thẻ xe, Ngày đăng ký gửi xe.
+   * Nút hành động (Buttons):
+     - Nút gửi yêu cầu cập nhật danh sách nhân khẩu.
+     - Nút đăng ký thêm phương tiện mới.
+
+--------------------------------------------------------------------------------
+3. PHÂN HỆ BAN QUẢN LÝ (ADMIN DASHBOARD)
+--------------------------------------------------------------------------------
+
+A. BẢNG ĐIỀU HÀNH CHUNG (dashboard.html)
+   * Khối số liệu thống kê nhanh (Widget cards):
+     - Tỷ lệ căn hộ có cư dân ở (%).
+     - Số căn hộ đang trống.
+     - Tổng số cư dân đã đăng ký cư trú.
+     - Số lượng phản ánh của cư dân đang chờ xử lý.
+     - Tổng doanh thu phí thu được trong tháng hiện tại.
+     - Số lượt khách đăng ký thăm tòa nhà trong ngày.
+   * Khối biểu đồ (Charts):
+     - Biểu đồ thể hiện biến động doanh thu qua các tháng (phân tách theo loại phí).
+     - Biểu đồ thể hiện tỷ lệ các nhóm phản ánh nhận được (Điện, nước, an ninh...).
+   * Khối hoạt động gần đây (Activity Feed):
+     - Danh sách các sự kiện mới nhất diễn ra trong hệ thống theo dòng thời gian.
+
+B. QUẢN LÝ CĂN HỘ & HỢP ĐỒNG (can_ho_list.html, can_ho_form.html, hop_dong_list.html, hop_dong_form.html, hop_dong_detail.html)
+   * Bảng danh sách Căn hộ (Datatable):
+     - Các cột hiển thị: Mã căn hộ, Số tầng, Diện tích, Số phòng ngủ, Tên chủ hộ, Số điện thoại chủ hộ, Trạng thái căn hộ (Trống, Đã bán, Đang cho thuê).
+     - Thanh tìm kiếm và bộ lọc: Tìm kiếm theo mã căn hộ/tên chủ hộ, bộ lọc theo tầng, bộ lọc theo trạng thái căn hộ.
+     - Nút hành động: Xem chi tiết căn hộ, Sửa thông tin căn hộ, Xóa căn hộ, Thêm mới căn hộ.
+   * Form thông tin Căn hộ:
+     - Các trường nhập liệu: Mã căn hộ, Tầng, Diện tích, Số phòng ngủ, Số phòng vệ sinh, Trạng thái căn hộ, Giá bán/giá thuê định mức, Ghi chú.
+   * Bảng danh sách Hợp đồng:
+     - Các cột hiển thị: Mã hợp đồng, Số căn hộ, Họ tên khách hàng, Ngày ký kết, Ngày hết hạn, Trạng thái hiệu lực (Còn hạn, Hết hạn, Đã thanh lý).
+     - Nút hành động: Xem chi tiết hợp đồng, Tải tệp đính kèm hợp đồng, Gia hạn hợp đồng, Hủy hợp đồng, Thêm mới hợp đồng.
+
+C. QUẢN LÝ CƯ DÂN & NGƯỜI DÙNG (cu_dan_list.html, cu_dan_form.html, nguoi_dung_list.html, nguoi_dung_form.html)
+   * Bảng danh sách Cư dân (Datatable):
+     - Các cột hiển thị: Mã cư dân, Họ tên, Ảnh đại diện, Ngày sinh, Số điện thoại, Email, Số CCCD/Hộ chiếu, Số căn hộ liên kết, Vai trò trong căn hộ (Chủ hộ, Thành viên, Khách thuê), Trạng thái cư trú (Thường trú, Tạm trú, Tạm vắng).
+     - Thanh tìm kiếm và bộ lọc: Tìm kiếm theo họ tên/CCCD/số điện thoại, bộ lọc theo số căn hộ, bộ lọc theo trạng thái cư trú.
+     - Nút hành động: Thêm cư dân mới, Sửa cư dân, Xóa cư dân, Xuất danh sách cư dân (Excel).
+   * Form thông tin Cư dân:
+     - Các trường nhập liệu: Họ tên, Ngày sinh, Giới tính, Số điện thoại, Email, Ảnh đại diện, Số định danh cá nhân (CCCD/Hộ chiếu), Quê quán, Chọn căn hộ liên kết, Chọn vai trò.
+
+D. QUẢN LÝ CHỈ SỐ ĐIỆN/NƯỚC (chi_so_list.html, chi_so_form.html, chi_so_hang_loat.html)
+   * Bảng danh sách chỉ số định kỳ:
+     - Các cột hiển thị: Mã căn hộ, Kỳ ghi chỉ số (Tháng/Năm), Chỉ số điện cũ, Chỉ số điện mới, Tiêu thụ điện (kWh), Chỉ số nước cũ, Chỉ số nước mới, Tiêu thụ nước (m3), Ngày ghi nhận, Người ghi nhận.
+     - Nút hành động: Nhập chỉ số lẻ cho một căn hộ, Nhập chỉ số hàng loạt.
+   * Giao diện nhập chỉ số hàng loạt (Editable Table):
+     - Bảng nhập liệu nhanh: Cột mã căn hộ, Cột chỉ số điện cũ (khóa nhập liệu), Cột nhập chỉ số điện mới, Cột chỉ số nước cũ (khóa nhập liệu), Cột nhập chỉ số nước mới, Ghi chú dòng.
+     - Các nút hành động: Nút lưu toàn bộ chỉ số đã nhập, nút tải tệp Excel dữ liệu mẫu, nút nhập dữ liệu chỉ số từ tệp Excel (Import).
+
+E. QUẢN LÝ HÓA ĐƠN & GỬI THÔNG BÁO THU PHÍ (hoa_don_list.html, hoa_don_form.html, hoa_don_chi_tiet.html, hoa_don_sua.html, hoa_don_hang_loat.html, thanh_toan_list.html, thanh_toan_form.html)
+   * Bảng danh sách Hóa đơn:
+     - Các cột hiển thị: Mã hóa đơn, Số căn hộ, Họ tên chủ hộ, Kỳ thanh toán, Tổng tiền, Ngày phát hành, Hạn thanh toán, Trạng thái (Chưa thanh toán, Đã thanh toán, Quá hạn).
+     - Bộ lọc: Lọc theo trạng thái thanh toán, lọc theo kỳ hóa đơn.
+     - Nút hành động: Xem chi tiết hóa đơn, Sửa hóa đơn, Xóa hóa đơn, Gửi thông báo nhắc nợ (Email/SMS), Xuất hóa đơn (PDF).
+   * Quy trình tạo hóa đơn hàng loạt theo bước (Stepper Wizard):
+     - Bước 1 (Cài đặt): Form chọn kỳ thanh toán (Tháng/Năm), chọn loại phí muốn lập hóa đơn (Điện/Nước, Phí quản lý, Phí xe).
+     - Bước 2 (Xem trước dữ liệu): Bảng xem trước danh sách hóa đơn tự động tính toán. Cột gồm Mã căn hộ, Tên chủ hộ, Số tiền cụ thể của từng loại phí, Tổng số tiền hóa đơn. Có ô nhập liệu sửa trực tiếp số tiền trên từng dòng hóa đơn nếu cần điều chỉnh thủ công.
+     - Bước 3 (Phát hành): Lựa chọn kênh gửi thông báo nợ phí đến cư dân (Qua ứng dụng di động, Email, tin nhắn SMS).
+     - Nút hành động xuyên suốt quy trình: Nút Tiếp tục, Quay lại, Hoàn thành phát hành.
+
+F. PHÊ DUYỆT ĐĂNG KÝ TIỆN ÍCH & DỊCH VỤ NỘI KHU (yeu_cau_dich_vu_list.html, duyet_yeu_cau.html)
+   * Bảng danh sách yêu cầu tiện ích:
+     - Các cột hiển thị: Mã yêu cầu, Tên cư dân đăng ký, Số căn hộ, Tên tiện ích (Gym, BBQ...), Ngày sử dụng đăng ký, Khung giờ sử dụng, Số tiền (nếu có), Trạng thái yêu cầu (Chờ phê duyệt, Đã duyệt, Đã từ chối).
+     - Bộ lọc: Lọc theo trạng thái yêu cầu, lọc theo tên tiện ích.
+     - Nút hành động trên bảng: Nút duyệt nhanh, nút từ chối nhanh (mở cửa sổ nhập lý do từ chối), nút xem chi tiết yêu cầu.
+
+G. QUẢN LÝ BƯU KIỆN TẠI LỄ TÂN (kien_hang_list.html, kien_hang_form.html)
+   * Bảng danh sách bưu kiện:
+     - Các cột hiển thị: Mã bưu kiện, Số căn hộ nhận, Tên người nhận trên kiện hàng, Đơn vị vận chuyển, Ngày lễ tân nhận hộ, Trạng thái (Đang lưu kho, Đã bàn giao), Ngày giờ cư dân nhận, Chữ ký điện tử hoặc ảnh chụp xác minh bàn giao.
+     - Nút hành động: Thêm mới bưu kiện nhận hộ, Quét barcode nhập kho nhanh, Xác nhận bàn giao bưu kiện cho cư dân.
+
+H. TIẾP NHẬN & GIẢI QUYẾT PHẢN ÁNH SỰ CỐ (phan_anh_list.html)
+   * Giao diện quản lý phản ánh sự cố:
+     - Bảng danh sách phản ánh: Mã phản ánh, Tên căn hộ gửi, Nhóm sự cố, Tiêu đề phản ánh, Ngày gửi, Trạng thái (Đã nhận, Đang sửa chữa, Đã khắc phục xong).
+     - Vùng chi tiết phản ánh đang chọn:
+       - Các thông tin mô tả chi tiết sự cố, hình ảnh/video đính kèm từ cư dân.
+       - Khu vực phân công kỹ thuật viên: Trường chọn tên nhân viên kỹ thuật chịu trách nhiệm xử lý sự cố.
+       - Khung trao đổi (Chat/Discussion Box): Nơi ban quản lý gửi tin nhắn trao đổi qua lại với cư dân và gửi hình ảnh tiến độ xử lý.
+       - Công cụ cập nhật trạng thái: Nút chuyển trạng thái xử lý, khu vực tải lên hình ảnh nghiệm thu sau sửa chữa.
+
+I. TÀI SẢN & BẢO TRÌ (tai_san_list.html, tai_san_form.html, bao_tri_list.html, bao_tri_form.html)
+   * Bảng danh sách tài sản chung cư:
+     - Các cột hiển thị: Mã tài sản, Tên tài sản, Vị trí lắp đặt, Số lượng, Trạng thái hoạt động (Tốt, Hỏng hóc, Đang bảo trì), Ngày mua sắm, Thời hạn bảo hành.
+     - Nút hành động: Thêm mới tài sản, sửa thông tin, xóa tài sản, lập lịch bảo trì tài sản.
+   * Bảng danh sách lịch sử bảo trì:
+     - Các cột hiển thị: Mã lịch trình, Tên tài sản, Ngày bảo trì dự kiến, Ngày hoàn thành thực tế, Đơn vị thực hiện bảo trì, Chi phí bảo trì, Nội dung sửa chữa, Trạng thái bảo trì (Lên kế hoạch, Đang thực hiện, Hoàn thành).
+     - Nút hành động: Tạo lịch bảo trì mới, cập nhật tiến độ bảo trì.
+
+J. TẠO THÔNG BÁO & KHẢO SÁT Ý KIẾN (thong_bao_list.html, thong_bao_form.html, khao_sat_list.html, khao_sat_form.html, khao_sat_detail.html)
+   * Giao diện tạo thông báo:
+     - Biểu mẫu (Form) soạn thảo: Trường chọn phân loại thông báo, Ô nhập tiêu đề, Trình soạn thảo nội dung có định dạng (Rich Text Editor), Khu vực tải lên hình ảnh/tài liệu đính kèm, Bộ lọc đối tượng nhận (Gửi tất cả, Gửi theo block nhà, Gửi theo tầng).
+     - Nút hành động: Lưu nháp, Đăng phát hành thông báo.
+   * Giao diện quản lý & kết quả khảo sát:
+     - Form tạo khảo sát: Ô nhập tiêu đề, Ô nhập mô tả ngắn, Ngày bắt đầu, Ngày kết thúc.
+     - Khối tạo câu hỏi: Khung cho phép thêm câu hỏi mới. Chọn kiểu câu hỏi (Trắc nghiệm chọn một đáp án, Trắc nghiệm chọn nhiều đáp án, Câu hỏi tự luận). Có các trường nhập danh sách đáp án tương ứng.
+     - Trang chi tiết kết quả khảo sát: Trình hiển thị tỷ lệ bình chọn của cư dân dưới dạng phần trăm (%), danh sách câu trả lời tự luận chi tiết.
+     - Nút hành động: Thêm câu hỏi mới, Xóa câu hỏi, Đăng phát hành khảo sát, Xuất kết quả ra file Excel.
+
+--------------------------------------------------------------------------------
+4. THÀNH PHẦN THIẾT KẾ DÙNG CHUNG (GLOBAL LAYOUT COMPONENTS)
+--------------------------------------------------------------------------------
+
+A. MENU ĐIỀU HƯỚNG BAN QUẢN LÝ (Admin Sidebar)
+   - Danh sách các nhóm menu điều hướng có khả năng thu gọn/mở rộng. Các nhóm menu gồm:
+     + Bảng điều khiển (Dashboard).
+     + Quản lý Căn hộ & Cư dân (Căn hộ, Cư dân, Hợp đồng, Phương tiện).
+     + Tài chính & Thu phí (Chỉ số điện nước, Hóa đơn, Lịch sử thanh toán).
+     + Quản lý Dịch vụ & Tiện ích (Yêu cầu dịch vụ, Danh sách tiện ích, Bưu kiện).
+     + Tương tác & Vận hành (Thông báo, Khảo sát, Phản ánh sự cố, Khách thăm).
+     + Quản lý Tài sản & Bảo trì.
+     + Phân quyền & Tài khoản (Người dùng hệ thống).
+   - Nút thu gọn/mở rộng menu.
+   - Khu vực thông tin tài khoản đang đăng nhập kèm nút Đăng xuất.
+
+B. MENU ĐIỀU HƯỚNG CƯ DÂN (Resident Navigation)
+   - Danh sách các liên kết chức năng được tối giản, dễ thao tác trên màn hình nhỏ:
+     + Bảng tin chung.
+     + Hóa đơn & Thanh toán.
+     + Đăng ký dịch vụ & Khách thăm.
+     + Gửi ý kiến phản ánh.
+     + Thông tin cá nhân & Phương tiện.
+   - Nút mở menu thu nhỏ (Hamburger menu) hoặc thanh điều hướng rút gọn.
+   - Khu vực thông tin tài khoản cư dân đang đăng nhập kèm nút Đăng xuất.
+
+C. HỘP THOẠI XÁC NHẬN CHUNG (Global Confirmation Modals)
+   - Tiêu đề hộp thoại, Nội dung cảnh báo/yêu cầu xác nhận hành động.
+   - Nút xác nhận thực hiện hành động, Nút hủy bỏ đóng hộp thoại.
+
+D. THÔNG BÁO NỔI (Toast Notifications)
+   - Các loại thông báo trạng thái: Thành công, Thất bại/Lỗi, Cảnh báo, Tin nhắn mới.
+   - Tiêu đề thông báo, Nội dung thông báo tóm tắt, Nút đóng nhanh thông báo.

@@ -5,70 +5,76 @@
     <div th:fragment="paging(baseUrl, queryString)"
          th:with="extraQuery=${queryString != null and !#strings.isEmpty(queryString) ? '&' + queryString : ''}">
 
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <form method="get" th:action="@{${baseUrl}}" class="d-flex align-items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6 p-4 bg-darkcard border border-darkborder rounded-2xl shadow-lg">
+            
+            <!-- Page Size Selector Form -->
+            <form method="get" th:action="@{${baseUrl}}" class="flex items-center gap-2">
                 <input type="hidden" name="page" value="0" />
-                <label class="form-label mb-0" th:text="#{pagi.hien_thi}">Hiển thị</label>
-                <select name="size" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                <label class="text-xs text-slate-400 font-semibold" th:text="#{pagi.hien_thi}">Hiển thị</label>
+                <select name="size" class="bg-darkbg border border-darkborder rounded-lg text-xs text-white p-1.5 focus:outline-none focus:border-brand-500 w-20 cursor-pointer font-medium" onchange="this.form.submit()">
                     <option value="10" th:selected="${size == 10}" th:text="|10 #{pagi.dong}|">10 dòng</option>
                     <option value="25" th:selected="${size == 25}" th:text="|25 #{pagi.dong}|">25 dòng</option>
                     <option value="50" th:selected="${size == 50}" th:text="|50 #{pagi.dong}|">50 dòng</option>
                 </select>
             </form>
+
+            <!-- Navigation Buttons -->
+            <nav th:if="${totalPages > 0}" aria-label="Page navigation" class="flex justify-center">
+                <ul class="flex items-center gap-1.5">
+                    
+                    <!-- Previous Button -->
+                    <li class="flex" th:classappend="${currentPage == 0 ? 'opacity-40 pointer-events-none' : ''}">
+                        <a class="px-3 py-1.5 rounded-xl border border-darkborder text-xs text-slate-400 font-semibold transition hover:text-slate-200 hover:bg-slate-800/40"
+                           th:href="${baseUrl + '?page=' + (currentPage - 1) + '&size=' + size + extraQuery}" th:text="#{pagi.truoc}">Trước</a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <!-- First Page -->
+                        <li th:if="${i == 0}" class="flex">
+                            <a class="px-3 py-1.5 rounded-xl border text-xs font-semibold transition"
+                               th:classappend="${currentPage == i ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 font-bold' : 'text-slate-400 border-darkborder hover:text-slate-200 hover:bg-slate-800/40'}"
+                               th:href="${baseUrl + '?page=' + i + '&size=' + size + extraQuery}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+
+                        <!-- First Ellipsis -->
+                        <li th:if="${i == 1 and currentPage > 3}" class="flex items-center">
+                            <span class="px-2 py-1.5 text-xs text-slate-500 select-none">...</span>
+                        </li>
+
+                        <!-- Middle Pages -->
+                        <li th:if="${i > 0 and i < totalPages - 1 and i >= currentPage - 2 and i <= currentPage + 2}" class="flex">
+                            <a class="px-3 py-1.5 rounded-xl border text-xs font-semibold transition"
+                               th:classappend="${currentPage == i ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 font-bold' : 'text-slate-400 border-darkborder hover:text-slate-200 hover:bg-slate-800/40'}"
+                               th:href="${baseUrl + '?page=' + i + '&size=' + size + extraQuery}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+
+                        <!-- Second Ellipsis -->
+                        <li th:if="${i == totalPages - 2 and currentPage < totalPages - 4}" class="flex items-center">
+                            <span class="px-2 py-1.5 text-xs text-slate-500 select-none">...</span>
+                        </li>
+
+                        <!-- Last Page -->
+                        <li th:if="${i == totalPages - 1 and totalPages > 1}" class="flex">
+                            <a class="px-3 py-1.5 rounded-xl border text-xs font-semibold transition"
+                               th:classappend="${currentPage == i ? 'bg-brand-500/10 text-brand-400 border-brand-500/30 font-bold' : 'text-slate-400 border-darkborder hover:text-slate-200 hover:bg-slate-800/40'}"
+                               th:href="${baseUrl + '?page=' + i + '&size=' + size + extraQuery}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                    </th:block>
+
+                    <!-- Next Button -->
+                    <li class="flex" th:classappend="${currentPage == totalPages - 1 ? 'opacity-40 pointer-events-none' : ''}">
+                        <a class="px-3 py-1.5 rounded-xl border border-darkborder text-xs text-slate-400 font-semibold transition hover:text-slate-200 hover:bg-slate-800/40"
+                           th:href="${baseUrl + '?page=' + (currentPage + 1) + '&size=' + size + extraQuery}" th:text="#{pagi.sau}">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+
         </div>
-
-        <nav th:if="${totalPages > 0}" aria-label="Page navigation" class="mt-3">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                    <a class="page-link"
-                       th:href="${baseUrl + '?page=' + (currentPage - 1) + '&size=' + size + extraQuery}" th:text="#{pagi.truoc}">Trước</a>
-                </li>
-
-                <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                    <li th:if="${i == 0}" class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
-                        <a class="page-link" th:href="${baseUrl + '?page=' + i + '&size=' + size + extraQuery}"
-                           th:text="${i + 1}">1</a>
-                    </li>
-
-                    <li th:if="${i == 1 and currentPage > 3}" class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-
-                    <li th:if="${i > 0 and i < totalPages - 1 and i >= currentPage - 2 and i <= currentPage + 2}"
-                        class="page-item" th:classappend="${currentPage == i ? 'active' : ''}">
-                        <a class="page-link" th:href="${baseUrl + '?page=' + i + '&size=' + size + extraQuery}"
-                           th:text="${i + 1}">1</a>
-                    </li>
-
-                    <li th:if="${i == totalPages - 2 and currentPage < totalPages - 4}" class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-
-                    <li th:if="${i == totalPages - 1 and totalPages > 1}" class="page-item"
-                        th:classappend="${currentPage == i ? 'active' : ''}">
-                        <a class="page-link" th:href="${baseUrl + '?page=' + i + '&size=' + size + extraQuery}"
-                           th:text="${i + 1}">1</a>
-                    </li>
-                </th:block>
-
-                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                    <a class="page-link"
-                       th:href="${baseUrl + '?page=' + (currentPage + 1) + '&size=' + size + extraQuery}" th:text="#{pagi.sau}">Sau</a>
-                </li>
-            </ul>
-        </nav>
     </div>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-

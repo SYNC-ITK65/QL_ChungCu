@@ -2,137 +2,243 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <div th:fragment="menu-trai" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark overflow-auto"
-        style="width: 280px; height: 100vh; position: sticky; top: 0;">
+    <div th:fragment="menu-trai"
+        class="flex flex-col shrink-0 w-64 h-screen sticky top-0 bg-darkcard border-r border-darkborder z-50 transition-all duration-300 ease-in-out select-none">
 
-        <!-- Title -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a href="/admin/dashboard" class="text-white text-decoration-none">
-                <span class="fs-4" th:text="#{side.admin.tieude}">🏢 Quản Lý Chung Cư</span>
-            </a>
-            <div class="d-flex gap-1">
-                <a href="javascript:void(0)" onclick="changeLang('vi')" class="btn btn-sm p-0 text-white"
-                    style="font-size: 1.2rem;" title="Tiếng Việt" th:title="#{lang.vi}">🇻🇳</a>
-                <a href="javascript:void(0)" onclick="changeLang('en')" class="btn btn-sm p-0 text-white"
-                    style="font-size: 1.2rem;" title="English" th:title="#{lang.en}">🇺🇸</a>
+        <!-- Brand Logo & Title with Lang Switcher -->
+        <div class="p-4 border-b border-darkborder flex items-center justify-between shrink-0">
+            <div class="flex items-center space-x-2.5">
+                <div
+                    class="bg-brand-500 text-white p-2 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i data-lucide="building-2" class="w-4 h-4"></i>
+                </div>
+                <div class="text-left">
+                    <h1 class="text-[11px] font-bold text-white tracking-widest uppercase leading-none"
+                        th:text="#{side.admin.tieude}">🏢 Quản Lý</h1>
+                    <p class="text-[9px] text-slate-400 font-medium mt-1">Ban Quản Lý</p>
+                </div>
+            </div>
+
+            <div class="flex gap-1.5 pl-1.5 border-l border-darkborder">
+                <a href="javascript:void(0)" onclick="changeLang('vi')"
+                    class="hover:scale-115 transition text-sm duration-150" title="Tiếng Việt"
+                    th:title="#{lang.vi}">🇻🇳</a>
+                <a href="javascript:void(0)" onclick="changeLang('en')"
+                    class="hover:scale-115 transition text-sm duration-150" title="English"
+                    th:title="#{lang.en}">🇺🇸</a>
             </div>
         </div>
-        <hr>
+
+        <!-- Menu Navigation Links -->
+        <div class="flex-grow overflow-y-auto p-3 space-y-3" id="main-menu">
+
+            <!-- Nhóm 1: Căn hộ & Cư dân (Apartments & Residents) -->
+            <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4 || session.nguoiDungDangNhap.vaiTro == 5}">
+                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.admin.nhom_ch}">Căn hộ & Cư dân</p>
+                <div class="space-y-0.5">
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                        <a href="/admin/can-ho"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="building" class="w-4 h-4"></i> <span th:text="#{side.admin.can_ho}">🏠 Quản lý Căn hộ</span>
+                        </a>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
+                        <a href="/admin/cu-dan"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="users" class="w-4 h-4"></i> <span th:text="#{side.admin.cu_dan}">👥 Quản lý Cư dân</span>
+                        </a>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                        <a href="/admin/hop-dong"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> <span th:text="#{side.admin.hop_dong}">📄 Quản lý Hợp đồng</span>
+                        </a>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 5}">
+                        <a href="/admin/phuong-tien"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="car" class="w-4 h-4"></i> <span th:text="#{side.admin.phuong_tien}">🚗 Quản lý Phương tiện</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm 2: Tài chính & Chỉ số (Finance & Readings) -->
+            <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.admin.nhom_tc}">Tài chính & Chỉ số</p>
+                <div class="space-y-0.5">
+                    <div>
+                        <a href="/admin/chi-so"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="gauge" class="w-4 h-4"></i> <span th:text="#{side.admin.chi_so}">📊 Quản lý Chỉ số</span>
+                        </a>
+                    </div>
+
+                    <div>
+                        <a href="/admin/hoa-don"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="receipt" class="w-4 h-4"></i> <span th:text="#{side.admin.tai_chinh}">💰 Tài chính & Hóa đơn</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm 3: Vận hành & Dịch vụ (Operations & Services) -->
+            <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4 || session.nguoiDungDangNhap.vaiTro == 5}">
+                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.admin.nhom_vh}">Vận hành & Dịch vụ</p>
+                <div class="space-y-0.5">
+                    <!-- Collapsible: Dịch vụ & Lễ tân -->
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4 || session.nguoiDungDangNhap.vaiTro == 5}">
+                        <button onclick="toggleSubmenu('submenu-dichvu')"
+                            class="w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center justify-between text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200 focus:outline-none">
+                            <span class="flex items-center gap-2.5">
+                                <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                <span th:text="#{side.admin.dich_vu_le_tan}">🧰 Dịch vụ &amp; Lễ tân</span>
+                            </span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200"
+                                id="chevron-submenu-dichvu"></i>
+                        </button>
+                        <div id="submenu-dichvu" class="hidden pl-4 mt-1 space-y-1 border-l border-darkborder ml-5">
+                            <a href="/admin/yeu-cau-dich-vu"
+                                class="menu-link w-full px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                                <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i> <span
+                                    th:text="#{side.admin.yeu_cau_dich_vu}">📋 Yêu cầu Dịch vụ</span>
+                            </a>
+                            <a href="/admin/duyet-yeu-cau"
+                                class="menu-link w-full px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                                <i data-lucide="bell" class="w-3.5 h-3.5"></i> <span th:text="#{side.admin.tiep_don_le_tan}">🛎️ Tiếp đón Lễ tân</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
+                        <a href="/admin/kien-hang"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="package" class="w-4 h-4"></i> <span th:text="#{side.admin.kien_hang}">📦 Quản lý đơn thư</span>
+                        </a>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                        <a href="/admin/khao-sat"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="check-square" class="w-4 h-4"></i> <span th:text="#{side.admin.khao_sat}">📊 Quản lý Khảo sát</span>
+                        </a>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                        <a href="/admin/tai-san"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="wrench" class="w-4 h-4"></i> <span th:text="#{side.admin.tai_san}">🛠️ Quản lý Tài Sản</span>
+                        </a>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
+                        <a href="/admin/phan-anh"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="megaphone" class="w-4 h-4"></i> <span th:text="#{side.admin.phan_anh}">📢 Quản lý Phản ánh</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm 4: Hệ thống & Tin tức (System & Notifications) -->
+            <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
+                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.admin.nhom_ht}">Hệ thống & Tin tức</p>
+                <div class="space-y-0.5">
+                    <div th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
+                        <a href="/admin/thong-bao"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="bell-ring" class="w-4 h-4"></i> <span th:text="#{side.admin.thong_bao}">📢 Quản lý Thông báo</span>
+                        </a>
+                    </div>
+
+                    <div th:if="${session.nguoiDungDangNhap != null and session.nguoiDungDangNhap.vaiTro == 1}">
+                        <a href="/admin/nguoi-dung"
+                            class="menu-link w-full px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all duration-200">
+                            <i data-lucide="user-cog" class="w-4 h-4"></i> <span th:text="#{side.admin.nguoi_dung}">👤 Quản lý Người dùng</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile / Info box at bottom -->
+        <div class="p-4 border-t border-darkborder flex flex-col justify-start gap-3 bg-[#111622] shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div
+                    class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-200 text-xs font-semibold border border-slate-700">
+                    <span>AD</span>
+                </div>
+                <div class="text-left">
+                    <p class="text-xs font-semibold text-slate-200 leading-none truncate max-w-[125px]"
+                        th:text="#{side.admin.xin_chao(${session.nguoiDungDangNhap != null ? session.nguoiDungDangNhap.hoTen : 'Admin'})}">
+                        👤 Admin</p>
+                    <p class="text-[9px] text-slate-500 mt-1">BQL Cấp Cao</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[10px] border-t border-darkborder/50 pt-2.5">
+                <a href="/user/doi-mat-khau"
+                    class="text-slate-400 hover:text-slate-250 transition flex items-center gap-1 font-medium">
+                    <i data-lucide="key" class="w-3.5 h-3.5"></i> <span th:text="#{side.admin.doi_mk}">Đổi mật
+                        khẩu</span>
+                </a>
+                <a href="/logout"
+                    class="text-red-400 hover:text-red-300 transition flex items-center gap-1 font-medium">
+                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span th:text="#{side.admin.dang_xuat}">Đăng
+                        xuất</span>
+                </a>
+            </div>
+        </div>
+
         <script>
+            function toggleSubmenu(id) {
+                const sub = document.getElementById(id);
+                const icon = document.getElementById('chevron-' + id);
+                if (sub) {
+                    sub.classList.toggle("hidden");
+                    if (icon) {
+                        icon.classList.toggle("rotate-180");
+                    }
+                }
+            }
+
             function changeLang(lang) {
                 var url = new URL(window.location.href);
                 url.searchParams.set('lang', lang);
                 window.location.href = url.toString();
             }
-        </script>
 
-        <!-- Menu -->
-        <ul class="nav nav-pills flex-column mb-auto" id="main-menu">
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a href="/admin/can-ho" class="nav-link text-white" th:text="#{side.admin.can_ho}">🏠 Quản lý Căn hộ</a>
-            </li>
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
-                <a href="/admin/cu-dan" class="nav-link text-white" th:text="#{side.admin.cu_dan}">👥 Quản lý Cư dân</a>
-            </li>
-
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap != null and session.nguoiDungDangNhap.vaiTro == 1}">
-                <a href="/admin/nguoi-dung" class="nav-link text-white" th:text="#{side.admin.nguoi_dung}">👤 Quản lý Người dùng</a>
-            </li>
-
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a href="/admin/chi-so" class="nav-link text-white" th:text="#{side.admin.chi_so}">📊 Quản lý Chỉ số</a>
-            </li>
-            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a href="/admin/hoa-don" class="nav-link text-white" th:text="#{side.admin.tai_chinh}">💰 Tài chính & Hóa đơn</a>
-            </li>
-            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a href="/admin/hop-dong" class="nav-link text-white" th:text="#{side.admin.hop_dong}">📄 Quản lý Hợp đồng</a>
-            </li>
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4 || session.nguoiDungDangNhap.vaiTro == 5}">
-                <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#menuDichVuLeTan" role="button" aria-expanded="false" aria-controls="menuDichVuLeTan">
-                    <span th:text="#{side.admin.dich_vu_le_tan}">🧰 Dịch vụ &amp; Lễ tân</span>
-                    <i class="bi bi-chevron-down small"></i>
-                </a>
-                <div class="collapse" id="menuDichVuLeTan">
-                    <ul class="nav flex-column ms-3" id="submenu-dichvu-letan">
-                        <li class="nav-item">
-                            <a href="/admin/yeu-cau-dich-vu" class="nav-link text-white py-1" th:text="#{side.admin.yeu_cau_dich_vu}">📋 Yêu cầu Dịch vụ</a>
-                        </li>
-                        <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
-                            <a href="/admin/duyet-yeu-cau" class="nav-link text-white py-1" th:text="#{side.admin.tiep_don_le_tan}">🛎️ Tiếp đón Lễ tân</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 5}">
-                <a href="/admin/phuong-tien" class="nav-link text-white" th:text="#{side.admin.phuong_tien}">🚗 Quản lý Phương tiện</a>
-            </li>
-            <li th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a href="/admin/khao-sat" class="nav-link text-white" th:text="#{side.admin.khao_sat}">📊 Quản lý Khảo sát</a>
-            </li>
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
-                <a href="/admin/kien-hang" class="nav-link text-white" th:text="#{side.admin.kien_hang}">📦 Quản lý đơn thư</a>
-            </li>
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a th:href="@{/admin/phan-anh}" class="nav-link text-white" th:text="#{side.admin.phan_anh}">📢 Quản lý Phản ánh</a>
-            </li>
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2}">
-                <a th:href="@{/admin/tai-san}" class="nav-link text-white" th:text="#{side.admin.tai_san}">🛠️ Quản lý Tài Sản</a>
-            </li>
-            <li class="nav-item" th:if="${session.nguoiDungDangNhap.vaiTro == 1 || session.nguoiDungDangNhap.vaiTro == 2 || session.nguoiDungDangNhap.vaiTro == 4}">
-                <a th:href="@{/admin/thong-bao}" class="nav-link text-white" th:text="#{side.admin.thong_bao}">📢 Quản lý Thông báo</a>
-            </li>
-        </ul>
-
-        <hr>
-
-        <!-- User -->
-        <div>
-            <span
-                th:text="#{side.admin.xin_chao(${session.nguoiDungDangNhap != null ? session.nguoiDungDangNhap.hoTen : 'Admin'})}">
-                👤 Admin
-            </span>
-            <br>
-            <br>
-            <a href="/user/doi-mat-khau" class="text-white mt-2 d-block text-decoration-none small opacity-75"
-                th:text="#{side.admin.doi_mk}">🔑 Đổi mật khẩu</a>
-            <a href="/logout" class="text-white mt-1 d-block text-decoration-none" th:text="#{side.admin.dang_xuat}">🚪
-                Đăng xuất</a>
-        </div>
-
-        <!-- Active menu script -->
-        <script>
             document.addEventListener("DOMContentLoaded", function () {
                 let currentUrl = window.location.pathname;
-                let menuLinks = document.querySelectorAll("#main-menu > .nav-item > .nav-link, #main-menu > li > .nav-link");
+                let menuLinks = document.querySelectorAll("#main-menu .menu-link");
 
                 menuLinks.forEach(function (link) {
                     let href = link.getAttribute("href");
-                    if (href && !link.hasAttribute("data-bs-toggle") && currentUrl.startsWith(href)) {
-                        link.classList.remove("text-white");
-                        link.classList.add("active");
-                    }
-                });
-
-                // Handle submenu active state and auto-expand
-                let submenuLinks = document.querySelectorAll("#submenu-dichvu-letan .nav-link");
-                submenuLinks.forEach(function (link) {
-                    let href = link.getAttribute("href");
                     if (href && currentUrl.startsWith(href)) {
-                        link.classList.remove("text-white");
-                        link.classList.add("active");
-                        // Auto-expand the parent collapse
-                        let collapseEl = document.getElementById("menuDichVuLeTan");
-                        if (collapseEl) {
-                            collapseEl.classList.add("show");
+                        link.classList.remove("text-slate-400", "hover:text-slate-200", "hover:bg-slate-800/40");
+                        link.classList.add("bg-brand-500/10", "text-brand-400", "border-brand-500/20", "font-bold");
+
+                        // Expand submenu if active link is inside it
+                        let parentSub = link.closest("[id^='submenu-']");
+                        if (parentSub) {
+                            parentSub.classList.remove("hidden");
+                            let parentIcon = document.getElementById("chevron-" + parentSub.id);
+                            if (parentIcon) {
+                                parentIcon.classList.add("rotate-180");
+                            }
                         }
                     }
                 });
+
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
             });
         </script>
-
-        <!-- Bootstrap JS Bundle -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </div>
 </body>
 
