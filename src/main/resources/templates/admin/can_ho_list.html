@@ -46,18 +46,22 @@
             color: #E2E8F0;
             font-family: 'Inter', sans-serif;
         }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: #111827;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #374151;
             border-radius: 3px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #4B5563;
         }
@@ -69,7 +73,7 @@
     <div th:replace="fragments/sidebar :: menu-trai"></div>
 
     <!-- Main Content -->
-    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full">
+    <main class="flex-grow min-w-0 p-6 md:p-8 overflow-y-auto">
         <!-- Title and Top Actions -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
@@ -78,17 +82,17 @@
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <button data-bs-toggle="modal" data-bs-target="#importExcelModal"
-                        class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 border border-darkborder text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 border border-darkborder text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
                     <i data-lucide="file-input" class="w-4 h-4 text-emerald-400"></i>
                     <span th:text="#{chung.import_excel}">Import Excel</span>
                 </button>
-                <a th:href="@{/admin/can-ho/xuat-excel}" 
-                   class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/10">
+                <a th:href="@{/admin/can-ho/xuat-excel}"
+                    class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/10">
                     <i data-lucide="file-output" class="w-4 h-4"></i>
                     <span th:text="#{chung.xuat_excel}">Xuất Excel</span>
                 </a>
-                <a th:href="@{/admin/can-ho/tao-moi}" 
-                   class="px-4 py-2 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-brand-500/10">
+                <a th:href="@{/admin/can-ho/tao-moi}"
+                    class="px-4 py-2 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-brand-500/10">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                     <span th:text="#{ch.ds.nut_them}">+ Thêm căn hộ</span>
                 </a>
@@ -96,37 +100,52 @@
         </div>
 
         <!-- Modal Import Excel -->
-        <div class="modal fade hidden fixed inset-0 z-50 overflow-y-auto" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered relative w-auto my-8 mx-auto max-w-md pointer-events-none flex items-center min-h-[calc(100%-3.5rem)]">
-                <div class="modal-content relative flex flex-col w-full pointer-events-auto bg-darkcard border border-darkborder rounded-2xl shadow-2xl">
-                    <div class="modal-header flex items-center justify-between p-5 border-b border-darkborder bg-emerald-600/10 rounded-t-2xl">
-                        <h5 class="modal-title text-sm font-bold text-emerald-400 flex items-center gap-2" id="importExcelModalLabel">
+        <div class="modal fade hidden fixed inset-0 z-50 overflow-y-auto" id="importExcelModal" tabindex="-1"
+            aria-labelledby="importExcelModalLabel" aria-hidden="true">
+            <div
+                class="modal-dialog modal-dialog-centered relative w-auto my-8 mx-auto max-w-md pointer-events-none flex items-center min-h-[calc(100%-3.5rem)]">
+                <div
+                    class="modal-content relative flex flex-col w-full pointer-events-auto bg-darkcard border border-darkborder rounded-2xl shadow-2xl">
+                    <div
+                        class="modal-header flex items-center justify-between p-5 border-b border-darkborder bg-emerald-600/10 rounded-t-2xl">
+                        <h5 class="modal-title text-sm font-bold text-emerald-400 flex items-center gap-2"
+                            id="importExcelModalLabel">
                             <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
                             <span th:text="#{ch.import.tieude}">Import Excel - Căn Hộ</span>
                         </h5>
-                        <button type="button" class="btn-close text-slate-400 hover:text-white" data-bs-dismiss="modal" aria-label="Close">
+                        <button type="button" class="btn-close text-slate-400 hover:text-white" data-bs-dismiss="modal"
+                            aria-label="Close">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
                     </div>
                     <form th:action="@{/admin/can-ho/import-excel}" method="POST" enctype="multipart/form-data">
                         <div class="modal-body p-6 space-y-4">
-                            <div class="p-4 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl text-xs space-y-2 leading-relaxed">
+                            <div
+                                class="p-4 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl text-xs space-y-2 leading-relaxed">
                                 <p class="font-semibold flex items-center gap-1.5">
                                     <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
                                     <span th:text="#{ch.import.huong_dan}">File Excel cần có các cột theo thứ tự:</span>
                                 </p>
-                                <p class="font-bold text-slate-300 bg-darkbg/50 p-2 rounded border border-darkborder" th:text="#{ch.import.cot}">Mã căn hộ | Diện tích (m2) | Tầng | Loại</p>
-                                <p th:text="#{chung.dong_dau_header}">Dòng đầu tiên là header, dữ liệu bắt đầu từ dòng 2.</p>
+                                <p class="font-bold text-slate-300 bg-darkbg/50 p-2 rounded border border-darkborder"
+                                    th:text="#{ch.import.cot}">Mã căn hộ | Diện tích (m2) | Tầng | Loại</p>
+                                <p th:text="#{chung.dong_dau_header}">Dòng đầu tiên là header, dữ liệu bắt đầu từ dòng
+                                    2.</p>
                             </div>
                             <div class="space-y-1.5">
-                                <label for="fileImportCanHo" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider" th:text="#{chung.chon_file_excel}">Chọn file Excel (.xlsx)</label>
-                                <input type="file" class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700" 
-                                       id="fileImportCanHo" name="file" accept=".xlsx,.xls" required>
+                                <label for="fileImportCanHo"
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wider"
+                                    th:text="#{chung.chon_file_excel}">Chọn file Excel (.xlsx)</label>
+                                <input type="file"
+                                    class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700"
+                                    id="fileImportCanHo" name="file" accept=".xlsx,.xls" required>
                             </div>
                         </div>
                         <div class="modal-footer flex items-center justify-end gap-2 p-5 border-t border-darkborder">
-                            <button type="button" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition" data-bs-dismiss="modal" th:text="#{chung.huy}">Hủy</button>
-                            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5">
+                            <button type="button"
+                                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition"
+                                data-bs-dismiss="modal" th:text="#{chung.huy}">Hủy</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5">
                                 <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                                 <span th:text="#{chung.import_excel}">Import</span>
                             </button>
@@ -145,36 +164,46 @@
             <form method="GET" th:action="@{/admin/can-ho}" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <!-- Trạng thái -->
                 <div class="md:col-span-3">
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{ch.ds.loc_trang_thai}">Trạng thái</label>
-                    <select name="trangThai" class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider"
+                        th:text="#{ch.ds.loc_trang_thai}">Trạng thái</label>
+                    <select name="trangThai"
+                        class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition cursor-pointer">
                         <option value="" th:text="#{chung.tat_ca}">-- Tất cả --</option>
-                        <option value="Trống" th:selected="${trangThai == 'Trống'}" th:text="#{ch.tt.trong}">Trống</option>
-                        <option value="Đã có chủ" th:selected="${trangThai == 'Đã có chủ'}" th:text="#{ch.tt.da_ban_giao}">Đã bàn giao</option>
-                        <option value="Chủ chưa đến" th:selected="${trangThai == 'Chủ chưa đến'}" th:text="#{ch.tt.chu_chua_den}">Chủ chưa đến</option>
-                        <option value="Đang sửa chữa" th:selected="${trangThai == 'Đang sửa chữa'}" th:text="#{ch.tt.sua_chua}">Đang sửa chữa</option>
+                        <option value="Trống" th:selected="${trangThai == 'Trống'}" th:text="#{ch.tt.trong}">Trống
+                        </option>
+                        <option value="Đã có chủ" th:selected="${trangThai == 'Đã có chủ'}"
+                            th:text="#{ch.tt.da_ban_giao}">Đã bàn giao</option>
+                        <option value="Chủ chưa đến" th:selected="${trangThai == 'Chủ chưa đến'}"
+                            th:text="#{ch.tt.chu_chua_den}">Chủ chưa đến</option>
+                        <option value="Đang sửa chữa" th:selected="${trangThai == 'Đang sửa chữa'}"
+                            th:text="#{ch.tt.sua_chua}">Đang sửa chữa</option>
                     </select>
                 </div>
                 <!-- Diện tích -->
                 <div class="md:col-span-3">
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{ch.ds.loc_dt}">Diện tích (m²)</label>
-                    <input type="number" step="0.01" name="dienTich" th:value="${dienTich}" class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition" 
-                           th:placeholder="#{ch.ds.loc_dt_goi_y}">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider"
+                        th:text="#{ch.ds.loc_dt}">Diện tích (m²)</label>
+                    <input type="number" step="0.01" name="dienTich" th:value="${dienTich}"
+                        class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition"
+                        th:placeholder="#{ch.ds.loc_dt_goi_y}">
                 </div>
                 <!-- Tầng -->
                 <div class="md:col-span-3">
-                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider" th:text="#{ch.ds.loc_tang}">Tầng</label>
-                    <input type="number" name="tang" th:value="${tang}" class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition" 
-                           th:placeholder="#{ch.ds.loc_tang_goi_y}">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider"
+                        th:text="#{ch.ds.loc_tang}">Tầng</label>
+                    <input type="number" name="tang" th:value="${tang}"
+                        class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition"
+                        th:placeholder="#{ch.ds.loc_tang_goi_y}">
                 </div>
                 <!-- Buttons -->
                 <div class="md:col-span-3 flex items-end gap-2">
-                    <button type="submit" 
-                            class="flex-grow py-2.5 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-lg shadow-brand-500/10">
+                    <button type="submit"
+                        class="flex-grow py-2.5 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow-lg shadow-brand-500/10">
                         <i data-lucide="search" class="w-4 h-4"></i>
                         <span th:text="#{chung.tim}">Tìm kiếm</span>
                     </button>
-                    <a th:href="@{/admin/can-ho}" 
-                       class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1">
+                    <a th:href="@{/admin/can-ho}"
+                        class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1">
                         <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                         <span th:text="#{chung.dat_lai}">Đặt lại</span>
                     </a>
@@ -188,14 +217,21 @@
                 <table class="table w-full border-collapse text-left text-xs text-slate-300 no-paging">
                     <thead>
                         <tr class="bg-darkbg/50 border-b border-darkborder">
-                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{chung.id}">ID</th>
-                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{ch.ds.bang_ma}">Mã Căn Hộ</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{chung.id}">ID
+                            </th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider"
+                                th:text="#{ch.ds.bang_ma}">Mã Căn Hộ</th>
                             <th class="p-4 font-bold text-slate-400 uppercase tracking-wider">Hình ảnh</th>
-                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{ch.ds.bang_dt}">Diện Tích</th>
-                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{ch.ds.bang_tang}">Tầng</th>
-                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{ch.ds.bang_loai}">Loại</th>
-                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider" th:text="#{chung.trang_thai}">Trạng Thái</th>
-                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider text-right" th:text="#{chung.hanh_dong}">Hành Động</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider"
+                                th:text="#{ch.ds.bang_dt}">Diện Tích</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider"
+                                th:text="#{ch.ds.bang_tang}">Tầng</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider"
+                                th:text="#{ch.ds.bang_loai}">Loại</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider"
+                                th:text="#{chung.trang_thai}">Trạng Thái</th>
+                            <th class="p-4 font-bold text-slate-400 uppercase tracking-wider text-right"
+                                th:text="#{chung.hanh_dong}">Hành Động</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-darkborder">
@@ -203,43 +239,47 @@
                             <td class="p-4 font-semibold text-white" th:text="${ch.id}">1</td>
                             <td class="p-4 font-bold text-white" th:text="${ch.maCanHo}">A1-01</td>
                             <td class="p-4">
-                                <div class="w-12 h-12 rounded-lg border border-darkborder overflow-hidden bg-darkbg/50 flex items-center justify-center">
+                                <div
+                                    class="w-12 h-12 rounded-lg border border-darkborder overflow-hidden bg-darkbg/50 flex items-center justify-center">
                                     <img th:if="${ch.hinhAnh != null}" th:src="${ch.hinhAnh}" alt="Ảnh căn hộ"
-                                         class="w-full h-full object-cover">
-                                    <i th:if="${ch.hinhAnh == null}" data-lucide="image" class="w-5 h-5 text-slate-600"></i>
+                                        class="w-full h-full object-cover">
+                                    <i th:if="${ch.hinhAnh == null}" data-lucide="image"
+                                        class="w-5 h-5 text-slate-600"></i>
                                 </div>
                             </td>
                             <td class="p-4 font-medium" th:text="|${ch.dienTich} #{chung.don_vi_m2}|">100 m²</td>
                             <td class="p-4 font-medium" th:text="${ch.tang}">1</td>
-                            <td class="p-4" 
+                            <td class="p-4"
                                 th:text="${ch.loai == 'Căn hộ tiêu chuẩn' ? #messages.msg('ch.loai.tieu_chuan') : (ch.loai == 'Studio' ? #messages.msg('ch.loai.studio') : (ch.loai == 'Penthouse' ? #messages.msg('ch.loai.penthouse') : (ch.loai == 'Duplex' ? #messages.msg('ch.loai.duplex') : ch.loai)))}">
                                 1
                             </td>
                             <td class="p-4">
-                                <span class="px-2 py-0.5 rounded text-xs font-semibold"
-                                      th:classappend="${ch.trangThai == 'Trống' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold whitespace-nowrap"
+                                    th:classappend="${ch.trangThai == 'Trống' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 
                                                        (ch.trangThai == 'Đã có chủ' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                                                        (ch.trangThai == 'Đang sửa chữa' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'))}"
-                                      th:text="${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}">
+                                    th:text="${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}">
                                     Trống
                                 </span>
                             </td>
                             <td class="p-4 text-right">
                                 <div class="inline-flex items-center gap-1.5">
-                                    <a th:href="@{/admin/cu-dan(canHoId=${ch.id})}" 
-                                       class="px-2.5 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 text-[11px] font-semibold rounded-lg transition" 
-                                       th:text="#{ch.ds.loc_cudan}">Lọc Cư Dân</a>
-                                    <a th:href="@{/admin/can-ho/sua/{id}(id=${ch.id})}" 
-                                       class="px-2.5 py-1 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 text-[11px] font-semibold rounded-lg transition" 
-                                       th:text="#{chung.sua}">Sửa</a>
-                                    <a th:href="@{/admin/can-ho/xoa/{id}(id=${ch.id})}" 
-                                       class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-semibold rounded-lg transition" 
-                                       th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|" th:text="#{chung.xoa}">Xóa</a>
+                                    <a th:href="@{/admin/cu-dan(canHoId=${ch.id})}"
+                                        class="px-2.5 py-1 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 text-[11px] font-semibold rounded-lg transition whitespace-nowrap"
+                                        th:text="#{ch.ds.loc_cudan}">Lọc Cư Dân</a>
+                                    <a th:href="@{/admin/can-ho/sua/{id}(id=${ch.id})}"
+                                        class="px-2.5 py-1 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 text-[11px] font-semibold rounded-lg transition"
+                                        th:text="#{chung.sua}">Sửa</a>
+                                    <a th:href="@{/admin/can-ho/xoa/{id}(id=${ch.id})}"
+                                        class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-semibold rounded-lg transition"
+                                        th:onclick="|return confirm('#{chung.xac_nhan_xoa}')|"
+                                        th:text="#{chung.xoa}">Xóa</a>
                                 </div>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(danhSachCanHo)}">
-                            <td colspan="8" class="p-8 text-center text-slate-500" th:text="#{ch.ds.trong}">Chưa có căn hộ nào trong hệ thống!</td>
+                            <td colspan="8" class="p-8 text-center text-slate-500" th:text="#{ch.ds.trong}">Chưa có căn
+                                hộ nào trong hệ thống!</td>
                         </tr>
                     </tbody>
                 </table>
@@ -247,7 +287,9 @@
         </div>
 
         <!-- Pagination fragment invocation -->
-        <div th:replace="~{fragments/pagination :: paging('/admin/can-ho', 'trangThai=' + (${trangThai} ?: '') + '&amp;dienTich=' + (${dienTich} ?: '') + '&amp;tang=' + (${tang} ?: ''))}"></div>
+        <div
+            th:replace="~{fragments/pagination :: paging('/admin/can-ho', 'trangThai=' + (${trangThai} ?: '') + '&amp;dienTich=' + (${dienTich} ?: '') + '&amp;tang=' + (${tang} ?: ''))}">
+        </div>
     </main>
 
     <!-- JS dependencies -->

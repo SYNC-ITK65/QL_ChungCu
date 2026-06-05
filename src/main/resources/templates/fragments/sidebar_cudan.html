@@ -2,145 +2,232 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <div th:fragment="menu-cudan" class="flex flex-col shrink-0 w-64 h-screen sticky top-0 bg-darkcard border-r border-darkborder z-50 transition-all duration-300 ease-in-out select-none">
-        
-        <!-- Brand Logo & Title with Lang Switcher -->
-        <div class="p-4 border-b border-darkborder flex items-center justify-between shrink-0">
-            <div class="flex items-center space-x-2.5">
-                <div class="bg-brand-500 text-white p-2 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/20">
-                    <i data-lucide="home" class="w-4 h-4"></i>
-                </div>
-                <div class="text-left">
-                    <h1 class="text-[11px] font-bold text-white tracking-widest uppercase leading-none" th:text="#{side.user.tieude}">🏠 Portal Cư Dân</h1>
-                    <p class="text-[9px] text-slate-400 font-medium mt-1">Cổng Cư Dân</p>
-                </div>
-            </div>
-            
-            <div class="flex gap-1.5 pl-1.5 border-l border-darkborder">
-                <a href="javascript:void(0)" onclick="changeLang('vi')" class="hover:scale-115 transition text-sm duration-150" title="Tiếng Việt" th:title="#{lang.vi}">🇻🇳</a>
-                <a href="javascript:void(0)" onclick="changeLang('en')" class="hover:scale-115 transition text-sm duration-150" title="English" th:title="#{lang.en}">🇺🇸</a>
-            </div>
-        </div>
+    <th:block th:fragment="menu-cudan">
+        <!-- Mobile Sidebar Overlay -->
+        <div id="mobile-sidebar-overlay-cudan" onclick="toggleMobileSidebarCudan()"
+            class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden transition-all duration-300"></div>
 
-        <!-- Menu Navigation Links -->
-        <div class="flex-grow overflow-y-auto p-3 space-y-3" id="main-menu">
-            
-            <!-- Group 1: Căn hộ & Cư trú -->
-            <div>
-                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.user.nhom_tt}">Thông tin căn hộ</p>
-                <div class="space-y-0.5">
-                    <a href="/cudan/thong-tin" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="user" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.tt_ca_nhan}">👤 Thông tin cá nhân</span>
-                    </a>
-                    <a href="/cudan/can-ho" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="building" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.can_ho_toi}">🏢 Căn hộ của tôi</span>
-                    </a>
-                    <a href="/cudan/phuong-tien" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="car" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.dk_phuong_tien}">🏍️ Đăng ký phương tiện</span>
-                    </a>
-                    <a href="/cudan/hop-dong/cua-toi" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="file-text" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.hop_dong}">📄 Hợp đồng của tôi</span>
-                    </a>
+        <!-- Mobile Menu Toggle Button -->
+        <button onclick="toggleMobileSidebarCudan()"
+            class="lg:hidden fixed top-4 right-4 z-40 p-2.5 bg-slate-800/80 backdrop-blur border border-darkborder text-slate-200 rounded-xl shadow-lg hover:text-white transition focus:outline-none">
+            <i id="mobile-menu-icon-cudan" data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Sidebar Navigation Drawer -->
+        <aside id="global-sidebar-cudan"
+            class="fixed inset-y-0 left-0 w-64 z-50 transform -translate-x-full lg:translate-x-0 lg:relative lg:sticky lg:top-0 lg:flex lg:flex-col shrink-0 lg:h-screen bg-darkcard border-r border-darkborder transition-transform duration-300 ease-in-out select-none flex flex-col">
+
+            <!-- Brand Logo & Title with Lang Switcher -->
+            <div class="p-4 border-b border-darkborder flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-2.5">
+                    <div
+                        class="bg-brand-500 text-white p-2 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/20">
+                        <i data-lucide="home" class="w-4 h-4"></i>
+                    </div>
+                    <div class="text-left">
+                        <h1 class="text-[11px] font-bold text-white tracking-widest uppercase leading-none"
+                            th:text="#{side.user.tieude}">🏠 Portal Cư Dân</h1>
+                        <p class="text-[9px] text-slate-400 font-medium mt-1">Cổng Cư Dân</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-1.5 pl-1.5 border-l border-darkborder">
+                    <a href="javascript:void(0)" onclick="changeLang('vi')"
+                        class="hover:scale-115 transition text-sm duration-150" title="Tiếng Việt"
+                        th:title="#{lang.vi}">🇻🇳</a>
+                    <a href="javascript:void(0)" onclick="changeLang('en')"
+                        class="hover:scale-115 transition text-sm duration-150" title="English"
+                        th:title="#{lang.en}">🇺🇸</a>
                 </div>
             </div>
 
-            <!-- Group 2: Tiện ích & Dịch vụ -->
-            <div>
-                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.user.nhom_tien_ich}">Tiện ích & Dịch vụ</p>
-                <div class="space-y-0.5">
-                    <a href="/cudan/dich-vu" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.dk_dich_vu}">🛒 Đăng ký dịch vụ</span>
-                    </a>
-                    <a href="/cudan/khach-tham" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.dk_khach}">👥 Đăng Ký Khách Thăm</span>
-                    </a>
-                    <a href="/cudan/kien-hang" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="package" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.tu_do}">📦 Tủ đồ của tôi</span>
-                    </a>
-                </div>
-            </div>
+            <!-- Menu Navigation Links -->
+            <div class="flex-grow overflow-y-auto p-3 space-y-3" id="main-menu">
 
-            <!-- Group 3: Tài chính -->
-            <div>
-                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.user.nhom_tai_chinh}">Tài chính</p>
-                <div class="space-y-0.5">
-                    <a href="/cudan/hoa-don" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="wallet" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.hoa_don}">💰 Hóa đơn cần đóng</span>
-                    </a>
+                <!-- Group 1: Căn hộ & Cư trú -->
+                <div>
+                    <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5"
+                        th:text="#{side.user.nhom_tt}">Thông tin căn hộ</p>
+                    <div class="space-y-0.5">
+                        <a href="/cudan/thong-tin"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="user" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.tt_ca_nhan}">👤
+                                Thông tin cá nhân</span>
+                        </a>
+                        <a href="/cudan/can-ho"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="building" class="w-3.5 h-3.5"></i> <span
+                                th:text="#{side.user.can_ho_toi}">🏢 Căn hộ của tôi</span>
+                        </a>
+                        <a href="/cudan/phuong-tien"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="car" class="w-3.5 h-3.5"></i> <span
+                                th:text="#{side.user.dk_phuong_tien}">🏍️ Đăng ký phương tiện</span>
+                        </a>
+                        <a href="/cudan/hop-dong/cua-toi"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.hop_dong}">📄
+                                Hợp đồng của tôi</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Group 4: Thông báo & Hỗ trợ -->
-            <div>
-                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5" th:text="#{side.user.nhom_thong_bao}">Thông báo & Hướng dẫn</p>
-                <div class="space-y-0.5">
-                    <a href="/cudan/thong-bao/bang-tin" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="newspaper" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.bang_tin}">📋 Bảng tin chung</span>
-                    </a>
-                    <a href="/cudan/thong-bao/cam-nang" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="book-open" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.cam_nang}">📚 Cẩm nang cư dân</span>
-                    </a>
-                    <a href="/cudan/khao-sat" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="check-square" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.khao_sat}">📊 Khảo sát ý kiến</span>
-                    </a>
-                    <a href="/cudan/phan-anh" class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
-                        <i data-lucide="megaphone" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.gui_phan_anh}">🛠️ Gửi phản ánh</span>
-                    </a>
+                <!-- Group 2: Tiện ích & Dịch vụ -->
+                <div>
+                    <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5"
+                        th:text="#{side.user.nhom_tien_ich}">Tiện ích & Dịch vụ</p>
+                    <div class="space-y-0.5">
+                        <a href="/cudan/dich-vu"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> <span
+                                th:text="#{side.user.dk_dich_vu}">🛒 Đăng ký dịch vụ</span>
+                        </a>
+                        <a href="/cudan/khach-tham"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.dk_khach}">👥
+                                Đăng Ký Khách Thăm</span>
+                        </a>
+                        <a href="/cudan/kien-hang"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="package" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.tu_do}">📦 Tủ
+                                đồ của tôi</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Profile / Info box at bottom -->
-        <div class="p-4 border-t border-darkborder flex flex-col justify-start gap-3 bg-[#111622] shrink-0">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-200 text-xs font-semibold border border-slate-700">
-                    <span>LH</span>
+                <!-- Group 3: Tài chính -->
+                <div>
+                    <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5"
+                        th:text="#{side.user.nhom_tai_chinh}">Tài chính</p>
+                    <div class="space-y-0.5">
+                        <a href="/cudan/hoa-don"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="wallet" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.hoa_don}">💰 Hóa
+                                đơn cần đóng</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="text-left">
-                    <p class="text-xs font-semibold text-slate-200 leading-none truncate max-w-[125px]"
-                       th:text="#{side.user.xin_chao(${session.nguoiDungDangNhap != null ? session.nguoiDungDangNhap.hoTen : 'Cư dân'})}">👤 Cư dân</p>
-                    <div class="flex gap-1.5 mt-1">
-                        <span th:if="${session.nguoiDungDangNhap.vaiTro == 2}" class="text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1 py-0.5 rounded font-bold" th:text="#{side.user.chu_ho}">👑 Chủ hộ</span>
-                        <span th:if="${session.nguoiDungDangNhap.vaiTro == 3}" class="text-[8px] bg-sky-500/10 text-sky-400 border border-sky-500/20 px-1 py-0.5 rounded font-bold" th:text="#{side.user.khach_thue}">🧑 Khách thuê</span>
+
+                <!-- Group 4: Thông báo & Hỗ trợ -->
+                <div>
+                    <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5"
+                        th:text="#{side.user.nhom_thong_bao}">Thông báo & Hướng dẫn</p>
+                    <div class="space-y-0.5">
+                        <a href="/cudan/thong-bao/bang-tin"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="newspaper" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.bang_tin}">📋
+                                Bảng tin chung</span>
+                        </a>
+                        <a href="/cudan/thong-bao/cam-nang"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="book-open" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.cam_nang}">📚
+                                Cẩm nang cư dân</span>
+                        </a>
+                        <a href="/cudan/khao-sat"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="check-square" class="w-3.5 h-3.5"></i> <span
+                                th:text="#{side.user.khao_sat}">📊 Khảo sát ý kiến</span>
+                        </a>
+                        <a href="/cudan/phan-anh"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="megaphone" class="w-3.5 h-3.5"></i> <span
+                                th:text="#{side.user.gui_phan_anh}">🛠️ Gửi phản ánh</span>
+                        </a>
                     </div>
                 </div>
             </div>
-            
-            <div class="flex justify-between items-center text-[10px] border-t border-darkborder/50 pt-2.5">
-                <a href="/user/doi-mat-khau" class="text-slate-400 hover:text-slate-250 transition flex items-center gap-1 font-medium">
-                    <i data-lucide="key" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.doi_mk}">🔑 Đổi mật khẩu</span>
-                </a>
-                <a href="/logout" class="text-red-400 hover:text-red-300 transition flex items-center gap-1 font-medium">
-                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.dang_xuat}">🚪 Đăng xuất</span>
-                </a>
+
+            <!-- Profile / Info box at bottom -->
+            <div class="p-4 border-t border-darkborder flex flex-col justify-start gap-3 bg-[#111622] shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div
+                        class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-200 text-xs font-semibold border border-slate-700">
+                        <span>LH</span>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-xs font-semibold text-slate-200 leading-none truncate max-w-[125px]"
+                            th:text="#{side.user.xin_chao(${session.nguoiDungDangNhap != null ? session.nguoiDungDangNhap.hoTen : 'Cư dân'})}">
+                            👤 Cư dân</p>
+                        <div class="flex gap-1.5 mt-1">
+                            <span th:if="${session.nguoiDungDangNhap.vaiTro == 2}"
+                                class="text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1 py-0.5 rounded font-bold"
+                                th:text="#{side.user.chu_ho}">👑 Chủ hộ</span>
+                            <span th:if="${session.nguoiDungDangNhap.vaiTro == 3}"
+                                class="text-[8px] bg-sky-500/10 text-sky-400 border border-sky-500/20 px-1 py-0.5 rounded font-bold"
+                                th:text="#{side.user.khach_thue}">🧑 Khách thuê</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-[10px] border-t border-darkborder/50 pt-2.5">
+                    <a href="/user/doi-mat-khau"
+                        class="text-slate-400 hover:text-slate-250 transition flex items-center gap-1 font-medium">
+                        <i data-lucide="key" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.doi_mk}">🔑 Đổi mật
+                            khẩu</span>
+                    </a>
+                    <a href="/logout"
+                        class="text-red-400 hover:text-red-300 transition flex items-center gap-1 font-medium">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> <span th:text="#{side.user.dang_xuat}">🚪 Đăng
+                            xuất</span>
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <script>
-            function changeLang(lang) {
-                var url = new URL(window.location.href);
-                url.searchParams.set('lang', lang);
-                window.location.href = url.toString();
-            }
+            <script>
+                function changeLang(lang) {
+                    var url = new URL(window.location.href);
+                    url.searchParams.set('lang', lang);
+                    window.location.href = url.toString();
+                }
 
-            document.addEventListener("DOMContentLoaded", function () {
-                let currentUrl = window.location.pathname;
-                let menuLinks = document.querySelectorAll("#main-menu .menu-link");
+                document.addEventListener("DOMContentLoaded", function () {
+                    let currentUrl = window.location.pathname;
+                    let menuLinks = document.querySelectorAll("#main-menu .menu-link");
 
-                menuLinks.forEach(function (link) {
-                    let href = link.getAttribute("href");
-                    if (href && currentUrl.startsWith(href)) {
-                        link.classList.remove("text-slate-400", "hover:text-slate-200", "hover:bg-slate-800/40");
-                        link.classList.add("bg-brand-500/10", "text-brand-400", "border-brand-500/20", "font-bold");
+                    menuLinks.forEach(function (link) {
+                        let href = link.getAttribute("href");
+                        if (href && currentUrl.startsWith(href)) {
+                            link.classList.remove("text-slate-400", "hover:text-slate-200", "hover:bg-slate-800/40");
+                            link.classList.add("bg-brand-500/10", "text-brand-400", "border-brand-500/20", "font-bold");
+                        }
+                    });
+
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
                     }
                 });
-                
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
+            </script>
+        </aside>
+
+        <!-- Toggle Mobile Sidebar JS -->
+        <script>
+            function toggleMobileSidebarCudan() {
+                const sidebar = document.getElementById("global-sidebar-cudan");
+                const overlay = document.getElementById("mobile-sidebar-overlay-cudan");
+                const icon = document.getElementById("mobile-menu-icon-cudan");
+                if (sidebar) {
+                    const isHidden = sidebar.classList.contains("-translate-x-full");
+                    if (isHidden) {
+                        sidebar.classList.remove("-translate-x-full");
+                        sidebar.classList.add("translate-x-0");
+                        overlay.classList.remove("hidden");
+                        if (icon) {
+                            icon.setAttribute("data-lucide", "x");
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    } else {
+                        sidebar.classList.remove("translate-x-0");
+                        sidebar.classList.add("-translate-x-full");
+                        overlay.classList.add("hidden");
+                        if (icon) {
+                            icon.setAttribute("data-lucide", "menu");
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
                 }
-            });
+            }
         </script>
-    </div>
+    </th:block>
 </body>
 
 </html>

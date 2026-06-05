@@ -43,7 +43,7 @@ public class CanHoController {
             @RequestParam(required = false) Double dienTich,
             @RequestParam(required = false) Integer tang,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
 
         // Gọi service xử lý tìm kiếm và phân trang, nhận về đối tượng Page chứa dữ liệu
