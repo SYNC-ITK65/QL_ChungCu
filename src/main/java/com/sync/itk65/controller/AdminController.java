@@ -102,6 +102,10 @@ public class AdminController {
             // Tài sản cần bảo trì
             long countAlertTaiSan = taiSanRepository.findAlertAssets(java.time.LocalDate.now().plusDays(7)).size();
 
+            // Lấy 2 phản ánh gần nhất
+            org.springframework.data.domain.Pageable topTwo = org.springframework.data.domain.PageRequest.of(0, 2, org.springframework.data.domain.Sort.by("ngayGui").descending());
+            java.util.List<com.sync.itk65.entity.PhanAnh> recentPhanAnh = phanAnhRepository.findAll(topTwo).getContent();
+
             // Đẩy vào Model
             model.addAttribute("labelsRevenue", labelsRevenue);
             model.addAttribute("dataRevenue", dataRevenue);
@@ -109,6 +113,7 @@ public class AdminController {
             model.addAttribute("countChoXuLy", countChoXuLy);
             model.addAttribute("countDangXuLy", countDangXuLy);
             model.addAttribute("countAlertTaiSan", countAlertTaiSan);
+            model.addAttribute("recentPhanAnh", recentPhanAnh);
         }
 
         return "admin/dashboard";

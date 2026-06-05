@@ -76,9 +76,39 @@
                 </div>
             </div>
             
-            <div class="flex gap-2">
-                <a href="javascript:void(0)" onclick="changeLang('vi')" class="hover:scale-110 transition duration-150" style="font-size: 1.25rem;" title="Tiếng Việt" th:title="#{lang.vi}">🇻🇳</a>
-                <a href="javascript:void(0)" onclick="changeLang('en')" class="hover:scale-110 transition duration-150" style="font-size: 1.25rem;" title="English" th:title="#{lang.en}">🇺🇸</a>
+            <div class="flex gap-2 items-center">
+                <a href="javascript:void(0)" onclick="changeLang('vi')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="Tiếng Việt" th:title="#{lang.vi}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
+                        <rect width="512" height="512" fill="#da251d"/>
+                        <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
+                    </svg>
+                </a>
+                <a href="javascript:void(0)" onclick="changeLang('en')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="English" th:title="#{lang.en}">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice"> 
+                        <path d="M0 0h1235v650H0" fill="#fff"/> 
+                        <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/> 
+                        <path fill="#3c3b6e" d="M0 0h494v350H0"/> 
+                        <g id="e"> 
+                            <g id="d"> 
+                                <g id="f"> 
+                                    <g id="c"> 
+                                        <g id="b"> 
+                                            <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/> 
+                                            <use xlink:href="#a" x="82"/> 
+                                        </g> 
+                                        <use xlink:href="#b" x="164"/> 
+                                        <use xlink:href="#a" x="328"/> 
+                                    </g> 
+                                    <use xlink:href="#a" x="410"/> 
+                                </g> 
+                                <use xlink:href="#c" x="41" y="35"/> 
+                            </g> 
+                            <use xlink:href="#d" y="70"/> 
+                        </g> 
+                        <use xlink:href="#e" y="140"/> 
+                        <use xlink:href="#f" y="280"/> 
+                    </svg>
+                </a>
             </div>
         </div>
 
