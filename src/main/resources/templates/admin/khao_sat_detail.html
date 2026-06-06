@@ -1,4 +1,4 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #4B5563;
         }
-        select {
+        select.custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
@@ -152,7 +152,7 @@
                             <input type="text" name="tuKhoa" th:value="${tuKhoa}" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition" placeholder="Nhập Tên cư dân hoặc Mã Căn Hộ...">
                         </div>
                         <div class="md:col-span-4">
-                            <select name="luaChonId" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-3.5 text-xs text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                            <select name="luaChonId" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-3.5 text-xs text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer custom-select">
                                 <option value="">-- Tất cả phương án đã chọn --</option>
                                 <option th:each="lc : ${khaoSat.danhSachLuaChon}"
                                         th:value="${lc.id}"

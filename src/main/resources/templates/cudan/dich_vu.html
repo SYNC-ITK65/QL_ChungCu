@@ -1,4 +1,4 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -60,7 +60,7 @@
         select, input[type="date"] {
             color-scheme: dark;
         }
-        select {
+        select.custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
@@ -120,7 +120,7 @@
                             <form action="/cudan/dich-vu/dat" method="post" class="space-y-5">
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.chon_dich_vu}">Chọn dịch vụ</label>
-                                    <select name="dichVuId" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                                    <select name="dichVuId" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer custom-select">
                                         <option value="" th:text="#{dv.ui.vui_long_chon}">-- Vui lòng chọn --</option>
                                         <option th:each="dv : ${danhSachDichVu}" th:value="${dv.id}" th:text="${dv.ten + ' (' + dv.loai + ')'}"></option>
                                     </select>

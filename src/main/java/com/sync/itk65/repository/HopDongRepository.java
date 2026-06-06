@@ -82,6 +82,15 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
   @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.trangThai = 'ACTIVE'")
   Optional<HopDong> findActiveByCanHoId(@Param("canHoId") Long canHoId);
 
+  @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.id != :excludeId AND h.trangThai = 'ACTIVE'")
+  Optional<HopDong> findActiveByCanHoIdExcludeId(@Param("canHoId") Long canHoId, @Param("excludeId") Long excludeId);
+
+  @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId ORDER BY h.ngayBatDau DESC, h.id DESC")
+  List<HopDong> findByCanHoId(@Param("canHoId") Long canHoId);
+
+  @Query("SELECT h FROM HopDong h WHERE h.id = :id AND h.canHo.id = :canHoId")
+  Optional<HopDong> findByIdAndCanHoId(@Param("id") Long id, @Param("canHoId") Long canHoId);
+
   /**
    * Tìm hợp đồng THUÊ có hiệu lực trong tháng/năm cụ thể
    * - Loại hợp đồng là 'Thue'

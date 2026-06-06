@@ -34,13 +34,16 @@
             <form th:action="${isEdit} ? @{/admin/hop-dong/cap-nhat/{id}(id=${hopDong.id})} : @{/admin/hop-dong/luu}"
                   th:object="${hopDong}" method="post" id="hopDongForm" class="space-y-6">
                 <input type="hidden" th:field="*{id}" th:if="${isEdit}">
-                <input type="hidden" th:field="*{loaiHopDong}" value="Thue">
-
                 <!-- Loại hợp đồng -->
-                <div class="p-4 bg-brand-500/5 border border-brand-500/20 rounded-xl text-xs text-brand-400 flex items-center gap-2">
-                    <i data-lucide="file-text" class="w-4 h-4"></i>
-                    <span th:text="#{hd.form.loai_hop_dong}">Loại hợp đồng</span>: <strong class="text-white ml-1">Hợp đồng Thuê</strong>
-                    <span class="text-slate-500 ml-1" th:text="#{hd.form.loai_hint_thue}">– có thời hạn và tiền cọc</span>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                        <span th:text="#{hd.form.loai_hop_dong}">Loại hợp đồng</span> <span class="text-rose-400">*</span>
+                    </label>
+                    <select th:field="*{loaiHopDong}" id="loaiHopDong" required
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option value="Thue" th:text="#{hd.form.loai_thue}">Hợp đồng Thuê</option>
+                        <option value="Mua" th:text="#{hd.form.loai_mua}">Hợp đồng Mua</option>
+                    </select>
                 </div>
 
                 <!-- Thông tin các bên -->
@@ -54,8 +57,8 @@
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
                                 <span th:text="#{hd.ds.bang_ben_cho_thue}">Bên cho thuê</span> <span class="text-rose-400">*</span>
                             </label>
-                            <input type="text" th:field="*{benChoThue}" required th:placeholder="#{hd.form.nhap_ten_ben_cho_thu}"
-                                   class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                            <input type="text" th:field="*{benChoThue}" readonly
+                                   class="w-full bg-darkbg/50 border border-darkborder rounded-xl px-4 py-3 text-sm text-slate-400 cursor-not-allowed">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Người thuê</label>
@@ -89,12 +92,14 @@
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
                                 <span th:text="#{hd.form.cu_dan_label}">Cư dân</span> <span class="text-rose-400">*</span>
                             </label>
-                            <select name="cuDanId" id="cuDanId" required th:with="currentCuDanId=${hopDong.cuDan != null ? hopDong.cuDan.id : ''}"
-                                    class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
-                                <option value="" disabled th:text="#{hd.form.cu_dan_chon}">-- Chọn cư dân --</option>
+                            <input type="hidden" name="cuDanId" id="cuDanIdHidden" th:value="${hopDong.cuDan != null ? hopDong.cuDan.id : ''}">
+                            <select id="cuDanIdSelect" disabled th:with="currentCuDanId=${hopDong.cuDan != null ? hopDong.cuDan.id : ''}"
+                                    class="w-full bg-darkbg/50 border border-darkborder rounded-xl px-3 py-3 text-sm text-slate-400 cursor-not-allowed">
+                                <option value="" th:text="#{hd.form.cu_dan_chon}">-- Chọn cư dân --</option>
                                 <option th:each="cuDan : ${danhSachCuDan}" th:value="${cuDan.id}"
                                         th:data-canho="${cuDan.canHo != null ? cuDan.canHo.id : ''}"
                                         th:data-hoten="${cuDan.hoTen}"
+                                        th:data-moiquanhe="${cuDan.moiQuanHe}"
                                         th:selected="${currentCuDanId == cuDan.id}"
                                         th:text="${cuDan.hoTen} + ' - ' + ${cuDan.soDienThoai} + ' (' + ${cuDan.canHo != null ? cuDan.canHo.maCanHo : 'Chưa có căn hộ'} + ')'"></option>
                             </select>
@@ -115,12 +120,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                                <span th:text="#{hd.form.tien_thue}">Tiền thuê (VNĐ)</span> <span class="text-rose-400">*</span>
+                                <span id="tienThueLabel" th:text="#{hd.form.tien_thue}">Tiền thuê (VNĐ)</span> <span class="text-rose-400">*</span>
                             </label>
                             <input type="number" min="1" th:field="*{tienThue}" required th:placeholder="#{hd.form.tien_thue_goi_y}"
                                    class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
                         </div>
-                        <div>
+                        <div id="tienCocContainer">
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{hd.form.tien_coc}">Tiền cọc (VNĐ)</label>
                             <input type="number" min="0" th:field="*{tienCoc}" th:placeholder="#{hd.form.tien_coc_placeholder}"
                                    class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
@@ -143,7 +148,7 @@
                             <input type="date" th:field="*{ngayBatDau}" required
                                    class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition">
                         </div>
-                        <div>
+                        <div id="thoiHanContainer">
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Thời hạn <span class="text-rose-400">*</span></label>
                             <select name="thoiHan" id="thoiHan" required
                                     class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
@@ -172,31 +177,93 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();
-            const cuDanId = document.getElementById('cuDanId');
+            const cuDanIdSelect = document.getElementById('cuDanIdSelect');
+            const cuDanIdHidden = document.getElementById('cuDanIdHidden');
             const benThueDisplay = document.getElementById('benThueDisplay');
             const canHoId = document.getElementById('canHoId');
             const cuDanWarning = document.getElementById('cuDanWarning');
             const hopDongForm = document.getElementById('hopDongForm');
+            const loaiHopDong = document.getElementById('loaiHopDong');
+            const tienCocContainer = document.getElementById('tienCocContainer');
+            const thoiHanContainer = document.getElementById('thoiHanContainer');
+            const tienThueLabel = document.getElementById('tienThueLabel');
+
+            function updateFormType() {
+                const isThue = loaiHopDong.value === 'Thue';
+                if (isThue) {
+                    tienCocContainer.classList.remove('hidden');
+                    tienCocContainer.querySelector('input').disabled = false;
+                    thoiHanContainer.classList.remove('hidden');
+                    thoiHanContainer.querySelector('select').disabled = false;
+                    tienThueLabel.textContent = 'Tiền thuê (VNĐ)';
+                } else {
+                    tienCocContainer.classList.add('hidden');
+                    tienCocContainer.querySelector('input').disabled = true;
+                    thoiHanContainer.classList.add('hidden');
+                    thoiHanContainer.querySelector('select').disabled = true;
+                    tienThueLabel.textContent = 'Giá trị hợp đồng (VNĐ)';
+                }
+            }
 
             function updateCuDanInfo() {
-                const opt = cuDanId.options[cuDanId.selectedIndex];
-                if (opt.value) {
-                    benThueDisplay.value = opt.getAttribute('data-hoten') || '';
-                    const cdCanHo = opt.getAttribute('data-canho');
-                    const selCanHo = canHoId.value;
-                    if (selCanHo && cdCanHo && cdCanHo !== selCanHo) { cuDanWarning.classList.remove('hidden'); }
-                    else { cuDanWarning.classList.add('hidden'); }
-                } else { benThueDisplay.value = ''; cuDanWarning.classList.add('hidden'); }
-            }
-            cuDanId.addEventListener('change', updateCuDanInfo);
-            canHoId.addEventListener('change', updateCuDanInfo);
-            updateCuDanInfo();
+                const selCanHo = canHoId.value;
+                if (!selCanHo) {
+                    cuDanIdSelect.value = '';
+                    cuDanIdHidden.value = '';
+                    benThueDisplay.value = '';
+                    cuDanWarning.classList.add('hidden');
+                    return;
+                }
 
-            // Chặn submit nếu cư dân không thuộc căn hộ đã chọn
+                // Tìm cư dân là Chủ hộ của căn hộ đã chọn
+                let foundChuHo = false;
+                for (let i = 0; i < cuDanIdSelect.options.length; i++) {
+                    const opt = cuDanIdSelect.options[i];
+                    const cdCanHo = opt.getAttribute('data-canho');
+                    const cdMoiQuanHe = opt.getAttribute('data-moiquanhe') || '';
+                    if (cdCanHo === selCanHo && (cdMoiQuanHe.toLowerCase() === 'chủ hộ' || cdMoiQuanHe.toLowerCase() === 'chủ hộ')) {
+                        cuDanIdSelect.selectedIndex = i;
+                        cuDanIdHidden.value = opt.value;
+                        benThueDisplay.value = opt.getAttribute('data-hoten') || '';
+                        foundChuHo = true;
+                        break;
+                    }
+                }
+
+                if (foundChuHo) {
+                    cuDanWarning.classList.add('hidden');
+                } else {
+                    cuDanIdSelect.value = '';
+                    cuDanIdHidden.value = '';
+                    benThueDisplay.value = '';
+                    // Hiển thị thông báo căn hộ chưa có chủ hộ
+                    cuDanWarning.textContent = '⚠️ Căn hộ này chưa có Chủ hộ hoặc Chủ hộ chưa có thông tin!';
+                    cuDanWarning.classList.remove('hidden');
+                }
+            }
+
+            canHoId.addEventListener('change', updateCuDanInfo);
+            loaiHopDong.addEventListener('change', updateFormType);
+            
+            // Run initially if values are pre-selected
+            updateFormType();
+            if (canHoId.value) {
+                const initialCuDanId = cuDanIdHidden.value;
+                if (initialCuDanId) {
+                    cuDanIdSelect.value = initialCuDanId;
+                    const opt = cuDanIdSelect.options[cuDanIdSelect.selectedIndex];
+                    if (opt) {
+                        benThueDisplay.value = opt.getAttribute('data-hoten') || '';
+                    }
+                } else {
+                    updateCuDanInfo();
+                }
+            }
+
             hopDongForm.addEventListener('submit', function(e) {
-                if (!cuDanWarning.classList.contains('hidden')) {
+                if (!cuDanIdHidden.value) {
                     e.preventDefault();
-                    cuDanWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    alert('Không thể lưu hợp đồng do chưa xác định được Chủ hộ của căn hộ này!');
                 }
             });
         });

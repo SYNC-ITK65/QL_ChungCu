@@ -1,4 +1,4 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #4B5563;
         }
-        select {
+        select.custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
@@ -143,7 +143,7 @@
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{pt.ui.loai_xe}">Loại xe:</label>
                                     <select th:field="*{loaiXe}" 
-                                            class="w-full bg-darkbg border rounded-xl py-2 px-3 text-sm text-white focus:outline-none transition appearance-none cursor-pointer"
+                                            class="w-full bg-darkbg border rounded-xl py-2 px-3 text-sm text-white focus:outline-none transition appearance-none cursor-pointer custom-select"
                                             th:classappend="${#fields.hasErrors('loaiXe')} ? 'border-red-500 focus:border-red-500' : 'border-darkborder focus:border-brand-500'">
                                         <option value="">-- Chọn loại xe --</option>
                                         <option value="Xe máy" th:text="#{pt.ui.xe_may}">Xe máy</option>
@@ -199,7 +199,7 @@
                                         <th class="px-5 py-3" th:text="#{hdon.chitiet.bien_so}">Biển Số</th>
                                         <th class="px-5 py-3" th:text="#{hdon.chitiet.loai_xe}">Loại Xe</th>
                                         <th class="px-5 py-3" th:text="#{pt.ui.mau_xe}">Màu Xe</th>
-                                        <th class="px-5 py-3">Hình ảnh</th>
+                                        <th class="px-5 py-3" th:text="#{pt.ui.hinh_anh}">Hình ảnh</th>
                                         <th class="px-5 py-3" th:text="#{hdon.ds.bang_trang_thai}">Trạng Thái</th>
                                         <th class="px-5 py-3 text-center" th:text="#{dv.ds.thao_tac}">Thao tác</th>
                                     </tr>
@@ -208,14 +208,14 @@
                                     <tr th:each="xe : ${danhSachXe}" class="hover:bg-slate-800/30 transition">
                                         <td class="px-5 py-3 font-bold text-white uppercase tracking-wider" th:text="${xe.bienSoXe}"></td>
                                         <td class="px-5 py-3">
-                                            <span class="px-2 py-1 rounded-md text-[10px] bg-slate-800 text-slate-300 border border-slate-700" th:text="${xe.loaiXe}"></span>
+                                            <span class="px-2 py-1 rounded-md text-[10px] bg-slate-800 text-slate-300 border border-slate-700" th:text="${xe.loaiXe == 'Ô tô' ? #messages.msg('pt.ui.o_to') : (xe.loaiXe == 'Xe máy' ? #messages.msg('pt.ui.xe_may') : (xe.loaiXe == 'Xe điện' ? #messages.msg('pt.ui.xe_dien') : (xe.loaiXe == 'Xe đạp' ? #messages.msg('pt.ui.xe_dap') : xe.loaiXe)))}"></span>
                                         </td>
                                         <td class="px-5 py-3 text-slate-400" th:text="${xe.mauXe}"></td>
                                         <td class="px-5 py-3">
                                             <a th:if="${xe.hinhAnh != null}" th:href="${xe.hinhAnh}" target="_blank" class="block w-12 h-8 rounded-md overflow-hidden border border-slate-700 hover:border-brand-500 transition">
                                                 <img th:src="${xe.hinhAnh}" alt="Ảnh xe" class="w-full h-full object-cover"/>
                                             </a>
-                                            <span th:if="${xe.hinhAnh == null}" class="text-[10px] text-slate-500 italic">Không có ảnh</span>
+                                            <span th:if="${xe.hinhAnh == null}" class="text-[10px] text-slate-500 italic" th:text="#{pt.ui.khong_co_anh}">Không có ảnh</span>
                                         </td>
                                         <td class="px-5 py-3">
                                             <span th:if="${xe.trangThai == null || #strings.isEmpty(xe.trangThai) || xe.trangThai == 'Chờ duyệt' || xe.trangThai == 'Đăng ký mới'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{pt.ui.dang_cho_bql_duyet}">⏳ Đang chờ BQL duyệt</span>

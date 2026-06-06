@@ -26,10 +26,10 @@ public class CanHo {
     @Column(name = "dien_tich")
     private Double dienTich;
 
-    // Đảm bảo tầng nằm ở trong giới hạn (từ 1 đến 100) của chung cư
+    // Đảm bảo tầng nằm ở trong giới hạn (từ 1 đến 25) của chung cư
     @NotNull(message = "Số tầng không được để trống")
     @Min(value = 1, message = "Số tầng tối thiểu phải từ tầng 1 trở lên")
-    @Max(value = 100, message = "Số tầng vượt quá mức tối đa của chung cư (100 tầng)")
+    @Max(value = 25, message = "Số tầng vượt quá mức tối đa của chung cư (25 tầng)")
     @Column(name = "tang")
     private Integer tang;
 
@@ -95,9 +95,6 @@ public class CanHo {
     }
 
     public String getTrangThai() {
-        if ("Đang sửa chữa".equals(this.trangThai)) {
-            return this.trangThai;
-        }
         boolean hasOwner = false;
         boolean hasResident = false;
         if (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty()) {
@@ -124,9 +121,6 @@ public class CanHo {
 
     @Transient
     public String getTrangThaiHienThi() {
-        if ("Đang sửa chữa".equals(this.trangThai)) {
-            return "ch.tt.sua_chua";
-        }
         boolean hasOwner = false;
         boolean hasResident = false;
         if (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty()) {
@@ -140,7 +134,7 @@ public class CanHo {
             }
         }
         if (hasResident) {
-            return "ch.tt.da_ban_giao";
+            return "ch.tt.da_co_chu";
         } else if (hasOwner || (this.danhSachCuDan != null && !this.danhSachCuDan.isEmpty())) {
             return "ch.tt.chu_chua_den";
         }

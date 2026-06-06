@@ -172,20 +172,23 @@
                         <option value="Trống" th:selected="${trangThai == 'Trống'}" th:text="#{ch.tt.trong}">Trống
                         </option>
                         <option value="Đã có chủ" th:selected="${trangThai == 'Đã có chủ'}"
-                            th:text="#{ch.tt.da_ban_giao}">Đã bàn giao</option>
+                            th:text="#{ch.tt.da_co_chu}">Đã có chủ</option>
                         <option value="Chủ chưa đến" th:selected="${trangThai == 'Chủ chưa đến'}"
                             th:text="#{ch.tt.chu_chua_den}">Chủ chưa đến</option>
-                        <option value="Đang sửa chữa" th:selected="${trangThai == 'Đang sửa chữa'}"
-                            th:text="#{ch.tt.sua_chua}">Đang sửa chữa</option>
                     </select>
                 </div>
-                <!-- Diện tích -->
+                <!-- Loại -->
                 <div class="md:col-span-3">
                     <label class="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider"
-                        th:text="#{ch.ds.loc_dt}">Diện tích (m²)</label>
-                    <input type="number" step="0.01" name="dienTich" th:value="${dienTich}"
-                        class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition"
-                        th:placeholder="#{ch.ds.loc_dt_goi_y}">
+                        th:text="#{ch.form.loai}">Loại</label>
+                    <select name="loai"
+                        class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                        <option value="" th:text="#{chung.tat_ca}">-- Tất cả --</option>
+                        <option value="Căn hộ tiêu chuẩn" th:selected="${loai == 'Căn hộ tiêu chuẩn'}" th:text="#{ch.loai.tieu_chuan}">Căn hộ tiêu chuẩn</option>
+                        <option value="Studio" th:selected="${loai == 'Studio'}" th:text="#{ch.loai.studio}">Studio</option>
+                        <option value="Penthouse" th:selected="${loai == 'Penthouse'}" th:text="#{ch.loai.penthouse}">Penthouse</option>
+                        <option value="Duplex" th:selected="${loai == 'Duplex'}" th:text="#{ch.loai.duplex}">Duplex</option>
+                    </select>
                 </div>
                 <!-- Tầng -->
                 <div class="md:col-span-3">
@@ -257,7 +260,7 @@
                                 <span class="px-2 py-0.5 rounded text-xs font-semibold whitespace-nowrap"
                                     th:classappend="${ch.trangThai == 'Trống' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 
                                                        (ch.trangThai == 'Đã có chủ' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                                                       (ch.trangThai == 'Đang sửa chữa' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'))}"
+                                                       'bg-slate-500/10 text-slate-400 border border-slate-500/20')}"
                                     th:text="${ch.trangThaiHienThi != null ? #messages.msg(ch.trangThaiHienThi) : ch.trangThai}">
                                     Trống
                                 </span>
@@ -288,7 +291,7 @@
 
         <!-- Pagination fragment invocation -->
         <div
-            th:replace="~{fragments/pagination :: paging('/admin/can-ho', 'trangThai=' + (${trangThai} ?: '') + '&amp;dienTich=' + (${dienTich} ?: '') + '&amp;tang=' + (${tang} ?: ''))}">
+            th:replace="~{fragments/pagination :: paging('/admin/can-ho', 'trangThai=' + (${trangThai} ?: '') + '&amp;loai=' + (${loai} ?: '') + '&amp;tang=' + (${tang} ?: ''))}">
         </div>
     </main>
 

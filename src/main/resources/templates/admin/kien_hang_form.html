@@ -1,4 +1,4 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #4B5563;
         }
-        select {
+        select.custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
@@ -100,7 +100,7 @@
                             <label class="text-sm font-semibold text-slate-300 block">
                                 <span th:text="#{kh.form.chon_can}">Chọn Căn hộ nhận</span>
                             </label>
-                            <select th:field="*{canHo.id}" required class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)]">
+                            <select th:field="*{canHo.id}" required class="w-full bg-darkbg border border-darkborder rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer focus:shadow-[0_0_0_1px_rgba(14,165,233,0.2)] custom-select">
                                 <option value="" th:text="#{kh.form.chon_can_goi_y}">-- Chọn mã căn hộ --</option>
                                 <option th:each="ch : ${danhSachCanHo}" 
                                         th:value="${ch.id}" 

@@ -40,7 +40,7 @@ public class CanHoController {
     @GetMapping
     public String hienThiDanhSach(
             @RequestParam(required = false) String trangThai,
-            @RequestParam(required = false) Double dienTich,
+            @RequestParam(required = false) String loai,
             @RequestParam(required = false) Integer tang,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -48,7 +48,7 @@ public class CanHoController {
 
         // Gọi service xử lý tìm kiếm và phân trang, nhận về đối tượng Page chứa dữ liệu
         // căn hộ
-        org.springframework.data.domain.Page<CanHo> trangDuLieuCanHo = canHoService.timKiemCanHo(trangThai, dienTich,
+        org.springframework.data.domain.Page<CanHo> trangDuLieuCanHo = canHoService.timKiemCanHo(trangThai, loai,
                 tang, page, size);
 
         // Đưa danh sách căn hộ của trang hiện tại lên giao diện
@@ -61,7 +61,7 @@ public class CanHoController {
         // Giữ lại tham số tìm kiếm cũ trên giao diện phân trang (ngăn chặn mất tham số
         // khi qua trang khác)
         model.addAttribute("trangThai", trangThai);
-        model.addAttribute("dienTich", dienTich);
+        model.addAttribute("loai", loai);
         model.addAttribute("tang", tang);
         model.addAttribute("size", size);
 

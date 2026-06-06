@@ -28,6 +28,9 @@ public class NguoiDungController {
     @Autowired
     private CuDanService cuDanService;
 
+    @Autowired
+    private org.springframework.context.MessageSource messageSource;
+
     // Hàm hiển thị danh sách người dùng
     @GetMapping
     public String hienThiDanhSach(
@@ -162,6 +165,26 @@ public class NguoiDungController {
         }
 
         nguoiDungService.xoaNguoiDung(id);
+        return "redirect:/admin/nguoi-dung";
+    }
+
+    // Reset mật khẩu về 1234
+    @GetMapping("/reset-mat-khau/{id}")
+    public String resetMatKhau(@PathVariable("id") Long id, java.util.Locale locale, RedirectAttributes ra) {
+        try {
+            NguoiDung nd = nguoiDungService.layNguoiDungTheoId(id);
+            if (nd != null) {
+                nguoiDungService.doiMatKhau(id, "1234");
+                String successMsg = messageSource.getMessage("nd.msg.reset_mat_khau_thanh_cong", new Object[]{nd.getTenDangNhap()}, "Đã reset mật khẩu tài khoản thành công!", locale);
+                ra.addFlashAttribute("successMessage", successMsg);
+            } else {
+                String errorMsg = messageSource.getMessage("nd.msg.reset_mat_khau_khong_tim_thay", null, "Không tìm thấy người dùng!", locale);
+                ra.addFlashAttribute("errorMessage", errorMsg);
+            }
+        } catch (Exception e) {
+            String errorMsg = messageSource.getMessage("nd.msg.reset_mat_khau_loi", new Object[]{e.getMessage()}, "Có lỗi xảy ra!", locale);
+            ra.addFlashAttribute("errorMessage", errorMsg);
+        }
         return "redirect:/admin/nguoi-dung";
     }
 
