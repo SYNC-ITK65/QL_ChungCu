@@ -62,8 +62,6 @@
                         <option value="" th:text="#{hd.ds.loc_trang_thai_tat_ca}">-- Tất cả --</option>
                         <option value="ACTIVE" th:selected="${trangThai == 'ACTIVE'}" th:text="#{hd.trang_thai.active}">Còn hạn</option>
                         <option value="EXPIRED" th:selected="${trangThai == 'EXPIRED'}" th:text="#{hd.trang_thai.expired}">Hết hạn</option>
-                        <option value="TERMINATED" th:selected="${trangThai == 'TERMINATED'}" th:text="#{hd.trang_thai.terminated}">Thanh lý</option>
-                        <option value="DRAFT" th:selected="${trangThai == 'DRAFT'}" th:text="#{hd.trang_thai.draft}">Nháp</option>
                     </select>
                 </div>
                 <div class="md:col-span-3 flex items-end gap-2">
@@ -113,7 +111,7 @@
                             <td class="p-4">
                                 <span th:if="${hd.trangThai == 'ACTIVE'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{hd.trang_thai.active}">Còn hạn</span>
                                 <span th:if="${hd.trangThai == 'EXPIRED'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
-                                <span th:if="${hd.trangThai == 'TERMINATED'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
+                                <span th:if="${hd.trangThai == 'TERMINATED'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{hd.trang_thai.terminated}">Đã chấm dứt</span>
                                 <span th:if="${hd.trangThai == 'DRAFT'}" class="px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{hd.trang_thai.draft}">Nháp</span>
                             </td>
                             <td class="p-4 text-right">
@@ -122,12 +120,6 @@
                                        class="px-2.5 py-1 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_xem}">Xem</a>
                                     <a th:href="@{/admin/hop-dong/sua/{id}(id=${hd.id})}"
                                        class="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_sua}">Sửa</a>
-                                    <a th:if="${hd.trangThai == 'ACTIVE'}"
-                                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='TERMINATED')}"
-                                       class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_thanh_ly}">Thanh lý</a>
-                                    <a th:if="${hd.trangThai == 'TERMINATED' or hd.trangThai == 'EXPIRED'}"
-                                       th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hd.id},trangThai='ACTIVE')}"
-                                       class="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_kich_hoat}">Kích hoạt</a>
                                     <a th:href="@{/admin/hop-dong/xoa/{id}(id=${hd.id})}"
                                        th:onclick="|return confirm('#{hd.ds.xac_nhan_xoa}')|"
                                        class="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[11px] font-semibold rounded-lg transition" th:text="#{hd.ds.nut_xoa}">Xóa</a>
