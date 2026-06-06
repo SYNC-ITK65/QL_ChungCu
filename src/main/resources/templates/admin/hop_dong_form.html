@@ -176,6 +176,7 @@
             const benThueDisplay = document.getElementById('benThueDisplay');
             const canHoId = document.getElementById('canHoId');
             const cuDanWarning = document.getElementById('cuDanWarning');
+            const hopDongForm = document.getElementById('hopDongForm');
 
             function updateCuDanInfo() {
                 const opt = cuDanId.options[cuDanId.selectedIndex];
@@ -190,6 +191,14 @@
             cuDanId.addEventListener('change', updateCuDanInfo);
             canHoId.addEventListener('change', updateCuDanInfo);
             updateCuDanInfo();
+
+            // Chặn submit nếu cư dân không thuộc căn hộ đã chọn
+            hopDongForm.addEventListener('submit', function(e) {
+                if (!cuDanWarning.classList.contains('hidden')) {
+                    e.preventDefault();
+                    cuDanWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
         });
     </script>
 </body>

@@ -50,7 +50,7 @@
                         <div>
                             <span th:if="${hopDong.trangThai == 'ACTIVE'}" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" th:text="#{hd.trang_thai.active}">Còn hạn</span>
                             <span th:if="${hopDong.trangThai == 'EXPIRED'}" class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20" th:text="#{hd.trang_thai.expired}">Hết hạn</span>
-                            <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{hd.trang_thai.terminated}">Thanh lý</span>
+                            <span th:if="${hopDong.trangThai == 'TERMINATED'}" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-400 border border-slate-500/20" th:text="#{hd.trang_thai.terminated}">Đã chấm dứt</span>
                             <span th:if="${hopDong.trangThai == 'DRAFT'}" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{hd.trang_thai.draft}">Nháp</span>
                         </div>
                     </div>
@@ -127,20 +127,6 @@
                            class="w-full px-4 py-2.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 border border-brand-500/20 text-xs font-semibold rounded-xl transition flex items-center gap-2">
                             <i data-lucide="file" class="w-4 h-4"></i>
                             <span th:text="#{hd.chitiet.xuat_pdf}">Xuất PDF</span>
-                        </a>
-                        <a th:if="${hopDong.trangThai == 'ACTIVE'}"
-                           th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hopDong.id},trangThai='TERMINATED')}"
-                           th:onclick="|return confirm('#{hd.chitiet.xac_nhan_thanh_ly}')|"
-                           class="w-full px-4 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-semibold rounded-xl transition flex items-center gap-2">
-                            <i data-lucide="x-octagon" class="w-4 h-4"></i>
-                            <span th:text="#{hd.ds.nut_thanh_ly}">Thanh lý hợp đồng</span>
-                        </a>
-                        <a th:if="${hopDong.trangThai == 'TERMINATED' or hopDong.trangThai == 'EXPIRED'}"
-                           th:href="@{/admin/hop-dong/cap-nhat-trang-thai/{id}(id=${hopDong.id},trangThai='ACTIVE')}"
-                           th:onclick="|return confirm('#{hd.chitiet.xac_nhan_kich_hoat}')|"
-                           class="w-full px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-xs font-semibold rounded-xl transition flex items-center gap-2">
-                            <i data-lucide="check-circle" class="w-4 h-4"></i>
-                            <span th:text="#{hd.chitiet.kich_hoat_lai}">Kích hoạt lại</span>
                         </a>
                     </div>
                 </div>

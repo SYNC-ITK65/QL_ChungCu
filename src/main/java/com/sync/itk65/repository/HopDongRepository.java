@@ -73,6 +73,12 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
   @Query("SELECT h FROM HopDong h WHERE h.trangThai = 'ACTIVE' AND h.ngayKetThuc IS NOT NULL AND h.ngayKetThuc < :today")
   List<HopDong> findExpiredActiveContracts(@Param("today") java.time.LocalDate today);
 
+  @Query("SELECT COUNT(h) > 0 FROM HopDong h WHERE h.cuDan.id = :cuDanId AND h.trangThai = 'ACTIVE'")
+  boolean existsActiveByCuDanId(@Param("cuDanId") Long cuDanId);
+
+  @Query("SELECT COUNT(h) > 0 FROM HopDong h WHERE h.cuDan.id = :cuDanId AND h.id != :excludeId AND h.trangThai = 'ACTIVE'")
+  boolean existsActiveByCuDanIdExcludeId(@Param("cuDanId") Long cuDanId, @Param("excludeId") Long excludeId);
+
   @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.trangThai = 'ACTIVE'")
   Optional<HopDong> findActiveByCanHoId(@Param("canHoId") Long canHoId);
 
@@ -96,10 +102,7 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
 
   @Query("SELECT h FROM HopDong h WHERE " +
       "(:maCanHo IS NULL OR :maCanHo = '' OR h.canHo.maCanHo LIKE %:maCanHo%) AND " +
-      "(:loaiHopDong IS NULL OR :loaiHopDong = '' OR " +
-      "  h.loaiHopDong = :loaiHopDong OR " +
-      "  (:loaiHopDong = 'Thue' AND h.loaiHopDong = 'Thuê') OR " +
-      "  (:loaiHopDong = 'Mua' AND h.loaiHopDong = 'Mua')) AND " +
+      "(:loaiHopDong IS NULL OR :loaiHopDong = '' OR h.loaiHopDong = :loaiHopDong) AND " +
       "(:trangThai IS NULL OR :trangThai = '' OR h.trangThai = :trangThai) " +
       "ORDER BY h.id DESC")
   Page<HopDong> timKiemHopDong(@Param("maCanHo") String maCanHo,
@@ -107,3 +110,4 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
       @Param("trangThai") String trangThai,
       Pageable pageable);
 }
+
