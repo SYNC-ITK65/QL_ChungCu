@@ -46,7 +46,7 @@
                 <a th:href="@{/admin/thanh-toan/lich-su}"
                    class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-darkborder text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
                     <i data-lucide="clock" class="w-4 h-4 text-sky-400"></i>
-                    <span>Lịch Sử Thanh Toán</span>
+                    <span th:text="#{tt.ds.lich_su_thanh_toan}">Lịch Sử Thanh Toán</span>
                 </a>
                 <button data-bs-toggle="modal" data-bs-target="#importExcelModal"
                         class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-darkborder text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
