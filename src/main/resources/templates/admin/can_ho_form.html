@@ -58,14 +58,15 @@
         <!-- Header -->
         <div class="w-full max-w-3xl flex items-center justify-between gap-4 mb-8">
             <div>
-                <h1 class="text-2xl font-bold text-white tracking-tight" 
+                <h1 class="text-2xl font-bold text-white tracking-tight"
                     th:text="${canHo.id == null} ? #{ch.form.them_tieude} : #{ch.form.sua_tieude}">
                     Thêm Căn Hộ Mới
                 </h1>
-                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.canho.form.subtitle}">Quản lý các thông số cấu hình và hình ảnh của căn hộ</p>
+                <p class="text-sm text-slate-400 mt-1" th:text="#{admin.canho.form.subtitle}">Quản lý các thông số cấu
+                    hình và hình ảnh của căn hộ</p>
             </div>
-            <a th:href="@{/admin/can-ho}" 
-               class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <a th:href="@{/admin/can-ho}"
+                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 <span th:text="#{chung.quay_lai}">Quay Lại</span>
             </a>
@@ -73,16 +74,20 @@
 
         <!-- Form Card -->
         <div class="w-full max-w-3xl bg-darkcard border border-darkborder rounded-2xl p-6 md:p-8 shadow-xl">
-            <form th:action="@{/admin/can-ho/luu}" th:object="${canHo}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form th:action="@{/admin/can-ho/luu}" th:object="${canHo}" method="POST" enctype="multipart/form-data"
+                class="space-y-6">
                 <input type="hidden" th:field="*{id}" />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Mã Căn Hộ -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ch.form.ma}">Mã Căn Hộ</label>
-                        <input type="text" th:field="*{maCanHo}" required placeholder="Mã Căn Hộ"
-                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
-                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('maCanHo')}">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                            th:text="#{ch.form.ma}">Mã Căn Hộ</label>
+                        <input type="text" th:field="*{maCanHo}" required th:placeholder="#{ch.form.ma}"
+                            placeholder="Mã Căn Hộ"
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1"
+                            th:if="${#fields.hasErrors('maCanHo')}">
                             <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
                             <span th:errors="*{maCanHo}"></span>
                         </div>
@@ -90,10 +95,13 @@
 
                     <!-- Diện Tích -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ch.form.dt}">Diện Tích (m²)</label>
-                        <input type="number" step="0.1" th:field="*{dienTich}" required placeholder="Diện Tích"
-                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
-                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('dienTich')}">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                            th:text="#{ch.form.dt}">Diện Tích (m²)</label>
+                        <input type="number" step="0.1" th:field="*{dienTich}" required th:placeholder="#{ch.form.dt}"
+                            placeholder="Diện Tích"
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1"
+                            th:if="${#fields.hasErrors('dienTich')}">
                             <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
                             <span th:errors="*{dienTich}"></span>
                         </div>
@@ -101,10 +109,15 @@
 
                     <!-- Tầng -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ch.form.tang}">Tầng</label>
-                        <input type="number" th:field="*{tang}" required placeholder="Tầng"
-                               class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
-                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('tang')}">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                            th:text="#{ch.form.tang}">Tầng</label>
+                        <input type="number" th:field="*{tang}" required th:placeholder="#{ch.form.tang}"
+                            placeholder="Tầng"
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition">
+                        <p class="text-[11px] text-slate-500 mt-1" th:text="#{ch.form.tang_help}">Giới hạn từ tầng 1 đến
+                            tầng 25.</p>
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1"
+                            th:if="${#fields.hasErrors('tang')}">
                             <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
                             <span th:errors="*{tang}"></span>
                         </div>
@@ -112,15 +125,17 @@
 
                     <!-- Loại Căn Hộ -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2" th:text="#{ch.form.loai}">Loại</label>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2"
+                            th:text="#{ch.form.loai}">Loại</label>
                         <select th:field="*{loai}" required
-                                class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
-                            <option value="Căn hộ tiêu chuẩn">Căn hộ tiêu chuẩn</option>
-                            <option value="Studio">Studio</option>
-                            <option value="Penthouse">Penthouse</option>
-                            <option value="Duplex">Duplex</option>
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition cursor-pointer">
+                            <option value="Căn hộ tiêu chuẩn" th:text="#{ch.loai.tieu_chuan}">Căn hộ tiêu chuẩn</option>
+                            <option value="Studio" th:text="#{ch.loai.studio}">Studio</option>
+                            <option value="Penthouse" th:text="#{ch.loai.penthouse}">Penthouse</option>
+                            <option value="Duplex" th:text="#{ch.loai.duplex}">Duplex</option>
                         </select>
-                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1" th:if="${#fields.hasErrors('loai')}">
+                        <div class="text-rose-400 text-xs mt-1.5 flex items-center gap-1"
+                            th:if="${#fields.hasErrors('loai')}">
                             <i data-lucide="alert-circle" class="w-3.5 h-3.5 flex-shrink-0"></i>
                             <span th:errors="*{loai}"></span>
                         </div>
@@ -130,18 +145,22 @@
                 <!-- Upload hình ảnh căn hộ -->
                 <div class="space-y-4 pt-4 border-t border-darkborder">
                     <div>
-                        <label for="fileImage" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <label for="fileImage"
+                            class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                             <i data-lucide="image" class="w-4 h-4 text-brand-400"></i>
                             <span th:text="#{ch.form.hinh_anh_can_ho}">Hình ảnh căn hộ:</span>
                         </label>
                         <input type="file" name="fileImage" id="fileImage" accept="image/png, image/jpeg"
-                               class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
-                        <p class="text-[11px] text-slate-500 mt-1" th:text="#{ch.form.hinh_anh_can_ho_help}">Chấp nhận file PNG, JPEG. Để trống nếu không muốn thay đổi ảnh (giới hạn 2MB).</p>
+                            class="w-full bg-darkbg border border-darkborder rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+                        <p class="text-[11px] text-slate-500 mt-1" th:text="#{ch.form.hinh_anh_can_ho_help}">Chấp nhận
+                            file PNG, JPEG. Để trống nếu không muốn thay đổi ảnh (giới hạn 2MB).</p>
                     </div>
 
                     <!-- Current image display -->
                     <div th:if="${canHo.hinhAnh != null}" class="space-y-2">
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Ảnh hiện tại:</label>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider"
+                            th:text="#{ch.form.anh_hien_tai}">Ảnh hiện
+                            tại:</label>
                         <div class="w-48 h-36 rounded-xl border border-darkborder overflow-hidden bg-darkbg/50">
                             <img th:src="*{hinhAnh}" alt="Ảnh căn hộ" class="w-full h-full object-cover">
                         </div>
@@ -150,9 +169,11 @@
 
                 <!-- Buttons -->
                 <div class="flex items-center gap-3 pt-6 border-t border-darkborder justify-end">
-                    <a th:href="@{/admin/can-ho}" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition" th:text="#{chung.quay_lai}">Quay Lại</a>
-                    <button type="submit" 
-                            class="px-6 py-3 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
+                    <a th:href="@{/admin/can-ho}"
+                        class="px-6 py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-300 text-xs font-semibold rounded-xl transition"
+                        th:text="#{chung.quay_lai}">Quay Lại</a>
+                    <button type="submit"
+                        class="px-6 py-3 bg-brand-500 hover:bg-brand-400 active:bg-brand-600 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
                         <i data-lucide="check" class="w-4 h-4"></i>
                         <span th:text="#{ch.form.nut_luu}">Lưu Căn Hộ</span>
                     </button>

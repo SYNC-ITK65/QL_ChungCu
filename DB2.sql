@@ -222,6 +222,7 @@ CREATE TABLE dat_dich_vu (
     cu_dan_id       BIGINT         NOT NULL,
     dich_vu_id      BIGINT         NOT NULL,
     ngay_dat        DATE,
+    ngay_ket_thuc   DATE,
     thoi_gian_duyet DATETIME,
     trang_thai      VARCHAR(255),
     ghi_chu         VARCHAR(255),

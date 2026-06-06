@@ -15,6 +15,8 @@ public interface CanHoRepository extends JpaRepository<CanHo, Long> {
 
        Optional<CanHo> findByMaCanHo(String maCanHo);
 
+       Optional<CanHo> findByMaCanHoIgnoreCase(String maCanHo);
+
        /**
         * Lấy danh sách căn hộ có ít nhất một cư dân đang ở (trangThai LIKE 'Đang Ở').
         * Dùng native query để tránh vấn đề collation Unicode tiếng Việt trên SQL Server.
@@ -36,17 +38,16 @@ public interface CanHoRepository extends JpaRepository<CanHo, Long> {
 
        // Truy vấn danh sách căn hộ có kết hợp tìm kiếm và phân trang
        // - Tìm kiếm LIKE trên trường trangThai (không phân biệt hoa/thường)
-       // - Lọc chính xác theo dienTich (nếu giá trị dienTich được truyền vào)
+       // - Lọc chính xác theo loai (nếu giá trị loai được truyền vào)
        // - Lọc chính xác theo tầng (nếu giá trị tang được truyền vào)
        // Sử dụng Page<CanHo> kết hợp tham số Pageable của Spring Data phân trang kết
        // quả
        @Query("SELECT canHo FROM CanHo canHo WHERE " +
-                     "(:trangThai IS NULL OR :trangThai = '' OR LOWER(canHo.trangThai) LIKE LOWER(CONCAT('%', :trangThai, '%'))) AND "
-                     +
-                     "(:dienTich IS NULL OR canHo.dienTich = :dienTich) AND " +
-                     "(:tang IS NULL OR canHo.tang = :tang)")
+                      "(:trangThai IS NULL OR :trangThai = '' OR LOWER(canHo.trangThai) LIKE LOWER(CONCAT('%', :trangThai, '%'))) AND " +
+                      "(:loai IS NULL OR :loai = '' OR canHo.loai = :loai) AND " +
+                      "(:tang IS NULL OR canHo.tang = :tang)")
        Page<CanHo> timKiemCanHo(@Param("trangThai") String trangThai,
-                     @Param("dienTich") Double dienTich,
-                     @Param("tang") Integer tang,
-                     Pageable pageable);
+                      @Param("loai") String loai,
+                      @Param("tang") Integer tang,
+                      Pageable pageable);
 }

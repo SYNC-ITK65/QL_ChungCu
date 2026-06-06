@@ -1,4 +1,4 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #4B5563;
         }
-        select {
+        select.custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
@@ -106,7 +106,7 @@
                             <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5">
                                 <i data-lucide="layers" class="w-4 h-4 text-slate-500"></i> <span th:text="#{dv.form.loai_dich_vu}">Loại Dịch Vụ</span> <span class="text-red-400">*</span>
                             </label>
-                            <select th:field="*{loai}" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                            <select th:field="*{loai}" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer custom-select">
                                 <option value="Cơ bản" th:text="#{dv.form.co_ban_dien_nuoc}">Cơ bản (Điện/Nước)</option>
                                 <option value="Cố định" th:text="#{dv.form.co_dinh_quan_ly_phi}">Cố định (Quản lý/Phí rác)</option>
                                 <option value="Tự chọn" th:text="#{dv.form.tu_chon_be_boi_gym}">Tự chọn (Bể bơi/Gym)</option>

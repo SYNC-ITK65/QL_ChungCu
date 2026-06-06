@@ -1,4 +1,4 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -60,7 +60,7 @@
         select, input[type="date"] {
             color-scheme: dark;
         }
-        select {
+        select.custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
@@ -120,14 +120,18 @@
                             <form action="/cudan/dich-vu/dat" method="post" class="space-y-5">
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.chon_dich_vu}">Chọn dịch vụ</label>
-                                    <select name="dichVuId" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer">
+                                    <select name="dichVuId" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition appearance-none cursor-pointer custom-select">
                                         <option value="" th:text="#{dv.ui.vui_long_chon}">-- Vui lòng chọn --</option>
                                         <option th:each="dv : ${danhSachDichVu}" th:value="${dv.id}" th:text="${dv.ten + ' (' + dv.loai + ')'}"></option>
                                     </select>
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ngay_su_dung}">Ngày sử dụng</label>
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ds.ngay_dung}">Ngày sử dụng</label>
                                     <input type="date" name="ngayDat" required class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ngay_ket_thuc}">Ngày kết thúc</label>
+                                    <input type="date" name="ngayKetThuc" class="w-full bg-darkbg border border-darkborder rounded-xl py-2.5 px-4 text-sm text-white focus:outline-none focus:border-brand-500 transition">
                                 </div>
                                 <div class="space-y-2">
                                     <label class="text-sm font-semibold text-slate-300 flex items-center gap-1.5" th:text="#{dv.ui.ghi_chu_them_neu_co}">Ghi chú thêm (Nếu có)</label>
@@ -158,6 +162,7 @@
                                     <tr>
                                         <th class="px-5 py-4" th:text="#{dv.ds.dich_vu}">Dịch vụ</th>
                                         <th class="px-5 py-4" th:text="#{dv.ds.ngay_dung}">Ngày dùng</th>
+                                        <th class="px-5 py-4" th:text="#{dv.ui.ngay_ket_thuc}">Ngày kết thúc</th>
                                         <th class="px-5 py-4" th:text="#{hdon.ds.bang_trang_thai}">Trạng thái</th>
                                         <th class="px-5 py-4" th:text="#{dv.ui.ghi_chu}">Ghi chú</th>
                                     </tr>
@@ -165,7 +170,8 @@
                                 <tbody class="divide-y divide-darkborder text-slate-300">
                                     <tr th:each="dat : ${lichSuDat}" class="hover:bg-slate-800/30 transition">
                                         <td class="px-5 py-3.5 font-bold text-brand-400" th:text="${dat.dichVu.ten}"></td>
-                                        <td class="px-5 py-3.5 text-slate-400" th:text="${#temporals.format(dat.ngayDat, 'dd/MM/yyyy')}"></td>
+                                        <td class="px-5 py-3.5 text-slate-400" th:text="${dat.ngayDat != null ? #temporals.format(dat.ngayDat, 'dd/MM/yyyy') : 'N/A'}"></td>
+                                        <td class="px-5 py-3.5 text-slate-400" th:text="${dat.ngayKetThuc != null ? #temporals.format(dat.ngayKetThuc, 'dd/MM/yyyy') : '-'}"></td>
                                         <td class="px-5 py-3.5">
                                             <span th:if="${dat.trangThai == null || #strings.isEmpty(dat.trangThai) || dat.trangThai == 'Chờ duyệt' || dat.trangThai == 'Đăng ký mới'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20" th:text="#{dv.ds.cho_duyet}">Chờ duyệt</span>
                                             <span th:if="${dat.trangThai == 'Đã duyệt'}" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20" th:text="#{dv.ds.da_duyet}">Đã duyệt</span>
@@ -178,7 +184,7 @@
                                         <td class="px-5 py-3.5 text-slate-400 max-w-[150px] truncate" th:text="${dat.ghiChu}" th:title="${dat.ghiChu}"></td>
                                     </tr>
                                     <tr th:if="${#lists.isEmpty(lichSuDat)}">
-                                        <td colspan="4" class="px-5 py-8 text-center text-slate-500">
+                                        <td colspan="5" class="px-5 py-8 text-center text-slate-500">
                                             <div class="flex flex-col items-center justify-center gap-2">
                                                 <i data-lucide="calendar-x" class="w-8 h-8 text-slate-600 mb-1"></i>
                                                 <span th:text="#{dv.ui.ban_chua_dang_ky_dic}">Bạn chưa đăng ký dịch vụ nào.</span>

@@ -1,4 +1,4 @@
-?<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #4B5563;
         }
-        select {
+        select.custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
@@ -140,7 +140,7 @@
                                 <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5 text-emerald-400">
                                     <i data-lucide="activity" class="w-4 h-4"></i> <span th:text="#{pa.form.cap_nhat_trang_thai}">Cập nhật Trạng thái xử lý</span>
                                 </label>
-                                <select th:field="*{trangThai}" class="w-full bg-darkbg border border-emerald-500/30 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-emerald-500 transition appearance-none cursor-pointer">
+                                <select th:field="*{trangThai}" class="w-full bg-darkbg border border-emerald-500/30 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-emerald-500 transition appearance-none cursor-pointer custom-select">
                                     <option value="Chờ xử lý" th:text="#{pa.form.cho_xu_ly}">Chờ xử lý</option>
                                     <option value="Đang xử lý" th:text="#{pa.form.dang_xu_ly_da_cu_tho}">Đang xử lý (Đã cử thợ)</option>
                                     <option value="Đã xong" th:text="#{pa.form.da_xong_hoan_thanh}">Đã xong (Hoàn thành)</option>

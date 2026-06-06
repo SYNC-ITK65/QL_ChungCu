@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{cudan.db.tieude}">Bảng Điều Khiển Cư Dân</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0B0F17',
+                        darkcard: '#161B26',
+                        darkborder: '#242B3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
+    <!-- Resident Sidebar -->
+    <div th:replace="fragments/sidebar_cudan :: menu-cudan"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-8 overflow-y-auto w-full max-w-7xl mx-auto">
+        
+        <!-- Header / Welcome Section -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2" th:text="#{cudan.db.tieude}">
+                    Bảng Điều Khiển Cư Dân
+                </h1>
+                <p class="text-sm text-slate-400 mt-1" 
+                   th:text="#{side.user.xin_chao(${session.nguoiDungDangNhap != null ? session.nguoiDungDangNhap.hoTen : 'Cư dân'})}">
+                    Xin chào!
+                </p>
+            </div>
+        </div>
+
+        <!-- Warning banner if no apartment -->
+        <div th:if="${cuDan.canHo == null}" 
+             class="mb-8 p-5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl flex items-start gap-3 shadow-lg"
+             role="alert">
+            <i data-lucide="alert-triangle" class="w-5 h-5 mt-0.5 flex-shrink-0"></i>
+            <div>
+                <h4 class="font-bold text-white" th:text="#{chung.loi}">Lỗi!</h4>
+                <p class="text-sm mt-1" th:text="#{tb.ui.ban_chua_duoc_phan_b}">
+                    Bạn chưa được phân bổ vào căn hộ nào. Vui lòng liên hệ Ban Quản Lý.
+                </p>
+            </div>
+        </div>
+
+        <!-- Statistics Grid (Visible if apartment exists) -->
+        <div th:if="${cuDan.canHo != null}" class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+            <!-- Apartment Info -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-brand-500/30 transition duration-200">
+                <div class="space-y-1">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" th:text="#{side.user.nhom_tt}">Căn Hộ</p>
+                    <h3 class="text-2xl font-bold text-white" th:text="${cuDan.canHo.maCanHo}">A1-01</h3>
+                    <p class="text-xs text-slate-400">
+                        <span th:text="#{ch.chitiet.tang}">Tầng</span>: <strong class="text-brand-400" th:text="${cuDan.canHo.tang}">1</strong>
+                    </p>
+                </div>
+                <div class="p-3 bg-brand-500/10 text-brand-400 rounded-xl">
+                    <i data-lucide="building" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <!-- Invoices count -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-amber-500/30 transition duration-200">
+                <div class="space-y-1">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" th:text="#{side.user.hoa_don}">Hóa đơn cần đóng</p>
+                    <h3 class="text-2xl font-bold text-white" th:text="${unpaidCount}">0</h3>
+                    <p class="text-xs text-slate-400">
+                        <span th:text="${unpaidCount > 0 ? 'Có hóa đơn chưa thanh toán' : 'Không có công nợ'}">Trạng thái</span>
+                    </p>
+                </div>
+                <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
+                    <i data-lucide="wallet" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <!-- Vehicles count -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-5 shadow-sm flex items-center justify-between hover:border-emerald-500/30 transition duration-200">
+                <div class="space-y-1">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" th:text="#{side.user.dk_phuong_tien}">Phương tiện gửi</p>
+                    <h3 class="text-2xl font-bold text-white" th:text="${vehicleCount}">0</h3>
+                    <p class="text-xs text-slate-400">
+                        <span th:text="#{pt.ui.hinh_anh_xe_help}">Số lượng xe đăng ký gửi</span>
+                    </p>
+                </div>
+                <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                    <i data-lucide="car" class="w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${cuDan.canHo != null}" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- WIDGET 1: HÓA ĐƠN GẦN NHẤT CẦN ĐÓNG -->
+            <div class="lg:col-span-1 bg-darkcard border border-darkborder rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2 pb-3 border-b border-darkborder/50">
+                        <i data-lucide="credit-card" class="w-4 h-4 text-amber-500"></i>
+                        <span th:text="#{cudan.db.recent_invoice}">Hóa đơn gần nhất cần đóng</span>
+                    </h3>
+
+                    <!-- Has unpaid invoice -->
+                    <div th:if="${recentInvoice != null}" class="space-y-4 pt-2">
+                        <div class="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl space-y-3">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Hóa Đơn Tháng:</span>
+                                <span class="text-white font-bold" 
+                                      th:text="${#temporals.format(recentInvoice.ngayPhatHanh, 'MM/yyyy')}">10/2026</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400" th:text="#{hdon.ds.bang_ngay_phat_hanh}">Ngày phát hành:</span>
+                                <span class="text-white font-medium" 
+                                      th:text="${#temporals.format(recentInvoice.ngayPhatHanh, 'dd/MM/yyyy')}">01/10/2026</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-400" th:text="#{hdon.ds.bang_ngay_den_han}">Hạn thanh toán:</span>
+                                <span class="text-rose-400 font-bold" 
+                                      th:text="${#temporals.format(recentInvoice.ngayDenHan, 'dd/MM/yyyy')}">15/10/2026</span>
+                            </div>
+                            <div class="pt-2 border-t border-darkborder flex justify-between items-center">
+                                <span class="text-slate-400 font-medium" th:text="#{hdon.ds.bang_tong_tien}">Tổng tiền:</span>
+                                <span class="text-xl font-extrabold text-white" 
+                                      th:text="${#numbers.formatDecimal(recentInvoice.tongTien, 0, 'COMMA', 0, 'POINT')} + ' ' + #{chung.don_vi_vnd}">0 VNĐ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No unpaid invoices -->
+                    <div th:if="${recentInvoice == null}" class="py-8 flex flex-col items-center justify-center text-center gap-3">
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
+                            <i data-lucide="check" class="w-8 h-8"></i>
+                        </div>
+                        <p class="text-xs text-slate-400 max-w-[200px]" th:text="#{cudan.db.no_unpaid_invoices}">
+                            Tuyệt vời! Bạn đã thanh toán đầy đủ các hóa đơn.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pay now action -->
+                <div th:if="${recentInvoice != null}" class="mt-6">
+                    <a th:href="@{/cudan/hoa-don/chi-tiet/{id}(id=${recentInvoice.id})}"
+                       class="w-full py-3 bg-brand-500 hover:bg-brand-600 active:scale-[0.98] transition-all rounded-xl text-center text-xs font-bold text-white shadow-lg flex items-center justify-center gap-2">
+                        <i data-lucide="credit-card" class="w-4 h-4"></i>
+                        <span th:text="#{cudan.db.pay_now}">Thanh toán ngay</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- WIDGET 2: BẢNG TIN & CẨM NANG GẦN NHẤT -->
+            <div class="lg:col-span-2 bg-darkcard border border-darkborder rounded-2xl p-6 shadow-xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left: Announcements -->
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-darkborder/50 pb-3">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="newspaper" class="w-4 h-4 text-brand-400"></i>
+                                <span th:text="#{cudan.db.recent_announcements}">Thông báo mới nhất</span>
+                            </h3>
+                            <a href="/cudan/thong-bao/bang-tin" class="text-[10px] text-brand-400 hover:underline">Xem thêm</a>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div th:each="tb : ${recentAnnouncements}" 
+                                 class="p-3 bg-darkbg/40 border border-darkborder/50 hover:border-brand-500/30 rounded-xl transition duration-150">
+                                <a th:href="@{/cudan/thong-bao/chi-tiet/{id}(id=${tb.id})}" class="block">
+                                    <h4 class="text-xs font-semibold text-white hover:text-brand-400 transition truncate" th:text="${tb.tieuDe}">Tiêu đề thông báo</h4>
+                                    <p class="text-[10px] text-slate-500 mt-1" th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy')}">01/01/2026</p>
+                                </a>
+                            </div>
+                            
+                            <div th:if="${#lists.isEmpty(recentAnnouncements)}" class="py-6 text-center text-slate-500 text-xs">
+                                <i data-lucide="info" class="w-4 h-4 mx-auto mb-1 opacity-50"></i>
+                                <span th:text="#{cudan.db.no_announcements}">Không có thông báo mới.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Handbooks -->
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-darkborder/50 pb-3">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i>
+                                <span th:text="#{cudan.db.recent_handbooks}">Cẩm nang cư dân</span>
+                            </h3>
+                            <a href="/cudan/thong-bao/cam-nang" class="text-[10px] text-emerald-400 hover:underline">Xem thêm</a>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div th:each="tb : ${recentHandbooks}" 
+                                 class="p-3 bg-darkbg/40 border border-darkborder/50 hover:border-emerald-500/30 rounded-xl transition duration-150">
+                                <a th:href="@{/cudan/thong-bao/chi-tiet/{id}(id=${tb.id})}" class="block">
+                                    <h4 class="text-xs font-semibold text-white hover:text-emerald-400 transition truncate" th:text="${tb.tieuDe}">Tiêu đề cẩm nang</h4>
+                                    <p class="text-[10px] text-slate-500 mt-1" th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy')}">01/01/2026</p>
+                                </a>
+                            </div>
+                            
+                            <div th:if="${#lists.isEmpty(recentHandbooks)}" class="py-6 text-center text-slate-500 text-xs">
+                                <i data-lucide="info" class="w-4 h-4 mx-auto mb-1 opacity-50"></i>
+                                <span th:text="#{cudan.db.no_handbooks}">Không có cẩm nang sinh hoạt.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${cuDan.canHo != null}" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- WIDGET 3: KHẢO SÁT Ý KIẾN -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4 border-b border-darkborder/50 pb-3">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i data-lucide="check-square" class="w-4 h-4 text-brand-400"></i>
+                            <span th:text="#{cudan.db.active_surveys}">Khảo sát ý kiến</span>
+                        </h3>
+                        <a href="/cudan/khao-sat" class="text-[10px] text-brand-400 hover:underline">Tất cả</a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div th:each="ks : ${activeSurveys}" 
+                             class="p-4 bg-darkbg/40 border border-darkborder/85 rounded-xl flex items-center justify-between gap-4 hover:border-brand-500/20 transition">
+                            <div class="space-y-1 min-w-0">
+                                <h4 class="text-xs font-bold text-white truncate" th:text="${ks.tieuDe}">Tiêu đề khảo sát</h4>
+                                <p class="text-[10px] text-slate-400 line-clamp-1" th:text="${ks.moTa}">Mô tả ngắn...</p>
+                                <p class="text-[9px] text-slate-500">
+                                    Hạn: <span th:text="${#temporals.format(ks.thoiGianKetThuc, 'dd/MM/yyyy HH:mm')}"></span>
+                                </p>
+                            </div>
+                            <a th:href="@{/cudan/khao-sat/chi-tiet/{id}(id=${ks.id})}" 
+                               class="shrink-0 px-3 py-1.5 bg-brand-500/10 hover:bg-brand-500 text-brand-400 hover:text-white rounded-lg text-[10px] font-bold border border-brand-500/20 hover:border-transparent transition flex items-center gap-1">
+                                <i data-lucide="vote" class="w-3.5 h-3.5"></i> Vote
+                            </a>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(activeSurveys)}" class="py-10 text-center text-slate-500 text-xs flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="inbox" class="w-6 h-6 text-slate-600"></i>
+                            <span th:text="#{cudan.db.no_surveys}">Hiện tại không có cuộc khảo sát nào.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WIDGET 4: TÌNH TRẠNG PHẢN ÁNH CỦA MÌNH -->
+            <div class="bg-darkcard border border-darkborder rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4 border-b border-darkborder/50 pb-3">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i data-lucide="megaphone" class="w-4 h-4 text-rose-500"></i>
+                            <span th:text="#{cudan.db.my_feedbacks}">Tình trạng phản ánh của tôi</span>
+                        </h3>
+                        <a href="/cudan/phan-anh" class="text-[10px] text-rose-400 hover:underline">Lịch sử</a>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <!-- Feedbacks list -->
+                        <div th:each="pa : ${recentFeedbacks}" 
+                             class="p-3 bg-darkbg/40 border border-darkborder/50 rounded-xl flex items-center justify-between gap-4 hover:border-rose-500/20 transition duration-150">
+                            <div class="min-w-0">
+                                <h4 class="text-xs font-semibold text-white truncate" th:text="${pa.tieuDe}">Tiêu đề phản ánh</h4>
+                                <span class="text-[9px] text-slate-500" 
+                                      th:text="${#temporals.format(pa.ngayGui, 'dd/MM/yyyy HH:mm')}">01/01/2026</span>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <!-- Badge status -->
+                                <span th:if="${pa.trangThai == 'Chờ xử lý'}" class="px-2 py-0.5 rounded text-[8px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">Chờ xử lý</span>
+                                <span th:if="${pa.trangThai == 'Đang xử lý'}" class="px-2 py-0.5 rounded text-[8px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">Đang xử lý</span>
+                                <span th:if="${pa.trangThai == 'Đã xong'}" class="px-2 py-0.5 rounded text-[8px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Đã xong</span>
+                            </div>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(recentFeedbacks)}" class="py-10 text-center text-slate-500 text-xs flex flex-col items-center justify-center gap-2">
+                            <i data-lucide="inbox" class="w-6 h-6 text-slate-600"></i>
+                            <span th:text="#{cudan.db.no_feedbacks}">Bạn chưa gửi phản ánh nào.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit feedback action -->
+                <div class="mt-6 pt-3 border-t border-darkborder/40">
+                    <a href="/cudan/phan-anh/gui-moi" 
+                       class="w-full py-2.5 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-xl text-center text-xs font-bold border border-rose-500/20 hover:border-transparent transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span th:text="#{cudan.db.new_feedback}">Gửi phản ánh mới</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 py-6 border-t border-darkborder text-center text-xs text-slate-500">
+            <p th:utext="#{db.chan_trang}">Hệ thống Quản lý Chung Cư &copy; 2026</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+
+</html>

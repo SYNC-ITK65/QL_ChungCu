@@ -21,6 +21,17 @@ import org.springframework.dao.DataIntegrityViolationException;
 import com.sync.itk65.service.CloudinaryService;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
+import com.sync.itk65.repository.HoaDonRepository;
+import com.sync.itk65.service.ThongBaoService;
+import com.sync.itk65.service.KhaoSatService;
+import com.sync.itk65.service.PhanAnhService;
+import com.sync.itk65.entity.HoaDon;
+import com.sync.itk65.entity.ThongBao;
+import com.sync.itk65.entity.KhaoSat;
+import com.sync.itk65.entity.PhanAnh;
+import org.springframework.data.domain.Page;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cudan")
@@ -40,6 +51,77 @@ public class CuDanPortalController {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private HoaDonRepository hoaDonRepository;
+
+    @Autowired
+    private ThongBaoService thongBaoService;
+
+    @Autowired
+    private KhaoSatService khaoSatService;
+
+    @Autowired
+    private PhanAnhService phanAnhService;
+
+    // =======================================================
+    // BẢNG ĐIỀU KHIỂN CƯ DÂN (DASHBOARD)
+    // =======================================================
+    @GetMapping("/dashboard")
+    public String viewDashboard(HttpSession session, Model model) {
+        NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
+        model.addAttribute("cuDan", cuDan);
+
+        if (cuDan != null && cuDan.getCanHo() != null) {
+            Long canHoId = cuDan.getCanHo().getId();
+            String maCanHo = cuDan.getCanHo().getMaCanHo();
+            String tang = cuDan.getCanHo().getTang() != null ? String.valueOf(cuDan.getCanHo().getTang()) : null;
+
+            // 1. Hoa don gan nhat can dong (unpaid)
+            List<HoaDon> unpaidInvoices = hoaDonRepository.findUnpaidByCanHoId(canHoId);
+            HoaDon recentInvoice = null;
+            if (unpaidInvoices != null && !unpaidInvoices.isEmpty()) {
+                recentInvoice = unpaidInvoices.get(0); // oldest unpaid, which is the most urgent
+            }
+            model.addAttribute("recentInvoice", recentInvoice);
+            model.addAttribute("unpaidCount", unpaidInvoices != null ? unpaidInvoices.size() : 0);
+
+            // 2. Thong bao / Cam nang gan nhat
+            Page<ThongBao> newsPage = thongBaoService.locThongBaoTheoCuDan(1, maCanHo, tang, 0, 3);
+            Page<ThongBao> handbookPage = thongBaoService.locThongBaoTheoCuDan(2, maCanHo, tang, 0, 3);
+            model.addAttribute("recentAnnouncements", newsPage.getContent());
+            model.addAttribute("recentHandbooks", handbookPage.getContent());
+
+            // 3. Khao sat dang mo
+            Page<KhaoSat> activeSurveys = khaoSatService.timKiemKhaoSat(null, 2, 0, 3);
+            model.addAttribute("activeSurveys", activeSurveys.getContent());
+
+            // 4. Tinh trang phan anh cua minh
+            List<PhanAnh> myFeedbacks = phanAnhService.findByCanHoId(canHoId);
+            // Limit to 3 items
+            List<PhanAnh> recentFeedbacks = myFeedbacks.stream().limit(3).collect(Collectors.toList());
+            model.addAttribute("recentFeedbacks", recentFeedbacks);
+
+            // Extra metrics for summary stats card
+            // Vehicles count for the apartment
+            List<PhuongTien> vehicles = phuongTienService.layXeTheoCanHoId(canHoId);
+            model.addAttribute("vehicleCount", vehicles != null ? vehicles.size() : 0);
+        } else {
+            model.addAttribute("recentInvoice", null);
+            model.addAttribute("unpaidCount", 0);
+            model.addAttribute("recentAnnouncements", List.of());
+            model.addAttribute("recentHandbooks", List.of());
+            model.addAttribute("activeSurveys", List.of());
+            model.addAttribute("recentFeedbacks", List.of());
+            model.addAttribute("vehicleCount", 0);
+        }
+
+        return "cudan/dashboard";
+    }
 
     // =======================================================
     // CHỨC NĂNG 1: THÔNG TIN CÁ NHÂN & CĂN HỘ
@@ -75,6 +157,7 @@ public class CuDanPortalController {
     public String datDichVu(HttpSession session,
             @RequestParam Long dichVuId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayDat,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayKetThuc,
             @RequestParam(required = false) String ghiChu,
             RedirectAttributes redirectAttributes) {
 
@@ -82,11 +165,17 @@ public class CuDanPortalController {
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
         DichVu dichVu = dichVuService.layDichVuTheoId(dichVuId);
 
+        if (ngayKetThuc != null && ngayKetThuc.isBefore(ngayDat)) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Ngày kết thúc không thể trước ngày bắt đầu sử dụng!");
+            return "redirect:/cudan/dich-vu";
+        }
+
         // Tạo đối tượng đặt dịch vụ mới
         DatDichVu datDichVu = new DatDichVu();
         datDichVu.setCuDan(cuDan);
         datDichVu.setDichVu(dichVu);
         datDichVu.setNgayDat(ngayDat);
+        datDichVu.setNgayKetThuc(ngayKetThuc);
         datDichVu.setGhiChu(ghiChu);
 
         // TRẠNG THÁI MẶC ĐỊNH LÀ CHỜ DUYỆT ĐỂ ADMIN XÁC NHẬN RỒI MỚI TÍNH TIỀN

@@ -19,7 +19,7 @@
 
             <!-- Brand Logo & Title with Lang Switcher -->
             <div class="p-4 border-b border-darkborder flex items-center justify-between shrink-0">
-                <a href="/cudan/thong-tin" class="flex items-center space-x-2.5 hover:opacity-80 transition">
+                <a href="/cudan/dashboard" class="flex items-center space-x-2.5 hover:opacity-80 transition">
                     <div
                         class="bg-brand-500 text-white p-2 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/20">
                         <i data-lucide="home" class="w-4 h-4"></i>
@@ -73,6 +73,19 @@
 
             <!-- Menu Navigation Links -->
             <div class="flex-grow overflow-y-auto p-3 space-y-3" id="main-menu">
+
+                <!-- Group 0: Trang chủ -->
+                <div>
+                    <p class="text-[9px] uppercase tracking-wider font-bold text-slate-500 px-3 mb-1.5"
+                        th:text="#{side.user.nhom_tc}">Trang chủ</p>
+                    <div class="space-y-0.5">
+                        <a href="/cudan/dashboard"
+                            class="menu-link w-full px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-2.5 text-left text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent transition-all">
+                            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                            <span th:text="#{side.user.dashboard}">Bảng điều khiển</span>
+                        </a>
+                    </div>
+                </div>
 
                 <!-- Group 1: Căn hộ & Cư trú -->
                 <div>

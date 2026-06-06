@@ -37,27 +37,24 @@ public class CanHoService {
         return canHoRepository.findAll();
     }
 
-    // Gọi phương thức từ repository và truyền vào đối tượng Pageable để lấy dữ liệu
-    // trang hiện tại
-    public Page<CanHo> timKiemCanHo(String trangThai, Double dienTich, Integer tang, int page, int size) {
+    public Page<CanHo> timKiemCanHo(String trangThai, String loai, Integer tang, int page, int size) {
         // Khởi tạo đối tượng định dạng trang dữ liệu (PageRequest) dựa trên số trang và
         // kích thước
         Pageable pageable = PageRequest.of(page, size);
-        return canHoRepository.timKiemCanHo(trangThai, dienTich, tang, pageable);
+        return canHoRepository.timKiemCanHo(trangThai, loai, tang, pageable);
     }
 
-    // Hàm lưu căn hộ mới với kiểm tra logic nghiệp vụ Validation
     public void luuCanHo(@Valid CanHo canHo) {
         try {
-            // Lấy danh sách kiểm tra sự tồn tại của Mã căn hộ
-            List<CanHo> tatCaCanHo = layTatCaCanHo();
-            for (CanHo item : tatCaCanHo) {
-                // Kiểm tra mã trùng (Bỏ qua trường hợp đang update chính mã đó)
-                if (item.getMaCanHo() != null && item.getMaCanHo().equals(canHo.getMaCanHo())) {
-                    if (canHo.getId() == null || !item.getId().equals(canHo.getId())) {
-                        throw new IllegalArgumentException(
-                                "Mã căn hộ: '" + canHo.getMaCanHo() + "' đã tồn tại! Vui lòng nhập mã khác.");
-                    }
+            if (canHo.getMaCanHo() != null) {
+                canHo.setMaCanHo(canHo.getMaCanHo().trim());
+            }
+            // Kiểm tra trùng mã căn hộ
+            if (canHo.getMaCanHo() != null && !canHo.getMaCanHo().isEmpty()) {
+                java.util.Optional<CanHo> existingCanHo = canHoRepository.findByMaCanHoIgnoreCase(canHo.getMaCanHo());
+                if (existingCanHo.isPresent() && (canHo.getId() == null || !existingCanHo.get().getId().equals(canHo.getId()))) {
+                    throw new IllegalArgumentException(
+                            "Mã căn hộ: '" + canHo.getMaCanHo() + "' đã tồn tại! Vui lòng nhập mã khác.");
                 }
             }
 
@@ -169,7 +166,7 @@ public class CanHoService {
                     continue;
 
                 // Kiểm tra trùng mã căn hộ
-                if (canHoRepository.findByMaCanHo(maCanHo).isPresent()) {
+                if (canHoRepository.findByMaCanHoIgnoreCase(maCanHo).isPresent()) {
                     danhSachBoQua.add("Dòng " + (i + 1) + ": Mã '" + maCanHo + "' đã tồn tại");
                     continue;
                 }

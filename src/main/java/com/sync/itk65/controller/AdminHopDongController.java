@@ -56,7 +56,9 @@ public class AdminHopDongController {
 
     @GetMapping("/tao-moi")
     public String hienThiFormTaoMoi(Model model) {
-        model.addAttribute("hopDong", new HopDong());
+        HopDong hopDong = new HopDong();
+        hopDong.setBenChoThue("Công ty SYNC");
+        model.addAttribute("hopDong", hopDong);
         model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
         model.addAttribute("danhSachCuDan", cuDanService.layTatCaCuDan());
         return "admin/hop_dong_form";

@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface HoaDonRepository extends JpaRepository<HoaDon, Long> {
 
-       @Query("SELECT COALESCE(SUM(h.tongTien), 0.0) FROM HoaDon h WHERE MONTH(h.ngayPhatHanh) = MONTH(CURRENT_DATE) AND YEAR(h.ngayPhatHanh) = YEAR(CURRENT_DATE) AND h.trangThaiThanhToan = 'Đã đóng'")
-       Double sumRevenueCurrentMonth();
+       @Query("SELECT COALESCE(SUM(h.tongTien), 0.0) FROM HoaDon h WHERE h.ngayPhatHanh >= :startDate AND h.ngayPhatHanh <= :endDate AND h.trangThaiThanhToan = :status")
+       Double sumRevenueByPeriodAndStatus(@Param("startDate") java.time.LocalDate startDate, @Param("endDate") java.time.LocalDate endDate, @Param("status") String status);
 
        // Lấy danh sách hóa đơn của một căn hộ
        @Query("SELECT h FROM HoaDon h WHERE h.canHo.id = :canHoId ORDER BY h.ngayPhatHanh DESC")

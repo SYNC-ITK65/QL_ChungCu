@@ -26,6 +26,10 @@ public class DatDichVu {
     @Column(name = "ngay_dat")
     private LocalDate ngayDat;
 
+    // Ngày kết thúc sử dụng dịch vụ
+    @Column(name = "ngay_ket_thuc")
+    private LocalDate ngayKetThuc;
+
     // Trạng thái của dịch vụ. VD: "Đã sử dụng", "Đã hủy", "Đăng ký mới"
     // Hóa đơn sẽ chỉ tính tiền những dịch vụ có trạng thái "Đã sử dụng"
     @Column(name = "trang_thai")
@@ -36,6 +40,7 @@ public class DatDichVu {
 
     @Column(name = "thoi_gian_duyet")
     private LocalDateTime thoiGianDuyet;
+
     // --- GETTERS & SETTERS ---
 
     public Long getId() {
@@ -86,6 +91,14 @@ public class DatDichVu {
 
     public void setGhiChu(String ghiChu) {
         this.ghiChu = ghiChu;
+    }
+
+    public LocalDate getNgayKetThuc() {
+        return ngayKetThuc;
+    }
+
+    public void setNgayKetThuc(LocalDate ngayKetThuc) {
+        this.ngayKetThuc = ngayKetThuc;
     }
 
     public void setThoiGianDuyet(LocalDateTime thoiGianDuyet) { this.thoiGianDuyet = thoiGianDuyet; }
