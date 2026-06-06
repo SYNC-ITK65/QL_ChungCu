@@ -63,7 +63,10 @@ public class AdminController {
 
         // Chỉ Admin (1) và Quản lý (2) mới được truy cập dữ liệu nhạy cảm
         if (role == 1 || role == 2) {
-            Double sumRevenue = hoaDonRepository.sumRevenueCurrentMonth();
+            java.time.LocalDate today = java.time.LocalDate.now();
+            java.time.LocalDate startOfMonth = today.withDayOfMonth(1);
+            java.time.LocalDate endOfMonth = today.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth());
+            Double sumRevenue = hoaDonRepository.sumRevenueByPeriodAndStatus(startOfMonth, endOfMonth, "Đã đóng");
             // Xử lý null cho doanh thu (trường hợp chưa có hóa đơn nào)
             if (sumRevenue == null) {
                 sumRevenue = 0.0;

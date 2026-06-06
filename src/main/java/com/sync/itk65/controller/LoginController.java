@@ -45,7 +45,7 @@ public class LoginController {
 
             // Phân luồng: Admin/Staff/Lễ tân/Bảo vệ vào trang quản lý, Cư dân vào trang cá nhân
             if (user.getVaiTro() == 3) {
-                return "redirect:/cudan/thong-tin"; // Cư dân (Chủ hộ hoặc Người thuê)
+                return "redirect:/cudan/dashboard"; // Cư dân (Chủ hộ hoặc Người thuê)
             } else {
                 return "redirect:/admin/dashboard"; // Admin (1), Quản lý (2), Lễ tân (4), Bảo vệ (5)
             }
