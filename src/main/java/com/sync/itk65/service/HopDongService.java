@@ -125,11 +125,16 @@ public class HopDongService {
         hopDong.setGiaTriHopDong(hopDong.getTienThue());
         hopDong.setTrangThai("ACTIVE");
 
-        // 7. Kiểm tra trùng thời gian
-        boolean biTrung = hopDongRepository.existsActiveOverlapWithEndDate(canHo.getId(), hopDong.getNgayBatDau(), hopDong.getNgayKetThuc());
-
-        if (biTrung) {
+        // 7. Kiểm tra trùng thời gian theo căn hộ
+        boolean biTrungCanHo = hopDongRepository.existsActiveOverlapWithEndDate(canHo.getId(), hopDong.getNgayBatDau(), hopDong.getNgayKetThuc());
+        if (biTrungCanHo) {
             throw new RuntimeException("Đã tồn tại hợp đồng ACTIVE trùng thời gian cho căn hộ này.");
+        }
+
+        // 8. Kiểm tra cư dân đã có hợp đồng ACTIVE chưa
+        boolean cuDanDaCoHopDong = hopDongRepository.existsActiveByCuDanId(cuDan.getId());
+        if (cuDanDaCoHopDong) {
+            throw new RuntimeException("Cư dân '" + cuDan.getHoTen() + "' hiện đã có hợp đồng đang hiệu lực. Không thể tạo thêm hợp đồng mới.");
         }
 
         HopDong savedHopDong = hopDongRepository.save(hopDong);
@@ -177,11 +182,19 @@ public class HopDongService {
         }
         LocalDate ngayKetThuc = hopDongMoi.getNgayBatDau().plusMonths(thoiHan);
 
-        // 7. Kiểm tra trùng thời gian (ngoại trừ chính hợp đồng này)
-        boolean biTrung = hopDongRepository.existsActiveOverlapWithEndDateExcludeId(canHo.getId(), hopDongMoi.getNgayBatDau(), ngayKetThuc, hopDongId);
-
-        if (biTrung) {
+        // 7. Kiểm tra trùng thời gian căn hộ (ngoại trừ chính hợp đồng này)
+        boolean biTrungCanHo = hopDongRepository.existsActiveOverlapWithEndDateExcludeId(canHo.getId(), hopDongMoi.getNgayBatDau(), ngayKetThuc, hopDongId);
+        if (biTrungCanHo) {
             throw new RuntimeException("Đã tồn tại hợp đồng ACTIVE trùng thời gian cho căn hộ này.");
+        }
+
+        // 8. Kiểm tra trùng cư dân: nếu đổi sang cư dân khác thì kiểm tra họ chưa có HĐ ACTIVE
+        boolean cuDanDaThay = !cuDan.getId().equals(hopDong.getCuDan() != null ? hopDong.getCuDan().getId() : null);
+        if (cuDanDaThay) {
+            boolean cuDanDaCoHopDong = hopDongRepository.existsActiveByCuDanIdExcludeId(cuDan.getId(), hopDongId);
+            if (cuDanDaCoHopDong) {
+                throw new RuntimeException("Cư dân '" + cuDan.getHoTen() + "' hiện đã có hợp đồng đang hiệu lực. Không thể gán thêm hợp đồng mới.");
+            }
         }
 
         // 8. Cập nhật dữ liệu
@@ -332,7 +345,7 @@ public class HopDongService {
             thongBao.setTieuDe("Hợp đồng mới đã được tạo");
             String noiDung = String.format(
                 "Chào %s, một hợp đồng mới đã được tạo cho căn hộ %s. " +
-                "Ngày bắt đầu: %s, Ngày kết thúc: %s, Tiền thuê: %,,.0f VND.",
+                "Ngày bắt đầu: %s, Ngày kết thúc: %s, Tiền thuê: %,.0f VND.",
                 cuDan.getHoTen(),
                 hopDong.getCanHo() != null ? hopDong.getCanHo().getMaCanHo() : "N/A",
                 hopDong.getNgayBatDau() != null ? hopDong.getNgayBatDau().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A",

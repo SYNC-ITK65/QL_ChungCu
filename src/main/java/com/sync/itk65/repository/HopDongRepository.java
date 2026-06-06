@@ -73,6 +73,12 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
   @Query("SELECT h FROM HopDong h WHERE h.trangThai = 'ACTIVE' AND h.ngayKetThuc IS NOT NULL AND h.ngayKetThuc < :today")
   List<HopDong> findExpiredActiveContracts(@Param("today") java.time.LocalDate today);
 
+  @Query("SELECT COUNT(h) > 0 FROM HopDong h WHERE h.cuDan.id = :cuDanId AND h.trangThai = 'ACTIVE'")
+  boolean existsActiveByCuDanId(@Param("cuDanId") Long cuDanId);
+
+  @Query("SELECT COUNT(h) > 0 FROM HopDong h WHERE h.cuDan.id = :cuDanId AND h.id != :excludeId AND h.trangThai = 'ACTIVE'")
+  boolean existsActiveByCuDanIdExcludeId(@Param("cuDanId") Long cuDanId, @Param("excludeId") Long excludeId);
+
   @Query("SELECT h FROM HopDong h WHERE h.canHo.id = :canHoId AND h.trangThai = 'ACTIVE'")
   Optional<HopDong> findActiveByCanHoId(@Param("canHoId") Long canHoId);
 
