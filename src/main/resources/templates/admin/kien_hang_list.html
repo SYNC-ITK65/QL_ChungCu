@@ -1,5 +1,5 @@
 ?<!DOCTYPE html>
-<html lang="vi" class="dark" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,26 +65,13 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex bg-darkbg overflow-x-hidden antialiased">
+<body class="min-h-screen flex bg-darkbg text-slate-200 antialiased font-sans">
 
     <!-- Global Sidebar -->
     <div th:replace="~{fragments/sidebar :: menu-trai}"></div>
 
-    <!-- MAIN CONTENT AREA -->
-    <div class="flex-1 flex flex-col min-h-screen">
-        
-        <!-- TOP HEADER BAR FOR MOBILE -->
-        <header class="bg-darkcard border-b border-darkborder py-3 px-4 flex items-center justify-between lg:hidden sticky top-0 z-30">
-            <div class="flex items-center space-x-3">
-                <button onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white p-1 rounded-lg">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
-                <span class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{kh.ds.tieude}">Quản lý đơn thư</span>
-            </div>
-        </header>
-
-        <!-- MAIN SCROLLABLE WRAPPER -->
-        <main class="flex-grow p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto flex flex-col justify-start">
+    <!-- Main Content -->
+    <main class="flex-grow min-w-0 p-6 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
             
             <!-- Page Header -->
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -223,7 +210,6 @@
             </div>
             
         </main>
-    </div>
 
     <!-- Script chung -->
     <div th:replace="~{fragments/datatable :: scripts}"></div>
