@@ -92,6 +92,11 @@ public class HopDongService {
             throw new RuntimeException("Cư dân không thuộc căn hộ đã chọn.");
         }
 
+        // 2b. Validate trạng thái cư dân — chỉ cư dân "Đang ở" mới được ký hợp đồng
+        if (!"Đang ở".equalsIgnoreCase(cuDan.getTrangThai()) && !"Đang Ở".equalsIgnoreCase(cuDan.getTrangThai())) {
+            throw new RuntimeException("Cư dân '" + cuDan.getHoTen() + "' có trạng thái '" + cuDan.getTrangThai() + "'. Chỉ cư dân đang sinh sống mới có thể ký hợp đồng.");
+        }
+
         // 3. Cố định loại hợp đồng là Thuê
         hopDong.setLoaiHopDong("Thue");
 
@@ -160,6 +165,11 @@ public class HopDongService {
         // 3. Validate cư dân thuộc căn hộ
         if (cuDan.getCanHo() == null || !cuDan.getCanHo().getId().equals(canHo.getId())) {
             throw new RuntimeException("Cư dân không thuộc căn hộ đã chọn.");
+        }
+
+        // 3b. Validate trạng thái cư dân — chỉ cư dân "Đang ở" mới được ký hợp đồng
+        if (!"Đang ở".equalsIgnoreCase(cuDan.getTrangThai()) && !"Đang Ở".equalsIgnoreCase(cuDan.getTrangThai())) {
+            throw new RuntimeException("Cư dân '" + cuDan.getHoTen() + "' có trạng thái '" + cuDan.getTrangThai() + "'. Chỉ cư dân đang sinh sống mới có thể ký hợp đồng.");
         }
 
         // 4. Cố định loại hợp đồng Thue
@@ -331,11 +341,11 @@ public class HopDongService {
         if (hopDong.getTienThue() == null && hopDong.getGiaTriHopDong() != null) {
             hopDong.setTienThue(hopDong.getGiaTriHopDong());
         }
-        if ("ACTIVE".equalsIgnoreCase(hopDong.getTrangThai()) 
-                && hopDong.getNgayKetThuc() != null 
+        // Chỉ cập nhật trạng thái in-memory; việc lưu DB do scheduler tuDongHetHanHopDong đảm nhiệm
+        if ("ACTIVE".equalsIgnoreCase(hopDong.getTrangThai())
+                && hopDong.getNgayKetThuc() != null
                 && hopDong.getNgayKetThuc().isBefore(LocalDate.now())) {
             hopDong.setTrangThai("EXPIRED");
-            hopDongRepository.save(hopDong);
         }
     }
 

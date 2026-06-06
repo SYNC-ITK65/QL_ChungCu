@@ -102,10 +102,7 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
 
   @Query("SELECT h FROM HopDong h WHERE " +
       "(:maCanHo IS NULL OR :maCanHo = '' OR h.canHo.maCanHo LIKE %:maCanHo%) AND " +
-      "(:loaiHopDong IS NULL OR :loaiHopDong = '' OR " +
-      "  h.loaiHopDong = :loaiHopDong OR " +
-      "  (:loaiHopDong = 'Thue' AND h.loaiHopDong = 'Thuê') OR " +
-      "  (:loaiHopDong = 'Mua' AND h.loaiHopDong = 'Mua')) AND " +
+      "(:loaiHopDong IS NULL OR :loaiHopDong = '' OR h.loaiHopDong = :loaiHopDong) AND " +
       "(:trangThai IS NULL OR :trangThai = '' OR h.trangThai = :trangThai) " +
       "ORDER BY h.id DESC")
   Page<HopDong> timKiemHopDong(@Param("maCanHo") String maCanHo,
@@ -113,3 +110,4 @@ public interface HopDongRepository extends JpaRepository<HopDong, Long> {
       @Param("trangThai") String trangThai,
       Pageable pageable);
 }
+
