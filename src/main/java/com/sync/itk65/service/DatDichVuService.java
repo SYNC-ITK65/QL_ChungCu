@@ -133,7 +133,7 @@ public class DatDichVuService {
 
             int rowIdx = 0;
             var header = sheet.createRow(rowIdx++);
-            String[] headers = {"ID", "Cư Dân", "Mã Căn Hộ", "Dịch Vụ", "Ngày Đăng Ký", "Ghi Chú", "Trạng Thái", "Thời Gian Duyệt"};
+            String[] headers = {"ID", "Cư Dân", "Mã Căn Hộ", "Dịch Vụ", "Ngày Đăng Ký", "Ngày Kết Thúc", "Ghi Chú", "Trạng Thái", "Thời Gian Duyệt"};
             for (int i = 0; i < headers.length; i++) {
                 header.createCell(i).setCellValue(headers[i]);
             }
@@ -145,9 +145,10 @@ public class DatDichVuService {
                 var row = sheet.createRow(rowIdx++);
                 
                 String tenCuDan = d.getCuDan() != null ? d.getCuDan().getHoTen() : "";
-                String maCanHo = (d.getCuDan() != null && d.getCuDan().getCanHo() != null) ? String.valueOf(d.getCuDan().getCanHo().getId()) : "Trống";
+                String maCanHo = (d.getCuDan() != null && d.getCuDan().getCanHo() != null) ? d.getCuDan().getCanHo().getMaCanHo() : "Trống";
                 String tenDichVu = d.getDichVu() != null ? d.getDichVu().getTen() : "";
                 String ngayDat = d.getNgayDat() != null ? d.getNgayDat().format(dtfDate) : "";
+                String ngayKetThuc = d.getNgayKetThuc() != null ? d.getNgayKetThuc().format(dtfDate) : "-";
                 String tgDuyet = d.getThoiGianDuyet() != null ? d.getThoiGianDuyet().format(dtfDateTime) : "";
 
                 row.createCell(0).setCellValue(d.getId());
@@ -155,9 +156,10 @@ public class DatDichVuService {
                 row.createCell(2).setCellValue(maCanHo);
                 row.createCell(3).setCellValue(tenDichVu);
                 row.createCell(4).setCellValue(ngayDat);
-                row.createCell(5).setCellValue(d.getGhiChu() != null ? d.getGhiChu() : "");
-                row.createCell(6).setCellValue(d.getTrangThai() != null ? d.getTrangThai() : "Chờ duyệt");
-                row.createCell(7).setCellValue(tgDuyet);
+                row.createCell(5).setCellValue(ngayKetThuc);
+                row.createCell(6).setCellValue(d.getGhiChu() != null ? d.getGhiChu() : "");
+                row.createCell(7).setCellValue(d.getTrangThai() != null ? d.getTrangThai() : "Chờ duyệt");
+                row.createCell(8).setCellValue(tgDuyet);
             }
 
             for (int i = 0; i < headers.length; i++) {

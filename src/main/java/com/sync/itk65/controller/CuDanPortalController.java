@@ -75,6 +75,7 @@ public class CuDanPortalController {
     public String datDichVu(HttpSession session,
             @RequestParam Long dichVuId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayDat,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayKetThuc,
             @RequestParam(required = false) String ghiChu,
             RedirectAttributes redirectAttributes) {
 
@@ -82,11 +83,17 @@ public class CuDanPortalController {
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
         DichVu dichVu = dichVuService.layDichVuTheoId(dichVuId);
 
+        if (ngayKetThuc != null && ngayKetThuc.isBefore(ngayDat)) {
+            redirectAttributes.addFlashAttribute("thongBaoLoi", "Ngày kết thúc không thể trước ngày bắt đầu sử dụng!");
+            return "redirect:/cudan/dich-vu";
+        }
+
         // Tạo đối tượng đặt dịch vụ mới
         DatDichVu datDichVu = new DatDichVu();
         datDichVu.setCuDan(cuDan);
         datDichVu.setDichVu(dichVu);
         datDichVu.setNgayDat(ngayDat);
+        datDichVu.setNgayKetThuc(ngayKetThuc);
         datDichVu.setGhiChu(ghiChu);
 
         // TRẠNG THÁI MẶC ĐỊNH LÀ CHỜ DUYỆT ĐỂ ADMIN XÁC NHẬN RỒI MỚI TÍNH TIỀN
