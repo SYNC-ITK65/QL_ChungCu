@@ -20,56 +20,87 @@ public class PhuongTienController {
     @Autowired
     private PhuongTienService phuongTienService;
 
+    @Autowired
+    private org.springframework.context.MessageSource messageSource;
+
     // 2. Hàm lưu dữ liệu từ form gửi lên (Không dùng JS)
     @PostMapping("/luu")
-    public String luuPhuongTien(@ModelAttribute("xeMoi") PhuongTien xe, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String luuPhuongTien(@ModelAttribute("xeMoi") PhuongTien xe, 
+                                java.util.Locale locale, 
+                                org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
             phuongTienService.dangKyXe(xe);
-            // Nếu thành công, gửi một lời nhắn màu xanh sang trang web
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Thêm xe thành công!");
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", 
+                    messageSource.getMessage("pt.msg.them_thanh_cong", null, "Thêm xe thành công!", locale));
         } catch (Exception e) {
-            // Nếu thất bại (Lỗi khóa ngoại Căn hộ hoặc trùng Biển số), gửi lời nhắn màu đỏ
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Thêm thất bại! Vui lòng kiểm tra lại Mã Căn Hộ có tồn tại không, hoặc Biển số xe đã bị trùng.");
+            redirectAttributes.addFlashAttribute("thongBaoLoi", 
+                    messageSource.getMessage("pt.msg.them_loi", null, "Thêm thất bại! Vui lòng kiểm tra lại Mã Căn Hộ có tồn tại không, hoặc Biển số xe đã bị trùng.", locale));
         }
         return "redirect:/admin/phuong-tien";
     }
 
     // 3. Hàm xóa xe (Chỉ cần bấm link là xóa)
     @GetMapping("/xoa/{id}")
-    public String xoaPhuongTien(@PathVariable("id") Long id) {
-        phuongTienService.huyGuiXe(id);
-        return "redirect:/admin/phuong-tien"; // Tự động load lại trang sau khi xóa
-    }
-    @GetMapping("/duyet/{id}")
-    public String duyetXe(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String xoaPhuongTien(@PathVariable("id") Long id, 
+                                java.util.Locale locale, 
+                                org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
-            // Giả định bạn đã thêm hàm duyetXe vào PhuongTienService
-            phuongTienService.duyetXe(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã duyệt phương tiện thành công!");
+            phuongTienService.huyGuiXe(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", 
+                    messageSource.getMessage("pt.msg.xoa_thanh_cong", null, "Đã xóa phương tiện thành công.", locale));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi duyệt xe: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("thongBaoLoi", 
+                    messageSource.getMessage("pt.msg.xoa_loi", new Object[]{e.getMessage()}, "Lỗi khi xóa: " + e.getMessage(), locale));
+        }
+        return "redirect:/admin/phuong-tien";
+    }
+
+    @GetMapping("/duyet/{id}")
+    public String duyetXe(@PathVariable("id") Long id, 
+                          java.util.Locale locale, 
+                          org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            phuongTienService.duyetXe(id);
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", 
+                    messageSource.getMessage("pt.msg.duyet_thanh_cong", null, "Đã duyệt phương tiện thành công!", locale));
+        } catch (Exception e) {
+            String errorMsg;
+            if (e.getMessage() != null && e.getMessage().contains("Hầm xe đã đầy")) {
+                errorMsg = messageSource.getMessage("pt.msg.duyet_loi_day", null, e.getMessage(), locale);
+            } else {
+                errorMsg = messageSource.getMessage("pt.msg.duyet_loi", new Object[]{e.getMessage()}, "Lỗi khi duyệt xe: " + e.getMessage(), locale);
+            }
+            redirectAttributes.addFlashAttribute("thongBaoLoi", errorMsg);
         }
         return "redirect:/admin/phuong-tien";
     }
 
     @GetMapping("/tu-choi/{id}")
-    public String tuChoiXe(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String tuChoiXe(@PathVariable("id") Long id, 
+                           java.util.Locale locale, 
+                           org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
             phuongTienService.tuChoiXe(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã từ chối đăng ký phương tiện.");
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", 
+                    messageSource.getMessage("pt.msg.tu_choi_thanh_cong", null, "Đã từ chối đăng ký phương tiện.", locale));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi khi từ chối xe: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("thongBaoLoi", 
+                    messageSource.getMessage("pt.msg.tu_choi_loi", new Object[]{e.getMessage()}, "Lỗi khi từ chối xe: " + e.getMessage(), locale));
         }
         return "redirect:/admin/phuong-tien";
     }
 
     @GetMapping("/sua/{id}")
-    public String suaLaiTrangThaiChoDuyet(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String suaLaiTrangThaiChoDuyet(@PathVariable("id") Long id, 
+                                         java.util.Locale locale, 
+                                         org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
             phuongTienService.suaLaiTrangThaiChoDuyet(id);
-            redirectAttributes.addFlashAttribute("thongBaoThanhCong", "Đã hoàn tác: Chuyển xe về lại trạng thái Chờ duyệt."); // Đổi chữ ở đây
+            redirectAttributes.addFlashAttribute("thongBaoThanhCong", 
+                    messageSource.getMessage("pt.msg.hoan_tac_thanh_cong", null, "Đã hoàn tác: Chuyển xe về lại trạng thái Chờ duyệt.", locale));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Lỗi: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("thongBaoLoi", 
+                    messageSource.getMessage("pt.msg.hoan_tac_loi", new Object[]{e.getMessage()}, "Lỗi: " + e.getMessage(), locale));
         }
         return "redirect:/admin/phuong-tien";
     }
@@ -102,6 +133,10 @@ public class PhuongTienController {
         model.addAttribute("loaiXe", loaiXe);
 
         model.addAttribute("xeMoi", new PhuongTien());
+
+        model.addAttribute("soLuongXeDaDuyet", phuongTienService.getSoLuongXeDaDuyet());
+        model.addAttribute("soLuongXeChoDuyet", phuongTienService.getSoLuongXeChoDuyet());
+        model.addAttribute("tongSoXe", phuongTienService.getTongSoXe());
 
         return "admin/phuong-tien";
     }

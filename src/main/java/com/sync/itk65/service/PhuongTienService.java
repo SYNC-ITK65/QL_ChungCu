@@ -40,6 +40,11 @@ public class PhuongTienService {
     public void duyetXe(Long id) {
         PhuongTien xe = phuongTienRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy xe ID: " + id));
+        // Kiểm tra giới hạn hầm xe có 1000 xe
+        long soLuongXeDaDuyet = phuongTienRepository.countByTrangThai("Đã duyệt");
+        if (soLuongXeDaDuyet >= 1000) {
+            throw new RuntimeException("Hầm xe đã đầy (giới hạn tối đa 1000 xe)! Không thể duyệt thêm phương tiện.");
+        }
         xe.setTrangThai("Đã duyệt");
         phuongTienRepository.save(xe);
     }
@@ -63,6 +68,18 @@ public class PhuongTienService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy xe ID: " + id));
         xe.setTrangThai("Chờ duyệt");
         phuongTienRepository.save(xe);
+    }
+
+    public long getSoLuongXeDaDuyet() {
+        return phuongTienRepository.countByTrangThai("Đã duyệt");
+    }
+
+    public long getSoLuongXeChoDuyet() {
+        return phuongTienRepository.countByTrangThai("Chờ duyệt");
+    }
+
+    public long getTongSoXe() {
+        return phuongTienRepository.count();
     }
 
     //Xem danh sách bãi xe ---
