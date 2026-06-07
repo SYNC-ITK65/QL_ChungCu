@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <th:block th:fragment="chatbot-widget">
+
+        <!-- ===== CHATBOT FLOATING BUTTON & PANEL ===== -->
+        <div id="chatbot-container" style="
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        ">
+
+            <!-- Chat Panel -->
+            <div id="chatbot-panel" style="
+                display: none;
+                width: 360px;
+                height: 520px;
+                background: linear-gradient(135deg, #0f1623 0%, #111827 100%);
+                border: 1px solid rgba(99, 102, 241, 0.25);
+                border-radius: 20px;
+                box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.06);
+                overflow: hidden;
+                flex-direction: column;
+                backdrop-filter: blur(20px);
+                animation: chatSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            ">
+
+                <!-- Header -->
+                <div style="
+                    padding: 16px 20px;
+                    background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(139,92,246,0.1) 100%);
+                    border-bottom: 1px solid rgba(99,102,241,0.2);
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    flex-shrink: 0;
+                ">
+                    <div style="
+                        width: 36px;
+                        height: 36px;
+                        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                        border-radius: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 18px;
+                        box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+                        flex-shrink: 0;
+                    ">🤖</div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 13px; font-weight: 700; color: #e2e8f0; letter-spacing: 0.01em;">SYNC Assistant</div>
+                        <div style="font-size: 10px; color: #6366f1; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                            <span style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 6px #22c55e;"></span>
+                            Trợ lý AI đang hoạt động
+                        </div>
+                    </div>
+                    <button onclick="toggleChatbot()" style="
+                        background: rgba(255,255,255,0.05);
+                        border: 1px solid rgba(255,255,255,0.1);
+                        color: #94a3b8;
+                        cursor: pointer;
+                        border-radius: 8px;
+                        width: 28px;
+                        height: 28px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 14px;
+                        transition: all 0.2s;
+                        flex-shrink: 0;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#e2e8f0'"
+                       onmouseout="this.style.background='rgba(255,255,255,0.05)';this.style.color='#94a3b8'">✕</button>
+                </div>
+
+                <!-- Messages Area -->
+                <div id="chatbot-messages" style="
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 16px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    scroll-behavior: smooth;
+                ">
+                    <!-- Welcome message -->
+                    <div class="chatbot-msg-ai" style="display: flex; gap: 8px; align-items: flex-start;">
+                        <div style="
+                            width: 28px; height: 28px;
+                            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                            border-radius: 8px;
+                            display: flex; align-items: center; justify-content: center;
+                            font-size: 14px; flex-shrink: 0; margin-top: 2px;
+                        ">🤖</div>
+                        <div style="
+                            background: rgba(99,102,241,0.12);
+                            border: 1px solid rgba(99,102,241,0.2);
+                            border-radius: 4px 14px 14px 14px;
+                            padding: 10px 14px;
+                            font-size: 12.5px;
+                            color: #cbd5e1;
+                            line-height: 1.6;
+                            max-width: 270px;
+                        ">
+                            Xin chào! Tôi là SYNC Assistant 👋<br>
+                            Tôi có thể giúp bạn tra cứu <strong style="color:#a5b4fc">hóa đơn</strong>,
+                            <strong style="color:#a5b4fc">thông báo</strong> và
+                            <strong style="color:#a5b4fc">thống kê chung cư</strong>.<br><br>
+                            Bạn cần hỗ trợ gì hôm nay?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Suggestions (chỉ hiện ban đầu) -->
+                <div id="chatbot-suggestions" style="
+                    padding: 8px 16px;
+                    display: flex;
+                    gap: 6px;
+                    flex-wrap: wrap;
+                    border-top: 1px solid rgba(255,255,255,0.04);
+                    background: rgba(0,0,0,0.2);
+                ">
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)" style="
+                        background: rgba(99,102,241,0.1);
+                        border: 1px solid rgba(99,102,241,0.25);
+                        color: #a5b4fc;
+                        padding: 5px 10px;
+                        border-radius: 20px;
+                        font-size: 11px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        white-space: nowrap;
+                    ">💰 Hóa đơn chưa đóng</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)" style="
+                        background: rgba(99,102,241,0.1);
+                        border: 1px solid rgba(99,102,241,0.25);
+                        color: #a5b4fc;
+                        padding: 5px 10px;
+                        border-radius: 20px;
+                        font-size: 11px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        white-space: nowrap;
+                    ">📢 Thông báo mới</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)" style="
+                        background: rgba(99,102,241,0.1);
+                        border: 1px solid rgba(99,102,241,0.25);
+                        color: #a5b4fc;
+                        padding: 5px 10px;
+                        border-radius: 20px;
+                        font-size: 11px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        white-space: nowrap;
+                    ">📊 Tổng hợp doanh thu</button>
+                </div>
+
+                <!-- Input Area -->
+                <div style="
+                    padding: 12px 16px;
+                    border-top: 1px solid rgba(255,255,255,0.06);
+                    background: rgba(0,0,0,0.3);
+                    display: flex;
+                    gap: 8px;
+                    align-items: flex-end;
+                    flex-shrink: 0;
+                ">
+                    <textarea id="chatbot-input" placeholder="Nhập câu hỏi của bạn..." rows="1" style="
+                        flex: 1;
+                        background: rgba(255,255,255,0.05);
+                        border: 1px solid rgba(255,255,255,0.1);
+                        border-radius: 12px;
+                        padding: 10px 14px;
+                        color: #e2e8f0;
+                        font-size: 12.5px;
+                        font-family: inherit;
+                        resize: none;
+                        outline: none;
+                        line-height: 1.5;
+                        max-height: 90px;
+                        overflow-y: auto;
+                        transition: border-color 0.2s;
+                    " oninput="autoResizeTextarea(this)" onkeydown="handleChatKeydown(event)"
+                       onfocus="this.style.borderColor='rgba(99,102,241,0.5)'"
+                       onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+                    <button id="chatbot-send-btn" onclick="sendChatMessage()" style="
+                        width: 38px;
+                        height: 38px;
+                        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                        border: none;
+                        border-radius: 10px;
+                        color: white;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 15px;
+                        flex-shrink: 0;
+                        transition: all 0.2s;
+                        box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+                    " onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 6px 18px rgba(99,102,241,0.5)'"
+                       onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 12px rgba(99,102,241,0.35)'">➤</button>
+                </div>
+            </div>
+
+            <!-- Toggle Button (Floating Action Button) -->
+            <button id="chatbot-fab" onclick="toggleChatbot()" style="
+                width: 54px;
+                height: 54px;
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                border: none;
+                border-radius: 16px;
+                color: white;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+                box-shadow: 0 8px 24px rgba(99,102,241,0.5), 0 0 0 1px rgba(99,102,241,0.3);
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                position: relative;
+            " onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 12px 32px rgba(99,102,241,0.6)'"
+               onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 24px rgba(99,102,241,0.5)'">
+                <span id="chatbot-fab-icon">🤖</span>
+                <!-- Unread badge -->
+                <span id="chatbot-badge" style="
+                    display: none;
+                    position: absolute;
+                    top: -4px;
+                    right: -4px;
+                    width: 14px;
+                    height: 14px;
+                    background: #ef4444;
+                    border-radius: 50%;
+                    border: 2px solid #0f1623;
+                    font-size: 8px;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                ">!</span>
+            </button>
+        </div>
+
+        <!-- Scrollbar Styling & Animations -->
+        <style>
+            @keyframes chatSlideUp {
+                from { opacity: 0; transform: translateY(20px) scale(0.95); }
+                to   { opacity: 1; transform: translateY(0)   scale(1);    }
+            }
+
+            @keyframes typingDot {
+                0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+                30%           { transform: translateY(-5px); opacity: 1;  }
+            }
+
+            #chatbot-messages::-webkit-scrollbar { width: 4px; }
+            #chatbot-messages::-webkit-scrollbar-track { background: transparent; }
+            #chatbot-messages::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 2px; }
+            #chatbot-messages::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.5); }
+
+            #chatbot-input::placeholder { color: #4b5563; }
+
+            .chatbot-msg-user {
+                display: flex;
+                justify-content: flex-end;
+                animation: fadeIn 0.25s ease;
+            }
+
+            .chatbot-msg-ai {
+                display: flex;
+                gap: 8px;
+                align-items: flex-start;
+                animation: fadeIn 0.25s ease;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(6px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+
+            .suggestion-btn:hover {
+                background: rgba(99,102,241,0.25) !important;
+                border-color: rgba(99,102,241,0.5) !important;
+            }
+
+            /* Typing indicator dots */
+            .typing-dot {
+                width: 6px; height: 6px;
+                background: #6366f1;
+                border-radius: 50%;
+                animation: typingDot 1.2s infinite;
+                display: inline-block;
+            }
+            .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+            .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        </style>
+
+        <script>
+            let chatbotOpen = false;
+            let chatbotLoading = false;
+
+            function toggleChatbot() {
+                const panel = document.getElementById('chatbot-panel');
+                const badge = document.getElementById('chatbot-badge');
+                chatbotOpen = !chatbotOpen;
+
+                if (chatbotOpen) {
+                    panel.style.display = 'flex';
+                    panel.style.flexDirection = 'column';
+                    badge.style.display = 'none';
+                    setTimeout(() => {
+                        const input = document.getElementById('chatbot-input');
+                        if (input) input.focus();
+                    }, 300);
+                } else {
+                    panel.style.animation = 'none';
+                    panel.style.display = 'none';
+                }
+                scrollToBottom();
+            }
+
+            function sendSuggestion(btn) {
+                const text = btn.textContent.trim().replace(/^[^\w\s\u00C0-\u024F\u1EA0-\u1EF9]+/, '').trim();
+                const input = document.getElementById('chatbot-input');
+                input.value = text;
+                // Hide suggestions after first use
+                document.getElementById('chatbot-suggestions').style.display = 'none';
+                sendChatMessage();
+            }
+
+            function handleChatKeydown(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            }
+
+            function autoResizeTextarea(el) {
+                el.style.height = 'auto';
+                el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+            }
+
+            function sendChatMessage() {
+                if (chatbotLoading) return;
+
+                const input = document.getElementById('chatbot-input');
+                const message = input.value.trim();
+                if (!message) return;
+
+                // Hide suggestions panel after first message
+                document.getElementById('chatbot-suggestions').style.display = 'none';
+
+                // Append user message
+                appendUserMessage(message);
+                input.value = '';
+                input.style.height = 'auto';
+
+                // Show typing indicator
+                chatbotLoading = true;
+                const typingId = appendTypingIndicator();
+                toggleSendButton(false);
+
+                // Call API
+                fetch('/api/chatbot/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(data => Promise.reject(data));
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    removeTypingIndicator(typingId);
+                    if (data.success) {
+                        appendAiMessage(data.reply);
+                    } else {
+                        appendAiMessage('⚠️ ' + (data.error || 'Đã xảy ra lỗi. Vui lòng thử lại.'));
+                    }
+                })
+                .catch(err => {
+                    removeTypingIndicator(typingId);
+                    const errMsg = (err && err.error) ? err.error : 'Không thể kết nối tới AI. Vui lòng thử lại.';
+                    appendAiMessage('⚠️ ' + errMsg);
+                })
+                .finally(() => {
+                    chatbotLoading = false;
+                    toggleSendButton(true);
+                    scrollToBottom();
+                });
+            }
+
+            function appendUserMessage(text) {
+                const container = document.getElementById('chatbot-messages');
+                const div = document.createElement('div');
+                div.className = 'chatbot-msg-user';
+                div.innerHTML = `
+                    <div style="
+                        background: linear-gradient(135deg, #6366f1, #7c3aed);
+                        border-radius: 14px 4px 14px 14px;
+                        padding: 10px 14px;
+                        font-size: 12.5px;
+                        color: #fff;
+                        line-height: 1.6;
+                        max-width: 260px;
+                        box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+                    ">${escapeHtml(text)}</div>
+                `;
+                container.appendChild(div);
+                scrollToBottom();
+            }
+
+            function appendAiMessage(text) {
+                const container = document.getElementById('chatbot-messages');
+                const div = document.createElement('div');
+                div.className = 'chatbot-msg-ai';
+                div.innerHTML = `
+                    <div style="
+                        width: 28px; height: 28px;
+                        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                        border-radius: 8px;
+                        display: flex; align-items: center; justify-content: center;
+                        font-size: 14px; flex-shrink: 0; margin-top: 2px;
+                    ">🤖</div>
+                    <div style="
+                        background: rgba(99,102,241,0.1);
+                        border: 1px solid rgba(99,102,241,0.18);
+                        border-radius: 4px 14px 14px 14px;
+                        padding: 10px 14px;
+                        font-size: 12.5px;
+                        color: #cbd5e1;
+                        line-height: 1.65;
+                        max-width: 270px;
+                        white-space: pre-wrap;
+                        word-wrap: break-word;
+                    ">${formatAiText(text)}</div>
+                `;
+                container.appendChild(div);
+                scrollToBottom();
+            }
+
+            function appendTypingIndicator() {
+                const container = document.getElementById('chatbot-messages');
+                const id = 'typing-' + Date.now();
+                const div = document.createElement('div');
+                div.className = 'chatbot-msg-ai';
+                div.id = id;
+                div.innerHTML = `
+                    <div style="
+                        width: 28px; height: 28px;
+                        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                        border-radius: 8px;
+                        display: flex; align-items: center; justify-content: center;
+                        font-size: 14px; flex-shrink: 0;
+                    ">🤖</div>
+                    <div style="
+                        background: rgba(99,102,241,0.1);
+                        border: 1px solid rgba(99,102,241,0.18);
+                        border-radius: 4px 14px 14px 14px;
+                        padding: 12px 16px;
+                        display: flex; gap: 4px; align-items: center;
+                    ">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                `;
+                container.appendChild(div);
+                scrollToBottom();
+                return id;
+            }
+
+            function removeTypingIndicator(id) {
+                const el = document.getElementById(id);
+                if (el) el.remove();
+            }
+
+            function toggleSendButton(enabled) {
+                const btn = document.getElementById('chatbot-send-btn');
+                btn.disabled = !enabled;
+                btn.style.opacity = enabled ? '1' : '0.5';
+                btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+            }
+
+            function scrollToBottom() {
+                setTimeout(() => {
+                    const msgs = document.getElementById('chatbot-messages');
+                    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+                }, 50);
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.appendChild(document.createTextNode(text));
+                return div.innerHTML;
+            }
+
+            function formatAiText(text) {
+                // Convert markdown-like bold **text** and line breaks
+                return escapeHtml(text)
+                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#a5b4fc">$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+            }
+        </script>
+
+    </th:block>
+</body>
+
+</html>

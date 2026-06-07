@@ -19,6 +19,7 @@ public interface PhuongTienRepository extends JpaRepository<PhuongTien, Long> {
     //  lấy danh sách xe của 1 căn hộ
     List<PhuongTien> findByCanHoId(Long canHoId);
     Page<PhuongTien> findAllByOrderByIdDesc(Pageable pageable);
+    long countByTrangThai(String trangThai);
 
     @Modifying
     @Transactional
