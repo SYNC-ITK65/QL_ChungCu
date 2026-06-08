@@ -32,74 +32,365 @@
                 </a>
 
                 <div class="relative inline-block text-left pl-2 border-l border-darkborder" id="langDropdown">
-                    <button type="button" onclick="toggleLangMenu(event)" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" id="langBtn">
-                        <span th:if="${#locale.language == 'vi'}">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
-                                <rect width="512" height="512" fill="#da251d"/>
-                                <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
+                    <button type="button" onclick="toggleLangMenu(event)"
+                        class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none"
+                        id="langBtn">
+                        <span th:if="${#locale.language == 'vi' or #locale.language == null}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="512" height="512" fill="#da251d" />
+                                <polygon
+                                    points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203"
+                                    fill="#ffff00" />
                             </svg>
                         </span>
-                        <span th:if="${#locale.language != 'vi'}">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
-                                <path d="M0 0h1235v650H0" fill="#fff"/>
-                                <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/>
-                                <path fill="#3c3b6e" d="M0 0h494v350H0"/>
+                        <span th:if="${#locale.language == 'en'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                viewBox="0 0 1235 650" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <path d="M0 0h1235v650H0" fill="#fff" />
+                                <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651" />
+                                <path fill="#3c3b6e" d="M0 0h494v350H0" />
                                 <g id="e">
                                     <g id="d">
                                         <g id="f">
                                             <g id="c">
                                                 <g id="b">
-                                                    <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/>
-                                                    <use xlink:href="#a" x="82"/>
+                                                    <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff" />
+                                                    <use xlink:href="#a" x="82" />
                                                 </g>
-                                                <use xlink:href="#b" x="164"/>
-                                                <use xlink:href="#a" x="328"/>
+                                                <use xlink:href="#b" x="164" />
+                                                <use xlink:href="#a" x="328" />
                                             </g>
-                                            <use xlink:href="#a" x="410"/>
+                                            <use xlink:href="#a" x="410" />
                                         </g>
-                                        <use xlink:href="#c" x="41" y="35"/>
+                                        <use xlink:href="#c" x="41" y="35" />
                                     </g>
-                                    <use xlink:href="#d" y="70"/>
+                                    <use xlink:href="#d" y="70" />
                                 </g>
-                                <use xlink:href="#e" y="140"/>
-                                <use xlink:href="#f" y="280"/>
+                                <use xlink:href="#e" y="140" />
+                                <use xlink:href="#f" y="280" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'ja'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#fff" />
+                                <circle cx="450" cy="300" r="180" fill="#bc002d" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'zh'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#ee1c25" />
+                                <g fill="#ffce00">
+                                    <polygon
+                                        points="150,60 176,141 262,141 192,192 219,273 150,222 81,273 108,192 38,141 124,141" />
+                                    <polygon
+                                        points="300,30 308,55 334,55 313,71 321,96 300,81 279,96 287,71 266,55 292,55" />
+                                    <polygon
+                                        points="360,90 368,115 394,115 373,131 381,156 360,141 339,156 347,131 326,115 352,115" />
+                                    <polygon
+                                        points="360,180 368,205 394,205 373,221 381,246 360,231 339,246 347,221 326,205 352,205" />
+                                    <polygon
+                                        points="300,240 308,265 334,265 313,281 321,306 300,291 279,306 287,281 266,265 292,265" />
+                                </g>
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'fr'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#ed2939" />
+                                <rect width="600" height="600" fill="#fff" />
+                                <rect width="300" height="600" fill="#002395" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'ko'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#fff" />
+                                <g transform="translate(450,300) rotate(33.69)">
+                                    <path d="M0 -150A75 75 0 0 1 0 0A75 75 0 0 0 0 150A150 150 0 0 1 0 -150Z"
+                                        fill="#0047a0" />
+                                    <path d="M0 -150A150 150 0 0 1 0 150A75 75 0 0 1 0 0A75 75 0 0 0 0 -150Z"
+                                        fill="#cd2e3a" />
+                                </g>
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'ar'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#006C35" />
+                                <line x1="0.6" y1="1.2" x2="2.4" y2="1.2" stroke="#fff" stroke-width="0.1" />
+                                <polygon points="1.5,0.7 1.4,1.0 1.6,1.0" fill="#fff" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'de'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="5" height="3" fill="#ffce00" />
+                                <rect width="5" height="2" fill="#d00" />
+                                <rect width="5" height="1" fill="#000" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'hi'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#09f" />
+                                <rect width="3" height="0.67" fill="#f93" />
+                                <rect width="3" height="1.33" y="1.33" fill="#128807" />
+                                <rect width="3" height="0.67" y="0.67" fill="#fff" />
+                                <circle cx="1.5" cy="1" r="0.25" fill="none" stroke="#000080" stroke-width="0.04" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'id'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#fff" />
+                                <rect width="3" height="1" fill="#e00000" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'it'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#ce2b37" />
+                                <rect width="2" height="2" fill="#fff" />
+                                <rect width="1" height="2" fill="#009246" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'ms'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 14"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="28" height="14" fill="#cc0000" />
+                                <path d="M0 1h28v1H0zm0 2h28v1H0zm0 4h28v1H0zm0 2h28v1H0zm0 2h28v1H0zm0 2h28v1H0z"
+                                    fill="#fff" />
+                                <rect width="14" height="8" fill="#000066" />
+                                <circle cx="6" cy="4" r="2.5" fill="#ffcc00" />
+                                <circle cx="7" cy="4" r="2.5" fill="#000066" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'ru'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#da121a" />
+                                <rect width="3" height="1.33" fill="#0039a6" />
+                                <rect width="3" height="0.67" fill="#fff" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'th'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="9" height="6" fill="#a51931" />
+                                <rect width="9" height="4" y="1" fill="#f4f5f8" />
+                                <rect width="9" height="2" y="2" fill="#2d2a4a" />
+                            </svg>
+                        </span>
+                        <span th:if="${#locale.language == 'tl'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 1"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="2" height="1" fill="#ce1126" />
+                                <rect width="2" height="0.5" fill="#0038a8" />
+                                <polygon points="0,0 0,1 0.866,0.5" fill="#fff" />
+                                <circle cx="0.288" cy="0.5" r="0.1" fill="#fcd116" />
                             </svg>
                         </span>
                     </button>
-                    <div id="langMenu" class="hidden absolute left-0 mt-2 w-32 rounded-xl bg-slate-900 border border-slate-700/80 shadow-xl z-50 overflow-hidden py-1">
-                        <a href="javascript:void(0)" onclick="changeLang('vi')" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-350 hover:bg-slate-800 hover:text-white transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-4 h-4 rounded-full" preserveAspectRatio="xMidYMid slice">
-                                <rect width="512" height="512" fill="#da251d"/>
-                                <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
+                    <div id="langMenu"
+                        class="hidden absolute left-0 mt-2 w-32 rounded-xl bg-slate-900 border border-slate-700/80 shadow-xl z-50 overflow-hidden py-1 max-h-64 overflow-y-auto">
+                        <a href="javascript:void(0)" onclick="changeLang('vi')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="512" height="512" fill="#da251d" />
+                                <polygon
+                                    points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203"
+                                    fill="#ffff00" />
                             </svg>
                             <span th:text="#{lang.vi}">Tiếng Việt</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="changeLang('en')" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-350 hover:bg-slate-800 hover:text-white transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-4 h-4 rounded-full" preserveAspectRatio="xMidYMid slice">
-                                <path d="M0 0h1235v650H0" fill="#fff"/>
-                                <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/>
-                                <path fill="#3c3b6e" d="M0 0h494v350H0"/>
+                        <a href="javascript:void(0)" onclick="changeLang('ar')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#006C35" />
+                                <line x1="0.6" y1="1.2" x2="2.4" y2="1.2" stroke="#fff" stroke-width="0.1" />
+                                <polygon points="1.5,0.7 1.4,1.0 1.6,1.0" fill="#fff" />
+                            </svg>
+                            <span th:text="#{lang.ar}">العربية</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('de')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 3" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="5" height="3" fill="#ffce00" />
+                                <rect width="5" height="2" fill="#d00" />
+                                <rect width="5" height="1" fill="#000" />
+                            </svg>
+                            <span th:text="#{lang.de}">Deutsch</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('en')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                viewBox="0 0 1235 650" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <path d="M0 0h1235v650H0" fill="#fff" />
+                                <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651" />
+                                <path fill="#3c3b6e" d="M0 0h494v350H0" />
                                 <g id="e">
                                     <g id="d">
                                         <g id="f">
                                             <g id="c">
                                                 <g id="b">
-                                                    <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/>
-                                                    <use xlink:href="#a" x="82"/>
+                                                    <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff" />
+                                                    <use xlink:href="#a" x="82" />
                                                 </g>
-                                                <use xlink:href="#b" x="164"/>
-                                                <use xlink:href="#a" x="328"/>
+                                                <use xlink:href="#b" x="164" />
+                                                <use xlink:href="#a" x="328" />
                                             </g>
-                                            <use xlink:href="#a" x="410"/>
+                                            <use xlink:href="#a" x="410" />
                                         </g>
-                                        <use xlink:href="#c" x="41" y="35"/>
+                                        <use xlink:href="#c" x="41" y="35" />
                                     </g>
-                                    <use xlink:href="#d" y="70"/>
+                                    <use xlink:href="#d" y="70" />
                                 </g>
-                                <use xlink:href="#e" y="140"/>
-                                <use xlink:href="#f" y="280"/>
+                                <use xlink:href="#e" y="140" />
+                                <use xlink:href="#f" y="280" />
                             </svg>
                             <span th:text="#{lang.en}">English</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('fr')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#ed2939" />
+                                <rect width="600" height="600" fill="#fff" />
+                                <rect width="300" height="600" fill="#002395" />
+                            </svg>
+                            <span th:text="#{lang.fr}">Français</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('hi')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#09f" />
+                                <rect width="3" height="0.67" fill="#f93" />
+                                <rect width="3" height="1.33" y="1.33" fill="#128807" />
+                                <rect width="3" height="0.67" y="0.67" fill="#fff" />
+                                <circle cx="1.5" cy="1" r="0.25" fill="none" stroke="#000080" stroke-width="0.04" />
+                            </svg>
+                            <span th:text="#{lang.hi}">हिन्दी</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('id')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#fff" />
+                                <rect width="3" height="1" fill="#e00000" />
+                            </svg>
+                            <span th:text="#{lang.id}">Bahasa Indonesia</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('it')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#ce2b37" />
+                                <rect width="2" height="2" fill="#fff" />
+                                <rect width="1" height="2" fill="#009246" />
+                            </svg>
+                            <span th:text="#{lang.it}">Italiano</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('ja')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#fff" />
+                                <circle cx="450" cy="300" r="180" fill="#bc002d" />
+                            </svg>
+                            <span th:text="#{lang.ja}">日本語</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('ko')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#fff" />
+                                <g transform="translate(450,300) rotate(33.69)">
+                                    <path d="M0 -150A75 75 0 0 1 0 0A75 75 0 0 0 0 150A150 150 0 0 1 0 -150Z"
+                                        fill="#0047a0" />
+                                    <path d="M0 -150A150 150 0 0 1 0 150A75 75 0 0 1 0 0A75 75 0 0 0 0 -150Z"
+                                        fill="#cd2e3a" />
+                                </g>
+                            </svg>
+                            <span th:text="#{lang.ko}">한국어</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('ms')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 14" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="28" height="14" fill="#cc0000" />
+                                <path d="M0 1h28v1H0zm0 2h28v1H0zm0 4h28v1H0zm0 2h28v1H0zm0 2h28v1H0zm0 2h28v1H0z"
+                                    fill="#fff" />
+                                <rect width="14" height="8" fill="#000066" />
+                                <circle cx="6" cy="4" r="2.5" fill="#ffcc00" />
+                                <circle cx="7" cy="4" r="2.5" fill="#000066" />
+                            </svg>
+                            <span th:text="#{lang.ms}">Bahasa Melayu</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('ru')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="3" height="2" fill="#da121a" />
+                                <rect width="3" height="1.33" fill="#0039a6" />
+                                <rect width="3" height="0.67" fill="#fff" />
+                            </svg>
+                            <span th:text="#{lang.ru}">Русский</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('th')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="9" height="6" fill="#a51931" />
+                                <rect width="9" height="4" y="1" fill="#f4f5f8" />
+                                <rect width="9" height="2" y="2" fill="#2d2a4a" />
+                            </svg>
+                            <span th:text="#{lang.th}">ไทย</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('tl')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 1" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="2" height="1" fill="#ce1126" />
+                                <rect width="2" height="0.5" fill="#0038a8" />
+                                <polygon points="0,0 0,1 0.866,0.5" fill="#fff" />
+                                <circle cx="0.288" cy="0.5" r="0.1" fill="#fcd116" />
+                            </svg>
+                            <span th:text="#{lang.tl}">Tagalog</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="changeLang('zh')"
+                            class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" class="w-4 h-4 rounded-full"
+                                preserveAspectRatio="xMidYMid slice">
+                                <rect width="900" height="600" fill="#ee1c25" />
+                                <g fill="#ffce00">
+                                    <polygon
+                                        points="150,60 176,141 262,141 192,192 219,273 150,222 81,273 108,192 38,141 124,141" />
+                                </g>
+                            </svg>
+                            <span th:text="#{lang.zh}">中文</span>
                         </a>
                     </div>
                 </div>
