@@ -76,45 +76,83 @@
             </div>
         </div>
 
-        <div class="flex gap-2 items-center">
-            <a href="javascript:void(0)" onclick="changeLang('vi')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="Tiếng Việt" th:title="#{lang.vi}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
-                    <rect width="512" height="512" fill="#da251d"/>
-                    <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
-                </svg>
-            </a>
-            <a href="javascript:void(0)" onclick="changeLang('en')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="English" th:title="#{lang.en}">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
-                    <path d="M0 0h1235v650H0" fill="#fff"/>
-                    <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/>
-                    <path fill="#3c3b6e" d="M0 0h494v350H0"/>
-                    <g id="e">
-                        <g id="d">
-                            <g id="f">
-                                <g id="c">
-                                    <g id="b">
-                                        <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/>
-                                        <use xlink:href="#a" x="82"/>
+        <div class="relative inline-block text-left" id="langDropdown">
+            <button type="button" onclick="toggleLangMenu(event)" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" id="langBtn">
+                <span th:if="${#locale.language == 'vi'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
+                        <rect width="512" height="512" fill="#da251d"/>
+                        <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
+                    </svg>
+                </span>
+                <span th:if="${#locale.language != 'vi'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
+                        <path d="M0 0h1235v650H0" fill="#fff"/>
+                        <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/>
+                        <path fill="#3c3b6e" d="M0 0h494v350H0"/>
+                        <g id="e">
+                            <g id="d">
+                                <g id="f">
+                                    <g id="c">
+                                        <g id="b">
+                                            <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/>
+                                            <use xlink:href="#a" x="82"/>
+                                        </g>
+                                        <use xlink:href="#b" x="164"/>
+                                        <use xlink:href="#a" x="328"/>
                                     </g>
-                                    <use xlink:href="#b" x="164"/>
-                                    <use xlink:href="#a" x="328"/>
+                                    <use xlink:href="#a" x="410"/>
                                 </g>
-                                <use xlink:href="#a" x="410"/>
+                                <use xlink:href="#c" x="41" y="35"/>
                             </g>
-                            <use xlink:href="#c" x="41" y="35"/>
+                            <use xlink:href="#d" y="70"/>
                         </g>
-                        <use xlink:href="#d" y="70"/>
-                    </g>
-                    <use xlink:href="#e" y="140"/>
-                    <use xlink:href="#f" y="280"/>
-                </svg>
-            </a>
+                        <use xlink:href="#e" y="140"/>
+                        <use xlink:href="#f" y="280"/>
+                    </svg>
+                </span>
+            </button>
+            <div id="langMenu" class="hidden absolute right-0 mt-2 w-32 rounded-xl bg-slate-900 border border-slate-700/80 shadow-xl z-50 overflow-hidden py-1">
+                <a href="javascript:void(0)" onclick="changeLang('vi')" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-350 hover:bg-slate-800 hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-4 h-4 rounded-full" preserveAspectRatio="xMidYMid slice">
+                        <rect width="512" height="512" fill="#da251d"/>
+                        <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
+                    </svg>
+                    <span th:text="#{lang.vi}">Tiếng Việt</span>
+                </a>
+                <a href="javascript:void(0)" onclick="changeLang('en')" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-350 hover:bg-slate-800 hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-4 h-4 rounded-full" preserveAspectRatio="xMidYMid slice">
+                        <path d="M0 0h1235v650H0" fill="#fff"/>
+                        <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/>
+                        <path fill="#3c3b6e" d="M0 0h494v350H0"/>
+                        <g id="e">
+                            <g id="d">
+                                <g id="f">
+                                    <g id="c">
+                                        <g id="b">
+                                            <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/>
+                                            <use xlink:href="#a" x="82"/>
+                                        </g>
+                                        <use xlink:href="#b" x="164"/>
+                                        <use xlink:href="#a" x="328"/>
+                                    </g>
+                                    <use xlink:href="#a" x="410"/>
+                                </g>
+                                <use xlink:href="#c" x="41" y="35"/>
+                            </g>
+                            <use xlink:href="#d" y="70"/>
+                        </g>
+                        <use xlink:href="#e" y="140"/>
+                        <use xlink:href="#f" y="280"/>
+                    </svg>
+                    <span th:text="#{lang.en}">English</span>
+                </a>
+            </div>
         </div>
     </div>
 
     <div class="space-y-1.5">
-        <h3 class="text-xl font-bold text-white">Chào Mừng</h3>
-        <p class="text-xs text-slate-400">Vui lòng nhập tài khoản do Ban Quản lý cấp</p>
+        <h3 class="text-xl font-bold text-white" th:text="#{login.welcome}">Chào Mừng</h3>
+        <p class="text-xs text-slate-400" th:text="#{login.huong_dan}">Vui lòng nhập tài khoản do Ban Quản lý cấp</p>
     </div>
 
     <div th:if="${error}" class="flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-[11px]">
@@ -168,7 +206,7 @@
 
         <div class="flex items-center justify-between text-[11px] pt-1">
             <label class="flex items-center gap-1.5 cursor-pointer text-slate-400 select-none">
-                <input type="checkbox" class="rounded bg-darkbg border-darkborder text-brand-500 focus:ring-0 w-3.5 h-3.5"> Nhớ đăng nhập
+                <input type="checkbox" class="rounded bg-darkbg border-darkborder text-brand-500 focus:ring-0 w-3.5 h-3.5"> <span th:text="#{login.nho_dang_nhap}">Nhớ đăng nhập</span>
             </label>
         </div>
 
@@ -177,8 +215,8 @@
         </button>
     </form>
 
-    <div class="text-[10px] text-slate-500 text-center border-t border-darkborder pt-4">
-        &copy; 2026 Skyline Residence. Bảo mật & Tiện nghi.
+    <div class="text-[10px] text-slate-500 text-center border-t border-darkborder pt-4" th:text="#{login.ban_quyen}">
+        © 2026 Skyline Residence. Bảo mật & Tiện nghi.
     </div>
 </div>
 
@@ -267,9 +305,24 @@
         return true;
     }
 
+    function toggleLangMenu(event) {
+        event.stopPropagation();
+        const menu = document.getElementById("langMenu");
+        if (menu) {
+            menu.classList.toggle("hidden");
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         lucide.createIcons();
         generateMathCaptcha(); // Tải cấu trúc captcha ngay khi mở giao diện lên
+    });
+
+    document.addEventListener("click", function(event) {
+        const menu = document.getElementById("langMenu");
+        if (menu && !menu.classList.contains("hidden")) {
+            menu.classList.add("hidden");
+        }
     });
 </script>
 </body>
