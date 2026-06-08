@@ -57,9 +57,14 @@ Dự án **QL_ChungCu** là phần mềm quản lý chung cư toàn diện, đư
 * Tài khoản Cloudinary (để cấu hình API lưu ảnh)
 
 ### 2. Thiết lập Cơ sở dữ liệu
-1. Mở SQL Server Management Studio (SSMS).
-2. Mở và chạy script `DATABASE.sql` để khởi tạo database `QL_ChungCu` cùng cấu trúc các bảng.
-3. Chạy file script `IMPORT_DATA.sql` để nạp dữ liệu mẫu ban đầu (nếu cần).
+* **Với Microsoft SQL Server**:
+  1. Mở SQL Server Management Studio (SSMS).
+  2. Mở và chạy script [DATABASE.sql](file:///d:/ngoctienz/Desktop/Y2_S2/SYNC_K65/QL_ChungCu/DATABASE.sql) để khởi tạo database `QL_ChungCu` cùng cấu trúc các bảng.
+  3. Chạy file script [IMPORT_DATA.sql](file:///d:/ngoctienz/Desktop/Y2_S2/SYNC_K65/QL_ChungCu/IMPORT_DATA.sql) để nạp dữ liệu mẫu ban đầu (nếu cần).
+* **Với MySQL**:
+  1. Mở DBeaver, MySQL Workbench hoặc Command Line.
+  2. Mở và chạy script [DB2.sql](file:///d:/ngoctienz/Desktop/Y2_S2/SYNC_K65/QL_ChungCu/DB2.sql) để khởi tạo cấu trúc các bảng.
+  3. Chạy file script [IMPORT_DB2.sql](file:///d:/ngoctienz/Desktop/Y2_S2/SYNC_K65/QL_ChungCu/IMPORT_DB2.sql) để nạp dữ liệu mẫu ban đầu (nếu cần).
 
 ### 3. Cấu hình ứng dụng
 Mở file `src/main/resources/application.properties` và điều chỉnh các thông số phù hợp với môi trường cục bộ của bạn:

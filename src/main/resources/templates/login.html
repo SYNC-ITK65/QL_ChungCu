@@ -5,13 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{login.tieude}">Đăng Nhập Hệ Thống</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -59,118 +56,222 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #4B5563;
         }
+        #captchaCanvas {
+            letter-spacing: 2px;
+            filter: drop-shadow(0px 0px 1px rgba(255,255,255,0.4));
+        }
     </style>
 </head>
 
 <body class="bg-darkbg text-slate-200 antialiased font-sans min-h-screen flex items-center justify-center p-4">
-    
-    <div class="bg-darkcard border border-darkborder rounded-3xl p-6 md:p-10 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
-        <!-- Logo and Language selector row -->
-        <div class="flex justify-between items-center pb-4 border-b border-darkborder">
-            <div class="flex items-center space-x-2.5">
-                <div class="bg-brand-500 text-white p-2 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/20">
-                    <i data-lucide="building-2" class="w-4 h-4"></i>
-                </div>
-                <div>
-                    <h1 class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{login.chao_mung}">🏢 Quản Lý Chung Cư</h1>
-                </div>
+
+<div class="bg-darkcard border border-darkborder rounded-3xl p-6 md:p-10 max-w-md w-full shadow-2xl space-y-6 relative overflow-hidden">
+    <div class="flex justify-between items-center pb-4 border-b border-darkborder">
+        <div class="flex items-center space-x-2.5">
+            <div class="bg-brand-500 text-white p-2 rounded-lg flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <i data-lucide="building-2" class="w-4 h-4"></i>
             </div>
-            
-            <div class="flex gap-2 items-center">
-                <a href="javascript:void(0)" onclick="changeLang('vi')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="Tiếng Việt" th:title="#{lang.vi}">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
-                        <rect width="512" height="512" fill="#da251d"/>
-                        <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
-                    </svg>
-                </a>
-                <a href="javascript:void(0)" onclick="changeLang('en')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="English" th:title="#{lang.en}">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice"> 
-                        <path d="M0 0h1235v650H0" fill="#fff"/> 
-                        <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/> 
-                        <path fill="#3c3b6e" d="M0 0h494v350H0"/> 
-                        <g id="e"> 
-                            <g id="d"> 
-                                <g id="f"> 
-                                    <g id="c"> 
-                                        <g id="b"> 
-                                            <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/> 
-                                            <use xlink:href="#a" x="82"/> 
-                                        </g> 
-                                        <use xlink:href="#b" x="164"/> 
-                                        <use xlink:href="#a" x="328"/> 
-                                    </g> 
-                                    <use xlink:href="#a" x="410"/> 
-                                </g> 
-                                <use xlink:href="#c" x="41" y="35"/> 
-                            </g> 
-                            <use xlink:href="#d" y="70"/> 
-                        </g> 
-                        <use xlink:href="#e" y="140"/> 
-                        <use xlink:href="#f" y="280"/> 
-                    </svg>
-                </a>
+            <div>
+                <h1 class="text-xs font-bold text-white tracking-widest uppercase" th:text="#{login.chao_mung}">🏢 Quản Lý Chung Cư</h1>
+            </div>
+        </div>
+
+        <div class="flex gap-2 items-center">
+            <a href="javascript:void(0)" onclick="changeLang('vi')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="Tiếng Việt" th:title="#{lang.vi}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
+                    <rect width="512" height="512" fill="#da251d"/>
+                    <polygon points="256,70 299,203 440,203 326,286 369,419 256,336 143,419 186,286 72,203 213,203" fill="#ffff00"/>
+                </svg>
+            </a>
+            <a href="javascript:void(0)" onclick="changeLang('en')" class="hover:scale-110 active:scale-95 transition-all duration-150 block focus:outline-none" title="English" th:title="#{lang.en}">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1235 650" class="w-5 h-5 rounded-full border border-slate-700/80 shadow-md" preserveAspectRatio="xMidYMid slice">
+                    <path d="M0 0h1235v650H0" fill="#fff"/>
+                    <path stroke="#b22234" stroke-dasharray="50" stroke-width="2470" d="M0 0v651"/>
+                    <path fill="#3c3b6e" d="M0 0h494v350H0"/>
+                    <g id="e">
+                        <g id="d">
+                            <g id="f">
+                                <g id="c">
+                                    <g id="b">
+                                        <path id="a" d="m30 50.6 12-36 12 36-30.8-22H61" fill="#fff"/>
+                                        <use xlink:href="#a" x="82"/>
+                                    </g>
+                                    <use xlink:href="#b" x="164"/>
+                                    <use xlink:href="#a" x="328"/>
+                                </g>
+                                <use xlink:href="#a" x="410"/>
+                            </g>
+                            <use xlink:href="#c" x="41" y="35"/>
+                        </g>
+                        <use xlink:href="#d" y="70"/>
+                    </g>
+                    <use xlink:href="#e" y="140"/>
+                    <use xlink:href="#f" y="280"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="space-y-1.5">
+        <h3 class="text-xl font-bold text-white">Chào Mừng</h3>
+        <p class="text-xs text-slate-400">Vui lòng nhập tài khoản do Ban Quản lý cấp</p>
+    </div>
+
+    <div th:if="${error}" class="flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-[11px]">
+        <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
+        <div>
+            <span class="font-bold">Đăng nhập thất bại:</span>
+            <p class="mt-0.5" th:text="${error}">Tên đăng nhập hoặc mật khẩu chưa chính xác.</p>
+        </div>
+    </div>
+
+    <div id="captchaError" class="hidden flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-[11px]">
+        <i data-lucide="shield-alert" class="w-4 h-4 shrink-0 mt-0.5"></i>
+        <div>
+            <span class="font-bold">Xác thực không chính xác:</span>
+            <p class="mt-0.5">Kết quả phép tính CAPTCHA chưa đúng. Vui lòng thử lại.</p>
+        </div>
+    </div>
+
+    <form th:action="@{/login}" method="POST" onsubmit="return validateForm(event)" class="space-y-4">
+        <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-slate-300" th:text="#{login.ten_dang_nhap}">Tên đăng nhập</label>
+            <div class="relative">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="user" class="w-4 h-4"></i></span>
+                <input type="text" name="tenDangNhap" required placeholder="Nhập tài khoản của bạn..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
             </div>
         </div>
 
         <div class="space-y-1.5">
-            <h3 class="text-xl font-bold text-white">Chào Mừng</h3>
-            <p class="text-xs text-slate-400">Vui lòng nhập tài khoản do Ban Quản lý cấp</p>
-        </div>
-
-        <!-- Thymeleaf Error Alert -->
-        <div th:if="${error}" class="flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-[11px]">
-            <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
-            <div>
-                <span class="font-bold">Đăng nhập thất bại:</span>
-                <p class="mt-0.5" th:text="${error}">Tên đăng nhập hoặc mật khẩu chưa chính xác.</p>
+            <label class="text-xs font-semibold text-slate-300" th:text="#{login.mat_khau}">Mật khẩu</label>
+            <div class="relative">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="lock" class="w-4 h-4"></i></span>
+                <input type="password" name="matKhau" required placeholder="••••••••" class="w-full bg-darkbg border border-darkborder rounded-xl py-2 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
             </div>
         </div>
 
-        <!-- Form action with th:action -->
-        <form th:action="@{/login}" method="POST" class="space-y-4">
-            <div class="space-y-1.5">
-                <label class="text-xs font-semibold text-slate-300" th:text="#{login.ten_dang_nhap}">Tên đăng nhập</label>
-                <div class="relative">
-                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="user" class="w-4 h-4"></i></span>
-                    <input type="text" name="tenDangNhap" required placeholder="Nhập tài khoản của bạn..." class="w-full bg-darkbg border border-darkborder rounded-xl py-2 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
+        <div class="space-y-2 border-t border-darkborder/50 pt-3">
+            <label class="text-xs font-semibold text-slate-300">Xác thực câu hỏi tính toán</label>
+            <div class="flex items-center gap-2">
+                <div class="relative bg-slate-900 rounded-xl border border-darkborder flex items-center justify-center overflow-hidden h-9 w-32 shrink-0 select-none">
+                    <canvas id="captchaCanvas" width="120" height="36" class="w-full h-full opacity-90"></canvas>
+                </div>
+                <button type="button" onclick="generateMathCaptcha()" class="p-2 bg-darkbg border border-darkborder text-slate-400 hover:text-white rounded-xl hover:border-slate-600 transition flex items-center justify-center h-9 w-9 focus:outline-none" title="Đổi câu hỏi khác">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+                <div class="relative flex-1">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="calculator" class="w-3.5 h-3.5"></i></span>
+                    <input type="number" id="captchaInput" required placeholder="Kết quả ?" class="w-full bg-darkbg border border-darkborder rounded-xl py-2 pl-9 pr-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                 </div>
             </div>
-
-            <div class="space-y-1.5">
-                <label class="text-xs font-semibold text-slate-300" th:text="#{login.mat_khau}">Mật khẩu</label>
-                <div class="relative">
-                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><i data-lucide="lock" class="w-4 h-4"></i></span>
-                    <input type="password" name="matKhau" required placeholder="••••••••" class="w-full bg-darkbg border border-darkborder rounded-xl py-2 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition">
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between text-[11px] pt-1">
-                <label class="flex items-center gap-1.5 cursor-pointer text-slate-400 select-none">
-                    <input type="checkbox" class="rounded bg-darkbg border-darkborder text-brand-500 focus:ring-0 w-3.5 h-3.5"> Nhớ đăng nhập
-                </label>
-            </div>
-
-            <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-medium transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 text-xs" th:text="#{login.nut_dang_nhap}">
-                Đăng Nhập <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-        </form>
-
-        <div class="text-[10px] text-slate-500 text-center border-t border-darkborder pt-4">
-            &copy; 2026 Skyline Residence. Bảo mật & Tiện nghi.
         </div>
+
+        <div class="flex items-center justify-between text-[11px] pt-1">
+            <label class="flex items-center gap-1.5 cursor-pointer text-slate-400 select-none">
+                <input type="checkbox" class="rounded bg-darkbg border-darkborder text-brand-500 focus:ring-0 w-3.5 h-3.5"> Nhớ đăng nhập
+            </label>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-medium transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 text-xs" th:text="#{login.nut_dang_nhap}">
+            Đăng Nhập <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+    </form>
+
+    <div class="text-[10px] text-slate-500 text-center border-t border-darkborder pt-4">
+        &copy; 2026 Skyline Residence. Bảo mật & Tiện nghi.
     </div>
+</div>
 
-    <script>
-        function changeLang(lang) {
-            var url = new URL(window.location.href);
-            url.searchParams.set('lang', lang);
-            window.location.href = url.toString();
+<script>
+    let correctResult = 0;
+
+    function changeLang(lang) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('lang', lang);
+        window.location.href = url.toString();
+    }
+
+    // Hàm tạo cấu trúc câu hỏi toán ngẫu nhiên toán học cơ bản
+    function generateMathCaptcha() {
+        const canvas = document.getElementById("captchaCanvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+
+        // Xóa canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#0F172A";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Các phép toán ngẫu nhiên: +, -, *
+        const operators = ['+', '-', '*'];
+        const op = operators[Math.floor(Math.random() * operators.length)];
+        let num1 = 0, num2 = 0, displayOp = op;
+
+        if (op === '+') {
+            num1 = Math.floor(Math.random() * 20) + 5;  // 5 -> 24
+            num2 = Math.floor(Math.random() * 20) + 1;  // 1 -> 20
+            correctResult = num1 + num2;
+        } else if (op === '-') {
+            num1 = Math.floor(Math.random() * 20) + 10; // 10 -> 29
+            num2 = Math.floor(Math.random() * 9) + 1;   // 1 -> 9 (Đảm bảo không ra số âm quá sâu)
+            correctResult = num1 - num2;
+        } else if (op === '*') {
+            num1 = Math.floor(Math.random() * 9) + 2;   // 2 -> 10
+            num2 = Math.floor(Math.random() * 9) + 2;   // 2 -> 10
+            displayOp = '×'; // Đổi ký tự hiển thị nhân cho thân thiện
+            correctResult = num1 * num2;
         }
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            lucide.createIcons();
-        });
-    </script>
+
+        const captchaText = `${num1} ${displayOp} ${num2} = ?`;
+
+        // Vẽ các đường gạch nhiễu bảo mật nhẹ nền canvas
+        for (let i = 0; i < 3; i++) {
+            ctx.strokeStyle = `rgba(14, 165, 233, ${Math.random() * 0.25 + 0.1})`;
+            ctx.lineWidth = Math.random() * 1.5 + 1;
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.stroke();
+        }
+
+        // Thiết lập cấu hình render text toán học
+        ctx.font = "bold 16px 'Inter', sans-serif";
+        ctx.fillStyle = "#F1F5F9";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+
+        // Đổ text canh giữa có góc xoay nhẹ nghiêng chống OCR bot tự động đọc dữ liệu ảnh
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate((Math.random() * 6 - 3) * Math.PI / 180); // Xoay nhẹ góc nghiêng tự nhiên từ -3 đến 3 độ
+        ctx.fillText(captchaText, 0, 0);
+        ctx.restore();
+
+        // Làm trống ô input nhập liệu cũ
+        document.getElementById("captchaInput").value = "";
+    }
+
+    // Logic kiểm tra kết quả toán học trước khi Submit form đi
+    function validateForm(event) {
+        const userInput = parseInt(document.getElementById("captchaInput").value.trim(), 10);
+        const errorAlert = document.getElementById("captchaError");
+
+        if (isNaN(userInput) || userInput !== correctResult) {
+            event.preventDefault(); // Chặn hành vi submit của form
+            errorAlert.classList.remove("hidden"); // Hiển thị khung thông báo đỏ
+            generateMathCaptcha(); // Reset cập nhật ngay câu hỏi toán mới
+            return false;
+        }
+
+        errorAlert.classList.add("hidden");
+        return true;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        lucide.createIcons();
+        generateMathCaptcha(); // Tải cấu trúc captcha ngay khi mở giao diện lên
+    });
+</script>
 </body>
 
 </html>
