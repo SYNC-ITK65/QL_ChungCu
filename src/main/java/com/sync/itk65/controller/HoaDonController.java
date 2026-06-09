@@ -21,6 +21,9 @@ import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/hoa-don")
@@ -28,6 +31,9 @@ public class HoaDonController {
 
     @Autowired
     private HoaDonService hoaDonService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private CanHoRepository canHoRepository;
@@ -145,13 +151,15 @@ public class HoaDonController {
                 if (model.containsAttribute("errorMessage")) {
                     ra.addFlashAttribute("thongBaoLoi", model.getAttribute("errorMessage"));
                 } else {
-                    ra.addFlashAttribute("thongBaoLoi", "Không thể tải chi tiết hóa đơn.");
+                    Locale locale = LocaleContextHolder.getLocale();
+                    ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.cannotLoadDetail", null, "Không thể tải chi tiết hóa đơn.", locale));
                 }
                 return "redirect:/admin/hoa-don";
             }
             return "admin/hoa_don_chi_tiet";
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xem chi tiết hóa đơn: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.viewDetailEx", new Object[]{e.getMessage()}, "Lỗi khi xem chi tiết hóa đơn: " + e.getMessage(), locale));
             return "redirect:/admin/hoa-don";
         }
     }
@@ -194,7 +202,8 @@ public class HoaDonController {
     public String xoaHoaDon(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             hoaDonService.xoaHoaDon(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Xóa hóa đơn thành công.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("hd.success.delete", null, "Xóa hóa đơn thành công.", locale));
         } catch (Exception e) {
             ra.addFlashAttribute("thongBaoLoi", e.getMessage());
         }
@@ -244,7 +253,8 @@ public class HoaDonController {
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Lỗi hệ thống: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            model.addAttribute("errorMessage", messageSource.getMessage("hd.error.system", new Object[]{e.getMessage()}, "Lỗi hệ thống: " + e.getMessage(), locale));
         }
 
         return "admin/hoa_don_hang_loat";
@@ -265,14 +275,16 @@ public class HoaDonController {
     @PostMapping("/import-excel")
     public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
         if (file.isEmpty()) {
-            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.selectFile", null, "Vui lòng chọn file Excel để import!", locale));
             return "redirect:/admin/hoa-don";
         }
         try {
             String ketQua = hoaDonService.importExcelHoaDon(file);
             ra.addFlashAttribute("thongBaoThanhCong", ketQua);
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.importEx", new Object[]{e.getMessage()}, "Lỗi import: " + e.getMessage(), locale));
         }
         return "redirect:/admin/hoa-don";
     }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import org.springframework.context.MessageSource;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/thanh-toan")
@@ -22,6 +24,9 @@ public class ThanhToanController {
 
     @Autowired
     private HoaDonRepository hoaDonRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     // 1. Xem danh sách Lịch sử thanh toán
     // Đường dẫn: http://localhost:8080/admin/thanh-toan/lich-su
@@ -78,7 +83,8 @@ public class ThanhToanController {
     public String luuThanhToan(@ModelAttribute("thanhToan") ThanhToan thanhToan, RedirectAttributes ra) {
         try {
             thanhToanService.thucHienThanhToan(thanhToan);
-            ra.addFlashAttribute("thongBaoThanhCong", "Xác nhận thanh toán thành công.");
+            Locale locale = org.springframework.context.i18n.LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("thanhToan.success.xacNhan", null, "Xác nhận thanh toán thành công.", locale));
             // Redirect về trang lịch sử thanh toán thay vì danh sách hóa đơn
             return "redirect:/admin/thanh-toan/lich-su";
         } catch (Exception e) {

@@ -16,6 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/nguoi-dung") // Đường dẫn trên web: localhost:8080/admin/nguoi-dung
@@ -29,7 +32,9 @@ public class NguoiDungController {
     private CuDanService cuDanService;
 
     @Autowired
-    private org.springframework.context.MessageSource messageSource;
+    private MessageSource messageSource;
+
+
 
     // Hàm hiển thị danh sách người dùng
     @GetMapping
@@ -95,7 +100,8 @@ public class NguoiDungController {
         // Đảm bảo vai trò chỉ là Admin (1), Quản lý (2), Lễ tân (4) hoặc Bảo vệ (5)
         int vaiTro = nguoiDung.getVaiTro();
         if (vaiTro != 1 && vaiTro != 2 && vaiTro != 4 && vaiTro != 5) {
-            model.addAttribute("errorMessage", "Module này chỉ quản lý tài khoản Admin, Quản lý, Lễ tân và Bảo vệ. Vui lòng sử dụng module Quản lý cư dân.");
+            Locale locale = LocaleContextHolder.getLocale();
+            model.addAttribute("errorMessage", messageSource.getMessage("nd.error.invalidRole", null, "Module này chỉ quản lý tài khoản Admin, Quản lý, Lễ tân và Bảo vệ. Vui lòng sử dụng module Quản lý cư dân.", locale));
             return "admin/nguoi_dung_form";
         }
 
@@ -143,7 +149,8 @@ public class NguoiDungController {
             model.addAttribute("errorMessage", e.getMessage());
             return "admin/nguoi_dung_form";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu người dùng. Vui lòng kiểm tra lại thông tin!");
+            Locale locale = LocaleContextHolder.getLocale();
+            model.addAttribute("errorMessage", messageSource.getMessage("nd.error.save", null, "Có lỗi xảy ra khi lưu người dùng. Vui lòng kiểm tra lại thông tin!", locale));
             return "admin/nguoi_dung_form";
         }
     }
@@ -154,13 +161,15 @@ public class NguoiDungController {
         NguoiDung nguoiDung = nguoiDungService.layNguoiDungTheoId(id);
 
         if (nguoiDung == null) {
-            ra.addFlashAttribute("errorMessage", "Không tìm thấy người dùng với ID: " + id);
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("errorMessage", messageSource.getMessage("nd.error.notFound", new Object[]{id}, "Không tìm thấy người dùng với ID: " + id, locale));
             return "redirect:/admin/nguoi-dung";
         }
 
         // Nếu là Cư dân, chuyển hướng sang module Quản lý cư dân để xóa
         if (nguoiDung.getVaiTro() == 3) {
-            ra.addFlashAttribute("errorMessage", "Không thể xóa Cư dân từ module này. Vui lòng sử dụng trang Quản lý cư dân.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("errorMessage", messageSource.getMessage("nd.error.deleteCuDan", null, "Không thể xóa Cư dân từ module này. Vui lòng sử dụng trang Quản lý cư dân.", locale));
             return "redirect:/admin/nguoi-dung";
         }
 

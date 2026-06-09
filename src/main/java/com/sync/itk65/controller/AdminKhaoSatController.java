@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/khao-sat")
@@ -25,6 +28,7 @@ public class AdminKhaoSatController {
     @Autowired private KhaoSatService khaoSatService;
     @Autowired private CuDanRepository cuDanRepo;
     @Autowired private LichSuVoteRepository lichSuVoteRepo;
+    @Autowired private MessageSource messageSource;
 
     @GetMapping
     public String index(@RequestParam(required = false) String tuKhoa,
@@ -81,14 +85,15 @@ public class AdminKhaoSatController {
         validateChuoi(khaoSat.getMoTa(), 10, 500, "moTa", "Nội dung/Mô tả", result);
 
         // 2. KIỂM TRA CÁC PHƯƠNG ÁN (Lựa chọn)
+        Locale locale = LocaleContextHolder.getLocale();
         if (khaoSat.getDanhSachLuaChon() == null || khaoSat.getDanhSachLuaChon().isEmpty()) {
-            model.addAttribute("globalError", "Khảo sát phải có ít nhất 2 phương án bình chọn hợp lệ.");
+            model.addAttribute("globalError", messageSource.getMessage("ks.error.minOptions", null, "Khảo sát phải có ít nhất 2 phương án bình chọn hợp lệ.", locale));
             result.reject("globalError");
         } else {
             khaoSat.getDanhSachLuaChon().removeIf(lc -> lc == null || lc.getNoiDungLuaChon() == null || lc.getNoiDungLuaChon().trim().isEmpty());
 
             if (khaoSat.getDanhSachLuaChon().size() < 2) {
-                model.addAttribute("globalError", "Khảo sát phải có ít nhất 2 phương án bình chọn hợp lệ.");
+                model.addAttribute("globalError", messageSource.getMessage("ks.error.minOptions", null, "Khảo sát phải có ít nhất 2 phương án bình chọn hợp lệ.", locale));
                 result.reject("globalError");
             } else {
                 for (int i = 0; i < khaoSat.getDanhSachLuaChon().size(); i++) {
@@ -102,15 +107,15 @@ public class AdminKhaoSatController {
         // 3. KIỂM TRA THỜI GIAN
         LocalDateTime now = LocalDateTime.now();
         if (khaoSat.getThoiGianBatDau() == null) {
-            result.rejectValue("thoiGianBatDau", "error.ks", "Vui lòng chọn thời gian bắt đầu.");
+            result.rejectValue("thoiGianBatDau", "error.ks", messageSource.getMessage("ks.error.startTimeNull", null, "Vui lòng chọn thời gian bắt đầu.", locale));
         } else if (khaoSat.getId() == null && khaoSat.getThoiGianBatDau().isBefore(now.minusMinutes(2))) {
-            result.rejectValue("thoiGianBatDau", "error.ks", "Thời gian bắt đầu không được nằm trong quá khứ.");
+            result.rejectValue("thoiGianBatDau", "error.ks", messageSource.getMessage("ks.error.startTimePast", null, "Thời gian bắt đầu không được nằm trong quá khứ.", locale));
         }
 
         if (khaoSat.getThoiGianKetThuc() == null) {
-            result.rejectValue("thoiGianKetThuc", "error.ks", "Vui lòng chọn thời gian kết thúc.");
+            result.rejectValue("thoiGianKetThuc", "error.ks", messageSource.getMessage("ks.error.endTimeNull", null, "Vui lòng chọn thời gian kết thúc.", locale));
         } else if (khaoSat.getThoiGianBatDau() != null && khaoSat.getThoiGianKetThuc().isBefore(khaoSat.getThoiGianBatDau())) {
-            result.rejectValue("thoiGianKetThuc", "error.ks", "Thời gian kết thúc phải diễn ra sau thời gian bắt đầu.");
+            result.rejectValue("thoiGianKetThuc", "error.ks", messageSource.getMessage("ks.error.endTimeBeforeStart", null, "Thời gian kết thúc phải diễn ra sau thời gian bắt đầu.", locale));
         }
 
         // 4. KẾT LUẬN LỖI
@@ -120,31 +125,32 @@ public class AdminKhaoSatController {
 
         // THÀNH CÔNG -> Lưu CSDL
         khaoSatService.luuKhaoSat(khaoSat);
-        ra.addFlashAttribute("msg", "Lưu khảo sát thành công!");
+        ra.addFlashAttribute("msg", messageSource.getMessage("ks.success.save", null, "Lưu khảo sát thành công!", locale));
         return "redirect:/admin/khao-sat";
     }
     // --- HÀM KIỂM TRA CHUỖI ĐA LỚP ---
     private void validateChuoi(String input, int min, int max, String fieldName, String label, BindingResult result) {
+        Locale locale = LocaleContextHolder.getLocale();
         if (input == null || input.trim().isEmpty()) {
-            result.rejectValue(fieldName, "error.ks", label + " không được để trống.");
+            result.rejectValue(fieldName, "error.ks", messageSource.getMessage("ks.error.blank", new Object[]{label}, label + " không được để trống.", locale));
             return;
         }
         String txt = input.trim();
         if (txt.length() < min || txt.length() > max) {
-            result.rejectValue(fieldName, "error.ks", label + " phải từ " + min + " đến " + max + " ký tự.");
+            result.rejectValue(fieldName, "error.ks", messageSource.getMessage("ks.error.length", new Object[]{label, min, max}, label + " phải từ " + min + " đến " + max + " ký tự.", locale));
         } else if (!txt.matches("(?s).*\\p{L}.*")) {
-            result.rejectValue(fieldName, "error.ks", label + " phải chứa ít nhất một chữ cái (không được chỉ toàn số/ký tự đặc biệt).");
+            result.rejectValue(fieldName, "error.ks", messageSource.getMessage("ks.error.noLetter", new Object[]{label}, label + " phải chứa ít nhất một chữ cái (không được chỉ toàn số/ký tự đặc biệt).", locale));
         } else if (txt.matches("(?s).*(.)\\1{4,}.*")) {
-            result.rejectValue(fieldName, "error.ks", label + " chứa ký tự lặp lại liên tiếp vô nghĩa (Vd: aaaaa).");
+            result.rejectValue(fieldName, "error.ks", messageSource.getMessage("ks.error.repeatChar", new Object[]{label}, label + " chứa ký tự lặp lại liên tiếp vô nghĩa (Vd: aaaaa).", locale));
         } else if (txt.toLowerCase().matches("(?s).*(asdf|qwerty|test|abc|hehe|xxxx).*")) {
-            result.rejectValue(fieldName, "error.ks", label + " chứa mẫu dữ liệu rác không hợp lệ.");
+            result.rejectValue(fieldName, "error.ks", messageSource.getMessage("ks.error.spam", new Object[]{label}, label + " chứa mẫu dữ liệu rác không hợp lệ.", locale));
         } else {
             int nonLetterCount = 0;
             for (char c : txt.toCharArray()) {
                 if (!Character.isLetter(c) && !Character.isWhitespace(c)) nonLetterCount++;
             }
             if ((double) nonLetterCount / txt.length() > 0.5) {
-                result.rejectValue(fieldName, "error.ks", label + " chứa quá nhiều số hoặc ký tự bất thường (>50%).");
+                result.rejectValue(fieldName, "error.ks", messageSource.getMessage("ks.error.tooManySpecials", new Object[]{label}, label + " chứa quá nhiều số hoặc ký tự bất thường (>50%).", locale));
             }
         }
     }
@@ -152,7 +158,8 @@ public class AdminKhaoSatController {
     @GetMapping("/xoa/{id}")
     public String delete(@PathVariable("id") Long id, RedirectAttributes ra) {
         String rs = khaoSatService.xoaKhaoSat(id);
-        if(rs.equals("SUCCESS")) ra.addFlashAttribute("msg", "Đã xóa thành công!");
+        Locale locale = LocaleContextHolder.getLocale();
+        if(rs.equals("SUCCESS")) ra.addFlashAttribute("msg", messageSource.getMessage("ks.success.delete", null, "Đã xóa thành công!", locale));
         else ra.addFlashAttribute("err", rs);
         return "redirect:/admin/khao-sat";
     }

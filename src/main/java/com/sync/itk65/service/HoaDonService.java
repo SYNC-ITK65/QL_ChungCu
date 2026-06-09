@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.time.LocalDate;
+import org.springframework.context.MessageSource;
+import java.util.Locale;
 
 @Service
 public class HoaDonService {
@@ -63,6 +65,9 @@ public class HoaDonService {
 
     @Autowired
     private LichSuThanhToanRepository lichSuThanhToanRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     // Tìm kiếm hóa đơn theo nhiều điều kiện
     public Page<HoaDon> timKiemHoaDon(String maCanHo, String trangThai, Integer thang, Integer nam, int page, int size) {
@@ -594,7 +599,9 @@ public class HoaDonService {
             model.addAttribute("chiTietDayDu", chiTiet);
 
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Lỗi tính toán chi tiết hóa đơn: " + e.getMessage());
+            Locale locale = org.springframework.context.i18n.LocaleContextHolder.getLocale();
+            String errorMsg = messageSource.getMessage("hd.error.viewDetailEx", new Object[]{e.getMessage()}, "Lỗi tính toán chi tiết hóa đơn: " + e.getMessage(), locale);
+            model.addAttribute("errorMessage", errorMsg);
         }
     }
 

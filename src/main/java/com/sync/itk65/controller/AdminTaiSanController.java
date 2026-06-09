@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +30,9 @@ public class AdminTaiSanController {
 
     @Autowired
     private LichSuBaoTriService lichSuBaoTriService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping
     public String list(Model model,
@@ -81,7 +87,8 @@ public class AdminTaiSanController {
             model.addAttribute("errorMessage", e.getMessage());
             return "admin/tai_san_form";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu tài sản!");
+            Locale locale = LocaleContextHolder.getLocale();
+            model.addAttribute("errorMessage", messageSource.getMessage("ts.error.saveEx", null, "Có lỗi xảy ra khi lưu tài sản!", locale));
             return "admin/tai_san_form";
         }
     }

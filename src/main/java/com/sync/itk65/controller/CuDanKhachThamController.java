@@ -20,6 +20,10 @@ public class CuDanKhachThamController {
     @Autowired private DangKyKhachThamService khachThamService;
     @Autowired private MessageSource messageSource;
 
+    private String msg(String code, String defaultMsg) {
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(code, null, defaultMsg, locale);
+    }
     private String msg(String code) {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(code, null, code, locale);
@@ -74,29 +78,29 @@ public class CuDanKhachThamController {
         khach.setTrangThai("Chờ duyệt");
 
         khachThamService.luu(khach);
-        ra.addFlashAttribute("thongBaoThanhCong", "Đăng ký khách thăm thành công!");
+        ra.addFlashAttribute("thongBaoThanhCong", msg("kt.success.register", "Đăng ký khách thăm thành công!"));
         return "redirect:/cudan/khach-tham";
     }
     // --- HÀM KIỂM TRA LỖI DÙNG CHUNG THÊM VÀO ĐÂY ---
     private String kiemTraLoiKhachTham(String tenKhach, String cmnd, String bienSoXe, LocalDateTime thoiGianDuKien, LocalDateTime ngayDi) {
         // Regex Tên: Chỉ chữ cái và khoảng trắng, 2-50 ký tự
         if (tenKhach == null || !tenKhach.trim().matches("^[a-zA-ZÀ-ỹ][a-zA-ZÀ-ỹ\\s]{1,49}$")) {
-            return "Lỗi: Tên khách chỉ được chứa chữ cái, tối thiểu 2 ký tự (Vd: Lê A).";
+            return msg("kt.error.invalidName", "Lỗi: Tên khách chỉ được chứa chữ cái, tối thiểu 2 ký tự (Vd: Lê A).");
         }
         // Regex CMND/CCCD: Đúng 9 hoặc 12 số
         if (cmnd == null || !cmnd.trim().matches("^(\\d{9}|\\d{12})$")) {
-            return "Lỗi: CMND/CCCD phải bao gồm chính xác 9 hoặc 12 chữ số viết liền.";
+            return msg("kt.error.invalidCmnd", "Lỗi: CMND/CCCD phải bao gồm chính xác 9 hoặc 12 chữ số viết liền.");
         }
         // Thời gian >= hiện tại (Trễ 5 phút)
         if (thoiGianDuKien == null || thoiGianDuKien.isBefore(LocalDateTime.now().minusMinutes(5))) {
-            return "Lỗi: Thời gian dự kiến đến không được là thời gian trong quá khứ.";
+            return msg("kt.error.invalidTime", "Lỗi: Thời gian dự kiến đến không được là thời gian trong quá khứ.");
         }
         // Kiểm tra ngày đi
         if (ngayDi == null) {
-            return "Lỗi: Vui lòng chọn ngày dự kiến đi.";
+            return msg("kt.error.missingLeaveDate", "Lỗi: Vui lòng chọn ngày dự kiến đi.");
         }
         if (ngayDi.isBefore(thoiGianDuKien)) {
-            return "Lỗi: Ngày dự kiến đi phải diễn ra sau thời gian dự kiến đến.";
+            return msg("kt.error.invalidLeaveDate", "Lỗi: Ngày dự kiến đi phải diễn ra sau thời gian dự kiến đến.");
         }
         // Regex Biển số xe (Nếu có nhập)
         if (bienSoXe != null && !bienSoXe.trim().isEmpty()) {
@@ -114,9 +118,9 @@ public class CuDanKhachThamController {
         // Chỉ cho phép xóa khi còn ở trạng thái "Chờ duyệt"
         if (khach != null && "Chờ duyệt".equals(khach.getTrangThai())) {
             khachThamService.xoa(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã hủy đăng ký khách thăm thành công.");
+            ra.addFlashAttribute("thongBaoThanhCong", msg("kt.success.cancel", "Đã hủy đăng ký khách thăm thành công."));
         } else {
-            ra.addFlashAttribute("thongBaoLoi", "Không thể hủy vì yêu cầu đã được Lễ tân xử lý!");
+            ra.addFlashAttribute("thongBaoLoi", msg("kt.error.cannotCancel", "Không thể hủy vì yêu cầu đã được Lễ tân xử lý!"));
         }
         return "redirect:/cudan/khach-tham";
     }
@@ -146,9 +150,9 @@ public class CuDanKhachThamController {
             khach.setThoiGianDuKien(thoiGianDuKien);
             khach.setNgayDi(ngayDi);
             khachThamService.luu(khach); // Lưu lại thông tin mới
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã cập nhật thông tin khách thăm thành công.");
+            ra.addFlashAttribute("thongBaoThanhCong", msg("kt.success.update", "Đã cập nhật thông tin khách thăm thành công."));
         } else {
-            ra.addFlashAttribute("thongBaoLoi", "Không thể sửa vì yêu cầu đã được Lễ tân xử lý!");
+            ra.addFlashAttribute("thongBaoLoi", msg("kt.error.cannotUpdate", "Không thể sửa vì yêu cầu đã được Lễ tân xử lý!"));
         }
         return "redirect:/cudan/khach-tham";
     }

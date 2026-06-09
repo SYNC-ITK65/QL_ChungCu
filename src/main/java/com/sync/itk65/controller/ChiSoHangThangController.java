@@ -18,6 +18,9 @@ import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/chi-so")
@@ -25,6 +28,9 @@ public class ChiSoHangThangController {
 
     @Autowired
     private ChiSoHangThangService chiSoHangThangService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private CanHoRepository canHoRepository;
@@ -91,11 +97,13 @@ public class ChiSoHangThangController {
     public String xoaChiSo(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             chiSoHangThangService.xoaChiSo(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã xóa chỉ số thành công.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("cs.success.delete", null, "Đã xóa chỉ số thành công.", locale));
         } catch (IllegalStateException e) {
             ra.addFlashAttribute("thongBaoLoi", e.getMessage());
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xóa chỉ số: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cs.error.deleteEx", new Object[]{e.getMessage()}, "Lỗi khi xóa chỉ số: " + e.getMessage(), locale));
         }
         return "redirect:/admin/chi-so";
     }
@@ -115,14 +123,16 @@ public class ChiSoHangThangController {
     @PostMapping("/import-excel")
     public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
         if (file.isEmpty()) {
-            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cs.error.selectFile", null, "Vui lòng chọn file Excel để import!", locale));
             return "redirect:/admin/chi-so";
         }
         try {
             String ketQua = chiSoHangThangService.importExcelChiSo(file);
             ra.addFlashAttribute("thongBaoThanhCong", ketQua);
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cs.error.importEx", new Object[]{e.getMessage()}, "Lỗi import: " + e.getMessage(), locale));
         }
         return "redirect:/admin/chi-so";
     }

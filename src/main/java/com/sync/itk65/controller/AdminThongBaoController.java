@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/thong-bao")
@@ -20,6 +23,9 @@ public class AdminThongBaoController {
 
     @Autowired
     private CanHoService canHoService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping
     public String hienThiDanhSach(Model model,
@@ -80,7 +86,8 @@ public class AdminThongBaoController {
             model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
             return "admin/thong_bao_form";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu thông báo!");
+            Locale locale = LocaleContextHolder.getLocale();
+            model.addAttribute("errorMessage", messageSource.getMessage("tb.error.saveEx", null, "Có lỗi xảy ra khi lưu thông báo!", locale));
             model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
             return "admin/thong_bao_form";
         }
