@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{login.tieude}">Đăng Nhập Hệ Thống</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- BEGIN Google reCAPTCHA v3 integration -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6Le1234Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"></script>
+    <!-- Site key token for reCAPTCHA v3 client-side execution -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -525,6 +528,8 @@
                             th:placeholder="#{login.captcha.placeholder}"
                             class="w-full bg-darkbg border border-darkborder rounded-xl py-2 pl-9 pr-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-brand-500 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                     </div>
+                    <!-- reCAPTCHA v3 response token field -->
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" value="">
                 </div>
             </div>
 
@@ -550,6 +555,12 @@
     </div>
 
     <script>
+        // reCAPTCHA v3 integration settings
+        const RECAPTCHA_SITE_KEY = '6Le1234Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+        const RECAPTCHA_ACTION = 'login';
+        // reCAPTCHA v3 client + server key placeholders.
+        // Server-side secret should be stored in application.properties as:
+        // recaptcha.secret=6Lc5Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         let correctResult = 0;
 
         function changeLang(lang) {
@@ -642,9 +653,24 @@
             }
         }
 
+        function executeRecaptcha() {
+            if (typeof grecaptcha === 'undefined') {
+                return;
+            }
+            grecaptcha.ready(function () {
+                grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: RECAPTCHA_ACTION }).then(function (token) {
+                    const recaptchaField = document.getElementById('g-recaptcha-response');
+                    if (recaptchaField) {
+                        recaptchaField.value = token;
+                    }
+                });
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             lucide.createIcons();
             generateMathCaptcha(); // Tải cấu trúc captcha ngay khi mở giao diện lên
+            executeRecaptcha(); // Trigger reCAPTCHA v3 token generation
         });
 
         document.addEventListener("click", function (event) {

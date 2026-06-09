@@ -4,6 +4,8 @@ import com.sync.itk65.entity.ThongBao;
 import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.ThongBaoService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/admin/thong-bao")
 public class AdminThongBaoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminThongBaoController.class);
 
     @Autowired
     private ThongBaoService thongBaoService;
@@ -76,10 +80,12 @@ public class AdminThongBaoController {
             thongBaoService.saveThongBao(thongBao);
             return "redirect:/admin/thong-bao";
         } catch (IllegalArgumentException e) {
+            logger.warn("Validation / save failed for ThongBao: {}", e.getMessage(), e);
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
             return "admin/thong_bao_form";
         } catch (Exception e) {
+            logger.error("Unexpected error while saving ThongBao", e);
             model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu thông báo!");
             model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
             return "admin/thong_bao_form";

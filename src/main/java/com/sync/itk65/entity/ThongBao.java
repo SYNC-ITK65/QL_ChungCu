@@ -1,6 +1,7 @@
 package com.sync.itk65.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -19,7 +20,8 @@ public class ThongBao {
 
     // Sửa TEXT thành NVARCHAR(MAX)
     @NotBlank(message = "Nội dung không được để trống")
-    @Column(name = "noi_dung", nullable = false)
+    @Lob
+    @Column(name = "noi_dung", nullable = false, columnDefinition = "NVARCHAR(MAX)")
     private String noiDung;
 
     @Column(name = "ngay_dang")
@@ -33,7 +35,8 @@ public class ThongBao {
     @Column(name = "doi_tuong_gui")
     private String doiTuongGui; // Đối tượng nhận: ALL, HO_GIA_DINH, NHIEU_HO, TANG
 
-    @Column(name = "gia_tri_doi_tuong")
+    @Lob
+    @Column(name = "gia_tri_doi_tuong", columnDefinition = "NVARCHAR(MAX)")
     private String giaTriDoiTuong; // Căn hộ cụ thể hoặc tầng
 
     @PrePersist
