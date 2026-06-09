@@ -183,8 +183,8 @@
                                         <a th:if="${don.trangThai == null || #strings.isEmpty(don.trangThai) || don.trangThai == 'Chờ duyệt' || don.trangThai == 'Đăng ký mới'}" th:href="@{/admin/yeu-cau-dich-vu/don-dat/tu-choi/{id}(id=${don.id})}" th:onclick="|return confirm('#{dv.ds.xac_nhan_tu_choi}')|" class="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/20 rounded-lg text-xs font-semibold transition flex items-center gap-1" th:title="#{dv.ds.tu_choi}">
                                             <i data-lucide="x" class="w-3.5 h-3.5"></i> <span th:text="#{dv.ds.tu_choi}" class="hidden xl:inline">Từ chối</span>
                                         </a>
-                                        <a th:if="${don.trangThai == 'Đã duyệt' || don.trangThai == 'Từ chối'}" th:href="@{/admin/yeu-cau-dich-vu/don-dat/sua/{id}(id=${don.id})}" th:onclick="|return confirm('Xác nhận hoàn tác để xem xét lại đơn này?')|" class="px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 border border-slate-600 rounded-lg text-xs font-semibold transition flex items-center gap-1" title="Hoàn tác">
-                                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> <span class="hidden xl:inline">Hoàn tác</span>
+                                        <a th:if="${don.trangThai == 'Đã duyệt' || don.trangThai == 'Từ chối'}" th:href="@{/admin/yeu-cau-dich-vu/don-dat/sua/{id}(id=${don.id})}" th:onclick="|return confirm('#{duyet.ui.xac_nhan_hoan_tac}')|" class="px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 border border-slate-600 rounded-lg text-xs font-semibold transition flex items-center gap-1" th:title="#{duyet.ui.hoan_tac}">
+                                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> <span th:text="#{duyet.ui.hoan_tac}" class="hidden xl:inline">Hoàn tác</span>
                                         </a>
                                     </div>
                                 </td>
