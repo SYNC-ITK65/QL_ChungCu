@@ -10,6 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Page;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/cudan/khao-sat")
@@ -18,6 +21,7 @@ public class CuDanKhaoSatController {
     @Autowired private KhaoSatService khaoSatService;
     @Autowired private CuDanRepository cuDanRepo;
     @Autowired private LichSuVoteRepository lichSuVoteRepo;
+    @Autowired private MessageSource messageSource;
 
     private CuDan layCuDanSession(HttpSession session) {
         NguoiDung user = (NguoiDung) session.getAttribute("nguoiDungDangNhap");
@@ -71,7 +75,10 @@ public class CuDanKhaoSatController {
         CuDan cuDan = layCuDanSession(session);
         String rs = khaoSatService.thucHienBinhChon(cuDan, khaoSatId, luaChonId);
 
-        if(rs.startsWith("SUCCESS")) ra.addFlashAttribute("msg", "Ghi nhận bình chọn thành công!");
+        if(rs.startsWith("SUCCESS")) {
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("msg", messageSource.getMessage("ks.success.vote", null, "Ghi nhận bình chọn thành công!", locale));
+        }
         else ra.addFlashAttribute("err", rs);
 
         return "redirect:/cudan/khao-sat/chi-tiet/" + khaoSatId;

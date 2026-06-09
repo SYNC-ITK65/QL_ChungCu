@@ -22,6 +22,9 @@ import com.sync.itk65.entity.HopDong;
 import com.sync.itk65.service.CanHoService;
 import com.sync.itk65.service.CuDanService;
 import com.sync.itk65.service.HopDongService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/hop-dong")
@@ -35,6 +38,9 @@ public class AdminHopDongController {
 
     @Autowired
     private CuDanService cuDanService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping
     public String hienThiDanhSach(Model model,
@@ -72,10 +78,12 @@ public class AdminHopDongController {
                              RedirectAttributes ra) {
         try {
             hopDongService.taoHopDong(hopDong, canHoId, cuDanId, thoiHan);
-            ra.addFlashAttribute("thongBaoThanhCong", "Tạo hợp đồng thành công.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("hd.success.create", null, "Tạo hợp đồng thành công.", locale));
             return "redirect:/admin/hop-dong";
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.createEx", new Object[]{e.getMessage()}, e.getMessage(), locale));
             return "redirect:/admin/hop-dong/tao-moi";
         }
     }
@@ -86,9 +94,11 @@ public class AdminHopDongController {
                                    RedirectAttributes ra) {
         try {
             hopDongService.capNhatTrangThai(id, trangThai);
-            ra.addFlashAttribute("thongBaoThanhCong", "Cập nhật trạng thái hợp đồng thành công.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("hd.success.updateStatus", null, "Cập nhật trạng thái hợp đồng thành công.", locale));
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.updateStatusEx", new Object[]{e.getMessage()}, e.getMessage(), locale));
         }
         return "redirect:/admin/hop-dong";
     }
@@ -112,7 +122,8 @@ public class AdminHopDongController {
     public String xemChiTietHopDong(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
         HopDong hopDong = hopDongService.layHopDongTheoId(id);
         if (hopDong == null) {
-            ra.addFlashAttribute("thongBaoLoi", "Không tìm thấy hợp đồng.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.notFound", null, "Không tìm thấy hợp đồng.", locale));
             return "redirect:/admin/hop-dong";
         }
         model.addAttribute("hopDong", hopDong);
@@ -123,7 +134,8 @@ public class AdminHopDongController {
     public String hienThiFormSuaHopDong(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
         HopDong hopDong = hopDongService.layHopDongTheoId(id);
         if (hopDong == null) {
-            ra.addFlashAttribute("thongBaoLoi", "Không tìm thấy hợp đồng.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.notFound", null, "Không tìm thấy hợp đồng.", locale));
             return "redirect:/admin/hop-dong";
         }
         model.addAttribute("hopDong", hopDong);
@@ -142,10 +154,12 @@ public class AdminHopDongController {
                                   RedirectAttributes ra) {
         try {
             hopDongService.capNhatHopDong(id, hopDong, canHoId, cuDanId, thoiHan);
-            ra.addFlashAttribute("thongBaoThanhCong", "Cập nhật hợp đồng thành công.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("hd.success.update", null, "Cập nhật hợp đồng thành công.", locale));
             return "redirect:/admin/hop-dong";
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.updateEx", new Object[]{e.getMessage()}, e.getMessage(), locale));
             return "redirect:/admin/hop-dong/sua/" + id;
         }
     }
@@ -154,9 +168,11 @@ public class AdminHopDongController {
     public String xoaHopDong(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             hopDongService.xoaHopDong(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Xóa hợp đồng thành công.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("hd.success.delete", null, "Xóa hợp đồng thành công.", locale));
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Không thể xóa hợp đồng: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("hd.error.deleteEx", new Object[]{e.getMessage()}, "Không thể xóa hợp đồng: " + e.getMessage(), locale));
         }
         return "redirect:/admin/hop-dong";
     }

@@ -2,6 +2,7 @@ package com.sync.itk65.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -174,7 +175,8 @@ public class CuDanController {
             model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
             return "admin/cu_dan_form";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Có lỗi xảy ra khi lưu cư dân. Vui lòng kiểm tra lại thông tin!");
+            Locale locale = org.springframework.context.i18n.LocaleContextHolder.getLocale();
+            model.addAttribute("errorMessage", messageSource.getMessage("cd.error.saveEx", null, "Có lỗi xảy ra khi lưu cư dân. Vui lòng kiểm tra lại thông tin!", locale));
             model.addAttribute("danhSachCanHo", canHoService.layTatCaCanHo());
             return "admin/cu_dan_form";
         }
@@ -215,14 +217,16 @@ public class CuDanController {
     @PostMapping("/import-excel")
     public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
         if (file.isEmpty()) {
-            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            Locale locale = org.springframework.context.i18n.LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cd.error.selectFile", null, "Vui lòng chọn file Excel để import!", locale));
             return "redirect:/admin/cu-dan";
         }
         try {
             String ketQua = cuDanService.importExcelCuDan(file);
             ra.addFlashAttribute("thongBaoThanhCong", ketQua);
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+            Locale locale = org.springframework.context.i18n.LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cd.error.importEx", new Object[]{e.getMessage()}, "Lỗi import: " + e.getMessage(), locale));
         }
         return "redirect:/admin/cu-dan";
     }

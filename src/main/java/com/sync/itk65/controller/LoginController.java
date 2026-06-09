@@ -11,12 +11,18 @@ import com.sync.itk65.entity.NguoiDung;
 import com.sync.itk65.service.NguoiDungService;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 public class LoginController {
 
     @Autowired
     private NguoiDungService nguoiDungService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     // Hiển thị trang chủ landing page
     @GetMapping("/")
@@ -50,7 +56,8 @@ public class LoginController {
                 return "redirect:/admin/dashboard"; // Admin (1), Quản lý (2), Lễ tân (4), Bảo vệ (5)
             }
         } else {
-            model.addAttribute("error", "Sai tên đăng nhập hoặc mật khẩu!");
+            Locale locale = LocaleContextHolder.getLocale();
+            model.addAttribute("error", messageSource.getMessage("login.error.wrongCredentials", null, "Sai tên đăng nhập hoặc mật khẩu!", locale));
             return "login";
         }
     }

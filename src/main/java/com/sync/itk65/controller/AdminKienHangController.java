@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/kien-hang")
@@ -20,6 +23,9 @@ public class AdminKienHangController {
 
     @Autowired
     private CanHoService canHoService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("")
     public String danhSach(Model model,
@@ -51,7 +57,8 @@ public class AdminKienHangController {
     public String hienThiFormSua(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
         KienHang kienHang = kienHangService.layTheoId(id);
         if (kienHang == null) {
-            ra.addFlashAttribute("thongBaoLoi", "Không tìm thấy đơn thư với ID: " + id);
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("kh.error.notFound", new Object[]{id}, "Không tìm thấy đơn thư với ID: " + id, locale));
             return "redirect:/admin/kien-hang";
         }
         if (kienHang.getCanHo() == null) {
@@ -65,7 +72,8 @@ public class AdminKienHangController {
     @PostMapping("/luu")
     public String luuKienHang(@ModelAttribute("kienHang") KienHang kienHang, RedirectAttributes ra) {
         kienHangService.luuKienHang(kienHang);
-        String msg = kienHang.getId() != null ? "Cập nhật đơn thư thành công!" : "Thêm đơn thư mới thành công!";
+        Locale locale = LocaleContextHolder.getLocale();
+        String msg = kienHang.getId() != null ? messageSource.getMessage("kh.success.update", null, "Cập nhật đơn thư thành công!", locale) : messageSource.getMessage("kh.success.add", null, "Thêm đơn thư mới thành công!", locale);
         ra.addFlashAttribute("thongBaoThanhCong", msg);
         return "redirect:/admin/kien-hang";
     }
@@ -75,9 +83,11 @@ public class AdminKienHangController {
     public String xoaKienHang(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             kienHangService.xoaKienHang(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã xóa đơn thư thành công!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("kh.success.delete", null, "Đã xóa đơn thư thành công!", locale));
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi khi xóa đơn thư: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("kh.error.deleteEx", new Object[]{e.getMessage()}, "Lỗi khi xóa đơn thư: " + e.getMessage(), locale));
         }
         return "redirect:/admin/kien-hang";
     }
@@ -86,9 +96,11 @@ public class AdminKienHangController {
     public String xacNhanDaNhan(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             kienHangService.xacNhanDaNhan(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã xác nhận cư dân nhận đơn thư!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("kh.success.confirm", null, "Đã xác nhận cư dân nhận đơn thư!", locale));
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("kh.error.confirmEx", new Object[]{e.getMessage()}, "Lỗi: " + e.getMessage(), locale));
         }
         return "redirect:/admin/kien-hang";
     }

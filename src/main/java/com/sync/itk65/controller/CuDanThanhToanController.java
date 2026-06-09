@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/cudan/thanh-toan")
@@ -29,6 +32,9 @@ public class CuDanThanhToanController {
 
     @Autowired
     private HoaDonRepository hoaDonRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("/lich-su")
     public String xemLichSuThanhToan(HttpSession session, Model model) {
@@ -69,13 +75,15 @@ public class CuDanThanhToanController {
         // Lấy hóa đơn
         HoaDon hoaDon = hoaDonRepository.findById(hoaDonId).orElse(null);
         if (hoaDon == null) {
-            ra.addFlashAttribute("loi", "Không tìm thấy hóa đơn");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("loi", messageSource.getMessage("hd.error.notFound", null, "Không tìm thấy hóa đơn", locale));
             return "redirect:/cudan/hoa-don";
         }
 
         // Kiểm tra quyền: chỉ cư dân của căn hộ này mới được xem
         if (!hoaDon.getCanHo().getId().equals(cuDan.getCanHo().getId())) {
-            ra.addFlashAttribute("loi", "Bạn không có quyền xem hóa đơn này");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("loi", messageSource.getMessage("hd.error.noPermission", null, "Bạn không có quyền xem hóa đơn này", locale));
             return "redirect:/cudan/hoa-don";
         }
 
@@ -110,13 +118,15 @@ public class CuDanThanhToanController {
 
         // Kiểm tra quyền
         if (!hoaDon.getCanHo().getId().equals(cuDan.getCanHo().getId())) {
-            ra.addFlashAttribute("loi", "Bạn không có quyền thực hiện hành động này");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("loi", messageSource.getMessage("hd.error.actionNoPermission", null, "Bạn không có quyền thực hiện hành động này", locale));
             return "redirect:/cudan/hoa-don";
         }
 
         // Kiểm tra trạng thái hiện tại
         if (!"Chưa đóng".equals(hoaDon.getTrangThaiThanhToan())) {
-            ra.addFlashAttribute("loi", "Hóa đơn này không ở trạng thái có thể thanh toán");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("loi", messageSource.getMessage("hd.error.notPayable", null, "Hóa đơn này không ở trạng thái có thể thanh toán", locale));
             return "redirect:/cudan/hoa-don";
         }
 
@@ -124,7 +134,8 @@ public class CuDanThanhToanController {
         hoaDon.setTrangThaiThanhToan("Chờ duyệt");
         hoaDonRepository.save(hoaDon);
 
-        ra.addFlashAttribute("thanhCong", "Đã gửi xác nhận thanh toán. Vui lòng chờ admin duyệt.");
+        Locale locale = LocaleContextHolder.getLocale();
+        ra.addFlashAttribute("thanhCong", messageSource.getMessage("hd.success.payQR", null, "Đã gửi xác nhận thanh toán. Vui lòng chờ admin duyệt.", locale));
         return "redirect:/cudan/hoa-don";
     }
 }

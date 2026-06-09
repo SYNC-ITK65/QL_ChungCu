@@ -119,7 +119,8 @@ public class CanHoController {
             model.addAttribute("errorMessage", e.getMessage());
             return "admin/can_ho_form";
         } catch (IOException e) {
-            model.addAttribute("errorMessage", "Lỗi khi upload hình ảnh: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            model.addAttribute("errorMessage", messageSource.getMessage("ch.error.uploadImageEx", new Object[]{e.getMessage()}, "Lỗi khi upload hình ảnh: " + e.getMessage(), locale));
             return "admin/can_ho_form";
         }
     }
@@ -157,14 +158,16 @@ public class CanHoController {
     @PostMapping("/import-excel")
     public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes ra) {
         if (file.isEmpty()) {
-            ra.addFlashAttribute("thongBaoLoi", "Vui lòng chọn file Excel để import!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("ch.error.selectFile", null, "Vui lòng chọn file Excel để import!", locale));
             return "redirect:/admin/can-ho";
         }
         try {
             String ketQua = canHoService.importExcelCanHo(file);
             ra.addFlashAttribute("thongBaoThanhCong", ketQua);
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi import: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("ch.error.importEx", new Object[]{e.getMessage()}, "Lỗi import: " + e.getMessage(), locale));
         }
         return "redirect:/admin/can-ho";
     }

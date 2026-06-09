@@ -32,6 +32,9 @@ import com.sync.itk65.entity.PhanAnh;
 import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/cudan")
@@ -63,6 +66,9 @@ public class CuDanPortalController {
 
     @Autowired
     private PhanAnhService phanAnhService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     // =======================================================
     // BẢNG ĐIỀU KHIỂN CƯ DÂN (DASHBOARD)
@@ -166,7 +172,8 @@ public class CuDanPortalController {
         DichVu dichVu = dichVuService.layDichVuTheoId(dichVuId);
 
         if (ngayKetThuc != null && ngayKetThuc.isBefore(ngayDat)) {
-            redirectAttributes.addFlashAttribute("thongBaoLoi", "Ngày kết thúc không thể trước ngày bắt đầu sử dụng!");
+            Locale locale = LocaleContextHolder.getLocale();
+            redirectAttributes.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cd.portal.error.invalidDate", null, "Ngày kết thúc không thể trước ngày bắt đầu sử dụng!", locale));
             return "redirect:/cudan/dich-vu";
         }
 
@@ -185,8 +192,8 @@ public class CuDanPortalController {
         datDichVuService.dangKyDichVu(datDichVu);
 
         // Gửi thông báo thành công
-        redirectAttributes.addFlashAttribute("thongBaoThanhCong",
-                "Đăng ký dịch vụ thành công! Vui lòng chờ BQL duyệt.");
+        Locale locale = LocaleContextHolder.getLocale();
+        redirectAttributes.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("cd.portal.success.registerDichVu", null, "Đăng ký dịch vụ thành công! Vui lòng chờ BQL duyệt.", locale));
         return "redirect:/cudan/dich-vu";
     }
 
@@ -222,7 +229,8 @@ public class CuDanPortalController {
 
         try {
             if (cuDan.getCanHo() == null) {
-                throw new RuntimeException("Tài khoản của bạn chưa được liên kết với Căn hộ nào!");
+                Locale locale = LocaleContextHolder.getLocale();
+                throw new RuntimeException(messageSource.getMessage("cd.portal.error.noCanHo", null, "Tài khoản của bạn chưa được liên kết với Căn hộ nào!", locale));
             }
 
             xe.setCanHo(cuDan.getCanHo());
@@ -231,7 +239,8 @@ public class CuDanPortalController {
             // Kiểm tra dung lượng ảnh (giới hạn 2MB)
             if (multipartFile != null && !multipartFile.isEmpty()) {
                 if (multipartFile.getSize() > 2 * 1024 * 1024) {
-                    result.rejectValue("hinhAnh", "error.xe.hinhAnh.size", "Dung lượng ảnh không được vượt quá 2MB!");
+                    Locale locale = LocaleContextHolder.getLocale();
+                    result.rejectValue("hinhAnh", "error.xe.hinhAnh.size", messageSource.getMessage("cd.portal.error.imageSize", null, "Dung lượng ảnh không được vượt quá 2MB!", locale));
                 }
             }
 
@@ -239,7 +248,8 @@ public class CuDanPortalController {
 
             if (result.hasErrors()) {
                 model.addAttribute("danhSachXe", phuongTienService.layXeTheoCanHoId(cuDan.getCanHo().getId()));
-                model.addAttribute("thongBaoLoi", "Dữ liệu đăng ký không hợp lệ, vui lòng kiểm tra lại form!");
+                Locale locale = LocaleContextHolder.getLocale();
+                model.addAttribute("thongBaoLoi", messageSource.getMessage("cd.portal.error.invalidForm", null, "Dữ liệu đăng ký không hợp lệ, vui lòng kiểm tra lại form!", locale));
                 return "cudan/phuong-tien";
             }
 
@@ -250,12 +260,15 @@ public class CuDanPortalController {
             }
 
             phuongTienService.dangKyXe(xe);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã gửi yêu cầu đăng ký xe! Vui lòng chờ BQL duyệt.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("cd.portal.success.registerXe", null, "Đã gửi yêu cầu đăng ký xe! Vui lòng chờ BQL duyệt.", locale));
 
         } catch (DataIntegrityViolationException e) {
-            ra.addFlashAttribute("thongBaoLoi", "Từ chối: Biển số xe này đã tồn tại trong hệ thống bãi đỗ!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cd.portal.error.duplicatePlate", null, "Từ chối: Biển số xe này đã tồn tại trong hệ thống bãi đỗ!", locale));
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cd.portal.error.general", new Object[]{e.getMessage()}, "Lỗi: " + e.getMessage(), locale));
         }
         return "redirect:/cudan/phuong-tien";
     }
@@ -301,9 +314,11 @@ public class CuDanPortalController {
     public String xoaXeCuDan(@PathVariable("id") Long id, RedirectAttributes ra) {
         try {
             phuongTienService.huyGuiXe(id);
-            ra.addFlashAttribute("thongBaoThanhCong", "Đã hủy đăng ký xe thành công.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoThanhCong", messageSource.getMessage("cd.portal.success.cancelXe", null, "Đã hủy đăng ký xe thành công.", locale));
         } catch (Exception e) {
-            ra.addFlashAttribute("thongBaoLoi", "Lỗi: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("thongBaoLoi", messageSource.getMessage("cd.portal.error.general", new Object[]{e.getMessage()}, "Lỗi: " + e.getMessage(), locale));
         }
         return "redirect:/cudan/phuong-tien";
     }

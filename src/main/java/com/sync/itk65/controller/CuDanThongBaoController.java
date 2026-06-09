@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/cudan/thong-bao")
@@ -21,6 +24,9 @@ public class CuDanThongBaoController {
 
     @Autowired
     private CuDanService cuDanService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("/bang-tin")
     public String hienThiBangTin(HttpSession session, Model model,
@@ -46,7 +52,8 @@ public class CuDanThongBaoController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
-        model.addAttribute("tieuDeTrang", "Bảng tin chung");
+        Locale locale = LocaleContextHolder.getLocale();
+        model.addAttribute("tieuDeTrang", messageSource.getMessage("tb.loai.tin_tuc", null, "Bảng tin chung", locale));
         model.addAttribute("tieuDeTrangKey", "tb.loai.tin_tuc");
         return "cudan/bang_tin";
     }
@@ -75,7 +82,8 @@ public class CuDanThongBaoController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", trangDuLieu.getTotalPages());
         model.addAttribute("size", size);
-        model.addAttribute("tieuDeTrang", "Cẩm nang cư dân");
+        Locale locale = LocaleContextHolder.getLocale();
+        model.addAttribute("tieuDeTrang", messageSource.getMessage("tb.ds.cam_nang_cu_dan", null, "Cẩm nang cư dân", locale));
         model.addAttribute("tieuDeTrangKey", "tb.ds.cam_nang_cu_dan");
         return "cudan/cam_nang";
     }

@@ -61,7 +61,8 @@ public class CuDanPhanAnhController {
 
         // Chặn không cho vào form nếu chưa có căn hộ
         if (cuDan == null || cuDan.getCanHo() == null) {
-            ra.addFlashAttribute("error", "Lỗi: Bạn phải được BQL gán vào Căn hộ trước khi gửi phản ánh!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("error", messageSource.getMessage("pa.error.noCanHo", null, "Lỗi: Bạn phải được BQL gán vào Căn hộ trước khi gửi phản ánh!", locale));
             return "redirect:/cudan/phan-anh";
         }
 
@@ -87,7 +88,8 @@ public class CuDanPhanAnhController {
 
         CuDan cuDan = cuDanService.layCuDanTheoId(user.getId());
         if (cuDan == null || cuDan.getCanHo() == null) {
-            ra.addFlashAttribute("error", "Lỗi hệ thống: Không xác định được Căn hộ của bạn.");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("error", messageSource.getMessage("pa.error.noCanHoSystem", null, "Lỗi hệ thống: Không xác định được Căn hộ của bạn.", locale));
             return "redirect:/cudan/phan-anh";
         }
 
@@ -95,7 +97,8 @@ public class CuDanPhanAnhController {
         Long lastTime = (Long) session.getAttribute("lastPhanAnhTime");
         long currentTime = System.currentTimeMillis();
         if (lastTime != null && (currentTime - lastTime) < 30000) {
-            ra.addFlashAttribute("error", "Bạn đang thao tác quá nhanh, vui lòng đợi 30 giây!");
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("error", messageSource.getMessage("pa.error.spam", null, "Bạn đang thao tác quá nhanh, vui lòng đợi 30 giây!", locale));
             return "redirect:/cudan/phan-anh/gui-moi";
         }
 
@@ -106,7 +109,8 @@ public class CuDanPhanAnhController {
         // Kiểm tra dung lượng ảnh (giới hạn 2MB)
         if (multipartFile != null && !multipartFile.isEmpty()) {
             if (multipartFile.getSize() > 2 * 1024 * 1024) {
-                result.rejectValue("hinhAnh", "error.pa.hinhAnh.size", "Dung lượng ảnh không được vượt quá 2MB!");
+                Locale locale = LocaleContextHolder.getLocale();
+                result.rejectValue("hinhAnh", "error.pa.hinhAnh.size", messageSource.getMessage("pa.error.imageSize", null, "Dung lượng ảnh không được vượt quá 2MB!", locale));
             }
         }
 
@@ -121,7 +125,8 @@ public class CuDanPhanAnhController {
                 phanAnh.setHinhAnh(imageUrl);
             }
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Lỗi upload hình ảnh: " + e.getMessage());
+            Locale locale = LocaleContextHolder.getLocale();
+            ra.addFlashAttribute("error", messageSource.getMessage("pa.error.upload", new Object[]{e.getMessage()}, "Lỗi upload hình ảnh: " + e.getMessage(), locale));
             return "redirect:/cudan/phan-anh/gui-moi";
         }
 
@@ -132,7 +137,8 @@ public class CuDanPhanAnhController {
         phanAnhService.save(phanAnh);
 
         session.setAttribute("lastPhanAnhTime", currentTime);
-        ra.addFlashAttribute("success", "🚀 Đã gửi phản ánh thành công! BQL sẽ sớm tiếp nhận.");
+        Locale locale = LocaleContextHolder.getLocale();
+        ra.addFlashAttribute("success", messageSource.getMessage("pa.success.sent", null, "🚀 Đã gửi phản ánh thành công! BQL sẽ sớm tiếp nhận.", locale));
         return "redirect:/cudan/phan-anh";
     }
     // Helper method to resolve i18n messages
